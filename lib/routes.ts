@@ -1,0 +1,1 @@
+export function routeQuery(params: Record<string, string | string[] | undefined>) { const q = new URLSearchParams(); for (const [k,v] of Object.entries(params || {})) for (const value of Array.isArray(v) ? v : v === undefined ? [] : [v]) q.append(k,value); return q.size ? `?${q}` : ""; }

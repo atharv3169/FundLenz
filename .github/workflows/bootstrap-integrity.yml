@@ -1,0 +1,30 @@
+name: FundLenz bootstrap integrity
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bootstrap-integrity:
+    name: Verify imported FundLenz baseline
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out source
+        # Official actions/checkout v4 ref verified through GitHub on 2026-10-06.
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Check original source and data fidelity
+        run: python3 scripts/automation/verify-bootstrap.py
+
+# This is an import-fidelity check, not a production catalogue validator.
+# No schedule, API secret, repository write or deploy step is present.
+# Replace the baseline-only CI role through reviewed implementation before
+# accepting live data updates; retain the old release as a regression fixture.

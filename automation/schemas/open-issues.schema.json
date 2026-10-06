@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FundLenz persistent unresolved issues",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "issue_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "origin": {
+            "enum": [
+              "bootstrap_existing_source_check",
+              "daily_validation",
+              "manual_review"
+            ]
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "record_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fund_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "security_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source_url": {
+            "type": "string",
+            "pattern": "^https://",
+            "maxLength": 3000
+          },
+          "reason_code": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000
+          },
+          "first_flagged_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "last_attempt_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "attempts": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "consecutive_failures": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "severity": {
+            "enum": [
+              "retry",
+              "warning",
+              "manual_review"
+            ]
+          },
+          "retained_snapshot_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "previous_candidate": {},
+          "previous_verified": {},
+          "evidence_ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "status": {
+            "const": "open"
+          }
+        },
+        "required": [
+          "issue_id",
+          "origin",
+          "scope",
+          "record_id",
+          "fund_id",
+          "security_id",
+          "source_url",
+          "reason_code",
+          "reason",
+          "first_flagged_at",
+          "last_attempt_at",
+          "attempts",
+          "consecutive_failures",
+          "severity",
+          "retained_snapshot_date",
+          "previous_candidate",
+          "previous_verified",
+          "evidence_ref",
+          "status"
+        ]
+      },
+      "maxItems": 10000
+    },
+    "note": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 3000
+    }
+  },
+  "required": [
+    "schema_version",
+    "updated_at",
+    "issues",
+    "note"
+  ]
+}

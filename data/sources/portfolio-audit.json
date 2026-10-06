@@ -1,0 +1,7380 @@
+[
+  {
+    "file": "62-ac9b10645fe9.xls",
+    "sheet": "Dynamic Term",
+    "name": "360 ONE Dynamic Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "62-ac9b10645fe9.xls",
+    "sheet": "Liquid Fund",
+    "name": "360 ONE Liquid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "62-ac9b10645fe9.xls",
+    "sheet": "Focused Fund",
+    "name": "360 ONE Focused Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "62-ac9b10645fe9.xls",
+    "sheet": "Quant Fund",
+    "name": "360 ONE Quant Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "62-ac9b10645fe9.xls",
+    "sheet": "ELSS Tax Saver",
+    "name": "360 ONE ELSS Tax Saver Nifty 50 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "62-ac9b10645fe9.xls",
+    "sheet": "Flexi Cap",
+    "name": "360 ONE Flexicap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "62-ac9b10645fe9.xls",
+    "sheet": "Balance Hybrid",
+    "name": "360 ONE Balanced Hybrid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "62-ac9b10645fe9.xls",
+    "sheet": "Gold ETF",
+    "name": "360 ONE Gold ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "62-ac9b10645fe9.xls",
+    "sheet": "Silver ETF",
+    "name": "360 ONE Silver ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "62-ac9b10645fe9.xls",
+    "sheet": "Overnight Fund",
+    "name": "360 ONE Overnight Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "62-ac9b10645fe9.xls",
+    "sheet": "Multi Asset Allocation",
+    "name": "360 ONE Multi Asset Allocation Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "62-ac9b10645fe9.xls",
+    "sheet": "MSCI India ETF",
+    "name": "360 ONE MSCI India ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "85-a12e8a3bf8c8.xlsx",
+    "sheet": "Sheet1",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "80-f57ff2c91c3f.xlsx",
+    "sheet": "Sheet1",
+    "name": "AngelOne Nifty 1D Rate Liquid ETF GROWTH",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "80-49335a0b5e86.xlsx",
+    "sheet": "Sheet1",
+    "name": "Angel One Nifty 50 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "80-2676cc341ebc.xlsx",
+    "sheet": "Sheet1",
+    "name": "Angel One Gold ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "80-99517a020f35.xlsx",
+    "sheet": "Sheet1",
+    "name": "Angel One Gold ETF FOF",
+    "status": "parsed",
+    "differencePct": -2.12876543889745e-05
+  },
+  {
+    "file": "80-d19b98d0fa67.xlsx",
+    "sheet": "Sheet1",
+    "name": "Angel One Silver ETF",
+    "status": "parsed",
+    "differencePct": 1.3125612031125213e-14
+  },
+  {
+    "file": "80-845507ce6a1b.xlsx",
+    "sheet": "Angel One Silver ETF FOF",
+    "name": "Angel One Silver ETF FOF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "80-f0565c8b99bd.xlsx",
+    "sheet": "Angel One Nifty 50 ETF",
+    "name": "Angel One Nifty 50 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "80-564583a83b36.xlsx",
+    "sheet": "Sheet1",
+    "name": "Angel One Nifty Total Market Index Fund",
+    "status": "parsed",
+    "differencePct": -1.4567971377224498e-14
+  },
+  {
+    "file": "80-d1b52a81b5b6.xlsx",
+    "sheet": "Sheet1",
+    "name": "Angel One Nifty Total Market ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "80-7e1ded0beb34.xlsx",
+    "sheet": "Sheet1",
+    "name": "Angel One Nifty Total Market Momentum Quality 50 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "80-f387de98b95b.xlsx",
+    "sheet": "Sheet1",
+    "name": "Angel One Nifty Total Market Momentum Quality 50 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0MD09",
+    "name": "Baroda BNP Paribas Ultra Short to Short Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0MD12",
+    "name": "Baroda BNP Paribas Dynamic Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0MD13",
+    "name": "Baroda BNP Paribas Corporate Bond Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0MD28",
+    "name": "Baroda BNP Paribas NIFTY SDL December 2028 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME02",
+    "name": "Baroda BNP Paribas Mid Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME04",
+    "name": "Baroda BNP Paribas Large Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME05",
+    "name": "Baroda BNP Paribas ELSS Tax Saver Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME08",
+    "name": "Baroda BNP Paribas Conservative Hybrid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME18",
+    "name": "Baroda BNP Paribas Arbitrage Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME19",
+    "name": "Baroda BNP Paribas Aggressive Hybrid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME20",
+    "name": "Baroda BNP Paribas Focused Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME21",
+    "name": "Baroda BNP Paribas India Consumption Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME24",
+    "name": "Baroda BNP Paribas Aqua Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME25",
+    "name": "Baroda BNP Paribas Flexi Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME26",
+    "name": "Baroda BNP Paribas Multi Asset Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME30",
+    "name": "Baroda BNP Paribas Value Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME31",
+    "name": "Baroda BNP Paribas Gold ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME32",
+    "name": "Baroda BNP Paribas Small Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME33",
+    "name": "Baroda BNP Paribas Nifty 50 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME34",
+    "name": "Baroda BNP Paribas Innovation Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME35",
+    "name": "Baroda BNP Paribas Retirement Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME36",
+    "name": "Baroda BNP Paribas NIFTY BANK ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME37",
+    "name": "Baroda BNP Paribas Manufacturing Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME38",
+    "name": "Baroda BNP Paribas Dividend Yield Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME39",
+    "name": "Baroda BNP Paribas Nifty200 Momentum 30 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME40",
+    "name": "Baroda BNP Paribas NIFTY Midcap 150 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME41",
+    "name": "Baroda BNP Paribas Childrens Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME42",
+    "name": "Baroda BNP Paribas Energy Opportunities Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME43",
+    "name": "BBP Income Plus Arbitrage Active FOF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME44",
+    "name": "Baroda BNP Paribas Multi Asset Active FOF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME45",
+    "name": "Baroda BNP Paribas Health and Wellness Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME46",
+    "name": "Baroda BNP Paribas Gold ETF FOF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME47",
+    "name": "Baroda BNP Paribas Business Conglomerates Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME48",
+    "name": "Baroda BNP Paribas ESG Best-in-Class Strategy Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "T0ME49",
+    "name": "Baroda BNP Paribas Services Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "YR04",
+    "name": "Baroda BNP Paribas Multi Cap Fund",
+    "status": "parsed",
+    "differencePct": 2.8629567888530506e-06
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "YR07",
+    "name": "Baroda BNP Paribas Gilt Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "YR11",
+    "name": "Baroda BNP Paribas Liquid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "YR15",
+    "name": "Baroda BNP Paribas Short Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "YR29",
+    "name": "Baroda BNP Paribas Banking & Financial Services Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "YR47",
+    "name": "Baroda BNP Paribas Ultra Short Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "YR48",
+    "name": "Baroda BNP Paribas Balanced Advantage Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "YR51",
+    "name": "Baroda BNP Paribas Overnight Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "YR52",
+    "name": "Baroda BNP Paribas Money Market Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "YR53",
+    "name": "Baroda BNP Paribas Equity Savings Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "YR54",
+    "name": "Baroda BNP Paribas Large & Mid Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "4-3eeef5c09875.xls",
+    "sheet": "YR56",
+    "name": "Baroda BNP Paribas Business Cycle Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "81-dd5261bc5cf0.xlsx",
+    "sheet": "CMFCF_August 31, 2026",
+    "name": "Capitalmind Flexi Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "81-7e6f6c5f9790.xlsx",
+    "sheet": "CMLIQ_August 31,2026",
+    "name": "Capitalmind Liquid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "81-d45934edbc5d.xlsx",
+    "sheet": "CMMAAF_August 31, 2026",
+    "name": "Capitalmind Multi Asset Allocation Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "81-e6c923f08b8f.xlsx",
+    "sheet": "CMARB_August 31, 2026",
+    "name": "Capitalmind Arbitrage Fund",
+    "status": "parsed",
+    "differencePct": -0.0017741688706142899
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "Liquid Fund",
+    "name": "DSP Liquid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "Ultra Short Term Fund",
+    "name": "DSP Ultra Short Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "CREDITRISK",
+    "name": "DSP Credit Risk Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "Ultra Short to Short Term",
+    "name": "DSP Ultra Short to Short Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "SHORT",
+    "name": "DSP Short Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "Dynamic Term Fund",
+    "name": "DSP Dynamic Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "Medium Term Fund",
+    "name": "DSP Medium Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "GILT",
+    "name": "DSP Gilt Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "Money Market Fund",
+    "name": "DSP Money Market Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "Conservative Hybrid Fund",
+    "name": "DSP Conservative Hybrid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "Corporate Bond",
+    "name": "DSP Corporate Bond Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "Banking and PSU Debt",
+    "name": "DSP Banking and PSU Debt Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "Income Plus Arbitrage FOF",
+    "name": "DSP Income Plus Arbitrage Omni FoF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "10 yr Constant Maturity Gilt",
+    "name": "DSP 10 year Constant Maturity Gilt Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "LIQUIDETF",
+    "name": "DSP NIFTY 1D Rate Liquid ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "OVERNIGHT",
+    "name": "DSP Overnight Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "Floating Interest Rates",
+    "name": "DSP Floating Interest Rates Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "Nifty SDL GSec 2028",
+    "name": "DSP NIFTY SDL PLUS G-SEC JUN 2028 30:70 INDEX FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "CRISIL SDL GSec 2033",
+    "name": "DSP CRISIL-IBX 50:50 Gilt Plus SDL - April 2033 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "NIFTY SDL Gsec 2027",
+    "name": "DSP Nifty SDL Plus G-Sec Sep 2027 50:50 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "BSE Liquid Rate ETF",
+    "name": "DSP BSE Liquid Rate ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "US Debt Passive FoF",
+    "name": "DSP US Specific Debt Passive FoF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "Nifty 10 yr GSec ETF",
+    "name": "DSP Nifty 10 Yr Benchmark G-Sec ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "Fin Services Sect Dbt",
+    "name": "DSP Financial Services Sectoral Debt Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "FMP Series 270-1172D",
+    "name": "DSP FMP Series - 270 - 1172 Days",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "FMP Series 267-1172D",
+    "name": "DSP FMP Series - 267 - 1172 Days",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-a8d5e3d69da9.xlsx",
+    "sheet": "SR 264 - 60M - 17D",
+    "name": "DSP FMP Series 264 - 60M - 17D",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Aggressive Hybrid",
+    "name": "DSP Aggressive Hybrid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Flexi Cap",
+    "name": "DSP Flexi Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Large Cap",
+    "name": "DSP Large Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Large & Mid Cap",
+    "name": "DSP Large & Mid Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "TIGER",
+    "name": null,
+    "status": "not parsed",
+    "reason": "leaf rows differ from net assets by 5.82161% (2 unclassified rows)"
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "MIDCAP",
+    "name": "DSP Mid Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "TAX",
+    "name": "DSP ELSS Tax Saver Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "SMALLCAP",
+    "name": "DSP Small Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "World Gold Mining FOF",
+    "name": "DSP World Gold Mining Overseas Equity Omni FoF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "NRNEF",
+    "name": "DSP Natural Resources & New Energy Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Global Clean Energy FOF",
+    "name": "DSP Global Clean Energy Overseas Equity Omni FoF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Focused",
+    "name": "DSP Focused Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "World Mining FOF",
+    "name": "DSP World Mining Overseas Equity Omni FoF",
+    "status": "parsed",
+    "differencePct": -1.8698464214393752e-14
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "US Specific Equity FoF",
+    "name": "DSP US Specific Equity Omni FoF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "DAAF",
+    "name": "DSP Dynamic Asset Allocation Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "ESF",
+    "name": "DSP Equity Savings Fund",
+    "status": "parsed",
+    "differencePct": 0.03679675394920856
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "EQUALNIFTY50",
+    "name": "DSP Nifty 50 Equal Weight Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "ARBITRAGE",
+    "name": "DSP Arbitrage Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "HEALTHCARE",
+    "name": "DSP Healthcare Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "NIFTY50INDEX",
+    "name": "DSP Nifty 50 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "NIFTYNEXT50INDEX",
+    "name": "DSP Nifty Next 50 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "QUANT",
+    "name": "DSP Quant Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "VALUE",
+    "name": null,
+    "status": "not parsed",
+    "reason": "leaf rows differ from net assets by 4.25971% (4 unclassified rows)"
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty 50 Equal ETF",
+    "name": "DSP Nifty 50 Equal Weight ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty 50 ETF",
+    "name": "DSP NIFTY 50 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Midcap 150 Quality 50 ETF",
+    "name": "DSP NIFTY MIDCAP 150 QUALITY 50 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Global Innovation",
+    "name": "DSP Global Innovation Overseas Equity Omni FoF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "NIFTY MIDCAP 150 Q50",
+    "name": "DSP Nifty Midcap 150 Qlty 50 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "SILVER ETF",
+    "name": "DSP SILVER ETF",
+    "status": "parsed",
+    "differencePct": 1.9454711719943637e-14
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty Bank ETF",
+    "name": "DSP NIFTY BANK ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "GOLD ETF",
+    "name": "DSP Gold ETF",
+    "status": "parsed",
+    "differencePct": 2.03889592531125e-14
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty IT ETF",
+    "name": "DSP NIFTY IT ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "BSE Sensex ETF",
+    "name": "DSP BSE SENSEX ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty PSU Bank ETF",
+    "name": "DSP NIFTY PSU BANK ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty Private Bank ETF",
+    "name": "DSP Nifty Private Bank ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Multi Asset",
+    "name": null,
+    "status": "not parsed",
+    "reason": "leaf rows differ from net assets by 9.79394% (1 unclassified rows)"
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "GOLD ETF FOF",
+    "name": "DSP Gold ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Banking and Financial Services",
+    "name": "DSP Banking & Financial Services Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty Smallcap250 Quality 50",
+    "name": "DSP Nifty Smallcap250 Quality 50 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Multicap Fund",
+    "name": "DSP Multi Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Healthcare ETF",
+    "name": "DSP Nifty Healthcare ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty Bank Index",
+    "name": "DSP Nifty Bank Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty Top 10 Equal",
+    "name": "DSP Nifty Top 10 Equal Weight Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty Top 10 Equal ETF",
+    "name": "DSP Nifty Top 10 Equal Weight ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Business Cycle Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "leaf rows differ from net assets by 9.92341% (1 unclassified rows)"
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Sensex Next 30 ETF",
+    "name": "DSP BSE Sensex Next 30 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Sensex Next 30 Index",
+    "name": "DSP BSE Sensex Next 30 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty Pvt Bank Index",
+    "name": "DSP Nifty Private Bank Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Silver ETF FOF",
+    "name": "DSP Silver ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty Healthcare Index",
+    "name": "DSP Nifty Healthcare Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty IT Index",
+    "name": "DSP Nifty IT Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty500 Flexicap Qlty30",
+    "name": "DSP Nifty500 Flexicap Quality 30 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty500 Flexicap Qlty30 ETF",
+    "name": "DSP Nifty500 Flexicap Quality 30 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "MSCI India ETF",
+    "name": "DSP MSCI India ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty Midcap 150 Index",
+    "name": "DSP Nifty Midcap 150 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty Smallcap 250 ETF",
+    "name": "DSP Nifty Smallcap 250 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty Smallcap 250 Index",
+    "name": "DSP Nifty Smallcap 250 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty Midcap 150 ETF",
+    "name": "DSP Nifty Midcap 150 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty 500 Index",
+    "name": "DSP Nifty 500 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty Next 50 ETF",
+    "name": "DSP Nifty Next 50 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "BSE Top 10 Banks ETF",
+    "name": "DSP BSE Top 10 Banks ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "NIFTY FMCG ETF",
+    "name": "DSP NIFTY FMCG ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Multi Asset Omni Fund of Funds",
+    "name": "DSP Multi Asset Omni Fund of Funds",
+    "status": "parsed",
+    "differencePct": 1.648217020020183e-14
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "BSE MidSmall Pvt Banks ETF",
+    "name": "DSP BSE MidSmall Private Banks ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Liquid Fund",
+    "name": "DSP Liquid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Ultra Short Term Fund",
+    "name": "DSP Ultra Short Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "CREDITRISK",
+    "name": "DSP Credit Risk Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Ultra Short to Short Term",
+    "name": "DSP Ultra Short to Short Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "SHORT",
+    "name": "DSP Short Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Dynamic Term Fund",
+    "name": "DSP Dynamic Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Medium Term Fund",
+    "name": "DSP Medium Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "GILT",
+    "name": "DSP Gilt Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Money Market Fund",
+    "name": "DSP Money Market Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Conservative Hybrid Fund",
+    "name": "DSP Conservative Hybrid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Corporate Bond",
+    "name": "DSP Corporate Bond Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Banking and PSU Debt",
+    "name": "DSP Banking and PSU Debt Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Income Plus Arbitrage FOF",
+    "name": "DSP Income Plus Arbitrage Omni FoF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "10 yr Constant Maturity Gilt",
+    "name": "DSP 10 year Constant Maturity Gilt Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "LIQUIDETF",
+    "name": "DSP NIFTY 1D Rate Liquid ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "OVERNIGHT",
+    "name": "DSP Overnight Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Floating Interest Rates",
+    "name": "DSP Floating Interest Rates Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty SDL GSec 2028",
+    "name": "DSP NIFTY SDL PLUS G-SEC JUN 2028 30:70 INDEX FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "CRISIL SDL GSec 2033",
+    "name": "DSP CRISIL-IBX 50:50 Gilt Plus SDL - April 2033 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "NIFTY SDL Gsec 2027",
+    "name": "DSP Nifty SDL Plus G-Sec Sep 2027 50:50 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "BSE Liquid Rate ETF",
+    "name": "DSP BSE Liquid Rate ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "US Debt Passive FoF",
+    "name": "DSP US Specific Debt Passive FoF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Nifty 10 yr GSec ETF",
+    "name": "DSP Nifty 10 Yr Benchmark G-Sec ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "Fin Services Sect Dbt",
+    "name": "DSP Financial Services Sectoral Debt Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "FMP Series 270-1172D",
+    "name": "DSP FMP Series - 270 - 1172 Days",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "FMP Series 267-1172D",
+    "name": "DSP FMP Series - 267 - 1172 Days",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "6-b6a8b4918574.zip",
+    "sheet": "SR 264 - 60M - 17D",
+    "name": "DSP FMP Series 264 - 60M - 17D",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-ef2450573157.xlsx",
+    "sheet": "HDFCCB",
+    "name": "HDFC Value Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-ed85e18c5da9.xlsx",
+    "sheet": "HDFCTRALFD",
+    "name": "HDFC Transportation and Logistics Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-7650c44af15d.xlsx",
+    "sheet": "HDFCTECHFD",
+    "name": "HDFC Technology Fund",
+    "status": "parsed",
+    "differencePct": -1.9617115181213153e-14
+  },
+  {
+    "file": "9-48482d4ef59c.xlsx",
+    "sheet": "HDFCSMALLF",
+    "name": "HDFC Small Cap Fund",
+    "status": "parsed",
+    "differencePct": -2.2232118073339276e-14
+  },
+  {
+    "file": "9-86df77ea0f2b.xlsx",
+    "sheet": "HSILVERFOF",
+    "name": "HDFC Silver ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-98feb25b2656.xlsx",
+    "sheet": "HSILVERETF",
+    "name": "HDFC SILVER ETF",
+    "status": "parsed",
+    "differencePct": 1.4004229590073376e-14
+  },
+  {
+    "file": "9-82d2523e997a.xlsx",
+    "sheet": "HDFCRETHEP",
+    "name": "HDFC Retirement Fund - Hybrid-Equity Plan",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-7b59918570cb.xlsx",
+    "sheet": "HDFCRETEQP",
+    "name": "HDFC Retirement Fund - Equity Plan",
+    "status": "parsed",
+    "differencePct": 1.663612802652793e-14
+  },
+  {
+    "file": "9-2d87fad3fe9e.xlsx",
+    "sheet": "HDFCPHARHC",
+    "name": "HDFC Pharma and Healthcare Fund",
+    "status": "parsed",
+    "differencePct": 5.2746053247896214e-14
+  },
+  {
+    "file": "9-f815567ff601.xlsx",
+    "sheet": "HDFCNY500M",
+    "name": "HDFC Nifty500 Multicap 50.25.25 Index Fund",
+    "status": "parsed",
+    "differencePct": -1.123721494164994e-13
+  },
+  {
+    "file": "9-cc323bd1c847.xlsx",
+    "sheet": "HDFCV20ETF",
+    "name": "HDFC Nifty50 Value 20 ETF",
+    "status": "parsed",
+    "differencePct": -1.2697084494709331e-14
+  },
+  {
+    "file": "9-deec0309a40e.xlsx",
+    "sheet": "HDFCNY50EW",
+    "name": "HDFC NIFTY50 Equal weight Index Fund",
+    "status": "parsed",
+    "differencePct": 1.609075809713829e-14
+  },
+  {
+    "file": "9-dac53cac7451.xlsx",
+    "sheet": "HDFCM30IDF",
+    "name": "HDFC NIFTY200 MOMENTUM 30 INDEX FUND",
+    "status": "parsed",
+    "differencePct": -1.1950505327636323e-14
+  },
+  {
+    "file": "9-d9b94517de88.xlsx",
+    "sheet": "HDFCM30ETF",
+    "name": "HDFC NIFTY200 MOMENTUM 30 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-6c4ac47038b8.xlsx",
+    "sheet": "HDFCQ30IDF",
+    "name": "HDFC Nifty100 Quality 30 Index Fund",
+    "status": "parsed",
+    "differencePct": -1.2655098236178324e-14
+  },
+  {
+    "file": "9-0fc7e9c7e431.xlsx",
+    "sheet": "HDFCQ30ETF",
+    "name": "HDFC Nifty100 Quality 30 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-3a69f9f632c6.xlsx",
+    "sheet": "HDFCL30IDF",
+    "name": "HDFC NIFTY100 Low Volatility 30 Index Fund",
+    "status": "parsed",
+    "differencePct": 3.312230840610219e-14
+  },
+  {
+    "file": "9-c047a30397d9.xlsx",
+    "sheet": "HDFCL30ETF",
+    "name": "HDFC NIFTY100 LOW VOLATILITY 30 ETF",
+    "status": "parsed",
+    "differencePct": -1.7209763580047693e-14
+  },
+  {
+    "file": "9-db7c170dcfed.xlsx",
+    "sheet": "HDFCNY20EW",
+    "name": "HDFC NIFTY Top 20 Equal Weight Index Fund",
+    "status": "parsed",
+    "differencePct": 1.9945190467764655e-14
+  },
+  {
+    "file": "9-e9b74297d108.xlsx",
+    "sheet": "HDFCSMAIDF",
+    "name": "HDFC NIFTY SMALLCAP 250 INDEX FUND",
+    "status": "parsed",
+    "differencePct": -7.512654111877537e-14
+  },
+  {
+    "file": "9-5040089b097d.xlsx",
+    "sheet": "HDFCSMAETF",
+    "name": "HDFC NIFTY SMALLCAP 250 ETF",
+    "status": "parsed",
+    "differencePct": -4.325878362014946e-14
+  },
+  {
+    "file": "9-73e760a68779.xlsx",
+    "sheet": "HDFCREALIF",
+    "name": "HDFC NIFTY REALTY INDEX FUND",
+    "status": "parsed",
+    "differencePct": -1.2610599229118775e-14
+  },
+  {
+    "file": "9-69e6dd6eceb3.xlsx",
+    "sheet": "HDFCNPSBET",
+    "name": "HDFC NIFTY PSU BANK ETF",
+    "status": "parsed",
+    "differencePct": 1.5122480363489152e-14
+  },
+  {
+    "file": "9-ecd3928f2397.xlsx",
+    "sheet": "HDFCNPBETF",
+    "name": "HDFC NIFTY Private Bank ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-dfa26b00cec2.xlsx",
+    "sheet": "HDFCNYNX50",
+    "name": "HDFC NIFTY Next 50 Index Fund",
+    "status": "parsed",
+    "differencePct": -4.297450206045025e-14
+  },
+  {
+    "file": "9-cf1cb18c9767.xlsx",
+    "sheet": "HDFCNY50ET",
+    "name": "HDFC NIFTY NEXT 50 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-bc31bc39340b.xlsx",
+    "sheet": "HDFCMIDIDF",
+    "name": "HDFC NIFTY MIDCAP 150 INDEX FUND",
+    "status": "parsed",
+    "differencePct": -8.01775311703779e-14
+  },
+  {
+    "file": "9-f82f101d44da.xlsx",
+    "sheet": "HDFCMIDETF",
+    "name": "HDFC NIFTY MIDCAP 150 ETF",
+    "status": "parsed",
+    "differencePct": 1.1103843231291265e-14
+  },
+  {
+    "file": "9-8dd054886b9a.xlsx",
+    "sheet": "HDFCMETFOF",
+    "name": "HDFC Nifty Metal ETF FOF",
+    "status": "parsed",
+    "differencePct": -1.5796338107397113e-14
+  },
+  {
+    "file": "9-9ce3dd9c127d.xlsx",
+    "sheet": "HDFCMETETF",
+    "name": "HDFC Nifty Metal ETF",
+    "status": "parsed",
+    "differencePct": -4.4551698155690775e-14
+  },
+  {
+    "file": "9-7cd62ab97fb2.xlsx",
+    "sheet": "HDFCLM250F",
+    "name": "HDFC Nifty LargeMidcap 250 Index Fund",
+    "status": "parsed",
+    "differencePct": 9.364544448617944e-14
+  },
+  {
+    "file": "9-0e30d5a23fc0.xlsx",
+    "sheet": "HDFCNITETF",
+    "name": "HDFC NIFTY IT ETF",
+    "status": "parsed",
+    "differencePct": -2.1795737207611378e-14
+  },
+  {
+    "file": "9-4322dcf2ec4e.xlsx",
+    "sheet": "HDFCNYDGTF",
+    "name": "HDFC Nifty India Digital Index Fund",
+    "status": "parsed",
+    "differencePct": -2.305275809095509e-14
+  },
+  {
+    "file": "9-c702dae13549.xlsx",
+    "sheet": "HDFCNICONF",
+    "name": "HDFC Nifty India Consumption Index Fund",
+    "status": "parsed",
+    "differencePct": 4.7577211722332713e-14
+  },
+  {
+    "file": "9-2c9b4e340ff3.xlsx",
+    "sheet": "HDFCG15ETF",
+    "name": "HDFC Nifty Growth Sectors 15 ETF",
+    "status": "parsed",
+    "differencePct": 2.0671555632217543e-14
+  },
+  {
+    "file": "9-4b7c087c5225.xlsx",
+    "sheet": "HDFCBKEXTF",
+    "name": "HDFC NIFTY BANK ETF",
+    "status": "parsed",
+    "differencePct": -1.3465320424458809e-14
+  },
+  {
+    "file": "9-8ba96a132d1a.xlsx",
+    "sheet": "HDFCAUTOIF",
+    "name": "HDFC Nifty Auto Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-2edf4246dd0f.xlsx",
+    "sheet": "HDFCNY",
+    "name": "HDFC Nifty 50 Index Fund",
+    "status": "parsed",
+    "differencePct": -3.9157669718072955e-14
+  },
+  {
+    "file": "9-51e9deec304d.xlsx",
+    "sheet": "HDFCNYEXTF",
+    "name": "HDFC NIFTY 50 ETF",
+    "status": "parsed",
+    "differencePct": 2.1442073652105557e-14
+  },
+  {
+    "file": "9-9ded5ac2c8df.xlsx",
+    "sheet": "HDFCNY100F",
+    "name": "HDFC NIFTY 100 Index Fund",
+    "status": "parsed",
+    "differencePct": -6.144954211702701e-14
+  },
+  {
+    "file": "9-ef49855631f7.xlsx",
+    "sheet": "HDFCN100ET",
+    "name": "HDFC NIFTY 100 ETF",
+    "status": "parsed",
+    "differencePct": -2.0761211616597388e-14
+  },
+  {
+    "file": "9-d52824bc2869.xlsx",
+    "sheet": "HDFCN100EW",
+    "name": "HDFC NIFTY 100 Equal Weight Index Fund",
+    "status": "parsed",
+    "differencePct": 2.723021214196628e-14
+  },
+  {
+    "file": "9-34773998b3e0.xlsx",
+    "sheet": "HDFCMULCAP",
+    "name": "HDFC Multi Cap Fund",
+    "status": "parsed",
+    "differencePct": -0.0002135682081446141
+  },
+  {
+    "file": "9-34773998b3e0.xlsx",
+    "sheet": "DerivativeHDFCMULCAP",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-41fb0cab2296.xlsx",
+    "sheet": "MY2005",
+    "name": "HDFC Multi Asset Allocation Fund",
+    "status": "parsed",
+    "differencePct": -3.860400741979303e-14
+  },
+  {
+    "file": "9-41fb0cab2296.xlsx",
+    "sheet": "DerivativeMY2005",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-41fb0cab2296.xlsx",
+    "sheet": "DerivativeHDFC Multi Asset Allo",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-2d61afc884f5.xlsx",
+    "sheet": "HDFCMNCFND",
+    "name": "HDFC MNC Fund",
+    "status": "parsed",
+    "differencePct": -1.284781678402127e-14
+  },
+  {
+    "file": "9-94f1e1d92cf1.xlsx",
+    "sheet": "MIDCAP",
+    "name": "HDFC Mid Cap Fund",
+    "status": "parsed",
+    "differencePct": 3.4390084352523886e-14
+  },
+  {
+    "file": "9-f4418584e388.xlsx",
+    "sheet": "HDFCMANFFN",
+    "name": "HDFC Manufacturing Fund",
+    "status": "parsed",
+    "differencePct": -4.3310010667289525e-14
+  },
+  {
+    "file": "9-70689f885331.xlsx",
+    "sheet": "HDFCT2",
+    "name": "HDFC Large Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-cced308587bf.xlsx",
+    "sheet": "HDFCLARGEF",
+    "name": "HDFC Large & Mid Cap Fund",
+    "status": "parsed",
+    "differencePct": 9.222836324246999e-14
+  },
+  {
+    "file": "9-b0577d25a4a7.xlsx",
+    "sheet": "HDFCINNOVF",
+    "name": "HDFC Innovation Fund",
+    "status": "parsed",
+    "differencePct": 1.8253010092324994e-14
+  },
+  {
+    "file": "9-ca421e160495.xlsx",
+    "sheet": "HDINFG",
+    "name": "HDFC Infrastructure Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-27218979ff52.xlsx",
+    "sheet": "HDFCHOF117",
+    "name": "HDFC Housing Opportunities Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-765edc28afd9.xlsx",
+    "sheet": "HDFCGOLD",
+    "name": "HDFC Gold ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-0bd062833c1b.xlsx",
+    "sheet": "HDGETF",
+    "name": "HDFC Gold ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-03cec5a64cb7.xlsx",
+    "sheet": "HDFCCS",
+    "name": "HDFC Focused Fund",
+    "status": "parsed",
+    "differencePct": 1.6512421398231184e-14
+  },
+  {
+    "file": "9-96a232711943.xlsx",
+    "sheet": "HDFCEQ",
+    "name": "HDFC Flexi Cap Fund",
+    "status": "parsed",
+    "differencePct": -0.0008393888462711827
+  },
+  {
+    "file": "9-96a232711943.xlsx",
+    "sheet": "DerivativeHDFCEQ",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-58c400fff72b.xlsx",
+    "sheet": "HDFCMY",
+    "name": "HDFC Equity Savings Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-58c400fff72b.xlsx",
+    "sheet": "DerivativeHDFCMY",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-58c400fff72b.xlsx",
+    "sheet": "DerivativeHDFC Equity Savings F",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-5aec3a1b7a43.xlsx",
+    "sheet": "HDFCTS",
+    "name": "HDFC ELSS - Tax Saver Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-4a1d6cce6c96.xlsx",
+    "sheet": "HDFCDIVYLD",
+    "name": "HDFC Dividend Yield Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-636943d6b205.xlsx",
+    "sheet": "HDFCDWIFOF",
+    "name": "HDFC Developed World Overseas Equity Passive FOF",
+    "status": "parsed",
+    "differencePct": 1.679818149664317e-14
+  },
+  {
+    "file": "9-74b0fadb2c93.xlsx",
+    "sheet": "HDFCDFNFND",
+    "name": "HDFC Defence Fund",
+    "status": "parsed",
+    "differencePct": 2.02856684047288e-14
+  },
+  {
+    "file": "9-765d97a4785f.xlsx",
+    "sheet": "HDFCNCCFND",
+    "name": "HDFC Consumption Fund",
+    "status": "parsed",
+    "differencePct": -2.847436754546343e-14
+  },
+  {
+    "file": "9-99ef2f885cb5.xlsx",
+    "sheet": "HDFCGF",
+    "name": "HDFC Children's Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-99ef2f885cb5.xlsx",
+    "sheet": "DerivativeHDFC Children's Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-aa4b7b464dfc.xlsx",
+    "sheet": "HDFCBUSICY",
+    "name": "HDFC Business Cycle Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-aa4b7b464dfc.xlsx",
+    "sheet": "DerivativeHDFCBUSICY",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-f7c981f80cf7.xlsx",
+    "sheet": "HDFCSX",
+    "name": "HDFC BSE Sensex Index Fund",
+    "status": "parsed",
+    "differencePct": 1.3703061121902854e-14
+  },
+  {
+    "file": "9-8cb52a1aca95.xlsx",
+    "sheet": "HDFCSXEXTF",
+    "name": "HDFC BSE SENSEX ETF",
+    "status": "parsed",
+    "differencePct": 1.3509658578680249e-14
+  },
+  {
+    "file": "9-ff363d7f3af0.xlsx",
+    "sheet": "HDFCBISLIF",
+    "name": "HDFC BSE India Sector Leaders Index Fund",
+    "status": "parsed",
+    "differencePct": -2.093744115751524e-14
+  },
+  {
+    "file": "9-757fe00fb14d.xlsx",
+    "sheet": "HDFC500IDF",
+    "name": "HDFC BSE 500 INDEX FUND",
+    "status": "parsed",
+    "differencePct": 7.791446385425808e-14
+  },
+  {
+    "file": "9-ec10762b25e0.xlsx",
+    "sheet": "HDFC500ETF",
+    "name": "HDFC BSE 500 ETF",
+    "status": "parsed",
+    "differencePct": -8.315559339284377e-14
+  },
+  {
+    "file": "9-1e96cec2efd5.xlsx",
+    "sheet": "HDFCBKGFSF",
+    "name": "HDFC Banking & Financial Services Fund",
+    "status": "parsed",
+    "differencePct": -1.2416810514218133e-14
+  },
+  {
+    "file": "9-eb534a0db80a.xlsx",
+    "sheet": "HDFCGR",
+    "name": "HDFC Balanced Advantage Fund",
+    "status": "parsed",
+    "differencePct": 5.2079726042758895e-14
+  },
+  {
+    "file": "9-eb534a0db80a.xlsx",
+    "sheet": "DerivativeHDFC Balanced Advanta",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-c64d865b4c51.xlsx",
+    "sheet": "HDFCAR",
+    "name": "HDFC Arbitrage Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-c64d865b4c51.xlsx",
+    "sheet": "DerivativeHDFCAR",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-9da6ceee707f.xlsx",
+    "sheet": "HDFCPM",
+    "name": "HDFC Aggressive Hybrid Fund",
+    "status": "parsed",
+    "differencePct": 2.0884837112769587e-14
+  },
+  {
+    "file": "9-9da6ceee707f.xlsx",
+    "sheet": "DerivativeHDFC Aggressive Hybri",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-84899f956449.xlsx",
+    "sheet": "HDFCIG",
+    "name": "HDFC Ultra Short to Short Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-84899f956449.xlsx",
+    "sheet": "DerivativeHDFC Ultra Short to S",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-a699853d630f.xlsx",
+    "sheet": "HDFCUSTF",
+    "name": "HDFC Ultra Short Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-a699853d630f.xlsx",
+    "sheet": "DerivativeHDFC Ultra Short Term",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-194e035fc843.xlsx",
+    "sheet": "HDFCSO",
+    "name": "HDFC Short Term Fund",
+    "status": "parsed",
+    "differencePct": 6.429089825347878e-14
+  },
+  {
+    "file": "9-194e035fc843.xlsx",
+    "sheet": "DerivativeHDFC Short Term Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-ca98529ec572.xlsx",
+    "sheet": "HDFCRETHDP",
+    "name": "HDFC Retirement Fund - Hybrid-Debt Plan",
+    "status": "parsed",
+    "differencePct": -1.2429800285264258e-14
+  },
+  {
+    "file": "9-ca98529ec572.xlsx",
+    "sheet": "Derivative HDFCRETHDP",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-c81cb0f98902.xlsx",
+    "sheet": "HDFCMC",
+    "name": "HDFC Overnight Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-caeab7ae2ec0.xlsx",
+    "sheet": "HNSJUN27IF",
+    "name": "HDFC NIFTY SDL Plus G-Sec Jun 2027 40.60 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-aeb048898df8.xlsx",
+    "sheet": "HNSOCT26IF",
+    "name": "HDFC Nifty SDL Oct 2026 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-3adc6bdd808a.xlsx",
+    "sheet": "HNGSEP32IF",
+    "name": "HDFC Nifty G-Sec Sep 2032 Index Fund",
+    "status": "parsed",
+    "differencePct": 1.1624805482580703e-14
+  },
+  {
+    "file": "9-bc7ac2963b03.xlsx",
+    "sheet": "HNGJUN36IF",
+    "name": "HDFC Nifty G-Sec Jun 2036 Index Fund",
+    "status": "parsed",
+    "differencePct": 1.6932879601622188e-14
+  },
+  {
+    "file": "9-8d19fc7e1169.xlsx",
+    "sheet": "HNGJUN27IF",
+    "name": "HDFC Nifty G-Sec Jun 2027 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-2370b09ce962.xlsx",
+    "sheet": "HNGJUL31IF",
+    "name": "HDFC Nifty G-Sec July 2031 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-c38ce7c973c0.xlsx",
+    "sheet": "HNGDEC26IF",
+    "name": "HDFC Nifty G-Sec Dec 2026 Index Fund",
+    "status": "parsed",
+    "differencePct": 1.5615423978471845e-14
+  },
+  {
+    "file": "9-5581d32d1b3a.xlsx",
+    "sheet": "HNGAPR29IF",
+    "name": "HDFC NIFTY G-Sec Apr 2029 Index Fund",
+    "status": "parsed",
+    "differencePct": 1.1922733183184169e-14
+  },
+  {
+    "file": "9-a0ba8d884b4c.xlsx",
+    "sheet": "HDFC1DLETF",
+    "name": "HDFC NIFTY 1D RATE LIQUID ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-1b7244720a72.xlsx",
+    "sheet": "HDFCAALFOF",
+    "name": "HDFC Multi-Asset Active FOF",
+    "status": "parsed",
+    "differencePct": -1.8775699073629075e-14
+  },
+  {
+    "file": "9-d51d12b9da9f.xlsx",
+    "sheet": "HDFCMS",
+    "name": "HDFC Money Market Fund",
+    "status": "parsed",
+    "differencePct": 1.4029404313330607e-14
+  },
+  {
+    "file": "9-1900550dfe5e.xlsx",
+    "sheet": "HDFCIN",
+    "name": "HDFC Medium to Long Term Fund",
+    "status": "parsed",
+    "differencePct": -1.7528102979369495e-14
+  },
+  {
+    "file": "9-1900550dfe5e.xlsx",
+    "sheet": "DerivativeHDFC Medium to Long T",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-3b3092629da2.xlsx",
+    "sheet": "HIFSTP",
+    "name": "HDFC Medium Term Fund",
+    "status": "parsed",
+    "differencePct": -3.23429448489887e-14
+  },
+  {
+    "file": "9-3b3092629da2.xlsx",
+    "sheet": "DerivativeHDFC Medium Term Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-454875a01eb8.xlsx",
+    "sheet": "HDFCLONGDF",
+    "name": "HDFC Long Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-454875a01eb8.xlsx",
+    "sheet": "DerivativeHDFC Long Term Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-455fdb53a06e.xlsx",
+    "sheet": "HDFCLI",
+    "name": "HDFC Liquid Fund",
+    "status": "parsed",
+    "differencePct": -1.3057751784387331e-14
+  },
+  {
+    "file": "9-774599e68506.xlsx",
+    "sheet": "HDFCIPAFOF",
+    "name": "HDFC Income Plus Arbitrage Omni FOF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-157b73b80dd0.xlsx",
+    "sheet": "HDFCDPEFOF",
+    "name": "HDFC Income Plus Arbitrage Active FOF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-80629e86538d.xlsx",
+    "sheet": "HDFCLT",
+    "name": "HDFC Gilt Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-80629e86538d.xlsx",
+    "sheet": "DerivativeHDFC Gilt Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-997c127ddf02.xlsx",
+    "sheet": "FEB2638D23",
+    "name": "HDFC FMP 2638D February 2023",
+    "status": "parsed",
+    "differencePct": 2.1376599990784814e-14
+  },
+  {
+    "file": "9-dc35c8aa0c1c.xlsx",
+    "sheet": "MAR1876D22",
+    "name": "HDFC FMP 1876D March 2022",
+    "status": "parsed",
+    "differencePct": -1.2781341546599516e-14
+  },
+  {
+    "file": "9-84f79490df73.xlsx",
+    "sheet": "MAR1861D22",
+    "name": "HDFC FMP 1861D March 2022",
+    "status": "parsed",
+    "differencePct": -2.859489283507645e-14
+  },
+  {
+    "file": "9-22558fecebdc.xlsx",
+    "sheet": "MAR1269D23",
+    "name": "HDFC FMP 1269D March 2023",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-4488642d508e.xlsx",
+    "sheet": "HDFLSP",
+    "name": "HDFC Floating Interest Rates Fund",
+    "status": "parsed",
+    "differencePct": 5.772685466256854e-14
+  },
+  {
+    "file": "9-4488642d508e.xlsx",
+    "sheet": "DerivativeHDFC Floating Interes",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-ecc7219e6175.xlsx",
+    "sheet": "HDFCHI",
+    "name": "HDFC Dynamic Term Fund",
+    "status": "parsed",
+    "differencePct": 1.4704108634376096e-14
+  },
+  {
+    "file": "9-ecc7219e6175.xlsx",
+    "sheet": "DerivativeHDFC Dynamic Term Fun",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-b4d7585e4bd7.xlsx",
+    "sheet": "HDFCDEQFOF",
+    "name": "HDFC Diversified Equity All Cap Active FOF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-ebdd281a7abb.xlsx",
+    "sheet": "HDFCRS912F",
+    "name": "HDFC CRISIL-IBX Financial Services 9-12 Months Debt Index Fund",
+    "status": "parsed",
+    "differencePct": -1.5190268013304352e-14
+  },
+  {
+    "file": "9-8eb3aea7b604.xlsx",
+    "sheet": "HDFCRSLFSF",
+    "name": "HDFC CRISIL-IBX Financial Services 3-6 Months Debt Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-5f665d1a30f2.xlsx",
+    "sheet": "HDFCMO",
+    "name": "HDFC Corporate Bond Fund",
+    "status": "parsed",
+    "differencePct": 1.537542150697948e-14
+  },
+  {
+    "file": "9-5f665d1a30f2.xlsx",
+    "sheet": "DerivativeHDFC Corporate Bond F",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-60fbb12b8cbb.xlsx",
+    "sheet": "HMIPLT",
+    "name": "HDFC Conservative Hybrid Fund",
+    "status": "parsed",
+    "differencePct": 3.636407424533385e-14
+  },
+  {
+    "file": "9-60fbb12b8cbb.xlsx",
+    "sheet": "DerivativeHDFC Conservative Hyb",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "9-e4a0fc12dd69.xlsx",
+    "sheet": "HDFCCFCNCC",
+    "name": "HDFC Charity Fund for Cancer Cure",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "9-ecb34f84d36b.xlsx",
+    "sheet": "HDFCBNKPSU",
+    "name": "HDFC Banking and PSU Debt Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "76-7dc504885864.xlsx",
+    "sheet": "HSCF",
+    "name": "Helios Small Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "76-db7cb5a71b24.xlsx",
+    "sheet": "HOF",
+    "name": "Helios Overnight Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "76-4cfb4dd11804.xlsx",
+    "sheet": "HFCF",
+    "name": "Helios Flexi Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "76-63efbc266ca7.xlsx",
+    "sheet": "HBAF",
+    "name": "Helios Balanced Advantage Fund",
+    "status": "parsed",
+    "differencePct": -9.633585277694386e-06
+  },
+  {
+    "file": "76-49049a8d34a9.xlsx",
+    "sheet": "HFSF",
+    "name": "Helios Financial Services Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "76-9c7d4537e90d.xlsx",
+    "sheet": "HLM",
+    "name": "Helios Large & Mid Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "76-1bddc812c091.xlsx",
+    "sheet": "HMCF",
+    "name": "Helios Mid Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "76-3cbe92c0b9e4.xlsx",
+    "sheet": "HARF",
+    "name": "Helios Arbitrage Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "GF",
+    "name": "Nippon India Growth Mid Cap Fund",
+    "status": "parsed",
+    "differencePct": 7.12636874793086e-09
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "GS",
+    "name": "Nippon India Vision Large & Mid Cap Fund",
+    "status": "parsed",
+    "differencePct": 4.05592668095134e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "IP",
+    "name": "Nippon India Corporate Bond Fund",
+    "status": "parsed",
+    "differencePct": -2.880968105226811e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "IF",
+    "name": "Nippon India Medium to Long Term Fund",
+    "status": "parsed",
+    "differencePct": -1.3817382809171115e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "ST",
+    "name": "Nippon India Short Term Fund",
+    "status": "parsed",
+    "differencePct": 6.858635781256113e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "BF",
+    "name": "NIPPON INDIA BANKING & FINANCIAL SERVICES FUND",
+    "status": "parsed",
+    "differencePct": -1.9336442424993103e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "MI",
+    "name": "Nippon India Conservative Hybrid Fund",
+    "status": "parsed",
+    "differencePct": -1.3496028587898681e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "PS",
+    "name": "NIPPON INDIA POWER & INFRA FUND",
+    "status": "parsed",
+    "differencePct": 4.650981354845999e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "CP",
+    "name": "Nippon India Ultra Short Term Fund",
+    "status": "parsed",
+    "differencePct": -3.5216537579837685e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "PH",
+    "name": "NIPPON INDIA PHARMA FUND",
+    "status": "parsed",
+    "differencePct": -4.472587891819761e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "ME",
+    "name": "Nippon India Consumption Fund",
+    "status": "parsed",
+    "differencePct": 1.769110133232294e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NE",
+    "name": "Nippon India Balanced Advantage Fund",
+    "status": "parsed",
+    "differencePct": 4.4936705732601184e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NI",
+    "name": "Nippon India Dynamic Term Fund",
+    "status": "parsed",
+    "differencePct": 4.4655117182791626e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "EO",
+    "name": "Nippon India Multi Cap Fund",
+    "status": "parsed",
+    "differencePct": -1.7197870539674437e-08
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "LF",
+    "name": "Nippon India Liquid Fund",
+    "status": "parsed",
+    "differencePct": 6.107836218094428e-09
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "FR",
+    "name": "Nippon India Floating Interest Rates Fund",
+    "status": "parsed",
+    "differencePct": 5.748075252857335e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "SD",
+    "name": "Nippon India Credit Risk Fund",
+    "status": "parsed",
+    "differencePct": -1.0268400552350593e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "SE",
+    "name": "NIPPON INDIA VALUE FUND",
+    "status": "parsed",
+    "differencePct": -1.3752122853440893e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "SH",
+    "name": "Nippon India Aggressive Hybrid Fund",
+    "status": "parsed",
+    "differencePct": -4.911054041259753e-10
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "LQ",
+    "name": "Nippon India Money Market Fund",
+    "status": "parsed",
+    "differencePct": 1.193973808716625e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "TS",
+    "name": "Nippon India ELSS Tax Saver Fund",
+    "status": "parsed",
+    "differencePct": 6.773816517861124e-09
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "LE",
+    "name": "Nippon India Focused Fund",
+    "status": "parsed",
+    "differencePct": 3.7743264358596767e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "LP",
+    "name": "Nippon India Ultra Short to Short Term Fund",
+    "status": "parsed",
+    "differencePct": 5.497934905455069e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "K5",
+    "name": "Nippon India Quarterly Interval Fund-Series 2",
+    "status": "parsed",
+    "differencePct": 0.00019680804929655415
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "EA",
+    "name": "NIPPON INDIA LARGE CAP FUND",
+    "status": "parsed",
+    "differencePct": -2.009285928563794e-08
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "QP",
+    "name": "NIPPON INDIA QUANT FUND",
+    "status": "parsed",
+    "differencePct": 3.896761352340201e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "GL",
+    "name": "Nippon India Gilt Fund",
+    "status": "parsed",
+    "differencePct": -2.723946421511673e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NF",
+    "name": "NIPPON INDIA INDEX FUND - NIFTY 50 PLAN",
+    "status": "parsed",
+    "differencePct": -8.30769901955955e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "SC",
+    "name": "NIPPON INDIA SMALL CAP FUND",
+    "status": "parsed",
+    "differencePct": 4.6278598140988956e-08
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "SF",
+    "name": "Nippon India Index Fund - BSE Sensex Plan",
+    "status": "parsed",
+    "differencePct": -3.4682032284620416e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "AF",
+    "name": "Nippon India Arbitrage Fund",
+    "status": "parsed",
+    "differencePct": -1.5788827921548346e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "GD",
+    "name": "NIPPON INDIA GOLD SAVINGS FUND",
+    "status": "parsed",
+    "differencePct": 3.115980201387391e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "CE",
+    "name": "Nippon India ETF Nifty 100",
+    "status": "parsed",
+    "differencePct": -1.2387847397433445e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "CF",
+    "name": "NIPPON INDIA ETF NIFTY INDIA CONSUMPTION",
+    "status": "parsed",
+    "differencePct": -6.905087616451784e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "RD",
+    "name": "NIPPON INDIA ETF NIFTY DIVIDEND OPPORTUNITIES 50",
+    "status": "parsed",
+    "differencePct": 5.333997945508565e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "CB",
+    "name": "Nippon India Medium Term Fund",
+    "status": "parsed",
+    "differencePct": 5.932445133980074e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "JE",
+    "name": "Nippon India Japan Equity Fund",
+    "status": "parsed",
+    "differencePct": -6.4242487200190845e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "SX",
+    "name": "Nippon India ETF BSE Sensex",
+    "status": "parsed",
+    "differencePct": 1.5449071718762008e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "RW",
+    "name": "NIPPON INDIA RETIREMENT FUND - WEALTH CREATION SCHEME",
+    "status": "parsed",
+    "differencePct": -1.4747638400177635e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "RG",
+    "name": "NIPPON INDIA RETIREMENT FUND - INCOME GENERATION SCHEME",
+    "status": "parsed",
+    "differencePct": -3.737783911284133e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "BP",
+    "name": "Nippon India Banking and PSU Debt Fund",
+    "status": "parsed",
+    "differencePct": 2.8259491800708934e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "ES",
+    "name": "NIPPON INDIA EQUITY SAVINGS FUND",
+    "status": "parsed",
+    "differencePct": 5.580392159001498e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NX",
+    "name": "NIPPON INDIA ETF NIFTY 50 VALUE 20",
+    "status": "parsed",
+    "differencePct": -6.052623687877382e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "UE",
+    "name": "Nippon India US Equity Opportunities Fund",
+    "status": "parsed",
+    "differencePct": 3.8145674153090767e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "LT",
+    "name": "NIPPON INDIA ETF NIFTY 8-13 YR G-SEC LONG TERM GILT",
+    "status": "parsed",
+    "differencePct": -4.859121069206673e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NL",
+    "name": "Nippon India Nivesh Lakshya Long Term Fund",
+    "status": "parsed",
+    "differencePct": -4.2941361603793455e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NB",
+    "name": "NIPPON INDIA ETF NIFTY 50 BEES",
+    "status": "parsed",
+    "differencePct": -6.46393779030637e-08
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "JZ",
+    "name": "NIPPON INDIA ETF NIFTY NEXT 50 JUNIOR BEES",
+    "status": "parsed",
+    "differencePct": -1.6360610055612158e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "PU",
+    "name": "NIPPON INDIA ETF NIFTY PSU BANK BEES",
+    "status": "parsed",
+    "differencePct": -2.507005934079278e-08
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "GB",
+    "name": "Nippon India ETF Gold BeES",
+    "status": "parsed",
+    "differencePct": 3.944231536373217e-08
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "LB",
+    "name": "NIPPON INDIA ETF NIFTY 1D RATE LIQUID BEES",
+    "status": "parsed",
+    "differencePct": 3.376459951706298e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "BB",
+    "name": "NIPPON INDIA ETF NIFTY BANK BEES",
+    "status": "parsed",
+    "differencePct": 4.0782376529986253e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "SB",
+    "name": "Nippon India ETF Nifty 50 Shariah BeES",
+    "status": "parsed",
+    "differencePct": -5.855682586270689e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "HS",
+    "name": "Nippon India ETF Hang Seng BeES",
+    "status": "parsed",
+    "differencePct": -4.350947642246902e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "IB",
+    "name": "NIPPON INDIA ETF NIFTY INFRASTRUCTURE BEES",
+    "status": "parsed",
+    "differencePct": -1.0926862153854414e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "CC",
+    "name": "CPSE ETF",
+    "status": "parsed",
+    "differencePct": -2.3613920472965167e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "ON",
+    "name": "Nippon India Overnight Fund",
+    "status": "parsed",
+    "differencePct": -3.341008463657567e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NM",
+    "name": "Nippon India ETF Nifty Midcap 150",
+    "status": "parsed",
+    "differencePct": -7.398942355577972e-08
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "RJ",
+    "name": "NIPPON INDIA NIFTY NEXT 50 JUNIOR BEES FOF",
+    "status": "parsed",
+    "differencePct": 3.653527865038107e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "G6",
+    "name": "Nippon India Fixed Maturity Plan - XLI - Series 8",
+    "status": "parsed",
+    "differencePct": 1.9719369950880272e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "SN",
+    "name": "Nippon India ETF BSE Sensex Next 50",
+    "status": "parsed",
+    "differencePct": -1.3807805213196408e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NZ",
+    "name": "Nippon India ETF Nifty IT",
+    "status": "parsed",
+    "differencePct": -1.106462272242342e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "MF",
+    "name": "Nippon India Multi Asset Allocation Fund",
+    "status": "parsed",
+    "differencePct": 1.2283188330207533e-08
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NS",
+    "name": "Nippon India Nifty Smallcap 250 Index Fund",
+    "status": "parsed",
+    "differencePct": -2.0330691847276792e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "PP",
+    "name": "Nippon India Diversified Equity Flexicap Passive FoF",
+    "status": "parsed",
+    "differencePct": 2.167349071226478e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "AL",
+    "name": "Nippon India Multi - Asset Omni FoF",
+    "status": "parsed",
+    "differencePct": 8.580160272286544e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NP",
+    "name": "Nippon India Nifty Midcap 150 Index Fund",
+    "status": "parsed",
+    "differencePct": -1.3606543961175105e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NV",
+    "name": "Nippon India Nifty 50 Value 20 Index Fund",
+    "status": "parsed",
+    "differencePct": 1.5414316062503246e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NG",
+    "name": "NIPPON INDIA ETF NIFTY 5 YR BENCHMARK G-SEC",
+    "status": "parsed",
+    "differencePct": 7.440207135709024e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NH",
+    "name": "Nippon India Nifty Pharma ETF",
+    "status": "parsed",
+    "differencePct": -1.7664197821549758e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "LC",
+    "name": "Nippon India Flexi Cap Fund",
+    "status": "parsed",
+    "differencePct": -1.898507932784584e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "ET",
+    "name": "Nippon India Taiwan Equity Fund",
+    "status": "parsed",
+    "differencePct": -1.078096121445255e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NO",
+    "name": "Nippon India Nifty Auto ETF",
+    "status": "parsed",
+    "differencePct": -8.693419111423268e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "SI",
+    "name": "Nippon India Silver ETF",
+    "status": "parsed",
+    "differencePct": 7.863089131144352e-08
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "SO",
+    "name": "Nippon India Silver ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": -4.1488823377408957e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "HK",
+    "name": "Nippon India Fixed Maturity Plan - XLIII -Series 5",
+    "status": "parsed",
+    "differencePct": 1.3885421065837672e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "CN",
+    "name": "Nippon India Nifty AAA CPSE Bond Plus SDL - Apr 2027 Maturity 60:40 Index Fund",
+    "status": "parsed",
+    "differencePct": -2.6568654742744884e-08
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NN",
+    "name": "Nippon India Nifty Alpha Low Volatility 30 Index Fund",
+    "status": "parsed",
+    "differencePct": 2.3435896997542404e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "W5",
+    "name": "Nippon India Fixed Maturity Plan - XLIV - Series 1",
+    "status": "parsed",
+    "differencePct": 5.0870000282346235e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "ND",
+    "name": "Nippon India Nifty AAA PSU Bond Plus SDL - Sep 2026 Maturity 50:50 Index Fund",
+    "status": "parsed",
+    "differencePct": 4.262420637979542e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NJ",
+    "name": "Nippon India Nifty SDL Plus G-Sec - Jun 2028 Maturity 70:30 Index Fund",
+    "status": "parsed",
+    "differencePct": 1.3335194792415158e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NK",
+    "name": "Nippon India Nifty G-Sec Sep 2027 Maturity Index Fund",
+    "status": "parsed",
+    "differencePct": 2.9619046344096625e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NQ",
+    "name": "Nippon India Nifty G-Sec Jun 2036 Maturity Index Fund",
+    "status": "parsed",
+    "differencePct": 3.1303713126390303e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NU",
+    "name": "Nippon India Nifty SDL Plus G-Sec - Jun 2029 Maturity 70:30 Index Fund",
+    "status": "parsed",
+    "differencePct": 6.133898040364324e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "NW",
+    "name": "Nippon India Nifty G-Sec Oct 2028 Maturity Index Fund",
+    "status": "parsed",
+    "differencePct": 1.8589333890673466e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "U8",
+    "name": "Nippon India Fixed Maturity Plan - XLV - Series 5",
+    "status": "parsed",
+    "differencePct": 1.0785641032693941e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "IT",
+    "name": "Nippon India Innovation Fund",
+    "status": "parsed",
+    "differencePct": 7.894464698786465e-07
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "IX",
+    "name": "Nippon India Nifty IT Index Fund",
+    "status": "parsed",
+    "differencePct": 9.424164369387043e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "BX",
+    "name": "Nippon India Nifty Bank Index Fund",
+    "status": "parsed",
+    "differencePct": -3.824486252220283e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "EW",
+    "name": "Nippon India Nifty 500 Equal Weight Index Fund",
+    "status": "parsed",
+    "differencePct": 4.331356571556912e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "MT",
+    "name": "Nippon India Nifty 500 Momentum 50 Index Fund",
+    "status": "parsed",
+    "differencePct": -1.0085314477227813e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "IJ",
+    "name": "Nippon India CRISIL - IBX AAA Financial Services - Jan 2028 Index Fund",
+    "status": "parsed",
+    "differencePct": -1.100858051623489e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "ID",
+    "name": "Nippon India CRISIL - IBX AAA Financial Services - Dec 2026 Index Fund",
+    "status": "parsed",
+    "differencePct": 1.779285969487274e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "AN",
+    "name": "Nippon India Nifty Auto Index Fund",
+    "status": "parsed",
+    "differencePct": 6.448510902437185e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "RN",
+    "name": "Nippon India Nifty Realty Index Fund",
+    "status": "parsed",
+    "differencePct": -7.003376354259254e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "AM",
+    "name": "Nippon India Active Momentum Fund",
+    "status": "parsed",
+    "differencePct": -2.6405352460081067e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "LV",
+    "name": "Nippon India Nifty 500 Low Volatility 50 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.00013020999626832432
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "QI",
+    "name": "Nippon India Nifty 500 Quality 50 Index Fund",
+    "status": "parsed",
+    "differencePct": -1.0769129609254696e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "BS",
+    "name": "Nippon India BSE Sensex Next 30 Index Fund",
+    "status": "parsed",
+    "differencePct": 5.0210167635044716e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "BZ",
+    "name": "Nippon India BSE Sensex Next 30 ETF",
+    "status": "parsed",
+    "differencePct": -0.0007298060705925656
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "AP",
+    "name": "Nippon India Income Plus Arbitrage Active Fund of Fund",
+    "status": "parsed",
+    "differencePct": 5.997175957911739e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "MC",
+    "name": "Nippon India MNC Fund",
+    "status": "parsed",
+    "differencePct": -5.186514682258554e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "LD",
+    "name": "Nippon India Nifty 1D Rate Liquid ETF - Growth",
+    "status": "parsed",
+    "differencePct": -5.778500261798585e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "MG",
+    "name": "Nippon India Nifty India Manufacturing Index Fund",
+    "status": "parsed",
+    "differencePct": 6.293044544865021e-05
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "MZ",
+    "name": "Nippon India Nifty India Manufacturing ETF",
+    "status": "parsed",
+    "differencePct": -0.00010969521730957826
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "IY",
+    "name": "Nippon India CRISIL-IBX Financial Services 9-12 Months Debt Index Fund",
+    "status": "parsed",
+    "differencePct": -3.5828021225320634e-06
+  },
+  {
+    "file": "21-439bf5ac8fab.xls",
+    "sheet": "IH",
+    "name": "Nippon India CRISIL-IBX Financial Services 3-6 Months Debt Index Fund",
+    "status": "parsed",
+    "differencePct": 7.087636769065425e-06
+  },
+  {
+    "file": "73-a8fcca56d75b.php",
+    "sheet": "NJVAF",
+    "name": "NJ Value Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "73-10be8b165cd7.php",
+    "sheet": "NJMOF",
+    "name": "NJ Momentum Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "73-0be637ae5b57.php",
+    "sheet": "NJELSTCH",
+    "name": "NJ ELSS Tax Saver Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "73-ef61a218e545.php",
+    "sheet": "NJFCP",
+    "name": null,
+    "status": "not parsed",
+    "reason": "leaf rows differ from net assets by -2.01093% (0 unclassified rows)"
+  },
+  {
+    "file": "73-7baeec5dd9ea.php",
+    "sheet": "NJABF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "leaf rows differ from net assets by 83.16988% (0 unclassified rows)"
+  },
+  {
+    "file": "73-7b19def48b5d.php",
+    "sheet": "NJOVERFD",
+    "name": "NJ Overnight Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "73-9f0848641a13.php",
+    "sheet": "NJBAF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "leaf rows differ from net assets by 27.08922% (0 unclassified rows)"
+  },
+  {
+    "file": "73-490dcd68a53d.php",
+    "sheet": "NJBAF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "73-4e6e196fb941.php",
+    "sheet": "NJOVERFD",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "73-7542de48755d.php",
+    "sheet": "NJABF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "73-0ab74c80b8fc.php",
+    "sheet": "NJFCP",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "73-0277bccf6a55.php",
+    "sheet": "NJELSTCH",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "78-d041d7d7a718.xlsx",
+    "sheet": "OBFLX",
+    "name": "Old Bridge Flexi Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "78-7a599f8a96fc.xlsx",
+    "sheet": "OBAF",
+    "name": "Old Bridge Arbitrage Fund",
+    "status": "parsed",
+    "differencePct": -3.266895422899933e-14
+  },
+  {
+    "file": "78-b08d2e8feda1.xlsx",
+    "sheet": "OBFCE",
+    "name": "Old Bridge Focused Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "64-c9603d6957a0.xls",
+    "sheet": "PPFCF",
+    "name": "Parag Parikh Flexi Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "64-c9603d6957a0.xls",
+    "sheet": "PPLF",
+    "name": "Parag Parikh Liquid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "64-c9603d6957a0.xls",
+    "sheet": "PPTSF",
+    "name": "Parag Parikh ELSS Tax Saver Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "64-c9603d6957a0.xls",
+    "sheet": "PPCHF",
+    "name": "Parag Parikh Conservative Hybrid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "64-c9603d6957a0.xls",
+    "sheet": "PPAF",
+    "name": "Parag Parikh Arbitrage Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "64-c9603d6957a0.xls",
+    "sheet": "PPDAAF",
+    "name": "Parag Parikh Dynamic Asset Allocation Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "64-c9603d6957a0.xls",
+    "sheet": "PPLCF",
+    "name": "Parag Parikh Large Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "41-ea56003d5d3f.xlsx",
+    "sheet": "QLTEVF",
+    "name": "Quantum Value Fund",
+    "status": "parsed",
+    "differencePct": -3.884015046024021e-06
+  },
+  {
+    "file": "41-ea56003d5d3f.xlsx",
+    "sheet": "QLF",
+    "name": "Quantum Liquid Fund",
+    "status": "parsed",
+    "differencePct": -5.211793176714842e-06
+  },
+  {
+    "file": "41-ea56003d5d3f.xlsx",
+    "sheet": "QGF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "41-ea56003d5d3f.xlsx",
+    "sheet": "QNF",
+    "name": "Quantum Nifty 50 ETF",
+    "status": "parsed",
+    "differencePct": -2.3964921219485734e-05
+  },
+  {
+    "file": "41-ea56003d5d3f.xlsx",
+    "sheet": "QTSF",
+    "name": "Quantum ELSS Tax Saver Fund",
+    "status": "parsed",
+    "differencePct": -2.371743960392963e-05
+  },
+  {
+    "file": "41-ea56003d5d3f.xlsx",
+    "sheet": "QGSF",
+    "name": "Quantum Gold ETF FOF",
+    "status": "parsed",
+    "differencePct": -8.370227714552943e-06
+  },
+  {
+    "file": "41-ea56003d5d3f.xlsx",
+    "sheet": "QEFOF",
+    "name": "Quantum Diversified Equity All Cap Active FOF",
+    "status": "parsed",
+    "differencePct": -3.92461353492971e-06
+  },
+  {
+    "file": "41-ea56003d5d3f.xlsx",
+    "sheet": "QMAFOF",
+    "name": "Quantum Multi Asset Active FOF",
+    "status": "parsed",
+    "differencePct": -3.559220558091829e-05
+  },
+  {
+    "file": "41-ea56003d5d3f.xlsx",
+    "sheet": "QDBF",
+    "name": "Quantum Dynamic Term Fund",
+    "status": "parsed",
+    "differencePct": -1.1489341361327287e-06
+  },
+  {
+    "file": "41-ea56003d5d3f.xlsx",
+    "sheet": "QESG",
+    "name": "Quantum ESG Best In Class Strategy Fund",
+    "status": "parsed",
+    "differencePct": 3.147546650387214e-05
+  },
+  {
+    "file": "41-ea56003d5d3f.xlsx",
+    "sheet": "QNFOF",
+    "name": "Quantum Nifty 50 ETF FOF",
+    "status": "parsed",
+    "differencePct": -8.903504095194931e-05
+  },
+  {
+    "file": "41-ea56003d5d3f.xlsx",
+    "sheet": "QSCAPF",
+    "name": "Quantum Small Cap Fund",
+    "status": "parsed",
+    "differencePct": 6.299342056817018e-06
+  },
+  {
+    "file": "41-ea56003d5d3f.xlsx",
+    "sheet": "QMULTI",
+    "name": "Quantum Multi Asset Allocation Fund",
+    "status": "parsed",
+    "differencePct": -2.8998371220274757e-05
+  },
+  {
+    "file": "41-ea56003d5d3f.xlsx",
+    "sheet": "QETHICAL",
+    "name": "Quantum Ethical Fund",
+    "status": "parsed",
+    "differencePct": 2.2653605626826675e-05
+  },
+  {
+    "file": "74-105c6afc9529.xlsx",
+    "sheet": "SAMSOPF",
+    "name": "SAMCO SPECIAL OPPORTUNITIES FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "74-674a41433436.xlsx",
+    "sheet": "SAMFLEX",
+    "name": "SAMCO FLEXICAP FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "74-7743c1ee2ff1.xlsx",
+    "sheet": "SAMSCF",
+    "name": "SAMCO SMALL CAP FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "74-44066125fbe0.xlsx",
+    "sheet": "SAMMCAP",
+    "name": "SAMCO MULTI CAP FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "74-cf3f5d6aea03.xlsx",
+    "sheet": "SAMMAS",
+    "name": "SAMCO MULTI ASSET ALLOCATION FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "74-e4ea17d43539.xlsx",
+    "sheet": "SAMMID",
+    "name": "SAMCO MID CAP FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "74-76b369a2d53a.xlsx",
+    "sheet": "SAMLCAP",
+    "name": "SAMCO LARGE CAP FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "74-eb9301084141.xlsx",
+    "sheet": "SAMLMCAP",
+    "name": "SAMCO LARGE & MID CAP FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "74-c823d8cd39c5.xlsx",
+    "sheet": "SAMTSF",
+    "name": "SAMCO ELSS TAX SAVER FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "74-7999b1860513.xlsx",
+    "sheet": "SAMDYAF",
+    "name": "SAMCO DYNAMIC ASSET ALLOCATION FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "74-898bc318d2a1.xlsx",
+    "sheet": "SAMARB",
+    "name": "SAMCO ARBITRAGE FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "74-c4a2c90c91b1.xlsx",
+    "sheet": "SAMAMF",
+    "name": "SAMCO ACTIVE MOMENTUM FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "67-4436eff7fcc2.xls",
+    "sheet": "Shriram Aggressive Hybrid Fund",
+    "name": "Shriram Aggressive Hybrid Fund",
+    "status": "parsed",
+    "differencePct": -0.0017511499217848017
+  },
+  {
+    "file": "67-4436eff7fcc2.xls",
+    "sheet": "Shriram Flexi Cap Fund",
+    "name": "Shriram Flexi Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "67-4436eff7fcc2.xls",
+    "sheet": "Shriram ELSS Tax Saver Fund",
+    "name": "Shriram ELSS Tax Saver Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "67-4436eff7fcc2.xls",
+    "sheet": "Shriram Balanced Advantage Fund",
+    "name": "Shriram Balanced Advantage Fund",
+    "status": "parsed",
+    "differencePct": 0.05031950556426231
+  },
+  {
+    "file": "67-4436eff7fcc2.xls",
+    "sheet": "Shriram Multi Asset Allocation",
+    "name": "Shriram Multi Asset Allocation Fund",
+    "status": "parsed",
+    "differencePct": -0.0017823234642774341
+  },
+  {
+    "file": "67-4436eff7fcc2.xls",
+    "sheet": "Shriram Multi Sector Rotation",
+    "name": "Shriram Multi Sector Rotation Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "67-4436eff7fcc2.xls",
+    "sheet": "Shriram Overnight Fund",
+    "name": "Shriram Overnight Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "67-4436eff7fcc2.xls",
+    "sheet": "Shriram Nifty1D Rate Liquid ETF",
+    "name": "Shriram Nifty 1D Rate Liquid ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "67-4436eff7fcc2.xls",
+    "sheet": "Shriram Liquid Fund",
+    "name": "Shriram Liquid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "67-4436eff7fcc2.xls",
+    "sheet": "Shriram Money Market Fund",
+    "name": "Shriram Money Market Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "67-c4d81c1e574b.xlsx",
+    "sheet": "Shriram Aggressive Hybrid Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-c4d81c1e574b.xlsx",
+    "sheet": "Shriram Flexi Cap Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-c4d81c1e574b.xlsx",
+    "sheet": "Shriram ELSS Tax Saver Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-c4d81c1e574b.xlsx",
+    "sheet": "Shriram Balanced Advantage Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-c4d81c1e574b.xlsx",
+    "sheet": "Shriram Multi Asset Allocation",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-c4d81c1e574b.xlsx",
+    "sheet": "Shriram Multi Sector Rotation",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-c4d81c1e574b.xlsx",
+    "sheet": "Shriram Overnight Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-c4d81c1e574b.xlsx",
+    "sheet": "Shriram Nifty1D Rate Liquid ETF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-c4d81c1e574b.xlsx",
+    "sheet": "Shriram Liquid Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-c4d81c1e574b.xlsx",
+    "sheet": "Shriram Money Market Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-bfaa8782caa0.xlsx",
+    "sheet": "Shriram Aggressive Hybrid Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-bfaa8782caa0.xlsx",
+    "sheet": "Shriram Flexi Cap Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-bfaa8782caa0.xlsx",
+    "sheet": "Shriram ELSS Tax Saver Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-bfaa8782caa0.xlsx",
+    "sheet": "Shriram Balanced Advantage Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-bfaa8782caa0.xlsx",
+    "sheet": "Shriram Multi Asset Allocation",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-bfaa8782caa0.xlsx",
+    "sheet": "Shriram Multi Sector Rotation",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-bfaa8782caa0.xlsx",
+    "sheet": "Shriram Overnight Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-bfaa8782caa0.xlsx",
+    "sheet": "Shriram Nifty1D Rate Liquid ETF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-bfaa8782caa0.xlsx",
+    "sheet": "Shriram Liquid Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-bfaa8782caa0.xlsx",
+    "sheet": "Shriram Money Market Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-1eeba8ad6be5.xlsx",
+    "sheet": "Shriram Aggressive Hybrid Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-1eeba8ad6be5.xlsx",
+    "sheet": "Shriram Flexi Cap Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-1eeba8ad6be5.xlsx",
+    "sheet": "Shriram ELSS Tax Saver Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-1eeba8ad6be5.xlsx",
+    "sheet": "Shriram Balanced Advantage Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-1eeba8ad6be5.xlsx",
+    "sheet": "Shriram Multi Asset Allocation",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-1eeba8ad6be5.xlsx",
+    "sheet": "Shriram Multi Sector Rotation",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-1eeba8ad6be5.xlsx",
+    "sheet": "Shriram Overnight Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-1eeba8ad6be5.xlsx",
+    "sheet": "Shriram Nifty1D Rate Liquid ETF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-1eeba8ad6be5.xlsx",
+    "sheet": "Shriram Liquid Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-1eeba8ad6be5.xlsx",
+    "sheet": "Shriram Money Market Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-eb6d41f64b64.xlsx",
+    "sheet": "Shriram Aggressive Hybrid Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-eb6d41f64b64.xlsx",
+    "sheet": "Shriram Flexi Cap Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-eb6d41f64b64.xlsx",
+    "sheet": "Shriram ELSS Tax Saver Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-eb6d41f64b64.xlsx",
+    "sheet": "Shriram Balanced Advantage Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-eb6d41f64b64.xlsx",
+    "sheet": "Shriram Multi Asset Allocation",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-eb6d41f64b64.xlsx",
+    "sheet": "Shriram Multi Sector Rotation",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-eb6d41f64b64.xlsx",
+    "sheet": "Shriram Overnight Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-eb6d41f64b64.xlsx",
+    "sheet": "Shriram Nifty1D Rate Liquid ETF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-eb6d41f64b64.xlsx",
+    "sheet": "Shriram Liquid Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-eb6d41f64b64.xlsx",
+    "sheet": "Shriram Money Market Fund",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "67-5b356c0dba84.xlsx",
+    "sheet": "Top 7 Stocks",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "67-5b356c0dba84.xlsx",
+    "sheet": "Top 4 Sectors",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "67-5b356c0dba84.xlsx",
+    "sheet": "Top 7 Groups",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "Tata Scheme Risk-o-Meter",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "Debt Replication Index",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "Dividend History",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TSLVFOF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TGLDFOF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TIPAAFOF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TSLVETF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TGLDETF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TEQPEF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TSCAPF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TRSFP",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TRSFM",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TREF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNMIIF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNMIMIF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNA30IF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNRIF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNPBETF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNNIF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNMSHIF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNMMIF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNMIF150",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNITIF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNIDETF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNIDFOF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNFSIF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNCMIF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNAIF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TIFNA",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNETF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TMULTICF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TMAOF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TINR",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TTOFE",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TEOF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TISF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TIPHF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TIIF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TICF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "THOF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TFEF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TMCAPF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TCS",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TTSF96",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TDIVYF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TDIF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TYCF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TBCF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TIFSA",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TBSBGIF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TBSEQIF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TBMCIF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TBFSF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TBAF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TAF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TEGF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TMSPFOF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TFRSTF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TUSTF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TFF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TSTBF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TRSFC",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TOF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNSIFDEC27",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNGIF1229",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TNGIF1226",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TLF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TGSFR",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TFRF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-053125f7c144.xlsx",
+    "sheet": "TCORPBF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "Tata Scheme Risk-o-Meter",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "Debt Replication Index",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "Dividend History",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TSLVFOF",
+    "name": "TATA SILVER ETF FUND OF FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TGLDFOF",
+    "name": "TATA GOLD ETF FUND OF FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TIPAAFOF",
+    "name": "TATA INCOME PLUS ARBITRAGE ACTIVE FOF",
+    "status": "parsed",
+    "differencePct": -1.3376423272336228e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TSLVETF",
+    "name": "TATA SILVER EXCHANGE TRADED FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TGLDETF",
+    "name": "TATA GOLD EXCHANGE TRADED FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TEQPEF",
+    "name": "TATA VALUE FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TSCAPF",
+    "name": "TATA SMALL CAP FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TRSFP",
+    "name": "TATA RETIREMENT SAVINGS FUND-PROGRESSIVE PLAN",
+    "status": "parsed",
+    "differencePct": -1.2908815896731968e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TRSFM",
+    "name": "TATA RETIREMENT SAVINGS FUND-MODERATE PLAN",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TREF",
+    "name": "TATA RESOURCES & ENERGY FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNMIIF",
+    "name": "TATA NIFTY500 MULTICAP INFRASTRUCTURE 50-30-20 INDEX FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNMIMIF",
+    "name": "TATA NIFTY500 MULTICAP INDIA MANUFACTURING 50-30-20 INDEX FUND",
+    "status": "parsed",
+    "differencePct": -1.291988929114739e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNA30IF",
+    "name": "TATA NIFTY200 ALPHA 30 INDEX FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNRIF",
+    "name": "TATA NIFTY REALTY INDEX FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNPBETF",
+    "name": "TATA NIFTY PRIVATE BANK EXCHANGE TRADED FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNNIF",
+    "name": "TATA NIFTY NEXT 50 INDEX FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNMSHIF",
+    "name": "TATA NIFTY MIDSMALL HEALTHCARE INDEX FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNMMIF",
+    "name": "TATA NIFTY MIDCAP 150 MOMENTUM 50 INDEX FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNMIF150",
+    "name": "TATA NIFTY MIDCAP 150 INDEX FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNITIF",
+    "name": "TATA NIFTY INDIA TOURISM INDEX FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNIDETF",
+    "name": "TATA NIFTY INDIA DIGITAL EXCHANGE TRADED FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNIDFOF",
+    "name": "TATA NIFTY INDIA DIGITAL ETF FUND OF FUND",
+    "status": "parsed",
+    "differencePct": -1.5503637863770432e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNFSIF",
+    "name": "TATA NIFTY FINANCIAL SERVICES INDEX FUND",
+    "status": "parsed",
+    "differencePct": -1.2816605604754816e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNCMIF",
+    "name": "TATA NIFTY CAPITAL MARKETS INDEX FUND",
+    "status": "parsed",
+    "differencePct": -1.4854986805132868e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNAIF",
+    "name": "TATA NIFTY AUTO INDEX FUND",
+    "status": "parsed",
+    "differencePct": -0.0635894213650817
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TIFNA",
+    "name": "TATA NIFTY 50 INDEX FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNETF",
+    "name": "TATA NIFTY 50 EXCHANGE TRADED FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TMULTICF",
+    "name": "TATA MULTICAP FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TMAOF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "leaf rows differ from net assets by 8.90448% (0 unclassified rows)"
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TINR",
+    "name": "TATA MID CAP FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TTOFE",
+    "name": "TATA LARGE CAP FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TEOF",
+    "name": "TATA LARGE & MID CAP FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TISF",
+    "name": "TATA INFRASTRUCTURE FUND",
+    "status": "parsed",
+    "differencePct": 1.439445686374138e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TIPHF",
+    "name": "TATA INDIA PHARMA & HEALTHCARE FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TIIF",
+    "name": "TATA INDIA INNOVATION FUND",
+    "status": "parsed",
+    "differencePct": -2.162672261498177e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TICF",
+    "name": "TATA INDIA CONSUMER FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "THOF",
+    "name": "TATA HOUSING OPPORTUNITIES FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TFEF",
+    "name": "TATA FOCUSED FUND",
+    "status": "parsed",
+    "differencePct": -1.658239986069055e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TMCAPF",
+    "name": "TATA FLEXI CAP FUND",
+    "status": "parsed",
+    "differencePct": -1.5890498615333608e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TCS",
+    "name": "TATA ETHICAL FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TTSF96",
+    "name": "TATA ELSS - TAX SAVER FUND",
+    "status": "parsed",
+    "differencePct": 1.226263974689212e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TDIVYF",
+    "name": "TATA DIVIDEND YIELD FUND",
+    "status": "parsed",
+    "differencePct": -1.2583077221536245e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TDIF",
+    "name": "TATA DIGITAL INDIA FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TYCF",
+    "name": "TATA CHILDRENS FUND",
+    "status": "parsed",
+    "differencePct": -2.1969760467401307e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TBCF",
+    "name": "TATA BUSINESS CYCLE FUND",
+    "status": "parsed",
+    "differencePct": 1.1183657926888794e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TIFSA",
+    "name": "TATA BSE SENSEX INDEX FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TBSBGIF",
+    "name": "TATA BSE SELECT BUSINESS GROUPS INDEX FUND",
+    "status": "parsed",
+    "differencePct": -1.615107180007944e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TBSEQIF",
+    "name": "TATA BSE QUALITY INDEX FUND",
+    "status": "parsed",
+    "differencePct": 1.5879125633493315e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TBMCIF",
+    "name": "TATA BSE MULTICAP CONSUMPTION 50-30-20 INDEX FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TBFSF",
+    "name": "TATA BANKING & FINANCIAL SERVICES FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TBAF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "leaf rows differ from net assets by 1.91767% (0 unclassified rows)"
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TAF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "leaf rows differ from net assets by 66.38415% (0 unclassified rows)"
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TEGF",
+    "name": "TATA AGGRESSIVE HYBRID FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TMSPFOF",
+    "name": "TATA MULTI SECTOR PASSIVE FOF",
+    "status": "parsed",
+    "differencePct": 1.1642316284551212e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TFRSTF",
+    "name": "TATA LIQUID FUND",
+    "status": "parsed",
+    "differencePct": 1.4385588500979123e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TFF",
+    "name": "TATA ULTRA SHORT TO SHORT TERM FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TUSTF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "leaf rows differ from net assets by -17.31616% (0 unclassified rows)"
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TSTBF",
+    "name": "TATA SHORT TERM FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TRSFC",
+    "name": "TATA RETIREMENT SAVINGS FUND-CONSERVATIVE PLAN",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TOF",
+    "name": "TATA OVERNIGHT FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNSIFDEC27",
+    "name": "TATA NIFTY SDL PLUS AAA PSU BOND DEC 2027 60 40 INDEX FUND",
+    "status": "parsed",
+    "differencePct": -1.1266862132452138e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNGIF1229",
+    "name": "TATA NIFTY G-SEC DEC 2029 INDEX FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TNGIF1226",
+    "name": "TATA NIFTY G-SEC DEC 2026 INDEX FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TLF",
+    "name": "TATA MONEY MARKET FUND",
+    "status": "parsed",
+    "differencePct": 1.3493015643188605e-14
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TGSFR",
+    "name": "TATA GILT FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TFRF",
+    "name": null,
+    "status": "not parsed",
+    "reason": "leaf rows differ from net assets by -70.34847% (0 unclassified rows)"
+  },
+  {
+    "file": "25-04cc5e87fb8a.xlsx",
+    "sheet": "TCORPBF",
+    "name": "TATA CORPORATE BOND FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "79-6c352593a7c4.xlsx",
+    "sheet": "Unifi Dynamic Asset Allocation ",
+    "name": "Unifi Dynamic Asset Allocation Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "79-0600f7347974.xlsx",
+    "sheet": "Unifi Flexi Cap Fund",
+    "name": "Unifi Flexi Cap Fund",
+    "status": "parsed",
+    "differencePct": -1.5418823093443035e-14
+  },
+  {
+    "file": "79-6ac5c02f2bf5.xls",
+    "sheet": "Unifi Liquid Fund",
+    "name": "Unifi Liquid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "77-16dd67efcb53.xlsx",
+    "sheet": "ZSFOF",
+    "name": "ZERODHA SILVER ETF FoF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "77-38706b468e8e.xlsx",
+    "sheet": "ZOVER",
+    "name": "ZERODHA OVERNIGHT FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "77-a199109c9239.xlsx",
+    "sheet": "ZNFTY",
+    "name": "ZERODHA NIFTY 50 INDEX FUND",
+    "status": "parsed",
+    "differencePct": -2.5473779726533594e-14
+  },
+  {
+    "file": "77-81511ecb2b2c.xlsx",
+    "sheet": "ZMLTI",
+    "name": "ZERODHA MULTI ASSET PASSIVE FoF",
+    "status": "parsed",
+    "differencePct": -1.9215429439868066e-14
+  },
+  {
+    "file": "77-299df6f922cb.xlsx",
+    "sheet": "ZMIDS",
+    "name": "Zerodha Nifty MidSmallcap400 50:50 Index Fund",
+    "status": "parsed",
+    "differencePct": 1.3355964437276362e-14
+  },
+  {
+    "file": "77-bbf6389082c7.xlsx",
+    "sheet": "ZNH73",
+    "name": "Zerodha Nifty LargeMidcap250 Plus 8-13 yr G-Sec 70:30 Index Fund",
+    "status": "parsed",
+    "differencePct": -6.749200312078727e-14
+  },
+  {
+    "file": "77-d6f58da674ff.xlsx",
+    "sheet": "ZNSDG",
+    "name": "ZERODHA NIFTY SHORT DURATION G-SEC INDEX FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "77-cb6a38c9d118.xlsx",
+    "sheet": "ZN250",
+    "name": "ZERODHA NIFTY LARGE MIDCAP 250 INDEX FUND",
+    "status": "parsed",
+    "differencePct": -1.8032497241472054e-14
+  },
+  {
+    "file": "77-0baa45b88898.xlsx",
+    "sheet": "ZGOLD",
+    "name": "ZERODHA GOLD ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "77-ec514f024e8c.xlsx",
+    "sheet": "ZLIQD",
+    "name": "ZERODHA NIFTY 1D RATE LIQUID ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "77-cecd83e59874.xlsx",
+    "sheet": "ZLC36",
+    "name": "ZERODHA LIFE CYCLE FUND 2036",
+    "status": "parsed",
+    "differencePct": -1.1619161693860594e-14
+  },
+  {
+    "file": "77-ef66b7f975ee.xlsx",
+    "sheet": "ZLC41",
+    "name": "ZERODHA LIFE CYCLE FUND 2041",
+    "status": "parsed",
+    "differencePct": 3.7732804993356006e-14
+  },
+  {
+    "file": "77-ed814d1a26cd.xlsx",
+    "sheet": "ZLTGC",
+    "name": "ZERODHA NIFTY 8-13 Yr G-Sec ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "77-1ed6561ebcfb.xlsx",
+    "sheet": "ZESML",
+    "name": "ZERODHA NIFTY SMALLCAP 100 ETF",
+    "status": "parsed",
+    "differencePct": -1.804624190214543e-14
+  },
+  {
+    "file": "77-9c266cb4a4eb.xlsx",
+    "sheet": "ZGFOF",
+    "name": "ZERODHA GOLD ETF FoF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "77-1e4c0b87a9fb.xlsx",
+    "sheet": "ZE150",
+    "name": "ZERODHA NIFTY MIDCAP 150 ETF",
+    "status": "parsed",
+    "differencePct": -5.286959366847607e-14
+  },
+  {
+    "file": "77-e0ad0a719025.xlsx",
+    "sheet": "ZELSS",
+    "name": "ZERODHA ELSS TAX SAVER NIFTY LARGE MIDCAP 250 INDEX FUND",
+    "status": "parsed",
+    "differencePct": 6.170620089076033e-14
+  },
+  {
+    "file": "77-2888195ba7e8.xlsx",
+    "sheet": "ZEN50",
+    "name": null,
+    "status": "not parsed",
+    "reason": "snapshot date not confirmed"
+  },
+  {
+    "file": "77-b60f87c7a140.xlsx",
+    "sheet": "ZBSEN",
+    "name": "ZERODHA BSE SENSEX INDEX FUND",
+    "status": "parsed",
+    "differencePct": 1.1933314362910105e-14
+  },
+  {
+    "file": "77-29e80def6f4b.xlsx",
+    "sheet": "ZARBI",
+    "name": "ZERODHA ARBITRAGE FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "77-4934f70c3235.xlsx",
+    "sheet": "ZSLVR",
+    "name": "ZERODHA SILVER ETF",
+    "status": "parsed",
+    "differencePct": 1.207382384415993e-14
+  },
+  {
+    "file": "77-b97c6dff28d2.xlsx",
+    "sheet": "ZE100",
+    "name": "ZERODHA NIFTY 100 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "83-b89ae25a6c84.xlsx",
+    "sheet": "WCMA",
+    "name": "WCMA-THE WEALTH COMPANY MULTIASSET ALLOC FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "83-7703afadd903.xlsx",
+    "sheet": "WCLM",
+    "name": "WCLM-The Wealth Company Large & Mid Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "83-790fd58eb806.xlsx",
+    "sheet": "WCMC",
+    "name": "WCMC-The Wealth Company Mid cap fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "83-99776e9d0a82.xlsx",
+    "sheet": "WCAR ",
+    "name": "WCAR-THE WEALTH COMPANY ARBITRAGE FUND",
+    "status": "parsed",
+    "differencePct": -2.4209190554547897e-14
+  },
+  {
+    "file": "83-b331cea7a658.xlsx",
+    "sheet": "WCBA",
+    "name": "WCBA-THE WEALTH COMPANY BALANCED ADVT FUND",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "83-565ea9171c23.xlsx",
+    "sheet": "WCET",
+    "name": "WCET-THE WEALTH COMPANY ETHICAL FUND",
+    "status": "parsed",
+    "differencePct": 2.2104832919862712e-14
+  },
+  {
+    "file": "83-b6328f0c07d4.xlsx",
+    "sheet": "WCGF",
+    "name": "WCGF-THE WEALTH COMPANY GOLD ETF FOF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "83-e3bce7f316ee.xlsx",
+    "sheet": "WCGE",
+    "name": "WCGE-THE WEALTH COMPANY GOLD ETF",
+    "status": "parsed",
+    "differencePct": 1.4930242382743267e-14
+  },
+  {
+    "file": "83-c6a682607cf9.xlsx",
+    "sheet": "WCFL",
+    "name": "WCFL-THE WEALTH COMPANY FLEXI CAP FUND",
+    "status": "parsed",
+    "differencePct": 2.904547192230064e-14
+  },
+  {
+    "file": "83-5a76fcbff965.xlsx",
+    "sheet": "WCLQ",
+    "name": "WCLQ-THE WEALTH COMPANY LIQUID FUND",
+    "status": "parsed",
+    "differencePct": -1.779131547425692e-14
+  },
+  {
+    "file": "83-a52954a67a97.xlsx",
+    "sheet": "WCSC",
+    "name": "WCSC-THE WEALTH COMPANY SMALL CAP FUND",
+    "status": "parsed",
+    "differencePct": 1.4075791225865358e-14
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SMEEF",
+    "name": "SBI ESG Exclusionary Strategy Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SLMF",
+    "name": "SBI Large and Midcap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SLTEF",
+    "name": "SBI ELSS Tax Saver Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SMGLF",
+    "name": "SBI MNC Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SEHF",
+    "name": "SBI Aggressive Hybrid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SMIF",
+    "name": "SBI Medium to Long Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SCOF",
+    "name": "SBI Consumption Opportunities Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "STOF",
+    "name": "SBI Technology Opportunities Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SHOF",
+    "name": "SBI Healthcare Opportunities Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SCF",
+    "name": "SBI Contra Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SNIF",
+    "name": "SBI Nifty Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SMCBF-SP",
+    "name": "SBI Children's Fund - Savings Plan",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SOF",
+    "name": "SBI Overnight Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SMMDF",
+    "name": "SBI Medium Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SLF",
+    "name": "SBI Liquid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SDBF",
+    "name": "SBI Dynamic Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SSF",
+    "name": "SBI Money Market Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SCRF",
+    "name": "SBI Credit Risk Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SFEF",
+    "name": "SBI Focused Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SCHF",
+    "name": "SBI Conservative Hybrid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SMUSD",
+    "name": "SBI Ultra Short Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SMIDCAP",
+    "name": "SBI Midcap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SMCMF",
+    "name": "SBI 10 year Constant Maturity Gilt Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SMCOMMA",
+    "name": "SBI Comma Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SMGF",
+    "name": "SBI Gilt Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SFLEXI",
+    "name": "SBI Flexicap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SMAAF",
+    "name": "SBI Multi Asset Allocation Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBLUECHIP",
+    "name": "SBI Large Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SAOF",
+    "name": "SBI Arbitrage Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SIF",
+    "name": "SBI Infrastructure Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SMLDF",
+    "name": "SBI Ultra Short to Short Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SSTDF",
+    "name": "SBI Short Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SETFGOLD",
+    "name": "SBI Gold ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SPSU",
+    "name": "SBI PSU Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SGF",
+    "name": "SBI Gold Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBISENSEX",
+    "name": "SBI BSE Sensex ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SSCF",
+    "name": "SBI Smallcap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBPF",
+    "name": "SBI Banking and PSU Debt Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBFS",
+    "name": "SBI Banking And Financial Services Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SETFNN50",
+    "name": "SBI Nifty Next 50 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SETFNIFBK",
+    "name": "SBI Nifty Bank ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SETFBSE100",
+    "name": "SBI BSE 100 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SESF",
+    "name": "SBI Equity Savings Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SETFNIF50",
+    "name": "SBI Nifty 50 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SETF10GILT",
+    "name": "SBI Nifty 10 yr Benchmark G-Sec ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SLTAF-IV",
+    "name": "SBI Long Term Advantage Fund - Series IV",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SLTAF-V",
+    "name": "SBI Long Term Advantage Fund - Series V",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SLTAF-VI",
+    "name": "SBI Long Term Advantage Fund - Series VI",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SETFSN50",
+    "name": "SBI BSE Sensex Next 50 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBIETFQLTY",
+    "name": "SBI NIFTY 200 Quality 30 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SCBF",
+    "name": "SBI Corporate Bond Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SEMVF",
+    "name": "SBI Equity Minimum Variance Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SFMP- Series 1",
+    "name": "SBI Fixed Maturity Plan",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SFMP- Series 6",
+    "name": "SBI Fixed Maturity Plan",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SFMP- Series 34",
+    "name": "SBI Fixed Maturity Plan",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SMCBF-IP",
+    "name": "SBI Children's Fund - Investment Plan",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SFRDF",
+    "name": "SBI Floating Interest Rates Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBIETFIT",
+    "name": "SBI Nifty IT ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBIETFPB",
+    "name": "SBI Nifty Private Bank ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SRBF-AP",
+    "name": "SBI RETIREMENT BENEFIT FUND - AGGRESSIVE PLAN",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SRBF-AHP",
+    "name": "SBI RETIREMENT BENEFIT FUND - AGGRESSIVE HYBRID PLAN",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SRBF-CHP",
+    "name": "SBI RETIREMENT BENEFIT FUND - CONSERVATIVE HYBRID PLAN",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SRBF-CP",
+    "name": "SBI RETIREMENT BENEFIT FUND - CONSERVATIVE PLAN",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SIA-US EQUITY FOF",
+    "name": "SBI US Specific Equity Active FoF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SNN50",
+    "name": "SBI Nifty Next 50 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBIETFCON",
+    "name": "SBI Nifty Consumption ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBAF",
+    "name": "SBI Balanced Advantage Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SFMP- Series 50",
+    "name": "SBI Fixed Maturity Plan",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SFMP- Series 51",
+    "name": "SBI Fixed Maturity Plan",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SFMP- Series 52",
+    "name": "SBI Fixed Maturity Plan",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SFMP- Series 53",
+    "name": "SBI Fixed Maturity Plan",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SFMP- Series 54",
+    "name": "SBI Fixed Maturity Plan",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SFMP- Series 55",
+    "name": "SBI Fixed Maturity Plan",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SFMP- Series 57",
+    "name": "SBI Fixed Maturity Plan",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SFMP- Series 58",
+    "name": "SBI Fixed Maturity Plan",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SCPSE",
+    "name": "SBI CPSE Bond Plus SDL Sep 2026 50 50 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SFMP- Series 60",
+    "name": "SBI Fixed Maturity Plan",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SMCF",
+    "name": "SBI MultiCap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SFMP- Series 61",
+    "name": "SBI Fixed Maturity Plan",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SNM150IF",
+    "name": "SBI Nifty Midcap 150 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SNS250IF",
+    "name": "SBI Nifty Smallcap 250 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SCIGI-JUN 2036",
+    "name": "SBI CRISIL IBX Gilt Index- June 2036 Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SCIGI-APR 2029",
+    "name": "SBI CRISIL IBX Gilt Index-APR-2029 Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SCISI-SEP 2027",
+    "name": "SBI CRISIL IBX SDL Index-Sept 2027 Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SLDF",
+    "name": "SBI Long Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SDYF",
+    "name": "SBI Dividend Yield Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBI-BSE-SENSEX-IF",
+    "name": "SBI BSE Sensex Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "LIQUIDSBI",
+    "name": "SBI NIFTY 1D Rate Liquid ETF - IDCW",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SN50EWIF",
+    "name": "SBI Nifty50 Equal Weight Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SEOF",
+    "name": "SBI Energy Opportunities Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBI-AOF",
+    "name": "SBI Automotive Opportunities Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SETFSILVER",
+    "name": "SBI Silver ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SETFSILVER-FOF",
+    "name": "SBI Silver ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SN50EW-ETF",
+    "name": "SBI Nifty50 Equal Weight ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SIOF",
+    "name": "SBI Innovative Opportunities Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SN500IF",
+    "name": "SBI Nifty 500 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SNICIF",
+    "name": "SBI Nifty India Consumption Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SQF",
+    "name": "SBI Quant Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SNBIF",
+    "name": "SBI Nifty Bank Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SNITIF",
+    "name": "SBI Nifty IT Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBI BSE PSU Bank ETF",
+    "name": "SBI BSE PSU Bank ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBI BSE PSU Bank Index Fund",
+    "name": "SBI BSE PSU Bank Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SIPAAFOF",
+    "name": "SBI Income Plus Arbitrage Active FOF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBI Nifty200 Quality 30",
+    "name": "SBI Nifty200 Quality 30 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBI Nifty200 Mom 30",
+    "name": "SBI Nifty200 Momentum 30 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBI Nifty100 Low Vol 30",
+    "name": "SBI Nifty100 Low Volatility 30 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBILIQETF",
+    "name": "SBI Nifty 1D Rate Liquid ETF - Growth",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SDAAAFOF",
+    "name": "SBI Dynamic Asset Allocation Active FoF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SQLF",
+    "name": "SBI Quality Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SNM150M50ETF",
+    "name": "SBI Nifty Midcap 150 Momentum 50 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SNM150ETF",
+    "name": "SBI Nifty Midcap150 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SCRIBXFS3-6M",
+    "name": "SBI CRISIL-IBX Financial Services 3-6 Months Debt Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "CRIBXFS9-12M",
+    "name": "SBI CRISIL-IBX Financial Services 9-12 Months Debt Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "Nifty200Value30",
+    "name": "SBI Nifty 200 Value 30 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "NiftySmallCap250",
+    "name": "SBI Nifty Small Cap 250 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "CRIIBX10-90GiltSDL29",
+    "name": "SBI CRISIL-IBX 10:90 Gilt +SDL Index - Dec 2029 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "G-Sec Jul2031",
+    "name": "SBI Nifty G-Sec Jul 2031 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "CRIIBXSDLIndexJune34",
+    "name": "SBI CRI IBX SDL Index-June 2034 Ind Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SNM150Mom50ETFFOF",
+    "name": "SBI Nifty Midcap 150 Momentum 50 ETF FOF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBHF",
+    "name": "SBI Balanced Hybrid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "22-741c6ed15c91.xlsx",
+    "sheet": "SBIRIOS",
+    "name": "SBI Resurgent India Opportunities Scheme",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-15b694cf3afb.xlsx",
+    "sheet": "SML250",
+    "name": "Mirae Asset Nifty Smallcap 250 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-db7aa0fb1100.xlsx",
+    "sheet": "MACIF",
+    "name": "Mirae Asset Crisil IBX Gilt Index - April 2033 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-e66cf31ec784.xlsx",
+    "sheet": "MANBT",
+    "name": "Mirae Asset Nifty Bank ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-7e1ab230419f.xlsx",
+    "sheet": "MAMCF",
+    "name": "Mirae Asset Midcap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-87ded6b1678b.xlsx",
+    "sheet": "MAMPF",
+    "name": "Mirae Asset Multicap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-d748dffd9d89.xlsx",
+    "sheet": "MASEF",
+    "name": "Mirae Asset Silver ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-0a1fa793cc28.xlsx",
+    "sheet": "SILVRFOF",
+    "name": "Mirae Asset Silver ETF FOF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-5b96c5fe4336.xlsx",
+    "sheet": "LM250",
+    "name": "Mirae Asset Nifty LargeMidcap 250 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-3ac33f6686c8.xlsx",
+    "sheet": "MASPF",
+    "name": "Mirae Asset S&P 500 TOP 50 ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-bc3decf8d8d1.xlsx",
+    "sheet": "MAGEF",
+    "name": "Mirae Asset Global Electric & Autonomous Vehicles Equity Passive FOF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-f06b1c73162d.xlsx",
+    "sheet": "MANG813F",
+    "name": "Mirae Asset Nifty 8-13 yr G-Sec ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-c6302fe32acf.xlsx",
+    "sheet": "MALDF",
+    "name": "Mirae Asset Long Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-3f9a496bf9a8.xlsx",
+    "sheet": "HEALTH",
+    "name": "Mirae Asset Nifty 500 Healthcare ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-ed6d5586e117.xlsx",
+    "sheet": "MIDMOM",
+    "name": "Mirae Asset BSE Midcap 150 Momentum 30 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-a5708f65eb1d.xlsx",
+    "sheet": "MAMAAF",
+    "name": "Mirae Asset Multi Asset Allocation Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-c728f23e556e.xlsx",
+    "sheet": "EVETF",
+    "name": "Mirae Asset Nifty EV and New Age Automotive ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-134af5181ab8.xlsx",
+    "sheet": "DIVIDEND",
+    "name": "Mirae Asset BSE 500 Dividend Leaders 50 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-ade65b6aa613.xlsx",
+    "sheet": "MANV30F",
+    "name": "Mirae Asset Nifty 100 Low Volatility 30 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-3e9ee139d301.xlsx",
+    "sheet": "PSUBETF",
+    "name": "Mirae Asset Nifty PSU Bank ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-0d95de3e2660.xlsx",
+    "sheet": "MGOLDFOF",
+    "name": "Mirae Asset Gold ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-11feda94ff3a.xlsx",
+    "sheet": "MANSJ28F",
+    "name": "Mirae Asset Nifty SDL June 2028 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-aef5b38c2e17.xlsx",
+    "sheet": "SMQETF",
+    "name": "Mirae Asset Nifty Smallcap 250 Momentum Quality 100 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-ce9388d9ffbf.xlsx",
+    "sheet": "MANNF",
+    "name": "Mirae Asset Nifty Next 50 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-ab739bcf9767.xlsx",
+    "sheet": "50EW",
+    "name": "Mirae Asset Nifty50 Equal Weight ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-1a7c028b7d50.xlsx",
+    "sheet": "MAEAF",
+    "name": "Mirae Asset Diversified Equity Allocator Passive FOF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-a99c72e885b2.xlsx",
+    "sheet": "200EWFOF",
+    "name": "Mirae Asset BSE 200 Equal Weight ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-20b51009345a.xlsx",
+    "sheet": "MAFF",
+    "name": "Mirae Asset Focused Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-099447d76f16.xlsx",
+    "sheet": "VALUE50",
+    "name": "Mirae Asset Nifty 500 Value 50 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-5fcf3042e600.xlsx",
+    "sheet": "TM750",
+    "name": "Mirae Asset Nifty Total Market Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0073707118943914535
+  },
+  {
+    "file": "45-b81be0e5efe3.xlsx",
+    "sheet": "DEFENCE",
+    "name": "Mirae Asset BSE India Defence ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-f821c6bf5321.xlsx",
+    "sheet": "INFRA",
+    "name": "Mirae Asset Infrastructure Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-2fd50a1f9c2d.xlsx",
+    "sheet": "ITETF",
+    "name": "Mirae Asset Nifty IT ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-26970756c4fc.xlsx",
+    "sheet": "MAAF",
+    "name": "Mirae Asset Arbitrage Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-9f5045ddccd3.xlsx",
+    "sheet": "SMQFOF",
+    "name": "Mirae Asset Nifty Smallcap 250 Momentum Quality 100 ETF Fund Of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-02cc25c4d7f7.xlsx",
+    "sheet": "MAESF",
+    "name": "Mirae Asset Equity Savings Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-8a3cb9e71975.xlsx",
+    "sheet": "MILPF",
+    "name": "Mirae Asset Ultra Short to Short Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-518963db48bf.xlsx",
+    "sheet": "HYBETF",
+    "name": "Mirae Asset Nifty200 Momentum 30 Plus 8-13 yr G-Sec 50:50 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-d068d62f1477.xlsx",
+    "sheet": "MAHSF",
+    "name": "Mirae Asset Hang Seng TECH ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-d906ad1fea7e.xlsx",
+    "sheet": "IPOETF",
+    "name": "Mirae Asset BSE Select IPO ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-d011f9e5848e.xlsx",
+    "sheet": "MAUSF",
+    "name": "Mirae Asset Ultra Short-Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-b346a225db67.xlsx",
+    "sheet": "MATPF",
+    "name": "Mirae Asset S&P 500 TOP 50 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-7b6cbaf5391b.xlsx",
+    "sheet": "912IBXFS",
+    "name": "Mirae Asset CRISIL-IBX Financial Services 9-12 Months Debt Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-2a0284e79d3f.xlsx",
+    "sheet": "MABAF",
+    "name": "Mirae Asset Balanced Advantage Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-b088aedf1a8d.xlsx",
+    "sheet": "INTERNET",
+    "name": "Mirae Asset Nifty India Internet ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-53b07cc07f84.xlsx",
+    "sheet": "MNSFOF",
+    "name": "Mirae Asset Nifty MidSmallcap400 Momentum Quality 100 ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-e4cc68392f98.xlsx",
+    "sheet": "B2CETFOF",
+    "name": "Mirae Asset Nifty India New Age Consumption ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": 2.0704590817828777e-14
+  },
+  {
+    "file": "45-b8255c344a83.xlsx",
+    "sheet": "MAAIF",
+    "name": "Mirae Asset Global X Artificial Intelligence & Technology ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-974f7b773c2e.xlsx",
+    "sheet": "MAN50ETF",
+    "name": "Mirae Asset Nifty 50 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-bd2426973256.xlsx",
+    "sheet": "MDBF",
+    "name": "Mirae Asset Dynamic Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-f1a67de9ac66.xlsx",
+    "sheet": "200EWETF",
+    "name": "Mirae Asset BSE 200 Equal Weight ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-21d00bd94121.xlsx",
+    "sheet": "MAEBF",
+    "name": "Mirae Asset Large & Midcap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-47a9dd8341bf.xlsx",
+    "sheet": "MAHTF",
+    "name": "Mirae Asset Hang Seng TECH ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-5f276d6a5dc7.xlsx",
+    "sheet": "MAFCF",
+    "name": "Mirae Asset Flexi Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-897267bc30c2.xlsx",
+    "sheet": "METALFOF",
+    "name": "Mirae Asset Nifty Metal ETF FOF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-bd57420dc8c3.xlsx",
+    "sheet": "MIIOF",
+    "name": "Mirae Asset Large Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-faf92fba46ea.xlsx",
+    "sheet": "MAETF",
+    "name": "Mirae Asset Nifty 100 ESG Sector Leaders ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-f1ecaf5c0c69.xlsx",
+    "sheet": "MAIPF",
+    "name": "Mirae Asset Aggressive Hybrid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-613c18e8163b.xlsx",
+    "sheet": "TOP20ETF",
+    "name": "Mirae Asset Nifty Top 20 Equal Weight ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-360f83a4b3ba.xlsx",
+    "sheet": "MACBF",
+    "name": "Mirae Asset Corporate Bond Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-c923bbe28c49.xlsx",
+    "sheet": "METALETF",
+    "name": "Mirae Asset Nifty Metal ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-242b88c207b2.xlsx",
+    "sheet": "IPAFOF",
+    "name": "Mirae Asset Income plus Arbitrage Active FoF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-471cf05de8b8.xlsx",
+    "sheet": "MASCF",
+    "name": "Mirae Asset Small Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-84e464543cfa.xlsx",
+    "sheet": "MAFTF",
+    "name": "Mirae Asset NYSE FANG + ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-e1dbc7c260e2.xlsx",
+    "sheet": "MAONF",
+    "name": "Mirae Asset Overnight Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-6feadaf285ee.xlsx",
+    "sheet": "MICCF",
+    "name": "Mirae Asset Great Consumer Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-8c6e0f217326.xlsx",
+    "sheet": "B2CETF",
+    "name": "Mirae Asset Nifty India New Age Consumption ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-8c852ce1e513.xlsx",
+    "sheet": "MAMFOF",
+    "name": "Mirae Asset Nifty India Manufacturing ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-9c24c9937fef.xlsx",
+    "sheet": "MABFF",
+    "name": "Mirae Asset Banking and Financial Services Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-fcc383fec9a3.xlsx",
+    "sheet": "1DGROWTH",
+    "name": "Mirae Asset Nifty 1D Rate Liquid ETF - Growth",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-92479ce4b4b0.xlsx",
+    "sheet": "MAHCF",
+    "name": "Mirae Asset Healthcare Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-e26f54512fe9.xlsx",
+    "sheet": "INFRAETF",
+    "name": "Mirae Asset Nifty India Infrastructure & Logistics ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-be23edfcefe0.xlsx",
+    "sheet": "ALPHAFOF",
+    "name": "Mirae Asset Nifty200 Alpha 30 ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": -1.8372952952197787e-14
+  },
+  {
+    "file": "45-89d4f1e36184.xlsx",
+    "sheet": "MTETF",
+    "name": "Mirae Asset Nifty India Manufacturing ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-bd3bbbde0c3b.xlsx",
+    "sheet": "MULTIETF",
+    "name": "Mirae Asset Nifty500 Multicap 50:25:25 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-5ddbb92528e5.xlsx",
+    "sheet": "MASHT",
+    "name": "Mirae Asset Short Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-3c48d747f3ef.xlsx",
+    "sheet": "MANTF",
+    "name": "Mirae Asset Nifty Financial Services ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-6c9c729f7ba4.xlsx",
+    "sheet": "HYBIF",
+    "name": "Mirae Asset Nifty200 Momentum 30 Plus 8-13yr G-Sec 75:25 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-c9aa277ba027.xlsx",
+    "sheet": "GLSLFOF",
+    "name": "Mirae Asset Gold Silver Passive FoF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-c750c3cd6bea.xlsx",
+    "sheet": "MANMF",
+    "name": "Mirae Asset Nifty Midcap 150 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-60cde1d05228.xlsx",
+    "sheet": "MAN1DLTF",
+    "name": "Mirae Asset Nifty 1D Rate Liquid ETF - IDCW",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-156b9d8086b4.xlsx",
+    "sheet": "MASLF",
+    "name": "Mirae Asset Nifty 100 ESG Sector Leaders Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-7dabe0dd9dfd.xlsx",
+    "sheet": "SMARTFOF",
+    "name": "Mirae Asset Multi Factor Passive FOF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-4f5aa8c796bd.xlsx",
+    "sheet": "N50IF",
+    "name": "Mirae Asset Nifty 50 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-63b795ba8aea.xlsx",
+    "sheet": "MANJF",
+    "name": "Mirae Asset Nifty SDL Jun 2027 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-8f1e9e6ef028.xlsx",
+    "sheet": "MAMMF",
+    "name": "Mirae Asset Money Market Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-f7ee2bdbc832.xlsx",
+    "sheet": "DEFENFOF",
+    "name": "Mirae Asset BSE India Defence ETF FOF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-c2e6c2019c14.xlsx",
+    "sheet": "MIDSMALL",
+    "name": "Mirae Asset Nifty MidSmallcap400 Momentum Quality 100 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-a2f74d858dff.xlsx",
+    "sheet": "ENERGY",
+    "name": "Mirae Asset Nifty Energy ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-1abea63b121f.xlsx",
+    "sheet": "MIDMFOF",
+    "name": "Mirae Asset BSE Midcap 150 Momentum 30 ETF FOF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-1f5dda8b3e4c.xlsx",
+    "sheet": "MATSF",
+    "name": "Mirae Asset ELSS Tax Saver Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-4eae88d83743.xlsx",
+    "sheet": "MAFPF",
+    "name": "Mirae Asset NYSE FANG + ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-9706acf9ea21.xlsx",
+    "sheet": "IPOFOF",
+    "name": "Mirae Asset BSE Select IPO ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-6e6306c008fd.xlsx",
+    "sheet": "MACMF",
+    "name": "Mirae Asset Liquid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-16446cfbf9ab.xlsx",
+    "sheet": "SENSEX",
+    "name": "Mirae Asset BSE Sensex ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-8f7d6723f308.xlsx",
+    "sheet": "LMSD",
+    "name": "Mirae Asset BSE LargeMid",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-d2841fb6cde1.xlsx",
+    "sheet": "MABPF",
+    "name": "Mirae Asset Banking and PSU Debt Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-de49e021e7f9.xlsx",
+    "sheet": "ALPHA",
+    "name": "Mirae Asset Nifty 200 Alpha 30 ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "45-b9c273ec1c55.xlsx",
+    "sheet": "MAFGF",
+    "name": "Mirae Asset Gold ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Unit Linked Insurance Plan",
+    "status": "parsed",
+    "differencePct": 1.1396132425495823e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Large Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Flexi Cap Fund.",
+    "status": "parsed",
+    "differencePct": 5.7814455646659e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Large & Mid Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Children's Hybrid Fund",
+    "status": "parsed",
+    "differencePct": 0.02833704715215453
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Retirement Fund",
+    "status": "parsed",
+    "differencePct": 1.2386075005446901e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Aggressive Hybrid Fund",
+    "status": "parsed",
+    "differencePct": 1.7271239248593875e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Money Market Fund",
+    "status": "parsed",
+    "differencePct": -4.783932205600637e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - MNC Fund",
+    "status": "parsed",
+    "differencePct": -4.172284866721638e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Medium to Long Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Healthcare Fund",
+    "status": "parsed",
+    "differencePct": 4.0322041285768136e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI ELSS Tax Saver Fund",
+    "status": "parsed",
+    "differencePct": -5.014488492442335e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty 50 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Master Equity Plan Unit Scheme",
+    "status": "parsed",
+    "differencePct": 4.1302201187457547e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Liquid Fund",
+    "status": "parsed",
+    "differencePct": -6.375025228093744e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Short Term Fund",
+    "status": "parsed",
+    "differencePct": -3.2368596713767196e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Overnight Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Children's Equity Fund",
+    "status": "parsed",
+    "differencePct": 0.07195184496324666
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Mid Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0941546289807076
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Infrastructure Fund",
+    "status": "not parsed",
+    "reason": "leaf rows differ from net assets by 0.22478% (1 unclassified rows)"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Transportation and Logistics Fund",
+    "status": "parsed",
+    "differencePct": 2.6815005495761772e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Banking and Financial Services Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Ultra Short to Short Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Gilt Fund",
+    "status": "parsed",
+    "differencePct": -1.7343897728053977e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Ultra Short Term Fund",
+    "status": "parsed",
+    "differencePct": -3.47722578953506e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Conservative Hybrid Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Dividend Yield Fund",
+    "status": "parsed",
+    "differencePct": 3.085939849241853e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Value Fund",
+    "status": "parsed",
+    "differencePct": 1.0446486523498759e-06
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Arbitrage Fund",
+    "status": "parsed",
+    "differencePct": 2.0916194114273957e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Gold Exchange Traded Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - India Consumer Fund",
+    "status": "parsed",
+    "differencePct": 1.984059698343569e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Annual Interval Fund - I",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Multi Asset Allocation Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Dynamic Term Fund",
+    "status": "parsed",
+    "differencePct": 1.8138353902843634e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Credit Risk Fund.",
+    "status": "parsed",
+    "differencePct": -2.9176468191944373e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Banking & PSU Debt Fund",
+    "status": "parsed",
+    "differencePct": 1.929421405335103e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Medium Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty 50 ETF",
+    "status": "parsed",
+    "differencePct": 3.8115933297448946e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI BSE Sensex ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Nifty Next 50 Exchange Traded Fund.",
+    "status": "parsed",
+    "differencePct": 1.2492817771262876e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Nifty Next 50 Index Fund",
+    "status": "parsed",
+    "differencePct": 1.542626963512091e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Corporate Bond Fund",
+    "status": "parsed",
+    "differencePct": 6.168212887819575e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Equity Savings Fund",
+    "status": "parsed",
+    "differencePct": 3.565726491200517e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Floating Interest Rates Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - BSE Sensex Next 50 Exchange Traded Fund",
+    "status": "parsed",
+    "differencePct": -4.004021075080836e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty Bank ETF",
+    "status": "parsed",
+    "differencePct": -1.8771302273604484e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Credit Risk Fund ( Segregated -06032020)",
+    "status": "not parsed",
+    "reason": "reported grand total missing"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI - Medium Term Fund ( Segregated - 06032020)",
+    "status": "not parsed",
+    "reason": "reported grand total missing"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Small Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty 200 Momentum 30 Index Fund",
+    "status": "parsed",
+    "differencePct": -1.3674464497508756e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Focused Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI BSE Sensex Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI BSE Low Volatility Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty Midcap 150 Quality 50 Index Fund",
+    "status": "parsed",
+    "differencePct": -2.690582873350474e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI 10 year Constant Maturity Gilt Fund",
+    "status": "parsed",
+    "differencePct": 1.6251641957408268e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Gold ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI CRISIL SDL Maturity April 2033 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI CRISIL SDL Maturity June 2027 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Fixed Term Income Fund Series XXXVI - I",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI NIFTY SDL Plus AAA PSU Bond Apr 2028- 75:25 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Long Term Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Silver Exchange Traded Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Silver ETF Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty 500 Value 50 Index Fund",
+    "status": "parsed",
+    "differencePct": 5.158917552806425e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty50 Equal Weight Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI BSE Housing Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Balanced Advantage Fund",
+    "status": "parsed",
+    "differencePct": -3.851624952681862e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty Midcap 150 Exchange Traded Fund",
+    "status": "parsed",
+    "differencePct": 1.6851107265434338e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Innovation Fund",
+    "status": "parsed",
+    "differencePct": -3.475624563571997e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty IT ETF",
+    "status": "parsed",
+    "differencePct": 3.340341057503886e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty 5 yr Benchmark G-Sec ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty 10 yr Benchmark G-Sec ETF",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty 200 Quality 30 Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty Private Bank Index Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty Alpha Low-Volatility 30 Index Fund",
+    "status": "parsed",
+    "differencePct": -1.3013975642802968e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty Midcap 150 Index Fund",
+    "status": "parsed",
+    "differencePct": -9.179119543947279e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Quant Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty Midsmallcap 400 Momentum Quality 100 Index Fund",
+    "status": "parsed",
+    "differencePct": 6.799792616503131e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty India Manufacturing Index Fund",
+    "status": "parsed",
+    "differencePct": -1.4402133044701953e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Income Plus Arbitrage Active Fund of Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Multi Cap Fund",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty500 Shariah Index Fund",
+    "status": "parsed",
+    "differencePct": 1.2337275566055383e-13
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty 1D Rate Liquid ETF - Growth",
+    "status": "parsed",
+    "differencePct": 0.0
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI Nifty 500 Exchange Traded Fund",
+    "status": "parsed",
+    "differencePct": -9.950816767939783e-14
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "EXPOSURE",
+    "name": "UTI NIFTY 500 INDEX FUND",
+    "status": "parsed",
+    "differencePct": -1.6498366058571414e-13
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Sheet2",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Sheet1",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Sheet0",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Sheet1",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Aug312026",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_July312026",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_June302026",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_May312026",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Apr302026",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Mar312026",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Feb282026",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Jan31 2026",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Dec 31 2025",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Nov 30 2025",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Oct 31 2025",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "I+A benchmark riskometer",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Sep 30 2025",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_August 31 2025",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_July 31 2025",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Sheet3",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_June 302025",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_May 31 2025",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Apr 30 2025",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Mar 31 2025",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Feb 28 2025",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Jan 31 2025",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Dec 31 2024",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Nov 30 2024",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Oct 31 2024",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Sep 30 2024",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Aug 31 2024",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_July 31 2024",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  },
+  {
+    "file": "28-5da112c0a2b2.zip",
+    "sheet": "Risk-o-meter_Apr 30 2024",
+    "name": null,
+    "status": "not parsed",
+    "reason": "no supported instrument table"
+  }
+]

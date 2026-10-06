@@ -1,0 +1,72 @@
+{
+  "checkedOn": "2026-10-06",
+  "before": {
+    "info": 0,
+    "low": 7,
+    "moderate": 19,
+    "high": 28,
+    "critical": 1
+  },
+  "after": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 2,
+    "critical": 0
+  },
+  "remaining": [
+    {
+      "package": "braces",
+      "severity": "high",
+      "title": "braces vulnerable to stack-exhaustion denial of service through deeply nested patterns",
+      "url": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+      "patchedVersions": null,
+      "findings": [
+        {
+          "version": "3.0.3",
+          "paths": [
+            ".>eslint-config-next>@next/eslint-plugin-next>fast-glob>micromatch>braces",
+            ".>vinext>vite-plugin-commonjs>vite-plugin-dynamic-import>fast-glob>micromatch>braces"
+          ],
+          "dev": true,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    },
+    {
+      "package": "source-map-js",
+      "severity": "high",
+      "title": "source-map-js allows event-loop denial of service through indexed source-map section offsets",
+      "url": "https://github.com/advisories/GHSA-68fv-2mgg-jv7q",
+      "patchedVersions": ">=1.2.2",
+      "findings": [
+        {
+          "version": "1.2.1",
+          "paths": [
+            ".>next>postcss>source-map-js",
+            ".>@cloudflare/vite-plugin>vite>postcss>source-map-js",
+            ".>@tailwindcss/postcss>@tailwindcss/node>source-map-js",
+            ".>@tailwindcss/postcss>postcss>source-map-js",
+            ".>@vitejs/plugin-react>vite>postcss>source-map-js",
+            ".>@vitejs/plugin-rsc>vite>postcss>source-map-js",
+            ".>@vitejs/plugin-rsc>vitefu>vite>postcss>source-map-js",
+            ".>@vitejs/plugin-rsc>react-server-dom-webpack>webpack>terser-webpack-plugin>postcss>source-map-js",
+            ".>react-server-dom-webpack>webpack>terser-webpack-plugin>postcss>source-map-js",
+            ".>vinext>@unpic/react>next>postcss>source-map-js",
+            ".>vinext>@vitejs/plugin-react>vite>postcss>source-map-js",
+            ".>vinext>vite>postcss>source-map-js",
+            ".>vinext>@vitejs/plugin-rsc>vite>postcss>source-map-js",
+            ".>vinext>@vitejs/plugin-rsc>vitefu>vite>postcss>source-map-js",
+            ".>vinext>@vitejs/plugin-rsc>react-server-dom-webpack>webpack>terser-webpack-plugin>postcss>source-map-js",
+            ".>vinext>react-server-dom-webpack>webpack>terser-webpack-plugin>postcss>source-map-js",
+            ".>vite>postcss>source-map-js"
+          ],
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    }
+  ]
+}

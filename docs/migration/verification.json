@@ -1,0 +1,30 @@
+{
+  "status": "passed",
+  "scope": "offline bootstrap transfer, not a source refresh",
+  "original_files_verified": 1264,
+  "files_by_scope": {
+    "application": 154,
+    "source_data": 42,
+    "production_data": 1068
+  },
+  "dataset_sha256": "b91d6115c15877cd211b9f83e08c6300d78229727e0d227153d6d7b919b1fbf8",
+  "metadata_extractions": [
+    "components/fund-catalog.tsx",
+    "components/global-catalog.tsx"
+  ],
+  "india_funds": 3372,
+  "india_plans": 14354,
+  "global_records": 21389,
+  "security_records": 31664,
+  "persistent_issues": 4,
+  "checked_at": "2026-10-06T07:29:43.569968+00:00",
+  "contract_checks": 17,
+  "existing_regression_checks_counted": 580275,
+  "global_suite": "passed (uncounted assertions)",
+  "typescript": "passed",
+  "browser_visual_qa": "not run for export",
+  "external_host_build": "not ported or tested",
+  "source_freshness_scan": "not run",
+  "github_upload": "Initial source import: compare remote tree against local Git blob hashes after commit.",
+  "live_site_changed": false
+}

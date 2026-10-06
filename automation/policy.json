@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "stage": "bootstrap_not_active",
+  "automation_enabled": false,
+  "timezone": "Asia/Kolkata",
+  "gemini_tasks": [
+    "fresh_scan",
+    "reinvestigation"
+  ],
+  "candidate_directory": "work/candidates",
+  "sanitized_directory": "work/sanitized",
+  "production_root": "public/data",
+  "source_root": "data/sources",
+  "audit_paths": [
+    "audit/latest.json",
+    "audit/open-issues.json"
+  ],
+  "gemini_repository_write_access": false,
+  "gemini_may_change_rules": false,
+  "publication_enabled": false,
+  "public_audit_enabled": false,
+  "failure_behavior": "retain_complete_last_verified_unit",
+  "same_snapshot_conflict_behavior": "block_and_investigate",
+  "older_snapshot_behavior": "audit_only_never_replace_newer_production",
+  "escalation_attempts": {
+    "retry": 1,
+    "warning": 3,
+    "manual_review": 7
+  },
+  "staleness_basis": "source_publication_cadence_not_fixed_age",
+  "protected_paths": [
+    "app/",
+    "components/",
+    "lib/",
+    "hooks/",
+    "build/",
+    "scripts/",
+    "automation/",
+    ".github/",
+    "package.json",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    "vite.config.ts",
+    "next.config.ts",
+    "public/portfolio-template.csv"
+  ],
+  "allowed_publication_paths": [
+    "public/data/catalog.json",
+    "public/data/coverage.json",
+    "public/data/holdings/*.json",
+    "public/data/global/catalog.json",
+    "public/data/global/details/*.json",
+    "public/data/securities/catalog.json",
+    "public/data/securities/audit.json",
+    "public/data/us-example.json",
+    "public/data/freshness.json",
+    "public/data/site-metadata.json",
+    "audit/latest.json",
+    "audit/open-issues.json"
+  ],
+  "note": "Allowlist is a specification, not an active enforcement mechanism. Source evidence paths must be enumerated per approved adapter before any publisher is enabled. No generic data/** wildcard grants the model write access."
+}

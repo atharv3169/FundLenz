@@ -1,0 +1,456 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FundLenz untrusted Gemini candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "base_dataset_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "task_type": {
+      "enum": [
+        "fresh_scan",
+        "reinvestigation"
+      ]
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "source_url": {
+            "type": "string",
+            "pattern": "^https://",
+            "maxLength": 3000
+          },
+          "checked_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "outcome": {
+            "enum": [
+              "checked_changed",
+              "checked_unchanged",
+              "deferred",
+              "unavailable",
+              "inconclusive",
+              "budget_exhausted"
+            ]
+          },
+          "source_sha256": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "source_id",
+          "source_url",
+          "checked_at",
+          "outcome",
+          "source_sha256",
+          "reason",
+          "scope"
+        ]
+      },
+      "maxItems": 10000
+    },
+    "proposals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "proposal_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "catalogue": {
+            "enum": [
+              "india",
+              "global",
+              "securities",
+              "us_example"
+            ]
+          },
+          "record_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "fund_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "security_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "atomic_group": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "field": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "task_type": {
+            "enum": [
+              "fresh_scan",
+              "reinvestigation"
+            ]
+          },
+          "issue_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "previous_candidate": {},
+          "previous_verified": {},
+          "previous_verified_snapshot": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "new_candidate": {},
+          "snapshot_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^https://",
+                "maxLength": 3000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source_type": {
+            "enum": [
+              "official_nav_feed",
+              "official_amc_disclosure",
+              "official_issuer_disclosure",
+              "official_registry",
+              "official_exchange_directory",
+              "unavailable"
+            ]
+          },
+          "finding": {
+            "enum": [
+              "new_or_changed",
+              "extraction_error",
+              "validator_false_positive",
+              "source_changed",
+              "source_unavailable",
+              "formatting_issue",
+              "genuine_change",
+              "unresolved"
+            ]
+          },
+          "confidence": {
+            "enum": [
+              "high",
+              "medium",
+              "low",
+              "unverified"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "source_url": {
+                  "type": "string",
+                  "pattern": "^https://",
+                  "maxLength": 3000
+                },
+                "source_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "retrieved_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "locator": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000
+                },
+                "source_period": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "excerpt": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2500
+                }
+              },
+              "required": [
+                "source_url",
+                "source_sha256",
+                "retrieved_at",
+                "locator",
+                "source_period",
+                "excerpt"
+              ]
+            },
+            "maxItems": 20
+          },
+          "publish_recommendation": {
+            "const": "candidate_for_validation"
+          }
+        },
+        "required": [
+          "proposal_id",
+          "catalogue",
+          "record_id",
+          "fund_id",
+          "security_id",
+          "atomic_group",
+          "field",
+          "task_type",
+          "issue_id",
+          "previous_candidate",
+          "previous_verified",
+          "previous_verified_snapshot",
+          "new_candidate",
+          "snapshot_date",
+          "source_url",
+          "source_type",
+          "finding",
+          "confidence",
+          "reason",
+          "evidence",
+          "publish_recommendation"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "task_type": {
+                  "const": "reinvestigation"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "issue_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "finding": {
+                  "enum": [
+                    "source_unavailable",
+                    "unresolved"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "new_candidate": {
+                  "type": "null"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "snapshot_date": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "source_url": {
+                  "type": "string",
+                  "pattern": "^https://",
+                  "maxLength": 3000
+                },
+                "evidence": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "source_url": {
+                        "type": "string",
+                        "pattern": "^https://",
+                        "maxLength": 3000
+                      },
+                      "source_sha256": {
+                        "type": "string",
+                        "pattern": "^[a-f0-9]{64}$"
+                      },
+                      "retrieved_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "locator": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2000
+                      },
+                      "source_period": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "format": "date"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "excerpt": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2500
+                      }
+                    },
+                    "required": [
+                      "source_url",
+                      "source_sha256",
+                      "retrieved_at",
+                      "locator",
+                      "source_period",
+                      "excerpt"
+                    ]
+                  },
+                  "maxItems": 20,
+                  "minItems": 1
+                }
+              }
+            }
+          }
+        ]
+      },
+      "maxItems": 10000
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 5000
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "base_dataset_sha256",
+    "task_type",
+    "started_at",
+    "completed_at",
+    "source_checks",
+    "proposals",
+    "summary"
+  ]
+}

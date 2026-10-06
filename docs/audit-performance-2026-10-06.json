@@ -1,0 +1,47 @@
+{
+  "before": {
+    "globalSearch": {
+      "medianMs": 5.670192000000043,
+      "p95Ms": 10.746893
+    },
+    "securitiesSearch": {
+      "medianMs": 15.518005000000016,
+      "p95Ms": 17.316568000000075
+    },
+    "dateFormatting1000": {
+      "medianMs": 43.089309000000185,
+      "p95Ms": 47.369453999999905
+    },
+    "preferredPlans": {
+      "medianMs": 3.675623000000087,
+      "p95Ms": 6.492502999999942
+    },
+    "allocation10Funds": {
+      "medianMs": 2.054059000000052,
+      "p95Ms": 4.834941999999955
+    }
+  },
+  "after": {
+    "globalSearch": {
+      "medianMs": 2.6021460000000047,
+      "p95Ms": 5.889186999999993
+    },
+    "securitiesSearch": {
+      "medianMs": 4.684428999999966,
+      "p95Ms": 12.114761999999985
+    },
+    "dateFormatting1000": {
+      "medianMs": 0.9462969999999586,
+      "p95Ms": 1.1368449999999939
+    },
+    "preferredPlans": {
+      "medianMs": 1.4526720000000068,
+      "p95Ms": 3.0881400000000667
+    },
+    "allocation10Funds": {
+      "medianMs": 2.3292849999999135,
+      "p95Ms": 3.717730000000074
+    }
+  },
+  "method": "Median and p95 of 30 warm local Node executions; allocation sample has 10 official large-cap funds and 3 runs. CPU timings are not browser page-load timings."
+}

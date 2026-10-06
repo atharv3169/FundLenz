@@ -1,0 +1,53 @@
+{
+  "generatedAt": "2026-10-05T15:13:03.364198+00:00",
+  "totalRecords": 1497,
+  "byMarket": {
+    "Europe / UCITS": 1417,
+    "Australia": 80
+  },
+  "byProductType": {
+    "Mutual Fund": 547,
+    "ETF": 943,
+    "ETC": 6,
+    "ETP": 1
+  },
+  "fieldCoverage": {
+    "isin": 1454,
+    "ticker": 950,
+    "nav": 1417,
+    "navDate": 1417,
+    "aum": 0,
+    "aumDate": 0,
+    "feePct": 1495,
+    "currency": 1454,
+    "domicile": 1417
+  },
+  "sources": [
+    {
+      "id": "ishares-uk-screener",
+      "label": "iShares UK public fund screener",
+      "landingUrl": "https://www.ishares.com/uk/individual/en/products/product-list",
+      "records": 1417,
+      "notes": "1,417 unique ISIN share classes. Currency is explicitly share-class currency. AUM is omitted because dated fund size has no currency; undated USD net assets are also omitted. Names retained, outer whitespace trimmed. Fees are source percentage points, not fractions. ETF/ETC/ETP types follow source product type and product name.",
+      "file": "ishares-uk-screener.json",
+      "url": "https://www.ishares.com/varnish-api/blk-product-screener-server/api/v1/product-screener/product-data?country=gb&language=en&siteName=ishares-uk&userType=individual",
+      "status": 200,
+      "bytes": 4025804,
+      "sha256": "d9adf41c7279ea737ef097b571afd5486d9012d1be7a31b24d64d46fc6f61ef3",
+      "retrievedAt": "2026-10-05T15:07:59.717244+00:00"
+    },
+    {
+      "id": "vanguard-au-funds",
+      "label": "Vanguard Australia public product list",
+      "landingUrl": "https://www.vanguard.com.au/personal/invest-with-us/products",
+      "records": 80,
+      "notes": "80 public product records. ETF ISIN and currency from dated active exchange identifiers/listing. No NAV or net assets supplied in this list. Mutual funds retain APIR identifiers. Fee is explicitly investment management costs, not a total expense ratio.",
+      "file": "vanguard-au-funds.json",
+      "url": "https://www.vanguard.com.au/personal/api/products/personal/funds/allfunds",
+      "status": 200,
+      "bytes": 174509,
+      "sha256": "c383dd36308ae429532c1953fea368a65c4ea9471233d62e6b1b88b0da69c766",
+      "retrievedAt": "2026-10-04T21:26:20.000752+00:00"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "report_kind": "bootstrap",
+  "run_id": "bootstrap-2026-10-06",
+  "prepared_at": "2026-10-06T07:24:14.096802+00:00",
+  "checked_at": null,
+  "status": "PARTIAL",
+  "dataset_sha256": "b91d6115c15877cd211b9f83e08c6300d78229727e0d227153d6d7b919b1fbf8",
+  "previous_dataset_sha256": "b91d6115c15877cd211b9f83e08c6300d78229727e0d227153d6d7b919b1fbf8",
+  "catalogue_changed": false,
+  "sources_checked_this_run": 0,
+  "accepted_units": 0,
+  "blocked_units": 0,
+  "open_issues": 4,
+  "source_scope": "Existing Site release copied without a new authoritative-source scan. Four prior inconclusive source-page checks remain in the recovery queue.",
+  "data_dates_ref": "public/data/freshness.json",
+  "validation": {
+    "bootstrap_integrity": "passed",
+    "candidate_validation": "not_run",
+    "finance_regressions": "passed"
+  },
+  "publication": {
+    "github_uploaded": true,
+    "automatic_updates_enabled": false,
+    "merged": false,
+    "deployed": false
+  },
+  "note": "Bootstrap metadata only. PARTIAL reflects unresolved imported source checks; it is not a daily validator or model result."
+}

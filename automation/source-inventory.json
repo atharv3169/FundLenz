@@ -1,0 +1,2678 @@
+{
+  "schema_version": 1,
+  "extracted_from_retained_snapshot_at": "2026-10-06T07:24:14.096802+00:00",
+  "note": "Source discovery inventory copied from existing provenance. Not a network allowlist or evidence of a new source check. Each acquisition adapter must separately approve exact hosts/paths and redirects.",
+  "sources": [
+    {
+      "url": "https://amc.ppfas.com/downloads/portfolio-disclosure/",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://amc.ppfas.com/downloads/portfolio-disclosure/2026/PPFAS_Monthly_Portfolio_Report_August_31_2026.xls?10092026",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZARBI%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZBSEN%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZE100-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZE150-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZELSS%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZEN50-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZESML-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZGFOF%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZGOLD%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZLC36%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZLC41%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZLIQD%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZLTGC%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZMIDS%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZMLTI%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZN250%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZNFTY%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZNH73%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZNSDG%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZOVER%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZSFOF%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://assets.zerodhafundhouse.com/statutory-reports/portfolio-disclosures/ZSLVR%20-%20Monthly%20Portfolio%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://bandhanmutual.com/downloads/disclosures",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://bandhanmutual.com/downloads/factsheets",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://betacms.tatamutualfund.com/system/files/2026-08/Monthly%20Portfolio%20as%20on%2031st%20July%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://betacms.tatamutualfund.com/system/files/2026-09/Monthly%20Portfolio%20as%20on%2031st%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://capitalmindmf.com/factsheet.html#",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://capitalmindmf.com/statutory-disclosures.html#",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://capitalmindmf.com/uploads/CMARB_Monthly_Portfolio_Disclosure_August_31_2026_daa8acd1f9.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://capitalmindmf.com/uploads/CMFLEXI_Monthly_Portfolio_Disclosure_August_31_2026_305f4f8af1.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://capitalmindmf.com/uploads/CMLIQ_Monthly_Portfolio_Disclosure_August_31_2026_314a06f51a.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://capitalmindmf.com/uploads/CMMAAF_Monthly_Portfolio_Disclosure_August_31_2026_c404a16f15.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://cdn.shriramamc.in/uploads/Statutory-disclosure/Monthly--Fortnightly--Weekly-Portfolio-of-Scheme%28s%29/Addl-Discl-for-ETF--Index-Schemes/2026-2027/Portfolio-disclosure-issuer-sector-and-top-holdings-August-2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://cdn.shriramamc.in/uploads/Statutory-disclosure/Monthly--Fortnightly--Weekly-Portfolio-of-Scheme%28s%29/Monthly-Portfolio-for-the-Financial-Year/2026-2027/Monthly-Portfolio-Shriram-Mutual-Fund-August-2026.xls",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://cdn.shriramamc.in/uploads/Statutory-disclosure/Monthly--Fortnightly--Weekly-Portfolio-of-Scheme%28s%29/Weekly-Portfolio/2026-2027/Weekly-Portfolio-Shriram-Mutual-Fund-07-August-2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://cdn.shriramamc.in/uploads/Statutory-disclosure/Monthly--Fortnightly--Weekly-Portfolio-of-Scheme%28s%29/Weekly-Portfolio/2026-2027/Weekly-Portfolio-Shriram-Mutual-Fund-14-August-2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://cdn.shriramamc.in/uploads/Statutory-disclosure/Monthly--Fortnightly--Weekly-Portfolio-of-Scheme%28s%29/Weekly-Portfolio/2026-2027/Weekly-Portfolio-Shriram-Mutual-Fund-21-August-2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://cdn.shriramamc.in/uploads/Statutory-disclosure/Monthly--Fortnightly--Weekly-Portfolio-of-Scheme%28s%29/Weekly-Portfolio/2026-2027/Weekly-Portfolio-Shriram-Mutual-Fund-28-August-2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://choicemf.com/disclosures/factsheets",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://choicemf.com/disclosures/monthly-portfolio",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://cms.angelonemf.com/amc-cms/wp-content/uploads/formidable/20/Monthly-Portfolio-August-2026-Angel-One-Gold-ETF-FOF.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://cms.angelonemf.com/amc-cms/wp-content/uploads/formidable/20/Monthly-Portfolio-August-2026-Angel-One-Gold-ETF.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://cms.angelonemf.com/amc-cms/wp-content/uploads/formidable/20/Monthly-Portfolio-August-2026-Angel-One-Nifty-1D-Rate-Liquid-ETF-GROWTH.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://cms.angelonemf.com/amc-cms/wp-content/uploads/formidable/20/Monthly-Portfolio-August-2026-Angel-One-Nifty-50-ETF-1.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://cms.angelonemf.com/amc-cms/wp-content/uploads/formidable/20/Monthly-Portfolio-August-2026-Angel-One-Nifty-50-Index-Fund.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://cms.angelonemf.com/amc-cms/wp-content/uploads/formidable/20/Monthly-Portfolio-August-2026-Angel-One-Nifty-Total-Market-ETF.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://cms.angelonemf.com/amc-cms/wp-content/uploads/formidable/20/Monthly-Portfolio-August-2026-Angel-One-Nifty-Total-Market-Index-Fund.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://cms.angelonemf.com/amc-cms/wp-content/uploads/formidable/20/Monthly-Portfolio-August-2026-Angel-One-Nifty-Total-Market-Momentum-Quality-50-ETF.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://cms.angelonemf.com/amc-cms/wp-content/uploads/formidable/20/Monthly-Portfolio-August-2026-Angel-One-Nifty-Total-Market-Momentum-Quality-50-Index-Fund.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://cms.angelonemf.com/amc-cms/wp-content/uploads/formidable/20/Monthly-Portfolio-August-2026-Angel-One-Silver-ETF-FOF.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://cms.angelonemf.com/amc-cms/wp-content/uploads/formidable/20/Monthly-Portfolio-August-2026-Angel-One-Silver-ETF.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://d3ce1o48hc5oli.cloudfront.net/s3fs-public/2026-09/fw_uti_mf_scheme_portfolios_31.08.2026_revised_final.zip?VersionId=EhSzHSoKCBkh0BsN76FmUi65sUKxPLs9",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://downloads.njmutualfund.com/downloads.php",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://downloads.njmutualfund.com/njmf_download.php?nme=127",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://downloads.njmutualfund.com/viewfile.php?file=NJ-MF-Monthly-Portfolio-NJABF-August-2026-20260910041826.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://downloads.njmutualfund.com/viewfile.php?file=NJ-MF-Monthly-Portfolio-NJABF-July-2026-20260810061042.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://downloads.njmutualfund.com/viewfile.php?file=NJ-MF-Monthly-Portfolio-NJBAF-August-2026-20260910041738.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://downloads.njmutualfund.com/viewfile.php?file=NJ-MF-Monthly-Portfolio-NJBAF-July-2026-20260810061147.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://downloads.njmutualfund.com/viewfile.php?file=NJ-MF-Monthly-Portfolio-NJELSTCH-August-2026-20260910041907.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://downloads.njmutualfund.com/viewfile.php?file=NJ-MF-Monthly-Portfolio-NJELSTCH-July-2026-20260810060934.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://downloads.njmutualfund.com/viewfile.php?file=NJ-MF-Monthly-Portfolio-NJFCP-August-2026-20260910041845.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://downloads.njmutualfund.com/viewfile.php?file=NJ-MF-Monthly-Portfolio-NJFCP-July-2026-20260810061004.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://downloads.njmutualfund.com/viewfile.php?file=NJ-MF-Monthly-Portfolio-NJMOF-August-2026-20260910041934.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://downloads.njmutualfund.com/viewfile.php?file=NJ-MF-Monthly-Portfolio-NJOVERFD-August-2026-20260910041806.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://downloads.njmutualfund.com/viewfile.php?file=NJ-MF-Monthly-Portfolio-NJOVERFD-July-2026-20260810061120.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://downloads.njmutualfund.com/viewfile.php?file=NJ-MF-Monthly-Portfolio-NJVAF-August-2026-20260910041959.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Aggressive%20Hybrid%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Arbitrage%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20BSE%20500%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20BSE%20500%20INDEX%20FUND%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20BSE%20India%20Sector%20Leaders%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20BSE%20SENSEX%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20BSE%20Sensex%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Balanced%20Advantage%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Banking%20%20Financial%20Services%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Banking%20and%20PSU%20Debt%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Business%20Cycle%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20CRISIL-IBX%20Financial%20Services%203-6%20Months%20Debt%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20CRISIL-IBX%20Financial%20Services%209-12%20Months%20Debt%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Charity%20Fund%20for%20Cancer%20Cure%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Childrens%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Conservative%20Hybrid%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Consumption%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Corporate%20Bond%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Defence%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Developed%20World%20Overseas%20Equity%20Passive%20FOF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Diversified%20Equity%20All%20Cap%20Active%20FOF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Dividend%20Yield%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Dynamic%20Term%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20ELSS%20-%20Tax%20Saver%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Equity%20Savings%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20FMP%201269D%20March%202023%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20FMP%201861D%20March%202022%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20FMP%201876D%20March%202022%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20FMP%202638D%20February%202023%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Flexi%20Cap%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Floating%20Interest%20Rates%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Focused%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Gilt%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Gold%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Gold%20ETF%20Fund%20of%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Housing%20Opportunities%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Income%20Plus%20Arbitrage%20Active%20FOF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Income%20Plus%20Arbitrage%20Omni%20FOF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Infrastructure%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Innovation%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Large%20%20Mid%20Cap%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Large%20Cap%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Liquid%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Long%20Term%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20MNC%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Manufacturing%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Medium%20Term%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Medium%20to%20Long%20Term%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Mid%20Cap%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Money%20Market%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Multi%20Asset%20Allocation%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Multi%20Cap%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Multi-Asset%20Active%20FOF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%20100%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%20100%20Equal%20Weight%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%20100%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%201D%20RATE%20LIQUID%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%2050%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%20BANK%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%20G-Sec%20Apr%202029%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%20IT%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%20MIDCAP%20150%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%20MIDCAP%20150%20INDEX%20FUND%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%20NEXT%2050%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%20Next%2050%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%20PSU%20BANK%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%20Private%20Bank%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%20REALTY%20INDEX%20FUND%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%20SDL%20Plus%20G-Sec%20Jun%202027%2040.60%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%20SMALLCAP%20250%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%20SMALLCAP%20250%20INDEX%20FUND%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY%20Top%2020%20Equal%20Weight%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY100%20LOW%20VOLATILITY%2030%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY100%20Low%20Volatility%2030%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY200%20MOMENTUM%2030%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY200%20MOMENTUM%2030%20INDEX%20FUND%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20NIFTY50%20Equal%20weight%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty%2050%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty%20Auto%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty%20G-Sec%20Dec%202026%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty%20G-Sec%20July%202031%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty%20G-Sec%20Jun%202027%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty%20G-Sec%20Jun%202036%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty%20G-Sec%20Sep%202032%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty%20Growth%20Sectors%2015%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty%20India%20Consumption%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty%20India%20Digital%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty%20LargeMidcap%20250%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty%20Metal%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty%20Metal%20ETF%20FOF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty%20SDL%20Oct%202026%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty100%20Quality%2030%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty100%20Quality%2030%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty50%20Value%2020%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Nifty500%20Multicap%2050.25.25%20Index%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Overnight%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Pharma%20and%20Healthcare%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Retirement%20Fund%20-%20Equity%20Plan%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Retirement%20Fund%20-%20Hybrid-Debt%20Plan%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Retirement%20Fund%20-%20Hybrid-Equity%20Plan%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20SILVER%20ETF%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Short%20Term%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Silver%20ETF%20Fund%20of%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Small%20Cap%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Technology%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Transportation%20and%20Logistics%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Ultra%20Short%20Term%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Ultra%20Short%20to%20Short%20Term%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://files.hdfcfund.com/s3fs-public/2026-09/Monthly%20HDFC%20Value%20Fund%20-%2031%20August%202026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://growwmf.in/statutory-disclosure/portfolio",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://invescomutualfund.com/literature-and-form?tab=Complete",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://invescomutualfund.com/literature-and-form?tab=Factsheets",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://media1.samco.in/scomamc/amc_documents/IN_MF_MONTHLY_PORTFOLIO_August_2026_SamcoDynamicAssetAllocationFund_1788943648.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://media1.samco.in/scomamc/amc_documents/IN_MF_MONTHLY_PORTFOLIO_August_2026_SamcoELSSTaxSaverFund_1788943650.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://media1.samco.in/scomamc/amc_documents/IN_MF_MONTHLY_PORTFOLIO_August_2026_SamcoLargeCapFund_1788943655.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://media1.samco.in/scomamc/amc_documents/IN_MF_MONTHLY_PORTFOLIO_August_2026_SamcoLargeMidCapFund_1788943652.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://media1.samco.in/scomamc/amc_documents/IN_MF_MONTHLY_PORTFOLIO_August_2026_SamcoMid_CapFund_1788943657.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://media1.samco.in/scomamc/amc_documents/IN_MF_MONTHLY_PORTFOLIO_August_2026_SamcoMultiAssetAllocationFund_1788943660.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://media1.samco.in/scomamc/amc_documents/IN_MF_MONTHLY_PORTFOLIO_August_2026_SamcoMultiCapFund_1788943662.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://media1.samco.in/scomamc/amc_documents/IN_MF_MONTHLY_PORTFOLIO_August_2026_Samco_Active_Momentum_Fund_1788943643.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://media1.samco.in/scomamc/amc_documents/IN_MF_MONTHLY_PORTFOLIO_August_2026_Samco_Arbitrage_Fund_1788943645.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://media1.samco.in/scomamc/amc_documents/IN_MF_MONTHLY_PORTFOLIO_August_2026_Samco_Flexicap_Fund_1788943981.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://media1.samco.in/scomamc/amc_documents/IN_MF_MONTHLY_PORTFOLIO_August_2026_Samco_Small_Cap_Fund_1788943664.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://media1.samco.in/scomamc/amc_documents/IN_MF_MONTHLY_PORTFOLIO_August_2026_Samco_Special_Opportunities_Fund_1788943983.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://mf.nipponindiaim.com/InvestorServices/FactsheetsDocuments/NIMF-MONTHLY-PORTFOLIO-31-Aug-26.xls",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://mf.nipponindiaim.com/investor-service/downloads/factsheet-portfolio-and-other-disclosures",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://mf.whiteoakamc.com/download#Factsheet",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://mf.whiteoakamc.com/regulatory-disclosures/scheme-portfolios",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://mutualfund.adityabirlacapital.com/forms-and-downloads/factsheets",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://mutualfund.adityabirlacapital.com/forms-and-downloads/portfolio",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://navi.com/mutual-fund/downloads/factsheet",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://navi.com/mutual-fund/downloads/portfolio",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://oldbridgemf.com/statutory-disclosures.html#v-pills-tabContent2",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://oldbridgemf.com/uploads/OBMF_Arbitrage_Portfolio_Aug_26_25fe420782.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://oldbridgemf.com/uploads/OBMF_Flexi_Cap_Portfolio_Aug_26_361398e946.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://oldbridgemf.com/uploads/OBMF_Focused_Portfolio_Aug_26_f450e08d0d.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://oldbridgemf.com/uploads/OLD_BRIDGE_MF_Factsheet_AUG_26_c5fa0b6aab.pdf",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://portal.amfiindia.com/spages/NAVAll.txt",
+      "provenance_files": [
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://quantmutual.com/downloads/factsheet",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://quantmutual.com/statutory-disclosures",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/IN_MF_MONTHLY_PORTFOLIO_Aug2026_Final_b5e5446649.xls",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://taurusmutualfund.com/monthly-portfolio",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://unifimf.com/factsheet/",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://unifimf.com/statutorydocuments/#monthly-portfolio-disclosure",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://unifimf.com/wp-content/uploads/fund-sheets/MP-Unifi-Dynamic-Asset-Allocation-Fund-31082026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://unifimf.com/wp-content/uploads/fund-sheets/MP-Unifi-Flexi-Cap-Fund-31082026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://unifimf.com/wp-content/uploads/fund-sheets/MP-Unifi-Liquid-Fund-31082026.xls",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.360.one/asset/mutual-funds/downloads/",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://www.abakkusmf.com/factsheet.html#",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.abakkusmf.com/statutory-disclosures.html#",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.abakkusmf.com/uploads/Abakkus_Small_Cap_Fund_August_2026_7c6ed2b8ac.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.alphagrepmf.ai/disclosures",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.amfiindia.com/online-center/portfolio-disclosure",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.angelonemf.com/downloads",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://www.askmutualfund.com/#/downloads",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.assetmanagement.hsbc.co.in/en/mutual-funds/investor-resources/information-library#&accordion1446811090=2",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.assetmanagement.hsbc.co.in/en/mutual-funds/investor-resources?Date=&Cap=&Doc=fund-factsheets#&module-17=1",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.axismf.com/downloads",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.axismf.com/statutory-disclosures",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.bajajamc.com/downloads?statutory-disclosures=",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.barodabnpparibasmf.in/assets/download_documents/BOBBNPMF_Monthly_Portfolio_31-08-2026_19961.xls",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.barodabnpparibasmf.in/downloads/monthly-factsheet",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.barodabnpparibasmf.in/downloads/monthly-portfolio-scheme",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://www.boimf.in/docs/default-source/investorcorner/factsheets/factsheet-may-2022.pdf?sfvrsn=3f2c8194_4",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.boimf.in/investor-corner#t2",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.canararobeco.com/documents/forms-downloads/forms-information-documents/information-documents/factsheets/",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.canararobeco.com/documents/statutory-disclosures/scheme-dashboard/scheme-monthly-portfolio/",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.dspim.com/about-us/mandatory-disclosure/portfolio-disclosures",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://www.dspim.com/downloads?category=Information%20Documents&sub_category=Factsheets",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.dspim.com/media/pages/mandatory-disclosures/portfolio-disclosures/2482bd2343-1788621582/dsp-isin-debt-portfolio-as-on-31-aug-2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.dspim.com/media/pages/mandatory-disclosures/portfolio-disclosures/8a6dbe504f-1789452169/dsp-monthend-portfolio-as-on-31-aug-2026.zip",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.edelweissmf.com/downloads/factsheets",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.edelweissmf.com/statutory#Portfolio-of-Schemes",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.franklintempletonindia.com/downloads/fund-literature",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.franklintempletonindia.com/investor/reports?firstFilter-12",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.growwmf.in/downloads/fact-sheet",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.hdfcfund.com/statutory-disclosure/portfolio/monthly-portfolio",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://www.heliosmf.in/downloads/",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.heliosmf.in/portfolio-disclosure/",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://www.heliosmf.in/wp-content/uploads/2026/09/helios-arbitrage-fund-monthly-portfolio-as-on-31st-august-2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.heliosmf.in/wp-content/uploads/2026/09/helios-balanced-advantage-fund-monthly-portfolio-as-on-31st-august-2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.heliosmf.in/wp-content/uploads/2026/09/helios-financial-services-fund-monthly-portfolio-as-on-31st-august-2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.heliosmf.in/wp-content/uploads/2026/09/helios-flexi-cap-fund-monthly-portfolio-as-on-31st-august-2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.heliosmf.in/wp-content/uploads/2026/09/helios-large-mid-cap-fund-monthly-portfolio-as-on-31st-august-2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.heliosmf.in/wp-content/uploads/2026/09/helios-mid-cap-fund-monthly-portfolio-as-on-31st-august-2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.heliosmf.in/wp-content/uploads/2026/09/helios-overnight-fund-monthly-portfolio-as-on-31st-august-2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.heliosmf.in/wp-content/uploads/2026/09/helios-small-cap-fund-monthly-portfolio-as-on-31st-august-2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.icicipruamc.com/news-and-media/downloads?currentTabFilter=Disclosures&&subCatTabFilter=MonthlyPortfolioDisclosures",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.icicipruamc.com/news-and-media/downloads?currentTabFilter=Historical Factsheets",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.ishares.com/uk/individual/en/products/product-list",
+      "provenance_files": [
+        "data/sources/global/issuer/issuer-manifest.json"
+      ]
+    },
+    {
+      "url": "https://www.ishares.com/us/products/239458/ishares-core-u-s-aggregate-bond-etf/latest-holdings.csv",
+      "provenance_files": [
+        "public/data/securities/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.ishares.com/us/products/239565/ishares-iboxx-high-yield-corporate-bond-etf/latest-holdings.csv",
+      "provenance_files": [
+        "public/data/securities/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.ishares.com/us/products/239566/ishares-iboxx-investment-grade-corporate-bond-etf/latest-holdings.csv",
+      "provenance_files": [
+        "public/data/securities/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.ishares.com/us/products/239572/ishares-jp-morgan-usd-emerging-markets-bond-etf/latest-holdings.csv",
+      "provenance_files": [
+        "public/data/securities/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.ishares.com/us/products/279626/ishares-core-international-aggregate-bond-etf/latest-holdings.csv",
+      "provenance_files": [
+        "public/data/securities/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.ishares.com/varnish-api/blk-product-screener-server/api/v1/product-screener/product-data?country=gb&language=en&siteName=ishares-uk&userType=individual",
+      "provenance_files": [
+        "data/sources/global/issuer/issuer-manifest.json",
+        "public/data/freshness.json",
+        "public/data/global/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.itiamc.com/downloads",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.itiamc.com/statuory-disclosure",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.jioblackrockamc.com/statutory-disclosure/disclosures/monthly-portfolio-disclosure",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.jioblackrockamc.com/statutory-disclosure/fund-documents/factsheet",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.jmfinancialmf.com/downloads/Factsheet/Factsheet",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.jmfinancialmf.com/downloads/Portfolio-Disclosure",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.kotakmf.com/Information/forms-and-downloads",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.kotakmf.com/Information/forms-and-downloads/Information",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.kotakmf.com/Portfolio-Construction-Process-and-Rebalance-Dates/PortfolioConstructionProcessandRebalanceDates.pdf&q%3B%2C&q%3BfileName&q%3B:&q%3BPortfolio%20Construction%20Process%20and%20Rebalance%20Dates.pdf&q%3B%2C&q%3BoptionType&q%3B:&q%3B&q%3B%2C&q%3BoptionListData&q%3B:&q%3B&q%3B%7D%5D%2C&q%3Bkeywords&q%3B:&q%3BKotak%20Quant%20Fund%20Portfolio%20Construction%20Process%20and%20Value%2C%2C&q%3B%7D%2C%7B&q%3BsuperHeaderTitle&q%3B:&q%3BFund%20Manager%20Performance%20&q%3B%2C&q%3Bdescription&q%3B:null%2C&q%3BsuperHeaderId&q%3B:275%2C&q%3BsuperHeaderOrder&q%3B:19%2C&q%3BheaderList&q%3B:%5B%7B&q%3BmonthList&q%3B:%5B%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%5D%2C&q%3ByearList&q%3B:%5B2022%5D%2C&q%3BheaderTitle&q%3B:&q%3BHarsha%20Upadhyaya&q%3B%2C&q%3BheaderId&q%3B:615%2C&q%3BheaderOrder&q%3B:999999%2C&q%3Bcalendar&q%3B:&q%3BMM/YYYY&q%3B%2C&q%3BoptionType&q%3B:&q%3BYearMonth&q%3B%2C&q%3BoptionListData&q%3B:%5B%7B&q%3Byear&q%3B:2022%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%5D%7D%5D%2C&q%3Bkeywords&q%3B:&q%3BFund%20Manager%20Performance%20%2C&q%3B%7D%2C%7B&q%3BsuperHeaderTitle&q%3B:&q%3BSEBI%20Investor%20Certification%20Examination&q%3B%2C&q%3Bdescription&q%3B:null%2C&q%3BsuperHeaderId&q%3B:277%2C&q%3BsuperHeaderOrder&q%3B:20%2C&q%3BheaderList&q%3B:%5B%7B&q%3ByearList&q%3B:%5B2025%5D%2C&q%3BheaderTitle&q%3B:&q%3BSEBI%20Investor%20Certification%20Examination&q%3B%2C&q%3BheaderId&q%3B:632%2C&q%3BheaderOrder&q%3B:999999%2C&q%3Bcalendar&q%3B:&q%3BYYYY&q%3B%2C&q%3BoptionType&q%3B:&q%3BYear&q%3B%2C&q%3BoptionListData&q%3B:%5B%7B&q%3Byear&q%3B:2025%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%5D%7D%5D%2C&q%3Bkeywords&q%3B:&q%3BSEBI%20Investor%20Certification%20Examination%2C&q%3B%7D%2C%7B&q%3BsuperHeaderTitle&q%3B:&q%3BNet%20Equity%20Levels%20&q%3B%2C&q%3Bdescription&q%3B:&q%3B&q%3B%2C&q%3BsuperHeaderId&q%3B:278%2C&q%3BsuperHeaderOrder&q%3B:21%2C&q%3BheaderList&q%3B:%5B%7B&q%3BoptionList&q%3B:%5B%5D%2C&q%3BheaderTitle&q%3B:&q%3BNet%20Equity%20Levels%20&q%3B%2C&q%3BheaderId&q%3B:640%2C&q%3BheaderOrder&q%3B:999999%2C&q%3Bcalendar&q%3B:&q%3BNO%20CALENDAR&q%3B%2C&q%3BcontentType&q%3B:&q%3BURL&q%3B%2C&q%3Bcontent&q%3B:&q%3Bhttps://www.kotakmf.com/documents/NetEqwithAssetAllocationAugust2026&q%3B%2C&q%3BoptionType&q%3B:&q%3B&q%3B%2C&q%3BoptionListData&q%3B:&q%3B&q%3B%7D%5D%2C&q%3Bkeywords&q%3B:&q%3BNet%20Equity%20Levels%20%2C&q%3B%7D%2C%7B&q%3BsuperHeaderTitle&q%3B:&q%3BArticle%20on%20Tech%20Space&q%3B%2C&q%3Bdescription&q%3B:null%2C&q%3BsuperHeaderId&q%3B:281%2C&q%3BsuperHeaderOrder&q%3B:22%2C&q%3BheaderList&q%3B:%5B%7B&q%3BoptionList&q%3B:%5B%5D%2C&q%3BheaderTitle&q%3B:&q%3BArticle%20on%20Tech%20Space&q%3B%2C&q%3BheaderId&q%3B:642%2C&q%3BheaderOrder&q%3B:999999%2C&q%3Bdescription&q%3B:&q%3BArticle%20on%20Tech%20Space&q%3B%2C&q%3Bcalendar&q%3B:&q%3BNO%20CALENDAR&q%3B%2C&q%3BcontentType&q%3B:&q%3Bupload&q%3B%2C&q%3Bcontent&q%3B:&q%3BFormsDownloads/Article-on-Tech-Space/ArticleonTechSpace.docx&q%3B%2C&q%3BfileName&q%3B:&q%3BArticle%20on%20Tech%20Space.docx&q%3B%2C&q%3BoptionType&q%3B:&q%3BDescription&q%3B%2C&q%3BoptionListData&q%3B:&q%3B&q%3B%7D%5D%2C&q%3Bkeywords&q%3B:&q%3BArticle%20on%20Tech%20Space%2C&q%3B%7D%2C%7B&q%3BsuperHeaderTitle&q%3B:&q%3BInvestor%20Alert&q%3B%2C&q%3Bdescription&q%3B:null%2C&q%3BsuperHeaderId&q%3B:287%2C&q%3BsuperHeaderOrder&q%3B:23%2C&q%3BheaderList&q%3B:%5B%7B&q%3BoptionList&q%3B:%5B%5D%2C&q%3BheaderTitle&q%3B:&q%3BInvestor%20Alert&q%3B%2C&q%3BheaderId&q%3B:656%2C&q%3BheaderOrder&q%3B:999999%2C&q%3Bcalendar&q%3B:&q%3BNO%20CALENDAR&q%3B%2C&q%3BcontentType&q%3B:&q%3Bupload&q%3B%2C&q%3Bcontent&q%3B:&q%3BFormsDownloads/Investor-Alert/InvestorAlertA4.pdf&q%3B%2C&q%3BfileName&q%3B:&q%3BInvestor%20Alert%20A4.pdf&q%3B%2C&q%3BoptionType&q%3B:&q%3B&q%3B%2C&q%3BoptionListData&q%3B:&q%3B&q%3B%7D%2C%7B&q%3BoptionList&q%3B:%5B%5D%2C&q%3BheaderTitle&q%3B:&q%3BInvestor%20Alert.&q%3B%2C&q%3BheaderId&q%3B:673%2C&q%3BheaderOrder&q%3B:999999%2C&q%3Bcalendar&q%3B:&q%3BNO%20CALENDAR&q%3B%2C&q%3BcontentType&q%3B:&q%3Bupload&q%3B%2C&q%3Bcontent&q%3B:&q%3BFormsDownloads/Investor-Alert./InvestorAlert.docx&q%3B%2C&q%3BfileName&q%3B:&q%3BInvestor%20Alert.docx&q%3B%2C&q%3BoptionType&q%3B:&q%3B&q%3B%2C&q%3BoptionListData&q%3B:&q%3B&q%3B%7D%5D%2C&q%3Bkeywords&q%3B:&q%3BInvestor%20Alert%2C%2C&q%3B%7D%2C%7B&q%3BsuperHeaderTitle&q%3B:&q%3BGrievance%20Redressal%20Escalation%20Matrix&q%3B%2C&q%3Bdescription&q%3B:null%2C&q%3BsuperHeaderId&q%3B:288%2C&q%3BsuperHeaderOrder&q%3B:24%2C&q%3BheaderList&q%3B:%5B%7B&q%3BoptionList&q%3B:%5B%5D%2C&q%3BheaderTitle&q%3B:&q%3BGrievance%20Redressal%20Escalation%20Matrix&q%3B%2C&q%3BheaderId&q%3B:657%2C&q%3BheaderOrder&q%3B:999999%2C&q%3Bcalendar&q%3B:&q%3BNO%20CALENDAR&q%3B%2C&q%3BcontentType&q%3B:&q%3Bupload&q%3B%2C&q%3Bcontent&q%3B:&q%3BFormsDownloads/Grievance-Redressal-Escalation-Matrix/GrievanceRedressalEscalationMatrix.pdf&q%3B%2C&q%3BfileName&q%3B:&q%3BGrievance%20Redressal%20Escalation%20Matrix.pdf&q%3B%2C&q%3BoptionType&q%3B:&q%3B&q%3B%2C&q%3BoptionListData&q%3B:&q%3B&q%3B%7D%5D%2C&q%3Bkeywords&q%3B:&q%3BGrievance%20Redressal%20Escalation%20Matrix%2C&q%3B%7D%2C%7B&q%3BsuperHeaderTitle&q%3B:&q%3BVoluntary%20Lock-in%20/%20Debit%20freeze%20facility%20of%20MF%20Units&q%3B%2C&q%3Bdescription&q%3B:null%2C&q%3BsuperHeaderId&q%3B:289%2C&q%3BsuperHeaderOrder&q%3B:25%2C&q%3BheaderList&q%3B:%5B%7B&q%3BoptionList&q%3B:%5B%5D%2C&q%3BheaderTitle&q%3B:&q%3BVoluntary%20Lock-in%20/%20Debit%20freeze%20facility%20of%20MF%20Units&q%3B%2C&q%3BheaderId&q%3B:659%2C&q%3BheaderOrder&q%3B:999999%2C&q%3Bcalendar&q%3B:&q%3BNO%20CALENDAR&q%3B%2C&q%3BcontentType&q%3B:&q%3Bupload&q%3B%2C&q%3Bcontent&q%3B:&q%3BFormsDownloads/Voluntary-Lock-in-/-Debit-freeze-facility-of-MF-Units/Voluntary.pdf&q%3B%2C&q%3BfileName&q%3B:&q%3BVoluntary.pdf&q%3B%2C&q%3BoptionType&q%3B:&q%3B&q%3B%2C&q%3BoptionListData&q%3B:&q%3B&q%3B%7D%5D%2C&q%3Bkeywords&q%3B:&q%3BVoluntary%20Lock-in%20/%20Debit%20freeze%20facility%20of%20MF%20Units%2C&q%3B%7D%5D%2C&q%3BsearchBoxOpen&q%3B:false%2C&q%3BsearchValue&q%3B:&q%3B&q%3B%2C&q%3BfilteredFormList&q%3B:%5B%7B&q%3BsuperHeaderTitle&q%3B:&q%3BInformation&q%3B%2C&q%3Bdescription&q%3B:null%2C&q%3BsuperHeaderId&q%3B:71%2C&q%3BsuperHeaderOrder&q%3B:1%2C&q%3BheaderList&q%3B:%5B%7B&q%3BoptionList&q%3B:%5B%7B&q%3BoptionLabel&q%3B:&q%3BApplication%20Forms&q%3B%2C&q%3BoptionId&q%3B:96%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BSIP%20Forms&q%3B%2C&q%3BoptionId&q%3B:97%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BSTP%20Forms&q%3B%2C&q%3BoptionId&q%3B:98%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BSWP%20Forms&q%3B%2C&q%3BoptionId&q%3B:99%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BBanking%20Forms&q%3B%2C&q%3BoptionId&q%3B:100%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BNomination%20Forms&q%3B%2C&q%3BoptionId&q%3B:101%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BMinor%20Forms%20&q%3B%2C&q%3BoptionId&q%3B:102%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BTransaction%20Forms&q%3B%2C&q%3BoptionId&q%3B:103%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BChange%20Of%20Details%20Form&q%3B%2C&q%3BoptionId&q%3B:104%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BKYC%20Forms&q%3B%2C&q%3BoptionId&q%3B:105%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BMF%20Utility&q%3B%2C&q%3BoptionId&q%3B:106%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BPledge%20Of%20Units&q%3B%2C&q%3BoptionId&q%3B:107%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BOther%20Forms&q%3B%2C&q%3BoptionId&q%3B:108%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BThird%20Party%20Payments&q%3B%2C&q%3BoptionId&q%3B:109%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BEmpanelment%20Form&q%3B%2C&q%3BoptionId&q%3B:110%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BChange%20Of%20Bank%20Details%20Form%20for%20Brokerage&q%3B%2C&q%3BoptionId&q%3B:111%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BEUIN%20Declaration%20Form%20&q%3B%2C&q%3BoptionId&q%3B:112%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BDistributor%20Transfer%20Of%20Assets%20Form&q%3B%2C&q%3BoptionId&q%3B:126%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BNFO%20Switch%20Form&q%3B%2C&q%3BoptionId&q%3B:147%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BChange%20of%20broker%20Form&q%3B%2C&q%3BoptionId&q%3B:148%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BTransmission%20Forms&q%3B%2C&q%3BoptionId&q%3B:152%7D%5D%2C&q%3BheaderTitle&q%3B:&q%3BForms&q%3B%2C&q%3BheaderId&q%3B:591%2C&q%3BheaderOrder&q%3B:1%2C&q%3Bcalendar&q%3B:&q%3BNO%20CALENDAR&q%3B%2C&q%3BdropDownId&q%3B:29%2C&q%3BdropDownLabel&q%3B:&q%3BPlease%20Select&q%3B%2C&q%3BoptionType&q%3B:&q%3Boptions&q%3B%2C&q%3BoptionListData&q%3B:%5B%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BApplication%20Forms&q%3B%2C&q%3BoptionId&q%3B:96%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BSIP%20Forms&q%3B%2C&q%3BoptionId&q%3B:97%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BSTP%20Forms&q%3B%2C&q%3BoptionId&q%3B:98%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BSWP%20Forms&q%3B%2C&q%3BoptionId&q%3B:99%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BBanking%20Forms&q%3B%2C&q%3BoptionId&q%3B:100%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BNomination%20Forms&q%3B%2C&q%3BoptionId&q%3B:101%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BMinor%20Forms%20&q%3B%2C&q%3BoptionId&q%3B:102%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BTransaction%20Forms&q%3B%2C&q%3BoptionId&q%3B:103%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BChange%20Of%20Details%20Form&q%3B%2C&q%3BoptionId&q%3B:104%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BKYC%20Forms&q%3B%2C&q%3BoptionId&q%3B:105%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BMF%20Utility&q%3B%2C&q%3BoptionId&q%3B:106%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BPledge%20Of%20Units&q%3B%2C&q%3BoptionId&q%3B:107%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BOther%20Forms&q%3B%2C&q%3BoptionId&q%3B:108%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BThird%20Party%20Payments&q%3B%2C&q%3BoptionId&q%3B:109%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BEmpanelment%20Form&q%3B%2C&q%3BoptionId&q%3B:110%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BChange%20Of%20Bank%20Details%20Form%20for%20Brokerage&q%3B%2C&q%3BoptionId&q%3B:111%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BEUIN%20Declaration%20Form%20&q%3B%2C&q%3BoptionId&q%3B:112%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BDistributor%20Transfer%20Of%20Assets%20Form&q%3B%2C&q%3BoptionId&q%3B:126%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BNFO%20Switch%20Form&q%3B%2C&q%3BoptionId&q%3B:147%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BChange%20of%20broker%20Form&q%3B%2C&q%3BoptionId&q%3B:148%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BTransmission%20Forms&q%3B%2C&q%3BoptionId&q%3B:152%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%5D%7D%2C%7B&q%3BmonthList&q%3B:%5B%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C%7B&q%3Bmonth&q%3B:6%2C&q%3BmonthName&q%3B:&q%3BJun&q%3B%7D%2C%7B&q%3Bmonth&q%3B:7%2C&q%3BmonthName&q%3B:&q%3BJul&q%3B%7D%2C%7B&q%3Bmonth&q%3B:8%2C&q%3BmonthName&q%3B:&q%3BAug&q%3B%7D%2C%7B&q%3Bmonth&q%3B:9%2C&q%3BmonthName&q%3B:&q%3BSep&q%3B%7D%2C%7B&q%3Bmonth&q%3B:10%2C&q%3BmonthName&q%3B:&q%3BOct&q%3B%7D%2C%7B&q%3Bmonth&q%3B:11%2C&q%3BmonthName&q%3B:&q%3BNov&q%3B%7D%2C%7B&q%3Bmonth&q%3B:12%2C&q%3BmonthName&q%3B:&q%3BDec&q%3B%7D%2C%7B&q%3Bmonth&q%3B:13%7D%2C%7B&q%3Bmonth&q%3B:14%7D%2C%7B&q%3Bmonth&q%3B:15%7D%2C%7B&q%3Bmonth&q%3B:16%7D%2C%7B&q%3Bmonth&q%3B:17%7D%2C%7B&q%3Bmonth&q%3B:18%7D%2C%7B&q%3Bmonth&q%3B:19%7D%2C%7B&q%3Bmonth&q%3B:20%7D%2C%7B&q%3Bmonth&q%3B:21%7D%5D%2C&q%3ByearList&q%3B:%5B2026%2C2025%2C2024%2C2023%2C2022%2C2021%2C2020%2C2019%2C2018%2C2017%2C2016%2C2015%2C2014%2C2013%2C2012%2C2011%2C2010%2C2009%2C2008%2C2007%2C2006%5D%2C&q%3BheaderTitle&q%3B:&q%3BFactsheet&q%3B%2C&q%3BheaderId&q%3B:219%2C&q%3BheaderOrder&q%3B:2%2C&q%3Bcalendar&q%3B:&q%3BMM/YYYY&q%3B%2C&q%3BoptionType&q%3B:&q%3BYearMonth&q%3B%2C&q%3BoptionListData&q%3B:%5B%7B&q%3Byear&q%3B:2026%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:2%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:3%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:4%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:5%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:6%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:7%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:8%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:9%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:10%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:11%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:12%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2025%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:3%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:4%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:5%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:6%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:7%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:8%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:9%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:10%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:11%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:12%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2024%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:4%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:5%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:6%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:7%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:8%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:9%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:10%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:11%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:12%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2023%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:5%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:6%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:7%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:8%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:9%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:10%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:11%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:12%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2022%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:6%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:7%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:8%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:9%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:10%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:11%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:12%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2021%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:6%2C&q%3BmonthName&q%3B:&q%3BJun&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:7%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:8%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:9%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:10%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:11%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:12%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2020%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:6%2C&q%3BmonthName&q%3B:&q%3BJun&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:7%2C&q%3BmonthName&q%3B:&q%3BJul&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:8%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:9%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:10%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:11%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:12%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2019%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:6%2C&q%3BmonthName&q%3B:&q%3BJun&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:7%2C&q%3BmonthName&q%3B:&q%3BJul&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:8%2C&q%3BmonthName&q%3B:&q%3BAug&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:9%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:10%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:11%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:12%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2018%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:6%2C&q%3BmonthName&q%3B:&q%3BJun&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:7%2C&q%3BmonthName&q%3B:&q%3BJul&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:8%2C&q%3BmonthName&q%3B:&q%3BAug&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:9%2C&q%3BmonthName&q%3B:&q%3BSep&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:10%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:11%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:12%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2017%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:6%2C&q%3BmonthName&q%3B:&q%3BJun&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:7%2C&q%3BmonthName&q%3B:&q%3BJul&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:8%2C&q%3BmonthName&q%3B:&q%3BAug&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:9%2C&q%3BmonthName&q%3B:&q%3BSep&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:10%2C&q%3BmonthName&q%3B:&q%3BOct&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:11%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:12%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2016%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:6%2C&q%3BmonthName&q%3B:&q%3BJun&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:7%2C&q%3BmonthName&q%3B:&q%3BJul&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:8%2C&q%3BmonthName&q%3B:&q%3BAug&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:9%2C&q%3BmonthName&q%3B:&q%3BSep&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:10%2C&q%3BmonthName&q%3B:&q%3BOct&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:11%2C&q%3BmonthName&q%3B:&q%3BNov&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:12%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2015%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:6%2C&q%3BmonthName&q%3B:&q%3BJun&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:7%2C&q%3BmonthName&q%3B:&q%3BJul&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:8%2C&q%3BmonthName&q%3B:&q%3BAug&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:9%2C&q%3BmonthName&q%3B:&q%3BSep&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:10%2C&q%3BmonthName&q%3B:&q%3BOct&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:11%2C&q%3BmonthName&q%3B:&q%3BNov&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:12%2C&q%3BmonthName&q%3B:&q%3BDec&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2014%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:6%2C&q%3BmonthName&q%3B:&q%3BJun&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:7%2C&q%3BmonthName&q%3B:&q%3BJul&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:8%2C&q%3BmonthName&q%3B:&q%3BAug&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:9%2C&q%3BmonthName&q%3B:&q%3BSep&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:10%2C&q%3BmonthName&q%3B:&q%3BOct&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:11%2C&q%3BmonthName&q%3B:&q%3BNov&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:12%2C&q%3BmonthName&q%3B:&q%3BDec&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:13%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2013%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:6%2C&q%3BmonthName&q%3B:&q%3BJun&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:7%2C&q%3BmonthName&q%3B:&q%3BJul&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:8%2C&q%3BmonthName&q%3B:&q%3BAug&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:9%2C&q%3BmonthName&q%3B:&q%3BSep&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:10%2C&q%3BmonthName&q%3B:&q%3BOct&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:11%2C&q%3BmonthName&q%3B:&q%3BNov&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:12%2C&q%3BmonthName&q%3B:&q%3BDec&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:13%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:14%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2012%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:6%2C&q%3BmonthName&q%3B:&q%3BJun&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:7%2C&q%3BmonthName&q%3B:&q%3BJul&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:8%2C&q%3BmonthName&q%3B:&q%3BAug&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:9%2C&q%3BmonthName&q%3B:&q%3BSep&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:10%2C&q%3BmonthName&q%3B:&q%3BOct&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:11%2C&q%3BmonthName&q%3B:&q%3BNov&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:12%2C&q%3BmonthName&q%3B:&q%3BDec&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:13%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:14%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:15%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2011%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:6%2C&q%3BmonthName&q%3B:&q%3BJun&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:7%2C&q%3BmonthName&q%3B:&q%3BJul&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:8%2C&q%3BmonthName&q%3B:&q%3BAug&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:9%2C&q%3BmonthName&q%3B:&q%3BSep&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:10%2C&q%3BmonthName&q%3B:&q%3BOct&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:11%2C&q%3BmonthName&q%3B:&q%3BNov&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:12%2C&q%3BmonthName&q%3B:&q%3BDec&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:13%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:14%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:15%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:16%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2010%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:6%2C&q%3BmonthName&q%3B:&q%3BJun&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:7%2C&q%3BmonthName&q%3B:&q%3BJul&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:8%2C&q%3BmonthName&q%3B:&q%3BAug&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:9%2C&q%3BmonthName&q%3B:&q%3BSep&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:10%2C&q%3BmonthName&q%3B:&q%3BOct&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:11%2C&q%3BmonthName&q%3B:&q%3BNov&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:12%2C&q%3BmonthName&q%3B:&q%3BDec&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:13%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:14%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:15%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:16%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:17%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2009%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:6%2C&q%3BmonthName&q%3B:&q%3BJun&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:7%2C&q%3BmonthName&q%3B:&q%3BJul&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:8%2C&q%3BmonthName&q%3B:&q%3BAug&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:9%2C&q%3BmonthName&q%3B:&q%3BSep&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:10%2C&q%3BmonthName&q%3B:&q%3BOct&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:11%2C&q%3BmonthName&q%3B:&q%3BNov&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:12%2C&q%3BmonthName&q%3B:&q%3BDec&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:13%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:14%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:15%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:16%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:17%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:18%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2008%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:6%2C&q%3BmonthName&q%3B:&q%3BJun&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:7%2C&q%3BmonthName&q%3B:&q%3BJul&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:8%2C&q%3BmonthName&q%3B:&q%3BAug&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:9%2C&q%3BmonthName&q%3B:&q%3BSep&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:10%2C&q%3BmonthName&q%3B:&q%3BOct&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:11%2C&q%3BmonthName&q%3B:&q%3BNov&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:12%2C&q%3BmonthName&q%3B:&q%3BDec&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:13%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:14%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:15%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:16%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:17%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:18%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:19%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2007%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:6%2C&q%3BmonthName&q%3B:&q%3BJun&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:7%2C&q%3BmonthName&q%3B:&q%3BJul&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:8%2C&q%3BmonthName&q%3B:&q%3BAug&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:9%2C&q%3BmonthName&q%3B:&q%3BSep&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:10%2C&q%3BmonthName&q%3B:&q%3BOct&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:11%2C&q%3BmonthName&q%3B:&q%3BNov&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:12%2C&q%3BmonthName&q%3B:&q%3BDec&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:13%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:14%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:15%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:16%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:17%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:18%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:19%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:20%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2006%2C&q%3Bmonths&q%3B:%5B%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:1%2C&q%3BmonthName&q%3B:&q%3BJan&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJanuary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:2%2C&q%3BmonthName&q%3B:&q%3BFeb&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BFebruary&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:3%2C&q%3BmonthName&q%3B:&q%3BMar&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMarch&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:4%2C&q%3BmonthName&q%3B:&q%3BApr&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BApril&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:5%2C&q%3BmonthName&q%3B:&q%3BMay&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BMay&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:6%2C&q%3BmonthName&q%3B:&q%3BJun&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJune&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:7%2C&q%3BmonthName&q%3B:&q%3BJul&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BJuly&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:8%2C&q%3BmonthName&q%3B:&q%3BAug&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BAugust&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:9%2C&q%3BmonthName&q%3B:&q%3BSep&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BSeptember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:10%2C&q%3BmonthName&q%3B:&q%3BOct&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BOctober&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:11%2C&q%3BmonthName&q%3B:&q%3BNov&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BNovember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:12%2C&q%3BmonthName&q%3B:&q%3BDec&q%3B%7D%2C&q%3Btitle&q%3B:%7B&q%3Bname&q%3B:&q%3BDecember&q%3B%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:13%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:14%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:15%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:16%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:17%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:18%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:19%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:20%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%2C%7B&q%3Bmonth&q%3B:%7B&q%3Bmonth&q%3B:21%7D%2C&q%3Bfile&q%3B:&q%3B&q%3B%2C&q%3BisDisabled&q%3B:false%7D%5D%2C&q%3BisSet&q%3B:false%7D%5D%7D%2C%7B&q%3BoptionList&q%3B:%5B%7B&q%3BoptionLabel&q%3B:&q%3BConsolidated%20&a%3B%20Fortnightly%20Portfolio&q%3B%2C&q%3BoptionId&q%3B:51%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BCI%20Global%20Alpha%20Innovators%20Corporate%20Class&q%3B%2C&q%3BoptionId&q%3B:52%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BCI%20Emerging%20Markets%20Fund&q%3B%2C&q%3BoptionId&q%3B:53%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BiShares%20NASDAQ%20100%20UCITS%20ETF%20USD&q%3B%2C&q%3BoptionId&q%3B:66%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BWellington%20Global%20Innovation%20Fund&q%3B%2C&q%3BoptionId&q%3B:67%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BTop%2010%20Holdings&q%3B%2C&q%3BoptionId&q%3B:137%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BKotak%20International%20REIT%20Overseas%20Equity%20Omni%20FoF%20%E2%80%93%20Underlying%20fund%20factsheet%20&q%3B%2C&q%3BoptionId&q%3B:141%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BGeninnov%20Global%20Master%20Fund&q%3B%2C&q%3BoptionId&q%3B:144%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3Bkotak%20quality%20overseas%20equity%20omni%20fof%20Underlying%20Top%2010%20Portfolio&q%3B%2C&q%3BoptionId&q%3B:151%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BPortfolio%20Overlap&q%3B%2C&q%3BoptionId&q%3B:153%7D%5D%2C&q%3BheaderTitle&q%3B:&q%3BPortfolios&q%3B%2C&q%3BheaderId&q%3B:417%2C&q%3BheaderOrder&q%3B:3%2C&q%3Bcalendar&q%3B:&q%3BNO%20CALENDAR&q%3B%2C&q%3BdropDownId&q%3B:29%2C&q%3BdropDownLabel&q%3B:&q%3BPlease%20Select&q%3B%2C&q%3BoptionType&q%3B:&q%3Boptions&q%3B%2C&q%3BoptionListData&q%3B:%5B%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BConsolidated%20&a%3B%20Fortnightly%20Portfolio&q%3B%2C&q%3BoptionId&q%3B:51%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BCI%20Global%20Alpha%20Innovators%20Corporate%20Class&q%3B%2C&q%3BoptionId&q%3B:52%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BCI%20Emerging%20Markets%20Fund&q%3B%2C&q%3BoptionId&q%3B:53%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BiShares%20NASDAQ%20100%20UCITS%20ETF%20USD&q%3B%2C&q%3BoptionId&q%3B:66%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BWellington%20Global%20Innovation%20Fund&q%3B%2C&q%3BoptionId&q%3B:67%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BTop%2010%20Holdings&q%3B%2C&q%3BoptionId&q%3B:137%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BKotak%20International%20REIT%20Overseas%20Equity%20Omni%20FoF%20%E2%80%93%20Underlying%20fund%20factsheet%20&q%3B%2C&q%3BoptionId&q%3B:141%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BGeninnov%20Global%20Master%20Fund&q%3B%2C&q%3BoptionId&q%3B:144%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3Bkotak%20quality%20overseas%20equity%20omni%20fof%20Underlying%20Top%2010%20Portfolio&q%3B%2C&q%3BoptionId&q%3B:151%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BPortfolio%20Overlap&q%3B%2C&q%3BoptionId&q%3B:153%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%5D%7D%2C%7B&q%3ByearList&q%3B:%5B2026%2C2025%2C2024%2C2023%2C2022%2C2021%2C2020%2C2019%2C2018%2C2017%2C2016%2C2015%2C2014%2C2013%2C2012%2C2011%2C2004%2C2003%2C1970%5D%2C&q%3BheaderTitle&q%3B:&q%3BAddendums&q%3B%2C&q%3BheaderId&q%3B:363%2C&q%3BheaderOrder&q%3B:4%2C&q%3Bcalendar&q%3B:&q%3BYYYY&q%3B%2C&q%3BoptionType&q%3B:&q%3BYear&q%3B%2C&q%3BoptionListData&q%3B:%5B%7B&q%3Byear&q%3B:2026%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2025%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2024%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2023%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2022%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2021%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2020%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2019%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2018%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2017%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2016%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2015%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2014%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2013%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2012%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2011%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2004%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2003%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:1970%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%5D%7D%2C%7B&q%3BoptionList&q%3B:%5B%7B&q%3BoptionLabel&q%3B:&q%3BiShares%20NASDAQ%20100%20UCITS%20ETF%20USD&q%3B%2C&q%3BoptionId&q%3B:66%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BKotak%20Nifty%20SDL%20Apr%202032%20Top%2012%20Eq%20Wt%20Index%20Fund&q%3B%2C&q%3BoptionId&q%3B:86%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BKotak%20Nifty%20SDL%20Apr%202027%20Top%2012%20Eq%20Wt%20Index%20Fund&q%3B%2C&q%3BoptionId&q%3B:87%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BNifty%20SDL%20Plus%20AAA%20PSU%20Bond%20Jul%202028%2060:40%20Index%20Fund&q%3B%2C&q%3BoptionId&q%3B:94%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BNifty%20SDL%20Plus%20AAA%20PSU%20Bond%20Jul%202033%2060:40%20Index%20Fund&q%3B%2C&q%3BoptionId&q%3B:95%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BKotak%20Nifty%20SDL%20Jul%202026%20Index%20Fund&q%3B%2C&q%3BoptionId&q%3B:128%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BNifty%20SDL%20Jul%202033%20Index%20Fund&q%3B%2C&q%3BoptionId&q%3B:129%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BNifty%20SDL%20Jul%202028%20Index%20Fund&q%3B%2C&q%3BoptionId&q%3B:130%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BNifty%20G-sec%20Jul-2033%20Index%20fund&q%3B%2C&q%3BoptionId&q%3B:135%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BNifty%20AAA%20Bond%20Jun%202025%20HTM%20Index%20Fund&q%3B%2C&q%3BoptionId&q%3B:136%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BCRISIL-IBX%20AAA%20Financial%20Services%20Index%20%E2%80%93%20Sep%202027&q%3B%2C&q%3BoptionId&q%3B:140%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BCRISIL-IBX%20AAA%20Financial%20Services%20Index%20%E2%80%93%20Dec%202026&q%3B%2C&q%3BoptionId&q%3B:142%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BCRISIL-%20IBX%20Financial%20Services%203-6%20Months%20Debt%20Index&q%3B%2C&q%3BoptionId&q%3B:143%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3BNifty%20AAA%20Financial%20Services%20Bond%20Mar%202028%20Index&q%3B%2C&q%3BoptionId&q%3B:146%7D%2C%7B&q%3BoptionLabel&q%3B:&q%3B%20CRISIL-IBX%20Financial%20Services%209-12%20Months%20Debt%20Index&q%3B%2C&q%3BoptionId&q%3B:149%7D%5D%2C&q%3BheaderTitle&q%3B:&q%3BHistorical%20Index%20Constituents&q%3B%2C&q%3BheaderId&q%3B:571%2C&q%3BheaderOrder&q%3B:5%2C&q%3Bcalendar&q%3B:&q%3BNO%20CALENDAR&q%3B%2C&q%3BdropDownId&q%3B:29%2C&q%3BdropDownLabel&q%3B:&q%3BPlease%20Select&q%3B%2C&q%3BoptionType&q%3B:&q%3Boptions&q%3B%2C&q%3BoptionListData&q%3B:%5B%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BiShares%20NASDAQ%20100%20UCITS%20ETF%20USD&q%3B%2C&q%3BoptionId&q%3B:66%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BKotak%20Nifty%20SDL%20Apr%202032%20Top%2012%20Eq%20Wt%20Index%20Fund&q%3B%2C&q%3BoptionId&q%3B:86%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BKotak%20Nifty%20SDL%20Apr%202027%20Top%2012%20Eq%20Wt%20Index%20Fund&q%3B%2C&q%3BoptionId&q%3B:87%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BNifty%20SDL%20Plus%20AAA%20PSU%20Bond%20Jul%202028%2060:40%20Index%20Fund&q%3B%2C&q%3BoptionId&q%3B:94%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BNifty%20SDL%20Plus%20AAA%20PSU%20Bond%20Jul%202033%2060:40%20Index%20Fund&q%3B%2C&q%3BoptionId&q%3B:95%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BKotak%20Nifty%20SDL%20Jul%202026%20Index%20Fund&q%3B%2C&q%3BoptionId&q%3B:128%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BNifty%20SDL%20Jul%202033%20Index%20Fund&q%3B%2C&q%3BoptionId&q%3B:129%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BNifty%20SDL%20Jul%202028%20Index%20Fund&q%3B%2C&q%3BoptionId&q%3B:130%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BNifty%20G-sec%20Jul-2033%20Index%20fund&q%3B%2C&q%3BoptionId&q%3B:135%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BNifty%20AAA%20Bond%20Jun%202025%20HTM%20Index%20Fund&q%3B%2C&q%3BoptionId&q%3B:136%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BCRISIL-IBX%20AAA%20Financial%20Services%20Index%20%E2%80%93%20Sep%202027&q%3B%2C&q%3BoptionId&q%3B:140%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BCRISIL-IBX%20AAA%20Financial%20Services%20Index%20%E2%80%93%20Dec%202026&q%3B%2C&q%3BoptionId&q%3B:142%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BCRISIL-%20IBX%20Financial%20Services%203-6%20Months%20Debt%20Index&q%3B%2C&q%3BoptionId&q%3B:143%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BNifty%20AAA%20Financial%20Services%20Bond%20Mar%202028%20Index&q%3B%2C&q%3BoptionId&q%3B:146%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3B%20CRISIL-IBX%20Financial%20Services%209-12%20Months%20Debt%20Index&q%3B%2C&q%3BoptionId&q%3B:149%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%5D%7D%2C%7B&q%3BoptionList&q%3B:%5B%7B&q%3BoptionLabel&q%3B:&q%3BNIFTY%20Fixed%20Income%20Indices%20Methodology%20&q%3B%2C&q%3BoptionId&q%3B:88%7D%5D%2C&q%3BheaderTitle&q%3B:&q%3BIndex%20Methodology&q%3B%2C&q%3BheaderId&q%3B:566%2C&q%3BheaderOrder&q%3B:6%2C&q%3Bcalendar&q%3B:&q%3BNO%20CALENDAR&q%3B%2C&q%3BdropDownId&q%3B:29%2C&q%3BdropDownLabel&q%3B:&q%3BPlease%20Select&q%3B%2C&q%3BoptionType&q%3B:&q%3Boptions&q%3B%2C&q%3BoptionListData&q%3B:%5B%7B&q%3Boption&q%3B:%7B&q%3BoptionLabel&q%3B:&q%3BNIFTY%20Fixed%20Income%20Indices%20Methodology%20&q%3B%2C&q%3BoptionId&q%3B:88%7D%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%5D%7D%2C%7B&q%3BoptionList&q%3B:%5B%5D%2C&q%3BheaderTitle&q%3B:&q%3BFrequently%20Asked%20Questions&q%3B%2C&q%3BheaderId&q%3B:470%2C&q%3BheaderOrder&q%3B:7%2C&q%3Bcalendar&q%3B:&q%3BNO%20CALENDAR&q%3B%2C&q%3BcontentType&q%3B:&q%3Bupload&q%3B%2C&q%3Bcontent&q%3B:&q%3BFormsDownloads/Frequently-Asked-Questions/FAQ2024F.docx&q%3B%2C&q%3BfileName&q%3B:&q%3BFAQ2024F.docx&q%3B%2C&q%3BoptionType&q%3B:&q%3B&q%3B%2C&q%3BoptionListData&q%3B:&q%3B&q%3B%7D%2C%7B&q%3ByearList&q%3B:%5B2026%2C2025%2C2024%2C2023%2C2022%2C2021%2C2020%2C2019%2C2018%2C2017%2C2016%2C2015%2C2014%2C2013%2C2012%2C2011%2C2007%2C1970%5D%2C&q%3BheaderTitle&q%3B:&q%3BNotices&q%3B%2C&q%3BheaderId&q%3B:328%2C&q%3BheaderOrder&q%3B:8%2C&q%3Bcalendar&q%3B:&q%3BYYYY&q%3B%2C&q%3BoptionType&q%3B:&q%3BYear&q%3B%2C&q%3BoptionListData&q%3B:%5B%7B&q%3Byear&q%3B:2026%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2025%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2024%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2023%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2022%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2021%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2020%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2019%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2018%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2017%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2016%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2015%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2014%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2013%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2012%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2011%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:2007%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%2C%7B&q%3Byear&q%3B:1970%2C&q%3BItems&q%3B:%5B%5D%2C&q%3BisSet&q%3B:false%7D%5D%7D%2C%7B&q%3BoptionList&q%3B:%5B%5D%2C&q%3BheaderTitle&q%3B:&q%3BTax%20Reckoner&q%3B%2C&q%3BheaderId&q%3B:341%2C&q%3BheaderOrder&q%3B:9%2C&q%3Bcalendar&q%3B:&q%3BNO%20CALENDAR&q%3B%2C&q%3BcontentType&q%3B:&q%3Bupload&q%3B%2C&q%3Bcontent&q%3B:&q%3BFormsDownloads/Tax-Reckoner/TaxReckonerFY202627.pdf&q%3B%2C&q%3BfileName&q%3B:&q%3BTaxReckonerFY202627.pdf&q%3B%2C&q%3BoptionType&q%3B:&q%3B&q%3B%2C&q%3BoptionListData&q%3B:&q%3B&q%3B%7D%2C%7B&q%3BoptionList&q%3B:%5B%5D%2C&q%3BheaderTitle&q%3B:&q%3BValuation%20Policy&q%3B%2C&q%3BheaderId&q%3B:342%2C&q%3BheaderOrder&q%3B:10%2C&q%3Bcalendar&q%3B:&q%3BNO%20CALENDAR&q%3B%2C&q%3BcontentType&q%3B:&q%3Bupload&q%3B%2C&q%3Bcontent&q%3B:&q%3BFormsDownloads/Valuation-Policy/InvestmentValuationPolicyversion912.pdf&q%3B%2C&q%3BfileName&q%3B:&q%3BInvestmentValuationPolicyversion912.pdf&q%3B%2C&q%3BoptionType&q%3B:&q%3B&q%3B%2C&q%3BoptionListData&q%3B:&q%3B&q%3B%7D%2C%7B&q%3BoptionList&q%3B:%5B%5D%2C&q%3BheaderTitle&q%3B:&q%3BStatement%20of%20Additional%20Information&q%3B%2C&q%3BheaderId&q%3B:345%2C&q%3BheaderOrder&q%3B:11%2C&q%3Bcalendar&q%3B:&q%3BNO%20CALENDAR&q%3B%2C&q%3BcontentType&q%3B:&q%3Bupload&q%3B%2C&q%3Bcontent&q%3B:&q%3BFormsDownloads/Statement-of-Additional-Information/StatementofAdditionalInformationMay2026.pdf&q%3B%2C&q%3BfileName&q%3B:&q%3BStatementofAdditionalInformationMay2026.pdf&q%3B%2C&q%3BoptionType&q%3B:&q%3B&q%3B%2C&q%3BoptionListData&q%3B:&q%3B&q%3B%7D%2C%7B&q%3BoptionList&q%3B:%5B%5D%2C&q%3BheaderTitle&q%3B:&q%3BISIN%20List&q%3B%2C&q%3BheaderId&q%3B:406%2C&q%3BheaderOrder&q%3B:12%2C&q%3Bcalendar&q%3B:&q%3BNO%20CALENDAR&q%3B%2C&q%3BcontentType&q%3B:&q%3Bupload&q%3B%2C&q%3Bcontent&q%3B:&q%3BFormsDownloads/ISIN-List/ISINListupdatedon19052026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.licmf.com/downloads/factsheet",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.licmf.com/downloads/monthly-portfolio",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.mahindramanulife.com/downloads#investor",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.mahindramanulife.com/downloads#mandatory-disclosures",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/1dgrowth_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/200ewetf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/200ewfof_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/50ew_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/912ibxfs_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/alpha_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/alphafof_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/b2cetf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/b2cetfof_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/defence_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/defenfof_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/dividend_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/energy_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/evetf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/glslfof_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/health_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/hybetf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/hybif_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/infra_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/infraetf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/internet_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/ipafof_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/ipoetf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/ipofof_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/itetf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/lm250_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/lmsd_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/maaf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/maaif_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mabaf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mabff_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mabpf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/macbf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/macif_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/macmf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/maeaf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/maebf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/maesf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/maetf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mafcf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/maff_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mafgf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mafpf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/maftf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/magef_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mahcf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mahsf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mahtf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/maipf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/maldf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mamaaf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mamcf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mamfof_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mammf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mampf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/man1dltf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/man50etf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/manbt_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mang813f_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/manjf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/manmf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mannf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mansj28f_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mantf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/manv30f_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/maonf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mascf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/masef_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/masht_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/maslf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/maspf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/matpf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/matsf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mausf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mdbf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/metaletf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/metalfof_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mgoldfof_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/miccf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/midmfof_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/midmom_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/midsmall_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/miiof_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/milpf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mnsfof_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/mtetf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/multietf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/n50if_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/psubetf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/sensex_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/silvrfof_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/smartfof_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/sml250_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/smqetf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/smqfof_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/tm750_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/top20etf_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/docs/default-source/portfolios/value50_aug2026.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/downloads/factsheet",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.miraeassetmf.co.in/downloads/portfolio",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://www.motilaloswalmf.com/downloads/factsheets",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.motilaloswalmf.com/downloads/scheme-portfolio-details",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.txt",
+      "provenance_files": [
+        "public/data/freshness.json",
+        "public/data/global/catalog.json",
+        "public/data/securities/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.nasdaqtrader.com/dynamic/SymDir/otherlisted.txt",
+      "provenance_files": [
+        "public/data/freshness.json",
+        "public/data/global/catalog.json",
+        "public/data/securities/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.pgimindia.com/mutual-funds/disclosures/Portfolios/Monthly-Portfolio",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.pgimindia.com/mutual-funds/forms-and-updates/Fund-Factsheet",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.quantumamc.com/FileCDN/FactSheet/f616b3fb-f263-439d-81da-d4663a287aed.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.quantumamc.com/factsheets/combined/-1/0/0",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.quantumamc.com/portfolio/combined/-1/1/0/0",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://www.samcomf.com/StatutoryDisclosure",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://www.samcomf.com/amc-document-download/IN_MF_MONTHLY_PORTFOLIO_August_2026_SamcoDynamicAssetAllocationFund_1788943648.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.samcomf.com/amc-document-download/IN_MF_MONTHLY_PORTFOLIO_August_2026_SamcoELSSTaxSaverFund_1788943650.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.samcomf.com/amc-document-download/IN_MF_MONTHLY_PORTFOLIO_August_2026_SamcoLargeCapFund_1788943655.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.samcomf.com/amc-document-download/IN_MF_MONTHLY_PORTFOLIO_August_2026_SamcoLargeMidCapFund_1788943652.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.samcomf.com/amc-document-download/IN_MF_MONTHLY_PORTFOLIO_August_2026_SamcoMid_CapFund_1788943657.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.samcomf.com/amc-document-download/IN_MF_MONTHLY_PORTFOLIO_August_2026_SamcoMultiAssetAllocationFund_1788943660.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.samcomf.com/amc-document-download/IN_MF_MONTHLY_PORTFOLIO_August_2026_SamcoMultiCapFund_1788943662.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.samcomf.com/amc-document-download/IN_MF_MONTHLY_PORTFOLIO_August_2026_Samco_Active_Momentum_Fund_1788943643.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.samcomf.com/amc-document-download/IN_MF_MONTHLY_PORTFOLIO_August_2026_Samco_Arbitrage_Fund_1788943645.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.samcomf.com/amc-document-download/IN_MF_MONTHLY_PORTFOLIO_August_2026_Samco_Flexicap_Fund_1788943981.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.samcomf.com/amc-document-download/IN_MF_MONTHLY_PORTFOLIO_August_2026_Samco_Small_Cap_Fund_1788943664.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.samcomf.com/amc-document-download/IN_MF_MONTHLY_PORTFOLIO_August_2026_Samco_Special_Opportunities_Fund_1788943983.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.samcomf.com/downloads",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.sbimf.com/docs/default-source/scheme-portfolios/all-schemes-monthly-portfolio---as-on-31st-august-2026.xlsx?sfvrsn=a7fdc2ec_2",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.sbimf.com/en-us/factsheets",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.sbimf.com/portfolios",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://www.sec.gov/data-research/sec-markets-data/investment-company-series-class-information",
+      "provenance_files": [
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://www.sec.gov/files/company_tickers_mf.json",
+      "provenance_files": [
+        "public/data/freshness.json",
+        "public/data/global/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.sec.gov/files/investment/data/other/investment-company-series-class-information/investment-company-series-class-2026.csv",
+      "provenance_files": [
+        "public/data/freshness.json",
+        "public/data/global/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.shriramamc.in/factsheet",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.shriramamc.in/investor-statutory-disclosures",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://www.sundarammutual.com/Fundwise-Factsheet",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.sundarammutual.com/Monthly-Fortnightly-Adhoc-Portfolios",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.tatamutualfund.com/information-documents",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.tatamutualfund.com/schemes-related",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://www.taurusmutualfund.com/factsheet",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.trustmf.com/disclosures?activeTab=portfolio-disclosures",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.trustmf.com/downloads?activeTab=factsheets",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.unionmf.com/about-us/downloads/factsheets",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.unionmf.com/about-us/downloads/monthly-portfolio",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.utimf.com/downloads/consolidate-all-portfolio-disclosure",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://www.utimf.com/downloads/fact-sheet",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.vanguard.com.au/personal/api/products/personal/funds/allfunds",
+      "provenance_files": [
+        "data/sources/global/issuer/issuer-manifest.json",
+        "public/data/freshness.json",
+        "public/data/global/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.vanguard.com.au/personal/invest-with-us/products",
+      "provenance_files": [
+        "data/sources/global/issuer/issuer-manifest.json"
+      ]
+    },
+    {
+      "url": "https://www.wealthcompanyamc.in/literature-forms/portfolio-documents/monthly/",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://www.wealthcompanyamc.in/literature-forms/scheme-documents/factsheets/",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    },
+    {
+      "url": "https://www.wealthcompanyamc.in/uploads/Monthly_portfolio_Arbitrage_Fund_494db1df3e.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.wealthcompanyamc.in/uploads/Monthly_portfolio_Balanced_Advantage_Fund_23fd91137a.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.wealthcompanyamc.in/uploads/Monthly_portfolio_Ethical_caf9cfe0b2.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.wealthcompanyamc.in/uploads/Monthly_portfolio_Flexicap_dc97e8beaa.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.wealthcompanyamc.in/uploads/Monthly_portfolio_Gold_ETF_FOF_9ec3744d5a.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.wealthcompanyamc.in/uploads/Monthly_portfolio_Gold_ETF_a7aedd0257.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.wealthcompanyamc.in/uploads/Monthly_portfolio_Large_Midcap_bc53a12c0b.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.wealthcompanyamc.in/uploads/Monthly_portfolio_Liquid_e2d3669030.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.wealthcompanyamc.in/uploads/Monthly_portfolio_Midcap_3bb5e91964.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.wealthcompanyamc.in/uploads/Monthly_portfolio_Multi_Asset_Allocation_Fund_f9bc96b246.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.wealthcompanyamc.in/uploads/Monthly_portfolio_Small_Cap_2683583497.xlsx",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json"
+      ]
+    },
+    {
+      "url": "https://www.zerodhafundhouse.com/resources/disclosures?source=footer",
+      "provenance_files": [
+        "data/sources/portfolio-sources.json",
+        "public/data/catalog.json",
+        "public/data/freshness.json"
+      ]
+    },
+    {
+      "url": "https://www.zerodhafundhouse.com/resources/fund-documents",
+      "provenance_files": [
+        "public/data/catalog.json"
+      ]
+    }
+  ]
+}

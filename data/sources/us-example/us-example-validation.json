@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "description": "Official same-date US ETF example for FundLenz",
+  "mode": "official",
+  "holdingsDate": "2026-10-02",
+  "funds": [
+    {
+      "fundId": "us-IVV",
+      "sourcePage": "https://www.ishares.com/us/products/239726/ishares-core-sp-500-etf",
+      "sourceUrl": "https://www.ishares.com/us/products/239726/ishares-core-sp-500-etf/latest-holdings.csv",
+      "rawFile": "IVV-holdings.csv",
+      "sha256": "011334fd2af8bfa741ea385f5dac1603846fe726a51b4880c3f542571350d1c6",
+      "holdingsDate": "2026-10-02",
+      "retrievedDate": "2026-10-05",
+      "completeLeafRows": 509,
+      "equityRows": 505,
+      "classificationCounts": {
+        "equity": 505,
+        "cash": 2,
+        "other": 2
+      },
+      "issuerAssetClassCounts": {
+        "Equity": 505,
+        "Money Market": 1,
+        "Cash": 1,
+        "Cash Collateral and Margins": 1,
+        "Futures": 1
+      },
+      "totalWeightPercent": 100.09,
+      "equityWeightPercent": 99.92,
+      "marketValueTotalUSD": 890991880597.64,
+      "negativeMarketValueRows": 0,
+      "negativeWeightRows": 0,
+      "zeroWeightRows": 2,
+      "duplicateTickerRows": 0,
+      "missingTickers": 0,
+      "aggregateRowsIncluded": 0,
+      "weightTreatment": "Preserved issuer Weight (%) exactly. No normalization or invented residual holdings.",
+      "netAssetsDenominator": "Not used: public product page net assets is a different date from this holdings snapshot."
+    },
+    {
+      "fundId": "us-IWB",
+      "sourcePage": "https://www.ishares.com/us/products/239707/ishares-russell-1000-etf",
+      "sourceUrl": "https://www.ishares.com/us/products/239707/ishares-russell-1000-etf/latest-holdings.csv",
+      "rawFile": "IWB-holdings.csv",
+      "sha256": "15afd7123484bb90b11ff50dd20f7ee623c0dadd93d80472355905b879071b8d",
+      "holdingsDate": "2026-10-02",
+      "retrievedDate": "2026-10-05",
+      "completeLeafRows": 1031,
+      "equityRows": 1026,
+      "classificationCounts": {
+        "equity": 1026,
+        "cash": 2,
+        "other": 3
+      },
+      "issuerAssetClassCounts": {
+        "Equity": 1026,
+        "Money Market": 1,
+        "Cash": 1,
+        "Cash Collateral and Margins": 1,
+        "Futures": 2
+      },
+      "totalWeightPercent": 99.97,
+      "equityWeightPercent": 99.82,
+      "marketValueTotalUSD": 48932138183.56,
+      "negativeMarketValueRows": 0,
+      "negativeWeightRows": 0,
+      "zeroWeightRows": 93,
+      "duplicateTickerRows": 0,
+      "missingTickers": 0,
+      "aggregateRowsIncluded": 0,
+      "weightTreatment": "Preserved issuer Weight (%) exactly. No normalization or invented residual holdings.",
+      "netAssetsDenominator": "Not used: public product page net assets is a different date from this holdings snapshot."
+    },
+    {
+      "fundId": "us-IWF",
+      "sourcePage": "https://www.ishares.com/us/products/239706/ishares-russell-1000-growth-etf",
+      "sourceUrl": "https://www.ishares.com/us/products/239706/ishares-russell-1000-growth-etf/latest-holdings.csv",
+      "rawFile": "IWF-holdings.csv",
+      "sha256": "5fa1edc62d4e65e8a27ac2c8b4f3d18580eb4f9a7347f2e4cf9715ac2fc687d4",
+      "holdingsDate": "2026-10-02",
+      "retrievedDate": "2026-10-05",
+      "completeLeafRows": 377,
+      "equityRows": 373,
+      "classificationCounts": {
+        "equity": 373,
+        "cash": 2,
+        "other": 2
+      },
+      "issuerAssetClassCounts": {
+        "Equity": 373,
+        "Money Market": 1,
+        "Cash Collateral and Margins": 1,
+        "Futures": 1,
+        "Cash": 1
+      },
+      "totalWeightPercent": 99.95,
+      "equityWeightPercent": 99.86,
+      "marketValueTotalUSD": 129384758005.68,
+      "negativeMarketValueRows": 1,
+      "negativeWeightRows": 1,
+      "zeroWeightRows": 65,
+      "duplicateTickerRows": 0,
+      "missingTickers": 0,
+      "aggregateRowsIncluded": 0,
+      "weightTreatment": "Preserved issuer Weight (%) exactly. No normalization or invented residual holdings.",
+      "netAssetsDenominator": "Not used: public product page net assets is a different date from this holdings snapshot."
+    }
+  ],
+  "securityIdentityMethod": "US-EQUITY:<issuer ticker>. Cross-fund name, sector, exchange, and market currency exact match required. No inferred ISIN mapping. Ticker matching applies only to this same-date, same-issuer US fund universe.",
+  "crossFundIdentityConflicts": 0,
+  "uniqueEquityIdentities": 1031,
+  "classification": "Equity -> equity; Cash and Money Market -> cash; Cash Collateral and Margins and Futures -> other. Other rows remain available for disclosure and are excluded from equity scenarios.",
+  "sectorMethod": "Exact issuer sectors preserved; all repeated security identities have identical sectors.",
+  "validation": [
+    "Every leaf holding retained including zero-weight and non-equity rows.",
+    "All dates equal 2026-10-02.",
+    "All three fund weight totals within 0.10 percentage point of 100.",
+    "No aggregate holdings duplicated.",
+    "Quoted comma-separated market values parsed with Python CSV and Decimal.",
+    "Signed cash balances are preserved; scenarios hold cash unchanged.",
+    "No synthetic holdings, derived residual weights, or normalization."
+  ],
+  "rejectedCandidate": {
+    "ticker": "ITOT",
+    "reason": "Complete source had rounded Weight (%) sum 98.44% and ambiguous duplicate/missing tickers; not used in default example."
+  }
+}

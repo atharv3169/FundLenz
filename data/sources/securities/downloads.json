@@ -1,0 +1,53 @@
+[
+  {
+    "id": "AGG",
+    "url": "https://www.ishares.com/us/products/239458/ishares-core-u-s-aggregate-bond-etf/latest-holdings.csv",
+    "path": "AGG-holdings.csv",
+    "sha256": "4bd6ad25f2025fe3bdff103f8d37d58c9c62fca37f60789b6d23db1d55186d3b",
+    "checkedAt": "2026-10-05T15:07:27.577936+00:00"
+  },
+  {
+    "id": "HYG",
+    "url": "https://www.ishares.com/us/products/239565/ishares-iboxx-high-yield-corporate-bond-etf/latest-holdings.csv",
+    "path": "HYG-holdings.csv",
+    "sha256": "768569ff2323ee1c32711b78358c2d6a895a4e9e5254f8f6d38b40bad365d771",
+    "checkedAt": "2026-10-05T15:07:27.455523+00:00"
+  },
+  {
+    "id": "LQD",
+    "url": "https://www.ishares.com/us/products/239566/ishares-iboxx-investment-grade-corporate-bond-etf/latest-holdings.csv",
+    "path": "LQD-holdings.csv",
+    "sha256": "ad31a81ecffc46f12b2b58801f7f6d375592b7231911019a3da58df6142767c9",
+    "checkedAt": "2026-10-05T15:07:27.363218+00:00"
+  },
+  {
+    "id": "EMB",
+    "url": "https://www.ishares.com/us/products/239572/ishares-jp-morgan-usd-emerging-markets-bond-etf/latest-holdings.csv",
+    "path": "EMB-holdings.csv",
+    "sha256": "2cae14ce51e03b79b5a1ada7d784799d1c010e20fa9f3fe7c8d726f1b6c078c8",
+    "checkedAt": "2026-10-05T15:07:27.565928+00:00"
+  },
+  {
+    "id": "IAGG",
+    "url": "https://www.ishares.com/us/products/279626/ishares-core-international-aggregate-bond-etf/latest-holdings.csv",
+    "path": "IAGG-holdings.csv",
+    "sha256": "80f1d0d640c27c7774c77148dd8333eb7c5473476d460cb25b415b2f2d465bbe",
+    "checkedAt": "2026-10-05T15:08:21.010900+00:00"
+  },
+  {
+    "id": "nasdaqlisted",
+    "url": "https://www.nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.txt",
+    "path": "nasdaqlisted.txt",
+    "sha256": "3c3501d0bf0d6822efd42d3cd4b5d3b4c53757a8f7b34264317a7128df5e8b69",
+    "checkedAt": "2026-10-05T15:09:04.476678+00:00",
+    "lastModified": "Mon, 05 Oct 2026 15:01:28 GMT"
+  },
+  {
+    "id": "otherlisted",
+    "url": "https://www.nasdaqtrader.com/dynamic/SymDir/otherlisted.txt",
+    "path": "otherlisted.txt",
+    "sha256": "2f41bbc94a2b82fde19017080612ecb7fd220456193f9c2f905e618560f6f3c8",
+    "checkedAt": "2026-10-05T15:09:04.526931+00:00",
+    "lastModified": "Mon, 05 Oct 2026 15:01:28 GMT"
+  }
+]

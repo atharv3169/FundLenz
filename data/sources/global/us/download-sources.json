@@ -1,0 +1,50 @@
+[
+  {
+    "url": "https://www.sec.gov/files/company_tickers_mf.json",
+    "retrievedAt": "2026-10-05T15:07:59.712754+00:00",
+    "sha256": "58f94e65b28a8b9c9b2254ce7aabd153d5795f32d2dc277a6e34cf2727c52b36",
+    "bytes": 1236103,
+    "path": "sec-mutualfund-tickers.json",
+    "lastModified": "Mon, 05 Oct 2026 14:05:30 GMT"
+  },
+  {
+    "url": "https://www.nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.txt",
+    "retrievedAt": "2026-10-05T15:07:59.710932+00:00",
+    "sha256": "3c3501d0bf0d6822efd42d3cd4b5d3b4c53757a8f7b34264317a7128df5e8b69",
+    "bytes": 349956,
+    "path": "nasdaqlisted.txt",
+    "lastModified": "Mon, 05 Oct 2026 15:01:28 GMT"
+  },
+  {
+    "url": "https://www.nasdaqtrader.com/dynamic/SymDir/otherlisted.txt",
+    "retrievedAt": "2026-10-05T15:07:59.712145+00:00",
+    "sha256": "2f41bbc94a2b82fde19017080612ecb7fd220456193f9c2f905e618560f6f3c8",
+    "bytes": 542387,
+    "path": "otherlisted.txt",
+    "lastModified": "Mon, 05 Oct 2026 15:01:28 GMT"
+  },
+  {
+    "url": "https://www.sec.gov/data-research/sec-markets-data/investment-company-series-class-information",
+    "retrievedAt": "2026-10-04T20:17:12.559251+00:00",
+    "sha256": "3fa37076657b052840d4f5019c5b21776add48eb7d7dc2b25130eaef00a0c7f5",
+    "bytes": 95958,
+    "path": "sec-directory-page.html",
+    "lastModified": "Sun, 04 Oct 2026 20:07:32 GMT"
+  },
+  {
+    "url": "https://www.nasdaqtrader.com/trader.aspx?id=symboldirdefs",
+    "retrievedAt": "2026-10-04T20:17:18.548660+00:00",
+    "sha256": "d9e00af36c836d17067c7083323dd3d94f4e0a6407c703a4ab2fc50dcd488e7e",
+    "bytes": 114997,
+    "path": "nasdaq-definitions.html",
+    "lastModified": null
+  },
+  {
+    "url": "https://www.nasdaqtrader.com/dynamic/SymDir/mfundslist.txt",
+    "retrievedAt": "2026-10-04T20:18:24.345742+00:00",
+    "sha256": "b61e090542f16095396b2fe7339f2a6c7b975d4af85fddb49195a2bdb0e30fd7",
+    "bytes": 42993,
+    "path": "mfundslist.txt",
+    "lastModified": null
+  }
+]

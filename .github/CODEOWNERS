@@ -1,0 +1,16 @@
+# This file documents ownership. It becomes enforcement only when the repository
+# supports and enables required owner review. Daily data PRs use trusted checks.
+/app/ @atharv3169
+/components/ @atharv3169
+/lib/ @atharv3169
+/hooks/ @atharv3169
+/build/ @atharv3169
+/scripts/ @atharv3169
+/automation/ @atharv3169
+/.github/ @atharv3169
+/.openai/ @atharv3169
+/package.json @atharv3169
+/pnpm-lock.yaml @atharv3169
+/pnpm-workspace.yaml @atharv3169
+/vite.config.ts @atharv3169
+/next.config.ts @atharv3169

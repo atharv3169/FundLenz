@@ -1,0 +1,83 @@
+[
+  {
+    "file": "ishares-product-data.json",
+    "url": "https://www.ishares.com/uk/individual/en/product-data.jsn",
+    "status": 200,
+    "contentType": "application/json;charset=UTF-8",
+    "bytes": 81,
+    "sha256": "cf36de48ff071127c1e79a9ebee017521fa3cf3c0ee329d881c5909968d93604",
+    "retrievedAt": "2026-10-04T21:22:42.947162+00:00",
+    "peek": "{\"siteContext\":\"ishares-uk\",\"locale\":\"en_GB\",\"timestamp\":1791148962865,\"data\":{}}"
+  },
+  {
+    "file": "ishares-v2-product-data.json",
+    "url": "https://www.ishares.com/varnish-api/uk-retail01-product-data/product-data/api/v2/get-product-data",
+    "error": "HTTP Error 400: Bad Request"
+  },
+  {
+    "file": "ishares-screener.js",
+    "url": "https://www.ishares.com/varnish-api/app-container-service/resources/ishares-product-screener-1a0c493a308/main.fd2704851a1b8773.js",
+    "status": 200,
+    "contentType": "text/javascript",
+    "bytes": 4543468,
+    "sha256": "3d9f39cb08087befff56adbb5dac6197c83e439d8f3fa483ca904485e6865af6",
+    "retrievedAt": "2026-10-04T21:22:43.349094+00:00",
+    "peek": "(self.webpackChunkishares_product_screener=self.webpackChunkishares_product_screener||[]).push([[792],{2624(Y,d,f){\"use strict\";var y={};let b;function D(){return b}function P(e){c"
+  },
+  {
+    "file": "ishares-uk-screener.json",
+    "url": "https://www.ishares.com/varnish-api/blk-product-screener-server/api/v1/product-screener/product-data?country=gb&language=en&siteName=ishares-uk&userType=individual",
+    "status": 200,
+    "bytes": 4025804,
+    "sha256": "d9adf41c7279ea737ef097b571afd5486d9012d1be7a31b24d64d46fc6f61ef3",
+    "retrievedAt": "2026-10-05T15:07:59.717244+00:00"
+  },
+  {
+    "file": "vanguard-uk-main.js",
+    "url": "https://www.vanguard.co.uk/main.c7406e8bbe0a463d.js",
+    "status": 200,
+    "bytes": 138,
+    "sha256": "d0730561c4e935df4c093a77b7cc9c848a6092d40136c8537ec31eb05ed24ac6",
+    "retrievedAt": "2026-10-04T21:25:11.377000+00:00"
+  },
+  {
+    "file": "vanguard-au-main.js",
+    "url": "https://www.vanguard.com.au/personal/main.205396e1dbd3e235.js",
+    "status": 200,
+    "bytes": 2144497,
+    "sha256": "c8501823a806df3c7788d364527d47266997793a1f4339738a221fc36c78e1ef",
+    "retrievedAt": "2026-10-04T21:25:13.889162+00:00"
+  },
+  {
+    "file": "vanguard-au-funds.json",
+    "url": "https://www.vanguard.com.au/personal/api/products/personal/funds/allfunds",
+    "status": 200,
+    "bytes": 174509,
+    "sha256": "c383dd36308ae429532c1953fea368a65c4ea9471233d62e6b1b88b0da69c766",
+    "retrievedAt": "2026-10-04T21:26:20.000752+00:00"
+  },
+  {
+    "file": "vanguard-uk-runtime.js",
+    "url": "https://www.vanguard.co.uk/runtime.c32325a8d0841630.js",
+    "status": 200,
+    "bytes": 48316,
+    "sha256": "bfd956507053a08a643a5c9c51459d14131ea346305dea5babad2388b574809a",
+    "retrievedAt": "2026-10-04T21:26:17.233125+00:00"
+  },
+  {
+    "file": "vanguard-uk-41510.js",
+    "url": "https://www.vanguard.co.uk/41510.19cf7372903230c9.js",
+    "status": 200,
+    "bytes": 15377972,
+    "sha256": "9ccf6a556d9ccfebb5d361f207886f0293fde5953589319a330adbbdb2c3b2a9",
+    "retrievedAt": "2026-10-04T21:27:14.286283+00:00"
+  },
+  {
+    "file": "vanguard-au-detail-8207.json",
+    "url": "https://www.vanguard.com.au/personal/api/products/personal/fund/8207/detail?limit=-1",
+    "status": 200,
+    "bytes": 889986,
+    "sha256": "92d4dc12911f39fded98766c532039ba5f2d20aae2767cb6c8295c9ab940625f",
+    "retrievedAt": "2026-10-04T21:27:13.287138+00:00"
+  }
+]

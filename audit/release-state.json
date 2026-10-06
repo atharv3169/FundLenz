@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "dataset_sha256": "b91d6115c15877cd211b9f83e08c6300d78229727e0d227153d6d7b919b1fbf8",
+  "hash_scope": "all original public/data files sorted by path, each encoded as path + NUL + sha256 + newline; new bootstrap metadata excluded",
+  "source_commit": "0889a225ee1f8c5131635b8f6fba6dea8a3f743e",
+  "source_site_version": 9,
+  "imported_at": "2026-10-06T07:24:14.096802+00:00",
+  "source_checked_at": null,
+  "note": "Imported last accepted Site snapshot, not re-downloaded today. Existing source dates and limitations are retained."
+}

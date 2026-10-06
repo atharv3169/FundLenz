@@ -1,0 +1,160 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FundLenz bootstrap audit (not a daily run)",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "report_kind": {
+      "const": "bootstrap"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "prepared_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "checked_at": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "PARTIAL",
+        "FAIL",
+        "NO_CHANGE"
+      ]
+    },
+    "dataset_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "previous_dataset_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "catalogue_changed": {
+      "type": "boolean"
+    },
+    "sources_checked_this_run": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "accepted_units": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "blocked_units": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "open_issues": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "source_scope": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 5000
+    },
+    "data_dates_ref": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "bootstrap_integrity": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "candidate_validation": {
+          "enum": [
+            "not_run",
+            "passed",
+            "failed"
+          ]
+        },
+        "finance_regressions": {
+          "enum": [
+            "not_run",
+            "passed",
+            "failed"
+          ]
+        }
+      },
+      "required": [
+        "bootstrap_integrity",
+        "candidate_validation",
+        "finance_regressions"
+      ]
+    },
+    "publication": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "github_uploaded": {
+          "type": "boolean"
+        },
+        "automatic_updates_enabled": {
+          "const": false
+        },
+        "merged": {
+          "type": "boolean"
+        },
+        "deployed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "github_uploaded",
+        "automatic_updates_enabled",
+        "merged",
+        "deployed"
+      ]
+    },
+    "note": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 5000
+    }
+  },
+  "required": [
+    "schema_version",
+    "report_kind",
+    "run_id",
+    "prepared_at",
+    "checked_at",
+    "status",
+    "dataset_sha256",
+    "previous_dataset_sha256",
+    "catalogue_changed",
+    "sources_checked_this_run",
+    "accepted_units",
+    "blocked_units",
+    "open_issues",
+    "source_scope",
+    "data_dates_ref",
+    "validation",
+    "publication",
+    "note"
+  ]
+}

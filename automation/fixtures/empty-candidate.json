@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "run_id": "contract-fixture-empty",
+  "base_dataset_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "task_type": "reinvestigation",
+  "started_at": "2026-10-06T07:00:00Z",
+  "completed_at": "2026-10-06T07:00:01Z",
+  "source_checks": [],
+  "proposals": [],
+  "summary": "Fictional schema fixture with an empty supplied queue; not a real FundLenz audit."
+}

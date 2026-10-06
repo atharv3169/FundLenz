@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "retrievedAt": "2026-10-05T15:12:59.494785+00:00",
+  "source": "https://portal.amfiindia.com/spages/NAVAll.txt",
+  "directorySource": "https://www.amfiindia.com/online-center/portfolio-disclosure",
+  "sourceSha256": "db16ca5a8b61c13875929dd7cde1fc78a02de2f2688493bbb18288f6e89dae08",
+  "stats": {
+    "fundRecords": 3372,
+    "planRecords": 14354,
+    "fundHouses": 55,
+    "directoryHouses": 57,
+    "latestNavDate": "2026-10-05",
+    "plansAtLatestDate": 1,
+    "holdingsFunds": 803,
+    "holdingsFundHouses": 21,
+    "holdingsDate": "2026-08-31"
+  }
+}

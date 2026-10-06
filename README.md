@@ -1,5 +1,67 @@
 # FundLenz
 
-Private staging repository for Atharva Sahu's FundLenz educational portfolio lab.
+FundLenz is a free educational portfolio lab and source-based fund, stock and bond catalogue created by Atharva Sahu. It does not provide investment advice or recommend investments.
 
-The validated website source, catalogue snapshots, provenance and controlled-update specification are being imported. The existing live website remains unchanged; Gemini updates and external hosting are not enabled by this initial commit.
+This is the prepared GitHub migration package for the existing website. It preserves the application and its current data snapshots, and adds the operating specification for controlled catalogue updates. **Daily Gemini updates and external hosting are not active yet.** See [migration status](docs/migration/STATUS.md).
+
+## Included catalogue
+
+| Dataset | Retained coverage | Location |
+|---|---|---|
+| Indian funds | 3,372 grouped records; 14,354 plan/option codes | `public/data/catalog.json` |
+| Indian holdings | 803 portfolios; 49,022 positions; 21 fund houses | `public/data/holdings/` |
+| International funds | 21,389 directory records | `public/data/global/` |
+| Stocks, bonds and other securities | 31,664 reference records | `public/data/securities/` |
+| US example | IVV, IWB and IWF; illustrative investment amounts | `public/data/us-example.json` |
+
+These counts describe different, partly overlapping kinds of records; they are not a count of unique active investments. Retained source dates differ: Indian holdings are August 2026, US example holdings are 2 October 2026, some listing/NAV sources were checked on 5 October 2026, and the SEC series registry is dated June 2026. The preparation date is not a new financial-data date.
+
+Source records, hashes and ingestion scripts are in `data/sources/` and `scripts/data/`. Original AMC workbooks that were never bundled remain referenced by URL/checksum. This package contains all files retained by the existing Site, not every remote document on the Internet. Detailed coverage and methodology remain in [the original Site README](docs/migration/original-site-readme.md).
+
+## Website structure
+
+- `/`: the existing portfolio lab and US example.
+- `/catalogue-global`: default international catalogue.
+- `/catalogue-india`: Indian catalogue and available holdings.
+- `/catalogue-securities`: stocks, bonds and other reference securities.
+- Existing legacy redirects, mobile layout, downloadable template, CSV import/export, saved sessions, exposure/overlap analysis and deterministic scenarios remain included.
+
+UI code is in `app/` and `components/`, financial calculations in `lib/finance.ts`, and catalogue records in `public/data/`. The two source-check labels now read their date from a small JSON file; their current visible text is unchanged. No calculation or styling change was made for this export.
+
+## Agreed automation design
+
+Read [the full operating specification](automation/OPERATING-SPEC.md).
+
+1. Gemini checks due authoritative sources for new catalogue data.
+2. A separate Gemini task independently investigates persistent flagged items. A validator warning is not assumed to be true.
+3. Trusted code reconciles candidates, verifies evidence and keeps complete last-verified units when an update fails. Newer verified snapshots take priority.
+4. Only sanitized, validated data changes can enter automatic merge/deployment. Gemini cannot edit the application, rules or publishing configuration.
+5. Latest reports and the persistent issue queue keep failures visible. ChatGPT is an optional reviewer and not a subscription-dependent gate.
+
+This package includes the complete prompts, JSON contracts, source inventory, bootstrap integrity checks and four unresolved source-page checks from the existing ledger. It does **not** yet include the operational source adapters, Gemini runner, candidate validator/publisher, schedule or configured GitHub protection. See [the workflow implementation contract](automation/workflow-spec.md).
+
+## Local checks
+
+Use the versions declared in `package.json`: Node 22.13.0 or later and pnpm 11.25.0. Install the locked dependencies with that package manager:
+
+```sh
+pnpm install --frozen-lockfile
+python3 scripts/automation/verify-bootstrap.py
+node scripts/automation/verify-contracts.mjs
+pnpm verify
+pnpm typecheck
+```
+
+The integrity check intentionally preserves this imported baseline. It must not become the future production validator: real future data changes should be verified against authoritative evidence, not forced to retain today's hashes. Current release-specific regression expectations also need a separate evolving-data validation path.
+
+## Hosting and repository status
+
+The original Vinext/Sites build is retained. The live Site project identifier was removed from the export so this separate copy is not accidentally linked to the existing deployment. Port and test the build for the selected external host before changing DNS. Uploading source to GitHub alone does not activate hosting.
+
+The repository is `atharv3169/FundLenz`, private during preparation. It contains this code and data import. GitHub visibility/plan and required merge checks must still be configured before enabling automatic catalogue publication.
+
+There are no API keys in the package. Supply future credentials through the appropriate secret settings, never through public files or Gemini prompts. No open-source licence has been selected; third-party source material retains its applicable terms.
+
+## Author and contact
+
+Atharva Sahu · info@fundlenz.com
