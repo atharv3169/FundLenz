@@ -1,6 +1,6 @@
 export type Holding = { id: string; name: string; sector: string; type: "equity" | "cash" | "other"; weight: number };
 export type Fund = { id: string; portfolioId: string; name: string; category: string; date: string; source: string; holdings: Holding[]; scenarioScope?: "disclosed_equities_only"; sourceSha256?: string; derivatives?: boolean };
-export type Dataset = { mode: "demo" | "imported" | "official"; funds: Fund[]; note: string; currency?: "USD" | "INR"; region?: "US" | "IN" };
+export type Dataset = { mode: "demo" | "imported" | "official"; funds: Fund[]; note: string; currency?: "USD" | "INR"; region?: "US" | "IN" | "GLOBAL" };
 export type Amounts = Record<string, number>;
 export type Scenario = { broad: number; sector: string; sectorShock: number; stock: string; stockShock: number };
 export type Exposure = { id: string; name: string; sector: string; weight: number; value: number; funds: number };

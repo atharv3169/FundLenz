@@ -1,0 +1,707 @@
+{
+  "schema_version": 1,
+  "purpose": "Owner-requested international holdings selection and portfolio analysis. Exact reviewed Site source hashes; original migration baseline retained.",
+  "source_site_version": 10,
+  "source_commit": "fda0ed5f341c80f8c0afb9557f073f6a3e481dee",
+  "verification": {
+    "suite_checks": 620894,
+    "typecheck": "passed",
+    "production_build": "passed",
+    "browser_preview": "unavailable"
+  },
+  "files": [
+    {
+      "path": "components/fundlens.tsx",
+      "bytes": 53793,
+      "sha256": "c123a6449fcffaae08124165552448a19490776d693468102d72c99d1f889372",
+      "scope": "application",
+      "previous_sha256": "4fb957aa743508fd5b1a4a2006b451f728a4211a6c951be6600e9543522131d2"
+    },
+    {
+      "path": "components/global-catalog.tsx",
+      "bytes": 31590,
+      "sha256": "ce08580bfec6163cb3316bbda185a82a021bb46344f85f7dc9241743cfa5ab19",
+      "scope": "application",
+      "previous_sha256": "56dd23e920336496ed2b01127f6617cf3b520eb2154ab4d35e98642660244b54"
+    },
+    {
+      "path": "data/sources/global/holdings/ACWI.csv",
+      "bytes": 376792,
+      "sha256": "55ed196b36669423c3149a21cf57d6c0105a99f91db497b4d3ecde4124dbab4e",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/ACWX.csv",
+      "bytes": 334393,
+      "sha256": "416d022b9aece3feb9212229b348aac6c26572c8ac1a2e8fe87995a136468248",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/AGG.csv",
+      "bytes": 3689891,
+      "sha256": "4bd6ad25f2025fe3bdff103f8d37d58c9c62fca37f60789b6d23db1d55186d3b",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/DGRO.csv",
+      "bytes": 62842,
+      "sha256": "40d5f298d243b61789bb82eba438ffd1bceeef859350cd389b78cd23a44f608f",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/DVY.csv",
+      "bytes": 16977,
+      "sha256": "a42e5338de5b4ef654e451a7dd8d38720993b6fac92e3f300dd24d3ea46628f3",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/EEM.csv",
+      "bytes": 233244,
+      "sha256": "c67b069752c016324598b9d107ce8ccabe8c4be23041c37087ec26e5d5210401",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/EFA.csv",
+      "bytes": 116359,
+      "sha256": "0e1e5019966809eb896a2aad30d7cd1f4a3891396f224ae975bcd7335b9eff71",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/EMB.csv",
+      "bytes": 175942,
+      "sha256": "2cae14ce51e03b79b5a1ada7d784799d1c010e20fa9f3fe7c8d726f1b6c078c8",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/HDV.csv",
+      "bytes": 13197,
+      "sha256": "40fb2cb62443bebdae595999dcfbdeb1306ba26c8e960612b1b2b6dbb94370ca",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/HYG.csv",
+      "bytes": 387904,
+      "sha256": "d080b6f5d1f1184953c7e02534d16ea33c485a46e8b5a7571c9446a3e2adada5",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IAGG.csv",
+      "bytes": 2427856,
+      "sha256": "e6c815745f7846fe997cc2a87adc31c56371f123c9d0e6cfb1ecb95f16b722aa",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IBB.csv",
+      "bytes": 39612,
+      "sha256": "44545a29c457220622bd384e1f7eb2b1a09782be2139aaba2756d24892355489",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IDU.csv",
+      "bytes": 7998,
+      "sha256": "0ed250071654ed1f2da4c24e3f17dcac53daf4144c2bb803c50590c456ed5dea",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IEF.csv",
+      "bytes": 5624,
+      "sha256": "49c827ba36c5c0f3c532895c5fc6638bc1f482a7345ac1e60fc4d06266724518",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IEFA.csv",
+      "bytes": 446719,
+      "sha256": "9b09ae3b5f3200e557e8c6221c00ccf55e3352db0f2fe4d34b1b7f0e8dee913a",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IEMG.csv",
+      "bytes": 567567,
+      "sha256": "945a8687021dc62c6ec480f7c40da6beb4534a456016a02220545b7a5cb46f32",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/ITA.csv",
+      "bytes": 8934,
+      "sha256": "25229033423d3a55dc4796b7138c871ddd05b381c9a41def94b0eea1409217ee",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/ITOT.csv",
+      "bytes": 388706,
+      "sha256": "52f2e01a40eaa9b6a126b5cbb75af903a9e4fff328d2004a4491c7b8e29c0032",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IVV.csv",
+      "bytes": 83461,
+      "sha256": "011334fd2af8bfa741ea385f5dac1603846fe726a51b4880c3f542571350d1c6",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IWB.csv",
+      "bytes": 162947,
+      "sha256": "15afd7123484bb90b11ff50dd20f7ee623c0dadd93d80472355905b879071b8d",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IWD.csv",
+      "bytes": 139257,
+      "sha256": "f113527ec24cc4eb9230e0e804b3886b2bde8f5099101e8c950d8983ce165f78",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IWF.csv",
+      "bytes": 61275,
+      "sha256": "cf3265bdc2e4fc84fa7504441915725fce9425367cef61652e9fc930bec76e31",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IWM.csv",
+      "bytes": 321521,
+      "sha256": "3b8892b0f3e973ebd6f56eb0e3865c65754bec212180c596cca6057a4cd06aaf",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IXUS.csv",
+      "bytes": 837018,
+      "sha256": "d22e690bcce87e617f486059d4d950153eb64e6a1b83bbae205000c678d6d647",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IYC.csv",
+      "bytes": 26474,
+      "sha256": "036fb03c877619577c91f579c8caca8e52c092736c24b47f2f3f74d9c4832f18",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IYE.csv",
+      "bytes": 6981,
+      "sha256": "6797bc90a97b8dcf1c91c606013174a02e2920b7c6bbd97512bdb451873b0dda",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IYF.csv",
+      "bytes": 23437,
+      "sha256": "56e55f2eb36b741726744fe35715b7b5dd65a9831620513afa08076d7a364f0b",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IYH.csv",
+      "bytes": 16505,
+      "sha256": "33b495b9d6c0fdc28afb4e8c64b88ac5a4522c5961edae9f26b2afd3d1e3973d",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IYJ.csv",
+      "bytes": 33924,
+      "sha256": "2d1781041c2cc3ba0f83e22dd960fb2c77c30450d231c078c13d096c982925ae",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IYK.csv",
+      "bytes": 9639,
+      "sha256": "301a39de40d5c1e03b2bd809b9f25f90268bf4c1a30c02e202d569db819b3f74",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IYM.csv",
+      "bytes": 6970,
+      "sha256": "3d219d3c933b555e6e24287d7f3d09b6f96af42341ed713e77de37ebcd6daa07",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IYR.csv",
+      "bytes": 10432,
+      "sha256": "6ebe2137e0c498c70b40929241fcf4cbc82fe23f5a533d851b7dd2ac546f89ef",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IYT.csv",
+      "bytes": 8145,
+      "sha256": "ea9d9b2fe4a2293f908681316b9160dc9e3be4fcab7c2acc3c7d36343bb88022",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/IYW.csv",
+      "bytes": 25823,
+      "sha256": "cb7c773a65a657d96b11cf580b479783f0f181f29c6881f6d160b32db86f8b58",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/LQD.csv",
+      "bytes": 901309,
+      "sha256": "f37be0a97fb71b2a354075f80aa23b69a10c43c81d59113a128a2dd208a95f7e",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/MTUM.csv",
+      "bytes": 21206,
+      "sha256": "638ace8b88416d578df934319eb0d1e7d8b8c9d413ec3638109188b48e1361af",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/QUAL.csv",
+      "bytes": 19904,
+      "sha256": "b78f82e6de04f1e7f169e077f5ce891fdf7ae6743cbff27dc4d4bca7c47be913",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/SGOV.csv",
+      "bytes": 7502,
+      "sha256": "06e7e41d21a7593c78abde0772b52e03bc94ca4aed5d76aadf0505a1593cfbc1",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/SHY.csv",
+      "bytes": 26583,
+      "sha256": "d758716291bcd47fae3c6abff7d8522223a2d4f48c80f703faa78a94bacd572f",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/SIZE.csv",
+      "bytes": 78907,
+      "sha256": "d5a9680d377f6de08e69e913dc48a7916f078628103684dd80f1a2b1ce00757f",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/SOXX.csv",
+      "bytes": 6401,
+      "sha256": "2a9d78e836d39a4c3c995aa18d0fee7e225498674862e201d78bda378728e5e5",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/TIP.csv",
+      "bytes": 14891,
+      "sha256": "add8c509581e5e73837015b5634bfa92f3cc483b1594db11ede10546ea9b044d",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/TLT.csv",
+      "bytes": 14577,
+      "sha256": "aed11f0ad8335e65665f0f0d788d693a3a95a8016e7e09d4e44538f52be09d48",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/USMV.csv",
+      "bytes": 29306,
+      "sha256": "da591076403ed627902a54aee9f154b4c00b436f70b497eb47d5975ed5e32063",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/VLUE.csv",
+      "bytes": 24395,
+      "sha256": "e9acf28a066bed1eb93e107053c27edaa75f12af8b24b62c6d4ba19e3d6c70f1",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/downloads.json",
+      "bytes": 29953,
+      "sha256": "95e89ba96936355f39b3f1c1b204d663875c98146ab806d754b0107648c15f80",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/ishares-us-products.html",
+      "bytes": 495682,
+      "sha256": "af0be408d6cc396029461dfb3b872ca3157004a0b6e11dbbfa3b3eaecab784dc",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/sources.json",
+      "bytes": 20780,
+      "sha256": "c3d34aff4423011bbd88ffb835a95bbb899a2a95683893a2361e8fbaaeefcab0",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "data/sources/global/holdings/validation.json",
+      "bytes": 10344,
+      "sha256": "fc3df0cb30bd9cf9aec7133730ca2aa9459cc3831e3b33d27274da6620bd7bda",
+      "scope": "retained_sources",
+      "previous_sha256": null
+    },
+    {
+      "path": "docs/global-portfolio-lab.md",
+      "bytes": 3655,
+      "sha256": "8566f7b139da43fb55f4e41e60d6856a3c8b7a6ae313039e9cf057e57ca8eab8",
+      "scope": "application",
+      "previous_sha256": null
+    },
+    {
+      "path": "lib/finance.ts",
+      "bytes": 8451,
+      "sha256": "032a11b7dcde9fe793c3bb2949b6f82a64c9a06bc771126ea34ea7330c952733",
+      "scope": "application",
+      "previous_sha256": "dda2b11ac0fcfe81cfdfc3ede9790f0de9c555b4a066645ae1ac8e2fcdd27b49"
+    },
+    {
+      "path": "lib/global-portfolios.ts",
+      "bytes": 3554,
+      "sha256": "0ea2b2f1a117fa764d3dbb073c40dec1e36d882e25b71aca3ebf1c20fa2809da",
+      "scope": "application",
+      "previous_sha256": null
+    },
+    {
+      "path": "lib/portfolios.ts",
+      "bytes": 1241,
+      "sha256": "da12eef7b476b331d3742b950f08465b0c7d942cd1e1c66ca2269992c651b3bf",
+      "scope": "application",
+      "previous_sha256": "93ebbda2694c870a1bc16e4f41f49508077c474450c323c891f90b4f45ba5b0e"
+    },
+    {
+      "path": "public/data/global/holdings-coverage.json",
+      "bytes": 10344,
+      "sha256": "fc3df0cb30bd9cf9aec7133730ca2aa9459cc3831e3b33d27274da6620bd7bda",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings-index.json",
+      "bytes": 20347,
+      "sha256": "6f69278c1732642eb7601e89ac0e926947fb760d32440af12e2e5f72cf8666e7",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-03bf0629efe9bc9b.json",
+      "bytes": 142662,
+      "sha256": "2b86aa176bc9dd92f949de1cf5d2286900e468220256125384bc0ea7f379d97e",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-06bd6b19c3cdb00d.json",
+      "bytes": 29649,
+      "sha256": "c7c6b943c7c1255222b1990979f83611d286bb68b1e75642290babf1f66c8745",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-09834b06f7e2edec.json",
+      "bytes": 384030,
+      "sha256": "9b505a94ae7ba719a6baaf36f35bfb38a06ddace2da937d50b37f3e4ffac0b0b",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-1385af9183fca203.json",
+      "bytes": 14933,
+      "sha256": "fb4ae570ab1da5b0e3303541ca165313144d3f7f28ff7dbd44f4ce27be487386",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-14347ef8c2f9531a.json",
+      "bytes": 43047,
+      "sha256": "c5978810c66784de6cb4783b7990027937898041330a243bfb7d6cf2c156a480",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-20111354bff3d039.json",
+      "bytes": 583000,
+      "sha256": "50927034f031844b912c5d84ca67591c1375c98e19c5e47a437791365a90bc6c",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-21a4830b9cc8a93e.json",
+      "bytes": 26042,
+      "sha256": "2ea5a6b45c2193aa87a3e3c394ee36f7f8a0ed705b1c1f25b9b74bdd4c9a3a52",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-26f420b348de2f9a.json",
+      "bytes": 46922,
+      "sha256": "2765da6764ef95dfe6027953435d959f20dd0be07352e7ed03c116a00935ed2a",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-31093d24066131ae.json",
+      "bytes": 17367,
+      "sha256": "8bd758f549a98145aaa551f30b7946818bc9a9ed8792b2364a4f629d08090af1",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-37b6a88458ede6c6.json",
+      "bytes": 14750,
+      "sha256": "393ae5eb3001605d4d2cf9ca80f3f32db904487e25d60625b2c33262db29f74e",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-40379ba76c662a62.json",
+      "bytes": 16064,
+      "sha256": "e7b98a49a71b13f7f2a9555eb724a8473140ee748a90602f4fb5d93f32336a27",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-40e3fbc237aeff61.json",
+      "bytes": 37121,
+      "sha256": "04585a0bfd7e954a46c9b651573c15f95353c1966a48dd3a325eadb9a667cdbe",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-5915de24c3ed3ff8.json",
+      "bytes": 244099,
+      "sha256": "d33e66b4282c1b4fef203c05b55aa2f6c2641aae3e9f23d9c1ba6f281670355c",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-5bd2d5e2823de8d0.json",
+      "bytes": 18505,
+      "sha256": "b7b5bec33484b5500d1684fb809e25d5c2b7e71d906dfc8909bb7ca1dd06218e",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-6044f65e016f47b3.json",
+      "bytes": 287431,
+      "sha256": "7cb52a475ae2012903143461f75ec99ce6f5ab7bfcae621b94fe651196ab39ad",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-6ae4d8beab2b5e8b.json",
+      "bytes": 144272,
+      "sha256": "8415f0176e1a52b4462311e8a74fe243e54a9ac8b616278a78898a2c969c68d7",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-6dde1eae5b433556.json",
+      "bytes": 61127,
+      "sha256": "72b3225aad99459021c382368632509c0b407a657fd3fc2a790d4a080919bb83",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-6e0c68dd9b4efc6e.json",
+      "bytes": 34840,
+      "sha256": "ad1a7cac8c2a992b157cc96e7bd5a580634dba148937a2eaa04d4a0585729f06",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-718ed3676361e1e4.json",
+      "bytes": 110741,
+      "sha256": "e4784a198635030fe7c45ff859b07970a08e1868551e2d965f5672e1f687fe8f",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-7c8281250daf8add.json",
+      "bytes": 14796,
+      "sha256": "a79e0826cff4c65b2516fa14789742c426f5a3d250f537b29f4cbbccfd171258",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-7cd14f073b526c68.json",
+      "bytes": 201141,
+      "sha256": "e48c5f89e2be29a144931c2e78a3eea135ed2bca8e5e3d3b3569d36a0c4f6d2a",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-7d64e17d7498a005.json",
+      "bytes": 106673,
+      "sha256": "50b5133d364b1a794dc2eaf2e84011aceb7ef4dc405d4a391435746fcce1961e",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-7f085db27a279ca4.json",
+      "bytes": 379229,
+      "sha256": "d82de81b74ae236c107b2e89fd8e25df638d33d0ba9fd0c07fbe41021bfc5453",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-8511adeeb3797d9b.json",
+      "bytes": 13014,
+      "sha256": "eacd8135a625de86ea2c9780fa44a52a3074e5fb918be747ecc42ff05336344c",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-8f566be978f41703.json",
+      "bytes": 70245,
+      "sha256": "887eb6c57146f34a3ad915fe45743167ff92cabca5efa18ea526f84349c331ce",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-8ff6fe47ed281b0e.json",
+      "bytes": 41920,
+      "sha256": "8f3cdc325b51a83c36071e4ca6e05ec91bcf5dccd85618a3d59c94373bc455f0",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-92cddd7ef2736545.json",
+      "bytes": 12922,
+      "sha256": "0cbfc7eaf407d8763f2d49ad5ba24066f0a8768616c8b65b4f1369b69c97f6e6",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-977d13691ae095aa.json",
+      "bytes": 7833,
+      "sha256": "e3bacec5651fd2adab81b2173a189a2b7987fdb7091098963f79084df808b2c7",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-984c0abd56931cb9.json",
+      "bytes": 44688,
+      "sha256": "09336036cdf74bbb1a3fca991bbf166bcf4dd9ea25d9c6997dfd06d18f4e568a",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-9adcbbd86644f553.json",
+      "bytes": 11111,
+      "sha256": "000b077a61cf85a07c68fbb8f4e09003ac11dd9915610bc5dcb07aa02ab1f2d6",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-9e74c11e4d0ad417.json",
+      "bytes": 6140,
+      "sha256": "0b83b4e75b4c45a75d4acdc5d5bc4c27ae2d45a8e1cb50171bd41c47b9a9acd2",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-a6cff1b3241488a5.json",
+      "bytes": 51093,
+      "sha256": "b558d6c65a16d89d2d3566ace50c1454956bf68cb7342fdd7392fd9e5dddf632",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-b2168140d3503a43.json",
+      "bytes": 890305,
+      "sha256": "c5511acd6fa0c85ef3d5dd26a19ce410f832017ef4c9e4fd13bfc9d8cf1491aa",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-b307ce860b9156ce.json",
+      "bytes": 23430,
+      "sha256": "61cad5eeb265063bb5cad827005ca17fc75c837c3e1c498680b2ddb55c04c1f1",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-cae61d16fb8a1c1e.json",
+      "bytes": 561597,
+      "sha256": "66039398aedc5f143f48e33efbccc5c26f5477dd34ed3bed1af077e0541fb1c4",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-f3c41e7476bc4d65.json",
+      "bytes": 29804,
+      "sha256": "3b1bdb61972c05828466be240efd30466d3c4760dc00f601a86386ca29ace711",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-f7a1fb38b2fe0000.json",
+      "bytes": 177951,
+      "sha256": "e6aaaa09ba051d8bd596c305847e706c15fe583e650b527896174b17b265a404",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "public/data/global/holdings/g-ff45e6efa1128e40.json",
+      "bytes": 14448,
+      "sha256": "30494afd1db8e5e616d5ef5ab34e30a34ad6a8ac4d3826bcaada5c3963bd028d",
+      "scope": "production_data",
+      "previous_sha256": null
+    },
+    {
+      "path": "scripts/data/build_global_holdings.py",
+      "bytes": 10008,
+      "sha256": "3dc6dc9ffe3bd1948cf2c94d96cff9da5cc0b85846f2deb4ba11ede0aa1fe340",
+      "scope": "application",
+      "previous_sha256": null
+    },
+    {
+      "path": "scripts/data/fetch_global_holdings.py",
+      "bytes": 1683,
+      "sha256": "c07b388b3f02d2ce6334783fd8cff4b5a5831b316d5cd997bae18c06677905ab",
+      "scope": "application",
+      "previous_sha256": null
+    },
+    {
+      "path": "scripts/verify-all.mjs",
+      "bytes": 998,
+      "sha256": "bc382839f5df2017bf73508e458e3603c9730bdffd195d3cf1b641d8a183e368",
+      "scope": "application",
+      "previous_sha256": "ec646b78c1c7d9b6d2d73cd5a0218357c930521fae44abae3141f53c3c5440aa"
+    },
+    {
+      "path": "scripts/verify-global-portfolios.mjs",
+      "bytes": 5732,
+      "sha256": "ed31187575dd08c1e509eb343ac62189e9695174210c91731603af557912904f",
+      "scope": "application",
+      "previous_sha256": null
+    }
+  ]
+}

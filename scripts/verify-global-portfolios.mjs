@@ -1,0 +1,61 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+import { getGlobalHoldingsIndex, getGlobalPortfolio, globalSelection } from '../lib/global-portfolios.ts';
+import { loadOfficialDataset } from '../lib/portfolios.ts';
+import { createSession, restoreSession } from '../lib/session.ts';
+import { analyze, overlap, stress } from '../lib/finance.ts';
+let checks=0;const check=(x,m)=>{checks++;assert(x,m);};
+const localFetch=async url=>new Response(fs.readFileSync('public'+url));
+let calls=0;globalThis.fetch=async()=>{calls++;return new Response('',{status:503});};
+assert.deepEqual((await Promise.allSettled([getGlobalHoldingsIndex(),getGlobalHoldingsIndex()])).map(x=>x.status),['rejected','rejected']);check(calls===1,'Index request coalesces');
+globalThis.fetch=localFetch;const index=await getGlobalHoldingsIndex(),ids=Object.keys(index.portfolios);
+check(ids.length>=30,'Broad verified portfolio coverage');
+const catalogue=JSON.parse(fs.readFileSync('public/data/global/catalog.json'));
+const downloads=JSON.parse(fs.readFileSync('data/sources/global/holdings/downloads.json'));
+const coverage=JSON.parse(fs.readFileSync('public/data/global/holdings-coverage.json'));
+check(coverage.accepted.length===ids.length,'Coverage count');
+check(fs.readdirSync('public/data/global/holdings').filter(p=>p.endsWith('.json')).length===ids.length,'No orphan snapshots');
+const first=ids[0];calls=0;globalThis.fetch=async url=>{calls++;return new Response('',{status:500});};
+await assert.rejects(()=>getGlobalPortfolio(first));globalThis.fetch=localFetch;
+check((await getGlobalPortfolio(first)).id===first,'Portfolio fetch recovers after failure');
+const mismatched=ids[1];globalThis.fetch=async url=>new Response(JSON.stringify({...JSON.parse(fs.readFileSync('public'+url)),sourceSha256:'mismatch'}));
+await assert.rejects(()=>getGlobalPortfolio(mismatched),/different snapshots/);globalThis.fetch=localFetch;
+let totalHoldings=0;const identities=new Map();
+for(const id of ids){
+ const p=await getGlobalPortfolio(id),s=index.portfolios[id],d=downloads.find(x=>x.id===id),c=catalogue.funds.find(f=>f.id===id);
+ check(c?.tickers.includes(s.ticker)&&d.status==='downloaded','Exact catalogue and source match');
+ check(crypto.createHash('sha256').update(fs.readFileSync('data/sources/global/holdings/'+d.filename)).digest('hex')===p.sourceSha256,'Retained original checksum');
+ check(p.currency==='USD'&&p.scenarioScope==='disclosed_equities_only','Currency and scenario scope');
+ check(p.date<=index.checkedAt.slice(0,10),'No future snapshot');
+ check(new Set(p.holdings.map(h=>h.id)).size===p.holdings.length,'No duplicate positions');
+ const total=p.holdings.reduce((n,h)=>n+h.weight,0);check(Math.abs(total-100)<=.50000001&&Math.abs(total-s.weightTotalPct)<1e-9,'Published weights reconcile');
+ for(const type of ['equity','cash','other'])check(Math.abs(p.holdings.filter(h=>h.type===type).reduce((n,h)=>n+h.weight,0)-s[type+'Pct'])<1e-8,'Asset totals reconcile');
+ for(const h of p.holdings){
+  check(Number.isFinite(h.weight)&&Number.isFinite(h.marketValue)&&h.sourceRows.length>0,'Finite sourced holding');
+  if(h.type==='equity'){check(h.weight>=0,'Long equity');const k=JSON.stringify([h.name,h.sector]);check(!identities.has(h.id)||identities.get(h.id)===k,'Consistent security identity');identities.set(h.id,k);}
+ }
+ const a=analyze([p],{[id]:1000});check(Math.abs(a.equity-s.equityPct/100)<1e-10,'Analysis uses published equity total');
+ check(Math.abs(stress(a,{broad:-10,sector:'',sectorShock:0,stock:'',stockShock:0}).impact+.1*a.equity)<1e-10,'Equity-only stress arithmetic');
+ check(a.partialModel,'Official portfolio model is explicitly partial');
+ check(s.equityPct>0?Math.abs(overlap(p,p)-1)<1e-10:overlap(p,p)===null,'Self-overlap or no equity');totalHoldings+=p.holdings.length;
+}
+for(const r of coverage.rejected)check(!index.portfolios[r.id],'Failed source cannot be selected');
+assert.deepEqual(globalSelection(['us-IVV','us-IVV','notreal'],index),[ids.find(id=>index.portfolios[id].ticker==='IVV')]);
+check(globalSelection(ids,index).length===20,'Selection cap');
+const wanted=['IVV','EEM','TLT'].map(t=>ids.find(id=>index.portfolios[id].ticker===t));
+const data=await loadOfficialDataset(wanted),amounts=Object.fromEntries(wanted.map((id,i)=>[id,1000*(i+1)]));
+check(data.region==='GLOBAL'&&data.currency==='USD'&&data.funds.length===3,'Mixed investment regions in USD');
+const a=analyze(data.funds,amounts);check(a.total===6000&&a.invested===3,'Portfolio values propagate');
+const scenario={broad:-10,sector:'',sectorShock:-20,stock:'',stockShock:-30};
+const restored=await restoreSession(JSON.stringify(createSession(data,amounts,scenario,false)));
+assert.deepEqual(restored.data,data);assert.deepEqual(restored.amounts,amounts);check(!restored.exampleAmounts,'Global session restores');
+await assert.rejects(()=>loadOfficialDataset([...wanted,wanted[0]]),/distinct/);
+await assert.rejects(()=>loadOfficialDataset(ids.slice(0,21)),/1–20/);
+await assert.rejects(()=>loadOfficialDataset([wanted[0],'f-0000000000000000']),/one supported market/);
+await assert.rejects(()=>getGlobalPortfolio('../../etc/passwd'),/Invalid/);
+await assert.rejects(()=>getGlobalPortfolio('g-0000000000000000'),/not available/);
+check((await loadOfficialDataset(ids.slice(0,20))).funds.length===20,'Maximum portfolio loads');
+const ivv=data.funds[0],iwb=await getGlobalPortfolio(ids.find(id=>index.portfolios[id].ticker==='IWB'));
+check(overlap(ivv,iwb)>.7,'Real shared US securities match across funds');
+console.log(JSON.stringify({status:'passed',checks,selectablePortfolios:ids.length,holdings:totalHoldings,sessionRoundtrip:true,sourceChecksums:true,cacheRecovery:true},null,2));

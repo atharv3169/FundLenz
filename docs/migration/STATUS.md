@@ -16,14 +16,20 @@ The private repository `atharv3169/FundLenz` was created on 6 October 2026. Repo
 
 ## Not completed
 
-No Gemini API has been called; no automatic catalogue scan, production validator, scheduler, auto-merge, external hosting or DNS migration is active. Existing source values were not freshly re-downloaded during this preparation. The existing public FundLenz Site has not been changed.
+No Gemini API has been called; no automatic catalogue scan, production validator, scheduler, auto-merge, external hosting or DNS migration is active. Existing source values were not freshly re-downloaded during this preparation. The requested international-analysis feature was subsequently published to the existing Site as version 10; external hosting and automation remain inactive.
 
 ## Important design work for the next stage
 
-The application already enforces a common holdings snapshot/currency for selected analysis. Keep that behavior. Partial updates may leave different funds on different months in the catalogue, but must not permit mixed-period calculations or falsify aggregate dates.
+Indian and CSV-import workflows retain their existing date rules. The international feature supports explicitly disclosed comparisons of dated issuer snapshots in USD: the lab and report show a date range when disclosures differ. Never present those comparisons as a simultaneous historical portfolio or mix input currencies.
 
 Several current test expectations and ingestion scripts are release-specific. Preserve them as evidence of this release, and add adapter-specific evolving-data validation before enabling updates. Automatic merging must not rely on a test suite that either rejects every valid new date or has had those checks casually removed.
 
 The existing Vinext/Sites build is preserved in the export. A GitHub upload by itself does not port that build to Cloudflare Pages. Port and test the hosting adapter separately before connecting the live domain.
 
 The existing dependency audit is retained in `docs/quality-audit-2026-10-06.md`; this transfer does not claim that every upstream advisory is resolved.
+
+## International portfolio feature — Site version 10
+
+Published source: `fda0ed5f341c80f8c0afb9557f073f6a3e481dee`. The global catalogue now has selection checkboxes, an available-holdings filter, issuer holdings detail and a link into the portfolio lab. Coverage is 38 verified iShares ETFs and 17,126 positions. The original Indian catalogue and homepage example are retained.
+
+All six verification suites passed (620,894 counted assertions plus additional identity and exception checks), as did TypeScript checking and the production build. Browser preview infrastructure was unavailable. The original version 9 baseline is retained, with exact authorized changes recorded in the manual-release manifest. `audit/latest.json` remains a historical bootstrap report, not a new daily scan. See `docs/global-portfolio-lab.md` for source dates and modeling limits.

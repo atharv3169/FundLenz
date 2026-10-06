@@ -11,6 +11,7 @@ This is the prepared GitHub migration package for the existing website. It prese
 | Indian funds | 3,372 grouped records; 14,354 plan/option codes | `public/data/catalog.json` |
 | Indian holdings | 803 portfolios; 49,022 positions; 21 fund houses | `public/data/holdings/` |
 | International funds | 21,389 directory records | `public/data/global/` |
+| International analysis | 38 selectable ETFs; 17,126 holdings | `public/data/global/holdings/` |
 | Stocks, bonds and other securities | 31,664 reference records | `public/data/securities/` |
 | US example | IVV, IWB and IWF; illustrative investment amounts | `public/data/us-example.json` |
 
@@ -26,7 +27,7 @@ Source records, hashes and ingestion scripts are in `data/sources/` and `scripts
 - `/catalogue-securities`: stocks, bonds and other reference securities.
 - Existing legacy redirects, mobile layout, downloadable template, CSV import/export, saved sessions, exposure/overlap analysis and deterministic scenarios remain included.
 
-UI code is in `app/` and `components/`, financial calculations in `lib/finance.ts`, and catalogue records in `public/data/`. The two source-check labels now read their date from a small JSON file; their current visible text is unchanged. No calculation or styling change was made for this export.
+UI code is in `app/` and `components/`, financial calculations in `lib/finance.ts`, and catalogue records in `public/data/`. The two source-check labels now read their date from a small JSON file; their current visible text is unchanged. The subsequent version 10 feature adds international portfolio selection without changing the financial formulas or theme. See [international analysis coverage and methods](docs/global-portfolio-lab.md).
 
 ## Agreed automation design
 
@@ -52,13 +53,13 @@ pnpm verify
 pnpm typecheck
 ```
 
-The integrity check intentionally preserves this imported baseline. It must not become the future production validator: real future data changes should be verified against authoritative evidence, not forced to retain today's hashes. Current release-specific regression expectations also need a separate evolving-data validation path.
+The integrity check preserves the original import manifest and applies only the exact changes listed in `automation/manual-releases/global-portfolio-lab.json`. It must not become the future production validator: real future data changes should be verified against authoritative evidence, not forced to retain today's hashes. Current release-specific regression expectations also need a separate evolving-data validation path.
 
 ## Hosting and repository status
 
 The original Vinext/Sites build is retained. The live Site project identifier was removed from the export so this separate copy is not accidentally linked to the existing deployment. Port and test the build for the selected external host before changing DNS. Uploading source to GitHub alone does not activate hosting.
 
-The repository is `atharv3169/FundLenz`, private during preparation. It contains this code and data import. GitHub visibility/plan and required merge checks must still be configured before enabling automatic catalogue publication.
+The repository is `atharv3169/FundLenz`, private during preparation. It contains the original import plus the international-analysis update published as Site version 10. GitHub visibility/plan and required merge checks must still be configured before enabling automatic catalogue publication.
 
 There are no API keys in the package. Supply future credentials through the appropriate secret settings, never through public files or Gemini prompts. No open-source licence has been selected; third-party source material retains its applicable terms.
 

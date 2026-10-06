@@ -1,4 +1,4 @@
-name: FundLenz bootstrap integrity
+name: FundLenz release integrity
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   bootstrap-integrity:
-    name: Verify imported FundLenz baseline
+    name: Verify FundLenz baseline and reviewed release
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -21,10 +21,11 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
-      - name: Check original source and data fidelity
+      - name: Check source and data against approved release
         run: python3 scripts/automation/verify-bootstrap.py
 
-# This is an import-fidelity check, not a production catalogue validator.
+# This verifies the original import plus explicitly reviewed manual releases.
+# It is not an automatic production catalogue validator.
 # No schedule, API secret, repository write or deploy step is present.
 # Replace the baseline-only CI role through reviewed implementation before
 # accepting live data updates; retain the old release as a regression fixture.
