@@ -1,0 +1,62 @@
+{
+  "purpose": "Standalone Cloudflare Workers hosting; no UI or production data changes",
+  "parent_github_commit": "518bfe34f43640439799e233a291f4ee15d93e9f",
+  "files": [
+    {
+      "path": "package.json",
+      "previous_sha256": "422c0602cfc0f4aa61f4d16356be3b5de081fdf70452e3ec691e7665855b6aaf",
+      "sha256": "15c5be21babc975a5f683923ed46772effd5e987773b11aa7041f802f6752726",
+      "bytes": 2210,
+      "scope": "application"
+    },
+    {
+      "path": "vite.config.ts",
+      "previous_sha256": "6f6d890794fbe23f3e35cceb327f49d5977432a5aaf715e040a6408932da395b",
+      "sha256": "815c4b392f0971bdd2a4bb5c00b1c7a6c241c96f0eee45b75f3f09c57897dde8",
+      "bytes": 308,
+      "scope": "application"
+    },
+    {
+      "path": "build/cloudflare-worker.ts",
+      "previous_sha256": null,
+      "sha256": "50cec8e65586db26089a0161a2969dbf84ae3cd96488c4d6a6343459fc926a43",
+      "bytes": 207,
+      "scope": "hosting_configuration"
+    },
+    {
+      "path": "wrangler.jsonc",
+      "previous_sha256": null,
+      "sha256": "0ee93bae46a5cc6118b069d890415c97905c056c46f8285ed34d9217b96363d1",
+      "bytes": 352,
+      "scope": "hosting_configuration"
+    },
+    {
+      "path": "README.md",
+      "previous_sha256": null,
+      "sha256": "0512cee05eb7d0493c6a580a0625294b7deda54f154d70dbd50dd3db903dfc1c",
+      "bytes": 5817,
+      "scope": "hosting_configuration"
+    },
+    {
+      "path": "docs/migration/STATUS.md",
+      "previous_sha256": null,
+      "sha256": "728e9e93f334006e266f6c80e32c43d7b886790110ec0f8642c081c792f7538f",
+      "bytes": 4045,
+      "scope": "hosting_configuration"
+    },
+    {
+      "path": "docs/migration/CLOUDFLARE.md",
+      "previous_sha256": null,
+      "sha256": "f4d04edaff2e7915595f261b10d3f96573e497e39e52055a7188bdbccfd1df12",
+      "bytes": 3070,
+      "scope": "hosting_configuration"
+    },
+    {
+      "path": "scripts/automation/verify-bootstrap.py",
+      "previous_sha256": null,
+      "sha256": "ff9c1d341b50470462d7277f5ec030c92b4c30f57439dfa140a2fafe65e54e48",
+      "bytes": 6041,
+      "scope": "hosting_configuration"
+    }
+  ]
+}

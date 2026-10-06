@@ -53,11 +53,11 @@ pnpm verify
 pnpm typecheck
 ```
 
-The integrity check preserves the original import manifest and applies only the exact changes listed in `automation/manual-releases/global-portfolio-lab.json`. It must not become the future production validator: real future data changes should be verified against authoritative evidence, not forced to retain today's hashes. Current release-specific regression expectations also need a separate evolving-data validation path.
+The integrity check preserves the original import manifest and applies only the exact changes listed in `automation/manual-releases/global-portfolio-lab.json` and the separate hosting-only `cloudflare-hosting.json` manifest. It must not become the future production validator: real future data changes should be verified against authoritative evidence, not forced to retain today's hashes. Current release-specific regression expectations also need a separate evolving-data validation path.
 
 ## Hosting and repository status
 
-The original Vinext/Sites build is retained. The live Site project identifier was removed from the export so this separate copy is not accidentally linked to the existing deployment. Port and test the build for the selected external host before changing DNS. Uploading source to GitHub alone does not activate hosting.
+The GitHub copy now has a standalone Cloudflare Workers build using the existing pinned Vinext and Wrangler versions. See [Cloudflare setup](docs/migration/CLOUDFLARE.md) for the exact dashboard commands. The production build, deployment dry runs, type check and existing regression suites pass. The original live Site and DNS have not been changed; validate the workers.dev deployment before moving the domain.
 
 The repository is `atharv3169/FundLenz`, private during preparation. It contains the original import plus the international-analysis update published as Site version 10. GitHub visibility/plan and required merge checks must still be configured before enabling automatic catalogue publication.
 

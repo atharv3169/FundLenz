@@ -24,7 +24,7 @@ Indian and CSV-import workflows retain their existing date rules. The internatio
 
 Several current test expectations and ingestion scripts are release-specific. Preserve them as evidence of this release, and add adapter-specific evolving-data validation before enabling updates. Automatic merging must not rely on a test suite that either rejects every valid new date or has had those checks casually removed.
 
-The existing Vinext/Sites build is preserved in the export. A GitHub upload by itself does not port that build to Cloudflare Pages. Port and test the hosting adapter separately before connecting the live domain.
+The GitHub export is now configured for Cloudflare Workers using the existing pinned Vinext build. Build, deploy/preview dry runs, TypeScript and all six existing regression suites pass. All 1,114 public assets match the source byte for byte. A local Wrangler runtime check was blocked by this execution environment (`uv_interface_addresses`); live browser and runtime validation must occur on the first workers.dev deployment before moving the domain. See [Cloudflare setup](CLOUDFLARE.md).
 
 The existing dependency audit is retained in `docs/quality-audit-2026-10-06.md`; this transfer does not claim that every upstream advisory is resolved.
 

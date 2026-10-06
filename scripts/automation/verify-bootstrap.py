@@ -39,6 +39,15 @@ def verify():
         release_paths.add(relative)
         assert item["previous_sha256"] == original.get(relative, {}).get("sha256"), relative
         combined[relative] = item
+    hosting = read_json(ROOT / "automation/manual-releases/cloudflare-hosting.json")
+    hosting_paths = set()
+    for item in hosting["files"]:
+        relative = item["path"]
+        assert relative not in hosting_paths, f"Duplicate hosting path: {relative}"
+        hosting_paths.add(relative)
+        assert item["previous_sha256"] == combined.get(relative, {}).get("sha256"), relative
+        assert not relative.startswith(("app/", "components/", "lib/", "public/", "data/")), relative
+        combined[relative] = item
     counts = collections.Counter()
     metadata_import = 'import { catalogueSourceCheckLabel } from "@/lib/site-metadata";\n'
     changed_components = {"components/global-catalog.tsx", "components/fund-catalog.tsx"}
@@ -96,7 +105,7 @@ def verify():
     securities = read_json(ROOT / "public/data/securities/catalog.json")
     return {"status": "passed", "scope": "original migration plus reviewed manual release; not an automatic source validator",
             "release_files_verified": sum(counts.values()), "files_by_scope": dict(counts),
-            "manual_release_files": len(release_paths),
+            "manual_release_files": len(release_paths), "hosting_release_files": len(hosting_paths),
             "dataset_sha256": digest, "metadata_extractions": sorted(changed_components),
             "india_funds": len(india["funds"]), "india_plans": sum(len(f["plans"]) for f in india["funds"]),
             "global_records": len(global_data["funds"]), "security_records": len(securities["records"]),
