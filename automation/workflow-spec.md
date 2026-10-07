@@ -1,5 +1,8 @@
 # Daily workflow implementation contract
 
+**Implementation update — 7 October 2026:** The version-1 agreement below is retained. The source runner, two Gemini tasks, deterministic NAV/international-holdings validator, persistent audit/state, protected publisher and deployment observer are now implemented. Scheduling is dry-run only; publication is disabled. See [the operating guide](../docs/migration/AUTOMATION.md) for exact coverage, tests, budgets and outstanding activation gates. Historical statements saying “not yet implemented” describe the bootstrap, not the current code.
+
+
 This file describes the required runner. No daily workflow, Gemini request or automatic merge is active in this bootstrap.
 
 ## Jobs and credentials

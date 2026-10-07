@@ -1,5 +1,8 @@
 # Agreement-to-file traceability
 
+**Implementation update — 7 October 2026:** The version-1 agreement below is retained. The source runner, two Gemini tasks, deterministic NAV/international-holdings validator, persistent audit/state, protected publisher and deployment observer are now implemented. Scheduling is dry-run only; publication is disabled. See [the operating guide](../docs/migration/AUTOMATION.md) for exact coverage, tests, budgets and outstanding activation gates. Historical statements saying “not yet implemented” describe the bootstrap, not the current code.
+
+
 These are requirements, not claims that the live automation exists. `OPERATING-SPEC.md` is authoritative; implementation is staged after this bootstrap.
 
 | ID | Agreed rule | Location / verification |

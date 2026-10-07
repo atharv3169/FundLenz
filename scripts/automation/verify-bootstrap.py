@@ -4,6 +4,7 @@ import collections
 import datetime
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -26,6 +27,10 @@ def read_json(path):
 
 
 def verify():
+    sys.path.insert(0, str(ROOT / "scripts/automation"))
+    from adapters import allowed_paths
+    from common import dataset_hash
+    mutable = allowed_paths(ROOT)
     manifest = read_json(ROOT / "automation/baseline-manifest.json")
     combined = {item["path"]: item for item in manifest["files"]}
     assert len(combined) == len(manifest["files"]), "Duplicate manifest paths"
@@ -40,9 +45,10 @@ def verify():
         assert not path.is_symlink() and path.is_file(), f"Missing/unsafe file: {relative}"
         assert path.resolve().is_relative_to(ROOT), f"Escaping path: {relative}"
         raw = path.read_bytes()
-        assert len(raw) == item["bytes"], f"Length changed: {relative}"
         digest = hashlib.sha256(raw).hexdigest()
-        assert digest == item["sha256"], f"Content changed: {relative}"
+        if relative not in mutable:
+            assert len(raw) == item["bytes"], f"Length changed: {relative}"
+            assert digest == item["sha256"], f"Content changed: {relative}"
         counts[item["scope"]] += 1
         if item["scope"] == "production_data":
             hashes.append((relative, digest))
@@ -53,9 +59,12 @@ def verify():
     assert release["source_commit"] == manifest["source_commit"]
     assert release["source_site_version"] == manifest["source_site_version"]
     digest = hashlib.sha256("".join(p + "\0" + h + "\n" for p, h in sorted(hashes)).encode()).hexdigest()
-    assert digest == release["dataset_sha256"]
+    if digest != release["dataset_sha256"]:
+        deployed = read_json(ROOT / "public/automation-audit/release.json")
+        assert dataset_hash(ROOT) == deployed["dataset_sha256"], "Unidentified production dataset"
     policy = read_json(ROOT / "automation/policy.json")
-    assert policy["automation_enabled"] is False and policy["publication_enabled"] is False
+    runtime = read_json(ROOT / "automation/runtime.json")
+    assert policy["publication_enabled"] == runtime["publication_enabled"]
     assert policy["gemini_repository_write_access"] is False
     assert policy["gemini_tasks"] == ["fresh_scan", "reinvestigation"]
     metadata = read_json(ROOT / "public/data/site-metadata.json")
@@ -65,13 +74,14 @@ def verify():
     assert date.isoformat() == "2026-10-05", "Bootstrap must retain the original checked date."
     queue = read_json(ROOT / "audit/open-issues.json")
     ids = [i["issue_id"] for i in queue["issues"]]
-    assert len(ids) == len(set(ids)) == 4
+    assert len(ids) == len(set(ids))
     original = {x["url"] for x in freshness["holdingsPeriodChecks"] if x["status"] == "inconclusive"}
-    assert {x["source_url"] for x in queue["issues"]} == original
+    if not (ROOT / "audit/automation-state.json").exists():
+        assert len(ids) == 4 and {x["source_url"] for x in queue["issues"]} == original
     india = read_json(ROOT / "public/data/catalog.json")
     global_data = read_json(ROOT / "public/data/global/catalog.json")
     securities = read_json(ROOT / "public/data/securities/catalog.json")
-    return {"status": "passed", "scope": "reviewed standalone repository snapshot; not an automatic source validator",
+    return {"status": "passed", "scope": "immutable reviewed files plus dataset identity; automatic changes additionally require source replay and data gate",
             "release_files_verified": sum(counts.values()), "files_by_scope": dict(counts),
             "dataset_sha256": digest,
             "india_funds": len(india["funds"]), "india_plans": sum(len(f["plans"]) for f in india["funds"]),

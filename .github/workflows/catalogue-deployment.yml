@@ -1,0 +1,28 @@
+name: FundLenz data deployment confirmation
+on:
+  push:
+    branches: [main]
+    paths: ['public/automation-audit/release.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+  checks: read
+jobs:
+  observe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Confirm build and exact deployed dataset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/automation/deployment.py
+      - if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: fundlenz-deployment
+          path: work/deployment.json
+          retention-days: 90
+          if-no-files-found: warn

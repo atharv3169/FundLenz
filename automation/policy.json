@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "stage": "bootstrap_not_active",
-  "automation_enabled": false,
+  "stage": "scheduled_dry_run",
+  "automation_enabled": true,
   "timezone": "Asia/Kolkata",
   "gemini_tasks": [
     "fresh_scan",
@@ -56,7 +56,13 @@
     "public/data/freshness.json",
     "public/data/site-metadata.json",
     "audit/latest.json",
-    "audit/open-issues.json"
+    "audit/open-issues.json",
+    "public/data/global/holdings/*.json",
+    "public/data/global/holdings-index.json",
+    "public/data/global/holdings-coverage.json",
+    "audit/automation-state.json",
+    "public/automation-audit/latest.json",
+    "public/automation-audit/release.json"
   ],
-  "note": "Allowlist is a specification, not an active enforcement mechanism. Source evidence paths must be enumerated per approved adapter before any publisher is enabled. No generic data/** wildcard grants the model write access."
+  "note": "Daily source checks and two Gemini tasks run in dry-run mode. Publication requires runtime activation, protected main, dedicated publisher identity and exact-head trusted validation. The executable per-adapter allowlist is scripts/automation/adapters.py:allowed_paths; this broader specification never grants extra write authority."
 }

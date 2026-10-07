@@ -1,0 +1,90 @@
+name: FundLenz trusted data review
+
+# Only base-branch workflow/code executes. PR data is fetched as inert blobs.
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    name: Reproduce source-backed data
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+      checks: write
+    outputs:
+      run_id: ${{ steps.prepare.outputs.run_id }}
+      head: ${{ steps.prepare.outputs.head }}
+      base: ${{ steps.prepare.outputs.base }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+      - run: python3 -m pip install --disable-pip-version-check -r scripts/automation/requirements.txt
+      - name: Authenticate artifact producer and exact base
+        id: prepare
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          TRUSTED_BASE: ${{ github.event.pull_request.base.sha }}
+          FUNDLENZ_PUBLISHER_LOGIN: ${{ vars.FUNDLENZ_PUBLISHER_LOGIN }}
+        run: python3 scripts/automation/pr_gate.py prepare
+      - if: steps.prepare.outputs.run_id != ''
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: fundlenz-audit
+          run-id: ${{ steps.prepare.outputs.run_id }}
+          github-token: ${{ github.token }}
+          path: work
+      - name: Replay validation and compare every PR byte
+        if: steps.prepare.outputs.run_id != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/automation/pr_gate.py check
+      - if: steps.prepare.outputs.run_id != ''
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Check finance and catalogue behavior on reproduced data
+        if: steps.prepare.outputs.run_id != ''
+        run: |
+          npm install --global pnpm@11.25.0
+          pnpm install --frozen-lockfile
+          pnpm run typecheck
+          pnpm run verify
+      - name: Record exact-head required check
+        if: always() && steps.prepare.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GATE_JOB_STATUS: ${{ job.status }}
+        run: python3 scripts/automation/record_check.py
+
+  merge:
+    name: Merge validated data
+    needs: gate
+    if: needs.gate.outputs.run_id != ''
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    concurrency:
+      group: fundlenz-data-publication
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+      - name: Recheck current base/head and protected checks, then merge
+        env:
+          FUNDLENZ_PUBLISH_TOKEN: ${{ secrets.FUNDLENZ_PUBLISH_TOKEN }}
+          FUNDLENZ_PUBLISHER_LOGIN: ${{ vars.FUNDLENZ_PUBLISHER_LOGIN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          VALIDATED_HEAD: ${{ needs.gate.outputs.head }}
+          VALIDATED_BASE: ${{ needs.gate.outputs.base }}
+        run: python3 scripts/automation/merge.py

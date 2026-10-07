@@ -1,0 +1,118 @@
+name: FundLenz daily catalogue
+
+on:
+  schedule:
+    - cron: '47 3 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/catalogue-daily.yml'
+      - 'scripts/automation/**'
+      - 'automation/runtime.json'
+      - 'automation/source-registry.json'
+      - 'automation/gemini-*.md'
+      - 'automation/schemas/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fundlenz-catalogue-daily
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    name: Collect and validate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Install pinned validator dependencies
+        run: python3 -m pip install --disable-pip-version-check -r scripts/automation/requirements.txt
+      - name: Run adversarial validator tests
+        run: python3 -m unittest discover -s scripts/automation/tests -v
+      - name: Locate previous durable state
+        id: state
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/automation/restore_state.py
+      - name: Restore persistent issues and source cadence
+        if: steps.state.outputs.run_id != ''
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: fundlenz-state
+          run-id: ${{ steps.state.outputs.run_id }}
+          github-token: ${{ github.token }}
+          path: work/state
+      - name: Acquire approved official sources
+        run: python3 scripts/automation/acquire.py
+      - name: Run the two bounded Gemini tasks
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python3 scripts/automation/model_tasks.py
+      - name: Independently reconcile and validate
+        run: python3 scripts/automation/validate.py
+      - name: Preserve failure diagnostics
+        if: always()
+        run: python3 scripts/automation/finalize.py
+      - name: Write run summary
+        if: always()
+        run: cat work/result/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Retain persistent state
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: fundlenz-state
+          path: work/result/state.json
+          retention-days: 90
+          if-no-files-found: error
+      - name: Retain complete audit and source evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: fundlenz-audit
+          path: |
+            work/run
+            work/result
+          retention-days: 7
+          if-no-files-found: error
+      - name: Signal critical failure after saving evidence
+        run: |
+          python3 - <<'PY'
+          import json
+          r = json.load(open('work/result/report.json'))
+          if r['status'] == 'FAIL':
+              raise SystemExit('Daily audit failed; evidence saved, production retained.')
+          if r['status'] == 'PARTIAL':
+              print('::warning::Partial source coverage or open issues; inspect the audit summary.')
+          PY
+
+  publish:
+    name: Publish only when activated
+    needs: collect
+    if: always() && needs.collect.result != 'cancelled'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - run: python3 -m pip install --disable-pip-version-check -r scripts/automation/requirements.txt
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: fundlenz-audit
+          path: work
+      - name: Verify output and publication gates
+        env:
+          FUNDLENZ_PUBLISH_TOKEN: ${{ secrets.FUNDLENZ_PUBLISH_TOKEN }}
+          FUNDLENZ_PUBLISHER_LOGIN: ${{ vars.FUNDLENZ_PUBLISHER_LOGIN }}
+        run: python3 scripts/automation/publish.py

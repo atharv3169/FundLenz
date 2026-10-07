@@ -7897,8 +7897,8 @@
     },
     {
       "path": "scripts/automation/verify-bootstrap.py",
-      "bytes": 3935,
-      "sha256": "d982799c2f7fefe793929620a5fcd1fa4f4f7e6fc89756582f28f3b59cdd1444",
+      "bytes": 4486,
+      "sha256": "b0a5b55b2c1764165fa067e65989b4a4f96687810606212beb6af1a9b68b4615",
       "scope": "hosting_configuration"
     },
     {
@@ -7915,8 +7915,8 @@
     },
     {
       "path": "scripts/data/build_global_holdings.py",
-      "bytes": 10008,
-      "sha256": "3dc6dc9ffe3bd1948cf2c94d96cff9da5cc0b85846f2deb4ba11ede0aa1fe340",
+      "bytes": 10184,
+      "sha256": "d153bcacdd8d167f9a91d5f41611ee840eb5883d1275d9a91547865a7a56e3db",
       "scope": "application"
     },
     {
@@ -8041,5 +8041,14 @@
     }
   ],
   "parent_repository_commit": "277b34625196cd98ff34b3a9f5c2e761714b49a5",
-  "previous_manifest_sha256": "f0206da755e13e7f5fefd52305d799bed3ba691d032f064e33ccd0030ab20830"
+  "previous_manifest_sha256": "f0206da755e13e7f5fefd52305d799bed3ba691d032f064e33ccd0030ab20830",
+  "automation_implementation": {
+    "date": "2026-10-07",
+    "base_commit": "0ec08fdf044f29642dbb4c3f9f784414659b67b6",
+    "changed_reviewed_files": [
+      "scripts/automation/verify-bootstrap.py",
+      "scripts/data/build_global_holdings.py"
+    ],
+    "financial_data_unchanged": true
+  }
 }

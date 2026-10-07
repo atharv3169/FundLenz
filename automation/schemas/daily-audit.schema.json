@@ -1,0 +1,118 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "report_kind": {
+      "const": "daily"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "base_commit": {
+      "type": "string"
+    },
+    "base_dataset_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "candidate_dataset_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "mode": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "PASS",
+        "PARTIAL",
+        "FAIL",
+        "NO_CHANGE"
+      ]
+    },
+    "validation_passed": {
+      "type": "boolean"
+    },
+    "publication_eligible": {
+      "type": "boolean"
+    },
+    "publication_enabled": {
+      "type": "boolean"
+    },
+    "merge_complete": {
+      "type": "boolean"
+    },
+    "deployment_complete": {
+      "type": "boolean"
+    },
+    "source_counts": {
+      "type": "object"
+    },
+    "unit_counts": {
+      "type": "object"
+    },
+    "source_checks": {
+      "type": "array"
+    },
+    "model_tasks": {
+      "type": "array"
+    },
+    "model_findings": {
+      "type": "array"
+    },
+    "changes": {
+      "type": "array"
+    },
+    "resolutions": {
+      "type": "array"
+    },
+    "open_issue_count": {
+      "type": "integer"
+    },
+    "critical_errors": {
+      "type": "array"
+    },
+    "coverage": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "report_kind",
+    "run_id",
+    "started_at",
+    "completed_at",
+    "base_commit",
+    "base_dataset_sha256",
+    "candidate_dataset_sha256",
+    "mode",
+    "status",
+    "validation_passed",
+    "publication_eligible",
+    "publication_enabled",
+    "merge_complete",
+    "deployment_complete",
+    "source_counts",
+    "unit_counts",
+    "source_checks",
+    "model_tasks",
+    "model_findings",
+    "changes",
+    "resolutions",
+    "open_issue_count",
+    "critical_errors",
+    "coverage"
+  ]
+}

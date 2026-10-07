@@ -1,5 +1,8 @@
 # FundLenz catalogue automation specification
 
+**Implementation update — 7 October 2026:** The version-1 agreement below is retained. The source runner, two Gemini tasks, deterministic NAV/international-holdings validator, persistent audit/state, protected publisher and deployment observer are now implemented. Scheduling is dry-run only; publication is disabled. See [the operating guide](../docs/migration/AUTOMATION.md) for exact coverage, tests, budgets and outstanding activation gates. Historical statements saying “not yet implemented” describe the bootstrap, not the current code.
+
+
 Version 1 — 6 October 2026. Owner: Atharva Sahu.
 
 This is the final operating agreement reconstructed from the supplied conversation. It supersedes its earlier manual-merge proposals. The intended steady state is automatic publication of validated data changes, with human review as an optional step, not an approval dependency. The repository bootstrap does not activate that steady state.
