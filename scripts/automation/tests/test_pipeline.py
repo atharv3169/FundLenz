@@ -16,7 +16,7 @@ from adapters import chronology, nav_candidates, parse_nav, holdings_candidate, 
 from issues import issue_id, reconcile_issues
 from publish import protection_gate, verify_release
 from validate import run_status, validate_model
-from model_tasks import bounded_call
+from model_tasks import bounded_call, response_text
 
 
 class PipelineTests(unittest.TestCase):
@@ -303,6 +303,16 @@ class PipelineTests(unittest.TestCase):
         state = {source["id"]: {"last_attempt_at": "2026-10-07T09:30:00Z"}}
         selected, _, _ = due_sources([source], state, {"issues": []}, "2026-10-08T03:47:00Z", 64)
         self.assertEqual(selected, [source])
+
+    def test_gemini_signature_metadata_is_not_candidate_data(self):
+        body = {"candidates": [{"finishReason": "STOP", "content": {"parts": [{"text": "{\"ok\":true}", "thoughtSignature": "opaque-fixture"}]}}]}
+        self.assertEqual(loads(response_text(body)), {"ok": True})
+        body["candidates"][0]["content"]["parts"].insert(0, {"thought": True, "text": "Non-final fixture text."})
+        self.assertEqual(loads(response_text(body)), {"ok": True})
+        body["candidates"][0]["finishReason"] = "MAX_TOKENS"
+        with self.assertRaises(ValueError): response_text(body)
+        body["candidates"][0].update(finishReason="STOP", content={"parts": [{"functionCall": {"name": "never_execute"}}]})
+        with self.assertRaises(ValueError): response_text(body)
 
 
 if __name__ == "__main__":

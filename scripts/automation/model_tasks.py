@@ -93,15 +93,33 @@ def call_model(packet, task, policy):
     require(len(raw) <= policy["max_model_response_bytes"], "Oversized model response")
     body = loads(raw)
     candidates = body.get("candidates", [])
-    require(len(candidates) == 1 and candidates[0].get("finishReason") == "STOP", "Incomplete model response")
-    parts = candidates[0].get("content", {}).get("parts", [])
-    require(parts and all(set(p) == {"text"} for p in parts), "Unexpected model content type")
-    candidate = loads("".join(p["text"] for p in parts))
+    diagnostic = {"finish_reasons": [c.get("finishReason") for c in candidates],
+                  "part_keys": [[sorted(p) for p in c.get("content", {}).get("parts", [])] for c in candidates],
+                  "usage": body.get("usageMetadata", {}), "response_sha256": sha(raw)}
+    write(ROOT / "work/run" / (task + "-transport.json"), diagnostic)
+    final_text = "".join(p.get("text", "") for c in candidates for p in c.get("content", {}).get("parts", [])
+                         if isinstance(p.get("text"), str) and not p.get("thought", False))
+    (ROOT / "work/run" / (task + "-raw-text.txt")).write_text(final_text.replace(key, "[REDACTED]"))
+    candidate = loads(response_text(body))
     schema(candidate, "candidate")
     require(candidate["run_id"] == packet["run_id"] and candidate["base_dataset_sha256"] == packet["base_dataset_sha256"]
             and candidate["task_type"] == task, "Model run/base mismatch")
     require(len(candidate["proposals"]) <= policy["max_model_proposals"], "Proposal budget exceeded")
     return candidate, body.get("usageMetadata", {})
+
+
+def response_text(body):
+    candidates = body.get("candidates", [])
+    require(len(candidates) == 1 and candidates[0].get("finishReason") == "STOP", "Incomplete model response")
+    parts = candidates[0].get("content", {}).get("parts", [])
+    # Official Gemini text parts may carry thoughtSignature metadata. It is not
+    # candidate data, a permission, or something to execute. Thought parts are
+    # excluded; every final text value still undergoes the full strict contract.
+    require(parts and all(set(p) <= {"text", "thought", "thoughtSignature"} and isinstance(p.get("text"), str) for p in parts),
+            "Unexpected model content type")
+    text = "".join(p["text"] for p in parts if not p.get("thought", False))
+    require(text, "Missing final model text")
+    return text
 
 
 def main():
@@ -123,6 +141,10 @@ def main():
         except Exception as error:
             report = {"task": task, "status": "failed", "started_at": started, "completed_at": now(), "error_type": clean_error(error)}
             report["attempts"] = getattr(error, "fundlenz_attempts", 1)
+            if isinstance(error, ValueError): report["reason"] = str(error)[:300]
+            if hasattr(error, "schema_path"):
+                report["schema_path"] = list(error.schema_path)
+                report["instance_path"] = list(error.path)
             if isinstance(error, urllib.error.HTTPError):
                 report["http_status"] = error.code
         write(root / (task + "-status.json"), report)

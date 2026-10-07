@@ -55,7 +55,7 @@ These are acceptance cases for the future runner, not completed tests of a worki
 
 ## Implemented verification — 7 October 2026
 
-- `scripts/automation/tests/test_pipeline.py`: 31 adversarial tests cover strict dates/JSON, exact source and identity rules, full-portfolio rejection, independent partial NAV updates, invented evidence and rule overrides, issue persistence/escalation, skipped/idempotent attempts, source recovery, quotas/service retry caps, protected paths, base races, hash tampering and byte-exact rollback overlays.
+- `scripts/automation/tests/test_pipeline.py`: 32 adversarial tests cover strict dates/JSON, exact source and identity rules, full-portfolio rejection, independent partial NAV updates, invented evidence and rule overrides, issue persistence/escalation, skipped/idempotent attempts, source recovery, quotas/service retry caps, protected paths, base races, hash tampering and byte-exact rollback overlays.
 - Existing six finance/catalogue suites pass (620,894 counted checks plus directory checks), as do type checking and the 17 original contract checks.
 - First live GitHub run collected actual source bytes and saved a failure audit when Gemini returned 503. No production data changed.
 - Still outstanding: owner-configured protected main and dedicated publisher identity; activation of publishing; real PR/auto-merge/deployment/hosting-rollback trials; financial extraction adapters for monitoring-only catalogue sources. These are not represented as completed by the unit tests.
