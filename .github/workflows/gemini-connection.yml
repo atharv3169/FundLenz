@@ -1,0 +1,33 @@
+name: Gemini connection test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/gemini-connection.yml'
+      - 'scripts/automation/test-gemini-connection.py'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gemini-connection-test
+  cancel-in-progress: false
+
+jobs:
+  connection:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Check out trusted main source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Make one bounded Gemini request
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python3 scripts/automation/test-gemini-connection.py
+
+# Runs when this test is installed/changed, or by manual dispatch.
+# No scheduled trigger, repository writes, source acquisition or data publication.
