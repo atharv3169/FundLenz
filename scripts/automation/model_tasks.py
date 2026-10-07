@@ -30,6 +30,10 @@ def packets(acquisition, units, task, policy, run=None):
     cursor = acquisition["previous_state"].get("investigation_after", "")
     eligible = [i for i in eligible if i["issue_id"] > cursor] + [i for i in eligible if i["issue_id"] <= cursor]
     selected_issues = copy.deepcopy(eligible[:8]) if task == "reinvestigation" else []
+    if task == "reinvestigation":
+        selected_urls = {i["source_url"] for i in selected_issues}
+        sources = [s for s in sources if s["source_url"] in selected_urls]
+        result = [s for s in result if s["source_url"] in selected_urls]
     relevant = [u for u in units if u["decision"] not in {"unchanged", "older_snapshot", "retained_unsupported"}
                 and u["source_url"] in {s["source_url"] for s in sources}]
     if task == "reinvestigation":

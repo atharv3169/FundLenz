@@ -3,6 +3,7 @@ import argparse
 import collections
 import copy
 import os
+import urllib.parse
 from pathlib import Path
 from common import ROOT, dataset_hash, encoded, loads, manifest, read, require, safe_path, schema, sha, timestamp, write
 from adapters import allowed_paths, build_files, reconcile
@@ -28,7 +29,7 @@ def verify_acquisition(root, run, acquisition):
             require(s["path"] == "sources/" + s["source_id"] + ".bin", "Untrusted source path")
             raw = safe_path(run, s["path"]).read_bytes()
             require(len(raw) == s["bytes"] and sha(raw) == s["source_sha256"], "Source checksum/size mismatch")
-            require(s["final_url"] in [approved["url"], *approved["approved_redirects"]], "Unapproved source redirect")
+            require(s["final_url"] in [urllib.parse.urldefrag(approved["url"])[0], *approved["approved_redirects"]], "Unapproved source redirect")
             raws[s["source_id"]] = raw
         else:
             require(not s.get("path") and s["source_sha256"] is None, "Unexpected bytes for unsuccessful source")

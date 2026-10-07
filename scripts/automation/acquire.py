@@ -34,10 +34,13 @@ def validate_url(url, allowed, resolver=socket.getaddrinfo):
 
 
 def retrieve(source, policy):
-    allowed = set([source["url"], *source.get("approved_redirects", [])])
-    validate_url(source["url"], allowed)
+    # A document fragment is a browser anchor, not part of an HTTP request.
+    # Preserve it in the evidence URL but validate/fetch the exact network URL.
+    request_url = urllib.parse.urldefrag(source["url"])[0]
+    allowed = set([request_url, *source.get("approved_redirects", [])])
+    validate_url(request_url, allowed)
     opener = urllib.request.build_opener(ApprovedRedirect(allowed))
-    request = urllib.request.Request(source["url"], headers={
+    request = urllib.request.Request(request_url, headers={
         "User-Agent": "FundLenz/1.0 educational research info@fundlenz.com", "Accept-Encoding": "identity"})
     with opener.open(request, timeout=policy["source_timeout_seconds"]) as response:
         require(response.status == 200, "Unexpected response status")

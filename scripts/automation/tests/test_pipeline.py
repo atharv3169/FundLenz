@@ -16,7 +16,7 @@ from adapters import chronology, nav_candidates, parse_nav, holdings_candidate, 
 from issues import issue_id, reconcile_issues
 from publish import protection_gate, verify_release
 from validate import run_status, validate_model
-from model_tasks import bounded_call, response_text
+from model_tasks import bounded_call, response_text, packets
 
 
 class PipelineTests(unittest.TestCase):
@@ -313,6 +313,22 @@ class PipelineTests(unittest.TestCase):
         with self.assertRaises(ValueError): response_text(body)
         body["candidates"][0].update(finishReason="STOP", content={"parts": [{"functionCall": {"name": "never_execute"}}]})
         with self.assertRaises(ValueError): response_text(body)
+
+    def test_investigation_packet_covers_only_assigned_issue_sources(self):
+        state = self.make_state()
+        state["issues"]["issues"] = [{"issue_id": f"fixture-{i:02}", "source_url": self.source["source_url"],
+            "record_id": "nav:" + str(i), "scope": "nav:" + str(i), "previous_candidate": None, "previous_verified": None} for i in range(9)]
+        other = dict(self.source, source_id="unused", source_url="https://example.invalid/other", adapter="monitor")
+        state["issues"]["issues"].append({"issue_id": "zz-unassigned", "source_url": other["source_url"],
+            "record_id": None, "scope": "unassigned", "previous_candidate": None, "previous_verified": None})
+        acq = dict(self.acquisition(), previous_state=state, base_dataset_sha256="0" * 64, started_at=self.source["checked_at"],
+                   source_checks=[dict(self.source, adapter="amfi_nav"), other])
+        packet = packets(acq, [], "reinvestigation", self.policy)
+        self.assertEqual(len(packet["issues"]), 8)
+        self.assertEqual([s["source_id"] for s in packet["sources"]], [self.source["source_id"]])
+        state["investigation_after"] = "fixture-07"
+        following = packets(acq, [], "reinvestigation", self.policy)
+        self.assertEqual(following["issues"][0]["issue_id"], "fixture-08")
 
 
 if __name__ == "__main__":
