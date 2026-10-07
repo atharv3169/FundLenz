@@ -2,7 +2,7 @@
 
 Version 1 — 6 October 2026. Owner: Atharva Sahu.
 
-This is the final operating agreement reconstructed from the supplied conversation. It supersedes its earlier manual-merge proposals. The intended steady state is automatic publication of validated data changes, with ChatGPT as an optional reviewer, not an approval dependency. The repository bootstrap does not activate that steady state.
+This is the final operating agreement reconstructed from the supplied conversation. It supersedes its earlier manual-merge proposals. The intended steady state is automatic publication of validated data changes, with human review as an optional step, not an approval dependency. The repository bootstrap does not activate that steady state.
 
 ## 1. Preserve the product
 
@@ -97,7 +97,7 @@ A bootstrap report is explicitly `report_kind: bootstrap`, with no claim of a co
 
 ## 8. GitHub and hosting
 
-The intended pipeline is: scheduled read-only acquisition and Gemini tasks; trusted reconciliation/validation; sanitized data-only branch; required checks tied to its exact commit; automatic merge; hosting deployment; confirmation of the deployed dataset. It does not wait for a ChatGPT message or require a daily manual click.
+The intended pipeline is: scheduled read-only acquisition and Gemini tasks; trusted reconciliation/validation; sanitized data-only branch; required checks tied to its exact commit; automatic merge; hosting deployment; confirmation of the deployed dataset. It does not wait for a reviewer message or require a daily manual click.
 
 The publisher must verify the exact base/head, permitted files, expected actor and validator output. Serialize publication; revalidate after concurrent changes. Protect main against direct updater pushes, force pushes and unvalidated merges. Do not use privileged execution of untrusted PR code. Keep acquisition/model credentials out of the publishing job and GitHub write credentials out of the model job.
 
@@ -115,7 +115,7 @@ GitHub's documentation checked on 6 October 2026 limits protected branches on Gi
 
 GitHub currently documents special handling for PRs created using GITHUB_TOKEN, including approval-required runs. Do not assume such PRs will run unattended. Choose and test an appropriately scoped GitHub App publishing identity or another documented orchestration path; do not weaken checks to work around missing triggers. Public schedules may be disabled after inactivity and are not precise-time guarantees. Avoid fabricating activity purely to defeat a platform limit.
 
-Free hosting/API limits and ChatGPT capabilities can change. No infinite free quota, perfect factual validator, or forever-maintenance guarantee is made. Quota/source failures retain verified data and generate an honest report. ChatGPT access remains optional.
+Free hosting/API limits and review-tool capabilities can change. No infinite free quota, perfect factual validator, or forever-maintenance guarantee is made. Quota/source failures retain verified data and generate an honest report. Manual review remains optional.
 
 ## 10. Changes require traceability
 

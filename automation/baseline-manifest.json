@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "purpose": "Verify export fidelity to the existing Site; not evidence of a new source refresh.",
-  "source_site_version": 9,
-  "source_commit": "0889a225ee1f8c5131635b8f6fba6dea8a3f743e",
-  "prepared_at": "2026-10-06T07:17:15.954482+00:00",
+  "purpose": "Verify the reviewed standalone repository snapshot; not evidence of a financial source refresh.",
+  "source_site_version": 10,
+  "source_commit": "fda0ed5f341c80f8c0afb9557f073f6a3e481dee",
+  "prepared_at": "2026-10-07",
   "files": [
     {
       "path": ".gitignore",
-      "bytes": 631,
-      "sha256": "31badc11070afa18efbb3aab08373edc71be02bcba7d0cb7eab4adf2bc73a186",
+      "bytes": 563,
+      "sha256": "baec2079696a47eb1895275f6d7d0be89a2efcac16fead026da915533c64b66c",
       "scope": "application"
     },
     {
@@ -42,12 +42,6 @@
       "scope": "application"
     },
     {
-      "path": "app/chatgpt-auth.ts",
-      "bytes": 2550,
-      "sha256": "4265a2e7c2dcb3a6f4b7026f762bf5b6e4caec76cc13c0a45987ee9a9f2e42cc",
-      "scope": "application"
-    },
-    {
       "path": "app/funds/page.tsx",
       "bytes": 283,
       "sha256": "d3a05ebef5cbf4a696228b03ff6c87c1b46ddeb05ec24e1aeff169d9ad3b228e",
@@ -78,34 +72,10 @@
       "scope": "application"
     },
     {
-      "path": "build/connector-preview-plugin.mjs",
-      "bytes": 7211,
-      "sha256": "a6a9fe2086e302f94a3f91e3c1a68a45bb3aa07d4a79faf01b14732191eb4e80",
-      "scope": "application"
-    },
-    {
-      "path": "build/connector-preview-worker.mjs",
-      "bytes": 594,
-      "sha256": "c1b6b2c420cb67d9e28f8f4ae440f578c0dfd4cb840a12cfe4b58076629a17ba",
-      "scope": "application"
-    },
-    {
-      "path": "build/sites-vite-plugin.LICENSE",
-      "bytes": 1063,
-      "sha256": "7de1e115d165f176e68f962acdb809b5ab8d8ae78d3981e0701392b2ac50c713",
-      "scope": "application"
-    },
-    {
-      "path": "build/sites-vite-plugin.ts",
-      "bytes": 7185,
-      "sha256": "07af20e7097d9ed1d76f7c446d02997550b8fc5ca89668b249e25eabd62c6834",
-      "scope": "application"
-    },
-    {
-      "path": "build/sites-worker.ts",
-      "bytes": 1279,
-      "sha256": "28a75f74adfc226a773d1c00d5779c26412eea40a104da5c77f7d0f0fc30f0e8",
-      "scope": "application"
+      "path": "build/cloudflare-worker.ts",
+      "bytes": 135,
+      "sha256": "e244ad92db03923d42c4eb7042a0a8c4d2cb25472eafdee10661c0ad80782f07",
+      "scope": "hosting_configuration"
     },
     {
       "path": "cloudflare-env.d.ts",
@@ -120,27 +90,21 @@
       "scope": "application"
     },
     {
-      "path": "components/connector-error.tsx",
-      "bytes": 1082,
-      "sha256": "2d0d04559952ce9c9a327cca499f4b99f35d885cccfce375230e116695d3f155",
-      "scope": "application"
-    },
-    {
       "path": "components/fund-catalog.tsx",
-      "bytes": 27939,
-      "sha256": "1c66d525b998976efe17653c708c24fd53bd80c1d05d042f7a8e3eba00402042",
+      "bytes": 28017,
+      "sha256": "f782ca45804ef872654455b484bd64390a25912e374879058beddba1992c43f2",
       "scope": "application"
     },
     {
       "path": "components/fundlens.tsx",
-      "bytes": 53484,
-      "sha256": "4fb957aa743508fd5b1a4a2006b451f728a4211a6c951be6600e9543522131d2",
+      "bytes": 53793,
+      "sha256": "c123a6449fcffaae08124165552448a19490776d693468102d72c99d1f889372",
       "scope": "application"
     },
     {
       "path": "components/global-catalog.tsx",
-      "bytes": 23506,
-      "sha256": "56dd23e920336496ed2b01127f6617cf3b520eb2154ab4d35e98642660244b54",
+      "bytes": 31668,
+      "sha256": "dd8e7a3b1c03c475bc85828309ca545cc56759e044b35a2fdd504abaff5b04e5",
       "scope": "application"
     },
     {
@@ -546,6 +510,300 @@
       "scope": "source_data"
     },
     {
+      "path": "data/sources/global/holdings/ACWI.csv",
+      "bytes": 376792,
+      "sha256": "55ed196b36669423c3149a21cf57d6c0105a99f91db497b4d3ecde4124dbab4e",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/ACWX.csv",
+      "bytes": 334393,
+      "sha256": "416d022b9aece3feb9212229b348aac6c26572c8ac1a2e8fe87995a136468248",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/AGG.csv",
+      "bytes": 3689891,
+      "sha256": "4bd6ad25f2025fe3bdff103f8d37d58c9c62fca37f60789b6d23db1d55186d3b",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/DGRO.csv",
+      "bytes": 62842,
+      "sha256": "40d5f298d243b61789bb82eba438ffd1bceeef859350cd389b78cd23a44f608f",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/DVY.csv",
+      "bytes": 16977,
+      "sha256": "a42e5338de5b4ef654e451a7dd8d38720993b6fac92e3f300dd24d3ea46628f3",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/EEM.csv",
+      "bytes": 233244,
+      "sha256": "c67b069752c016324598b9d107ce8ccabe8c4be23041c37087ec26e5d5210401",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/EFA.csv",
+      "bytes": 116359,
+      "sha256": "0e1e5019966809eb896a2aad30d7cd1f4a3891396f224ae975bcd7335b9eff71",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/EMB.csv",
+      "bytes": 175942,
+      "sha256": "2cae14ce51e03b79b5a1ada7d784799d1c010e20fa9f3fe7c8d726f1b6c078c8",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/HDV.csv",
+      "bytes": 13197,
+      "sha256": "40fb2cb62443bebdae595999dcfbdeb1306ba26c8e960612b1b2b6dbb94370ca",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/HYG.csv",
+      "bytes": 387904,
+      "sha256": "d080b6f5d1f1184953c7e02534d16ea33c485a46e8b5a7571c9446a3e2adada5",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IAGG.csv",
+      "bytes": 2427856,
+      "sha256": "e6c815745f7846fe997cc2a87adc31c56371f123c9d0e6cfb1ecb95f16b722aa",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IBB.csv",
+      "bytes": 39612,
+      "sha256": "44545a29c457220622bd384e1f7eb2b1a09782be2139aaba2756d24892355489",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IDU.csv",
+      "bytes": 7998,
+      "sha256": "0ed250071654ed1f2da4c24e3f17dcac53daf4144c2bb803c50590c456ed5dea",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IEF.csv",
+      "bytes": 5624,
+      "sha256": "49c827ba36c5c0f3c532895c5fc6638bc1f482a7345ac1e60fc4d06266724518",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IEFA.csv",
+      "bytes": 446719,
+      "sha256": "9b09ae3b5f3200e557e8c6221c00ccf55e3352db0f2fe4d34b1b7f0e8dee913a",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IEMG.csv",
+      "bytes": 567567,
+      "sha256": "945a8687021dc62c6ec480f7c40da6beb4534a456016a02220545b7a5cb46f32",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/ITA.csv",
+      "bytes": 8934,
+      "sha256": "25229033423d3a55dc4796b7138c871ddd05b381c9a41def94b0eea1409217ee",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/ITOT.csv",
+      "bytes": 388706,
+      "sha256": "52f2e01a40eaa9b6a126b5cbb75af903a9e4fff328d2004a4491c7b8e29c0032",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IVV.csv",
+      "bytes": 83461,
+      "sha256": "011334fd2af8bfa741ea385f5dac1603846fe726a51b4880c3f542571350d1c6",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IWB.csv",
+      "bytes": 162947,
+      "sha256": "15afd7123484bb90b11ff50dd20f7ee623c0dadd93d80472355905b879071b8d",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IWD.csv",
+      "bytes": 139257,
+      "sha256": "f113527ec24cc4eb9230e0e804b3886b2bde8f5099101e8c950d8983ce165f78",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IWF.csv",
+      "bytes": 61275,
+      "sha256": "cf3265bdc2e4fc84fa7504441915725fce9425367cef61652e9fc930bec76e31",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IWM.csv",
+      "bytes": 321521,
+      "sha256": "3b8892b0f3e973ebd6f56eb0e3865c65754bec212180c596cca6057a4cd06aaf",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IXUS.csv",
+      "bytes": 837018,
+      "sha256": "d22e690bcce87e617f486059d4d950153eb64e6a1b83bbae205000c678d6d647",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IYC.csv",
+      "bytes": 26474,
+      "sha256": "036fb03c877619577c91f579c8caca8e52c092736c24b47f2f3f74d9c4832f18",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IYE.csv",
+      "bytes": 6981,
+      "sha256": "6797bc90a97b8dcf1c91c606013174a02e2920b7c6bbd97512bdb451873b0dda",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IYF.csv",
+      "bytes": 23437,
+      "sha256": "56e55f2eb36b741726744fe35715b7b5dd65a9831620513afa08076d7a364f0b",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IYH.csv",
+      "bytes": 16505,
+      "sha256": "33b495b9d6c0fdc28afb4e8c64b88ac5a4522c5961edae9f26b2afd3d1e3973d",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IYJ.csv",
+      "bytes": 33924,
+      "sha256": "2d1781041c2cc3ba0f83e22dd960fb2c77c30450d231c078c13d096c982925ae",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IYK.csv",
+      "bytes": 9639,
+      "sha256": "301a39de40d5c1e03b2bd809b9f25f90268bf4c1a30c02e202d569db819b3f74",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IYM.csv",
+      "bytes": 6970,
+      "sha256": "3d219d3c933b555e6e24287d7f3d09b6f96af42341ed713e77de37ebcd6daa07",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IYR.csv",
+      "bytes": 10432,
+      "sha256": "6ebe2137e0c498c70b40929241fcf4cbc82fe23f5a533d851b7dd2ac546f89ef",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IYT.csv",
+      "bytes": 8145,
+      "sha256": "ea9d9b2fe4a2293f908681316b9160dc9e3be4fcab7c2acc3c7d36343bb88022",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/IYW.csv",
+      "bytes": 25823,
+      "sha256": "cb7c773a65a657d96b11cf580b479783f0f181f29c6881f6d160b32db86f8b58",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/LQD.csv",
+      "bytes": 901309,
+      "sha256": "f37be0a97fb71b2a354075f80aa23b69a10c43c81d59113a128a2dd208a95f7e",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/MTUM.csv",
+      "bytes": 21206,
+      "sha256": "638ace8b88416d578df934319eb0d1e7d8b8c9d413ec3638109188b48e1361af",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/QUAL.csv",
+      "bytes": 19904,
+      "sha256": "b78f82e6de04f1e7f169e077f5ce891fdf7ae6743cbff27dc4d4bca7c47be913",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/SGOV.csv",
+      "bytes": 7502,
+      "sha256": "06e7e41d21a7593c78abde0772b52e03bc94ca4aed5d76aadf0505a1593cfbc1",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/SHY.csv",
+      "bytes": 26583,
+      "sha256": "d758716291bcd47fae3c6abff7d8522223a2d4f48c80f703faa78a94bacd572f",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/SIZE.csv",
+      "bytes": 78907,
+      "sha256": "d5a9680d377f6de08e69e913dc48a7916f078628103684dd80f1a2b1ce00757f",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/SOXX.csv",
+      "bytes": 6401,
+      "sha256": "2a9d78e836d39a4c3c995aa18d0fee7e225498674862e201d78bda378728e5e5",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/TIP.csv",
+      "bytes": 14891,
+      "sha256": "add8c509581e5e73837015b5634bfa92f3cc483b1594db11ede10546ea9b044d",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/TLT.csv",
+      "bytes": 14577,
+      "sha256": "aed11f0ad8335e65665f0f0d788d693a3a95a8016e7e09d4e44538f52be09d48",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/USMV.csv",
+      "bytes": 29306,
+      "sha256": "da591076403ed627902a54aee9f154b4c00b436f70b497eb47d5975ed5e32063",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/VLUE.csv",
+      "bytes": 24395,
+      "sha256": "e9acf28a066bed1eb93e107053c27edaa75f12af8b24b62c6d4ba19e3d6c70f1",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/downloads.json",
+      "bytes": 29953,
+      "sha256": "95e89ba96936355f39b3f1c1b204d663875c98146ab806d754b0107648c15f80",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/ishares-us-products.html",
+      "bytes": 495682,
+      "sha256": "af0be408d6cc396029461dfb3b872ca3157004a0b6e11dbbfa3b3eaecab784dc",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/sources.json",
+      "bytes": 20780,
+      "sha256": "c3d34aff4423011bbd88ffb835a95bbb899a2a95683893a2361e8fbaaeefcab0",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/validation.json",
+      "bytes": 10344,
+      "sha256": "fc3df0cb30bd9cf9aec7133730ca2aa9459cc3831e3b33d27274da6620bd7bda",
+      "scope": "retained_sources"
+    },
+    {
       "path": "data/sources/global/issuer/ishares-uk-screener.json",
       "bytes": 4025804,
       "sha256": "d9adf41c7279ea737ef097b571afd5486d9012d1be7a31b24d64d46fc6f61ef3",
@@ -769,8 +1027,8 @@
     },
     {
       "path": "db/index.ts",
-      "bytes": 423,
-      "sha256": "dc7610b00b918e0ffff1360a63626f16655ced3064b2eaf96095a4101fb14bcd",
+      "bytes": 375,
+      "sha256": "fca66cd3ffd0faf3f0cbfedf4024a6bd31b71f84f8facc39286c8afb6efe844c",
       "scope": "application"
     },
     {
@@ -790,6 +1048,18 @@
       "bytes": 1238,
       "sha256": "cf371a3b1d9cea4a86a9ccb5fe6856952fc25412335ce1a59f79530bf7f6d33d",
       "scope": "application"
+    },
+    {
+      "path": "docs/global-portfolio-lab.md",
+      "bytes": 3655,
+      "sha256": "8566f7b139da43fb55f4e41e60d6856a3c8b7a6ae313039e9cf057e57ca8eab8",
+      "scope": "application"
+    },
+    {
+      "path": "docs/migration/CLOUDFLARE.md",
+      "bytes": 3144,
+      "sha256": "3668fdc32ac822e8ea527c7cda3cb22864eff8666af2cc47f4d9297cb679c757",
+      "scope": "hosting_configuration"
     },
     {
       "path": "docs/quality-audit-2026-10-06.md",
@@ -846,36 +1116,6 @@
       "scope": "application"
     },
     {
-      "path": "lib/connector-context.ts",
-      "bytes": 612,
-      "sha256": "bbddff68689cb0f6926fecd4b8b96f12f2054277c296e97b0df07d4ad5ece24e",
-      "scope": "application"
-    },
-    {
-      "path": "lib/connector-contract.mts",
-      "bytes": 5362,
-      "sha256": "e1a7b24a8793af34b595690d9b1300c897c7321c14f215cedf58ad95799d7c3e",
-      "scope": "application"
-    },
-    {
-      "path": "lib/connector-errors.mts",
-      "bytes": 2717,
-      "sha256": "a22edf13d6873ae832c4a2a0d579fc666c73ec996ef0722d39172649d38f0871",
-      "scope": "application"
-    },
-    {
-      "path": "lib/connector-preview.d.ts",
-      "bytes": 433,
-      "sha256": "abd69a94f7f61f1359063bb557574faae35e8ff5a028cc4c04b9ee248ef52642",
-      "scope": "application"
-    },
-    {
-      "path": "lib/connectors.ts",
-      "bytes": 416,
-      "sha256": "1c93d747e384c8e17e3e3dd5361b24412babf5eba2a11d2ae7a75f4e0924112c",
-      "scope": "application"
-    },
-    {
       "path": "lib/demo.ts",
       "bytes": 1939,
       "sha256": "bae44c8c3c4e7a1b541d1f9f5ac0b34bf6c219ef6e8e5d730d895a617436a37b",
@@ -889,14 +1129,20 @@
     },
     {
       "path": "lib/finance.ts",
-      "bytes": 8440,
-      "sha256": "dda2b11ac0fcfe81cfdfc3ede9790f0de9c555b4a066645ae1ac8e2fcdd27b49",
+      "bytes": 8451,
+      "sha256": "032a11b7dcde9fe793c3bb2949b6f82a64c9a06bc771126ea34ea7330c952733",
       "scope": "application"
     },
     {
       "path": "lib/global-catalog.ts",
       "bytes": 6083,
       "sha256": "e1d870a0fd91df1e105450b3dd401bbebbc8236a9427dbc51ec7d98ae7f748fa",
+      "scope": "application"
+    },
+    {
+      "path": "lib/global-portfolios.ts",
+      "bytes": 3554,
+      "sha256": "0ea2b2f1a117fa764d3dbb073c40dec1e36d882e25b71aca3ebf1c20fa2809da",
       "scope": "application"
     },
     {
@@ -907,8 +1153,8 @@
     },
     {
       "path": "lib/portfolios.ts",
-      "bytes": 1109,
-      "sha256": "93ebbda2694c870a1bc16e4f41f49508077c474450c323c891f90b4f45ba5b0e",
+      "bytes": 1241,
+      "sha256": "da12eef7b476b331d3742b950f08465b0c7d942cd1e1c66ca2269992c651b3bf",
       "scope": "application"
     },
     {
@@ -943,8 +1189,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 2237,
-      "sha256": "422c0602cfc0f4aa61f4d16356be3b5de081fdf70452e3ec691e7665855b6aaf",
+      "bytes": 2193,
+      "sha256": "05f9c66977ea56aec3e47fa72eb111bd1aae8a78f2dad739a14abc3337452219",
       "scope": "application"
     },
     {
@@ -964,6 +1210,12 @@
       "bytes": 94,
       "sha256": "dfac7ac2d86d326a0e5adb024e7943c181393ed17a5fcb8f0315b24c7da6ddde",
       "scope": "application"
+    },
+    {
+      "path": "public/build-info.json",
+      "bytes": 216,
+      "sha256": "38263ce36477c9f4c7d7f4e121faaf26b46b8465a2e8e1e0e14c573ce2409b56",
+      "scope": "hosting_configuration"
     },
     {
       "path": "public/data/catalog.json",
@@ -2529,6 +2781,246 @@
       "path": "public/data/global/details/ff.json",
       "bytes": 113857,
       "sha256": "c2908d7db5cef68777e2e3af7fe42cbd26783c74546c675a0b89c934ea247db4",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings-coverage.json",
+      "bytes": 10344,
+      "sha256": "fc3df0cb30bd9cf9aec7133730ca2aa9459cc3831e3b33d27274da6620bd7bda",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings-index.json",
+      "bytes": 20347,
+      "sha256": "6f69278c1732642eb7601e89ac0e926947fb760d32440af12e2e5f72cf8666e7",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-03bf0629efe9bc9b.json",
+      "bytes": 142662,
+      "sha256": "2b86aa176bc9dd92f949de1cf5d2286900e468220256125384bc0ea7f379d97e",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-06bd6b19c3cdb00d.json",
+      "bytes": 29649,
+      "sha256": "c7c6b943c7c1255222b1990979f83611d286bb68b1e75642290babf1f66c8745",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-09834b06f7e2edec.json",
+      "bytes": 384030,
+      "sha256": "9b505a94ae7ba719a6baaf36f35bfb38a06ddace2da937d50b37f3e4ffac0b0b",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-1385af9183fca203.json",
+      "bytes": 14933,
+      "sha256": "fb4ae570ab1da5b0e3303541ca165313144d3f7f28ff7dbd44f4ce27be487386",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-14347ef8c2f9531a.json",
+      "bytes": 43047,
+      "sha256": "c5978810c66784de6cb4783b7990027937898041330a243bfb7d6cf2c156a480",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-20111354bff3d039.json",
+      "bytes": 583000,
+      "sha256": "50927034f031844b912c5d84ca67591c1375c98e19c5e47a437791365a90bc6c",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-21a4830b9cc8a93e.json",
+      "bytes": 26042,
+      "sha256": "2ea5a6b45c2193aa87a3e3c394ee36f7f8a0ed705b1c1f25b9b74bdd4c9a3a52",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-26f420b348de2f9a.json",
+      "bytes": 46922,
+      "sha256": "2765da6764ef95dfe6027953435d959f20dd0be07352e7ed03c116a00935ed2a",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-31093d24066131ae.json",
+      "bytes": 17367,
+      "sha256": "8bd758f549a98145aaa551f30b7946818bc9a9ed8792b2364a4f629d08090af1",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-37b6a88458ede6c6.json",
+      "bytes": 14750,
+      "sha256": "393ae5eb3001605d4d2cf9ca80f3f32db904487e25d60625b2c33262db29f74e",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-40379ba76c662a62.json",
+      "bytes": 16064,
+      "sha256": "e7b98a49a71b13f7f2a9555eb724a8473140ee748a90602f4fb5d93f32336a27",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-40e3fbc237aeff61.json",
+      "bytes": 37121,
+      "sha256": "04585a0bfd7e954a46c9b651573c15f95353c1966a48dd3a325eadb9a667cdbe",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-5915de24c3ed3ff8.json",
+      "bytes": 244099,
+      "sha256": "d33e66b4282c1b4fef203c05b55aa2f6c2641aae3e9f23d9c1ba6f281670355c",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-5bd2d5e2823de8d0.json",
+      "bytes": 18505,
+      "sha256": "b7b5bec33484b5500d1684fb809e25d5c2b7e71d906dfc8909bb7ca1dd06218e",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-6044f65e016f47b3.json",
+      "bytes": 287431,
+      "sha256": "7cb52a475ae2012903143461f75ec99ce6f5ab7bfcae621b94fe651196ab39ad",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-6ae4d8beab2b5e8b.json",
+      "bytes": 144272,
+      "sha256": "8415f0176e1a52b4462311e8a74fe243e54a9ac8b616278a78898a2c969c68d7",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-6dde1eae5b433556.json",
+      "bytes": 61127,
+      "sha256": "72b3225aad99459021c382368632509c0b407a657fd3fc2a790d4a080919bb83",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-6e0c68dd9b4efc6e.json",
+      "bytes": 34840,
+      "sha256": "ad1a7cac8c2a992b157cc96e7bd5a580634dba148937a2eaa04d4a0585729f06",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-718ed3676361e1e4.json",
+      "bytes": 110741,
+      "sha256": "e4784a198635030fe7c45ff859b07970a08e1868551e2d965f5672e1f687fe8f",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-7c8281250daf8add.json",
+      "bytes": 14796,
+      "sha256": "a79e0826cff4c65b2516fa14789742c426f5a3d250f537b29f4cbbccfd171258",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-7cd14f073b526c68.json",
+      "bytes": 201141,
+      "sha256": "e48c5f89e2be29a144931c2e78a3eea135ed2bca8e5e3d3b3569d36a0c4f6d2a",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-7d64e17d7498a005.json",
+      "bytes": 106673,
+      "sha256": "50b5133d364b1a794dc2eaf2e84011aceb7ef4dc405d4a391435746fcce1961e",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-7f085db27a279ca4.json",
+      "bytes": 379229,
+      "sha256": "d82de81b74ae236c107b2e89fd8e25df638d33d0ba9fd0c07fbe41021bfc5453",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-8511adeeb3797d9b.json",
+      "bytes": 13014,
+      "sha256": "eacd8135a625de86ea2c9780fa44a52a3074e5fb918be747ecc42ff05336344c",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-8f566be978f41703.json",
+      "bytes": 70245,
+      "sha256": "887eb6c57146f34a3ad915fe45743167ff92cabca5efa18ea526f84349c331ce",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-8ff6fe47ed281b0e.json",
+      "bytes": 41920,
+      "sha256": "8f3cdc325b51a83c36071e4ca6e05ec91bcf5dccd85618a3d59c94373bc455f0",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-92cddd7ef2736545.json",
+      "bytes": 12922,
+      "sha256": "0cbfc7eaf407d8763f2d49ad5ba24066f0a8768616c8b65b4f1369b69c97f6e6",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-977d13691ae095aa.json",
+      "bytes": 7833,
+      "sha256": "e3bacec5651fd2adab81b2173a189a2b7987fdb7091098963f79084df808b2c7",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-984c0abd56931cb9.json",
+      "bytes": 44688,
+      "sha256": "09336036cdf74bbb1a3fca991bbf166bcf4dd9ea25d9c6997dfd06d18f4e568a",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-9adcbbd86644f553.json",
+      "bytes": 11111,
+      "sha256": "000b077a61cf85a07c68fbb8f4e09003ac11dd9915610bc5dcb07aa02ab1f2d6",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-9e74c11e4d0ad417.json",
+      "bytes": 6140,
+      "sha256": "0b83b4e75b4c45a75d4acdc5d5bc4c27ae2d45a8e1cb50171bd41c47b9a9acd2",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-a6cff1b3241488a5.json",
+      "bytes": 51093,
+      "sha256": "b558d6c65a16d89d2d3566ace50c1454956bf68cb7342fdd7392fd9e5dddf632",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-b2168140d3503a43.json",
+      "bytes": 890305,
+      "sha256": "c5511acd6fa0c85ef3d5dd26a19ce410f832017ef4c9e4fd13bfc9d8cf1491aa",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-b307ce860b9156ce.json",
+      "bytes": 23430,
+      "sha256": "61cad5eeb265063bb5cad827005ca17fc75c837c3e1c498680b2ddb55c04c1f1",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-cae61d16fb8a1c1e.json",
+      "bytes": 561597,
+      "sha256": "66039398aedc5f143f48e33efbccc5c26f5477dd34ed3bed1af077e0541fb1c4",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-f3c41e7476bc4d65.json",
+      "bytes": 29804,
+      "sha256": "3b1bdb61972c05828466be240efd30466d3c4760dc00f601a86386ca29ace711",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-f7a1fb38b2fe0000.json",
+      "bytes": 177951,
+      "sha256": "e6aaaa09ba051d8bd596c305847e706c15fe583e650b527896174b17b265a404",
+      "scope": "production_data"
+    },
+    {
+      "path": "public/data/global/holdings/g-ff45e6efa1128e40.json",
+      "bytes": 14448,
+      "sha256": "30494afd1db8e5e616d5ef5ab34e30a34ad6a8ac4d3826bcaada5c3963bd028d",
       "scope": "production_data"
     },
     {
@@ -7404,28 +7896,10 @@
       "scope": "application"
     },
     {
-      "path": "scripts/build-verified.sh",
-      "bytes": 661,
-      "sha256": "2ae5329ac860076070c9217a43106a15cb5ecf907a0f7baeb9ef903f76b53c68",
-      "scope": "application"
-    },
-    {
-      "path": "scripts/connector-preview/connector-preview-session.mjs",
-      "bytes": 6842,
-      "sha256": "45d5d0511a5b9689278b59570223017cdd3c4129431c6745e710c26323cac45c",
-      "scope": "application"
-    },
-    {
-      "path": "scripts/connector-preview/host-binding.mjs",
-      "bytes": 7793,
-      "sha256": "9e44ab6864133a5c82f834a5904ebb7d6104cb783c24efba3c0fe1a161182cea",
-      "scope": "application"
-    },
-    {
-      "path": "scripts/connector-preview/protocol.mjs",
-      "bytes": 1781,
-      "sha256": "111e062ebf08d3f180130f5bc3dcb3c1414c1d7be3c032c9d675a61c0c7513a8",
-      "scope": "application"
+      "path": "scripts/automation/verify-bootstrap.py",
+      "bytes": 3935,
+      "sha256": "d982799c2f7fefe793929620a5fcd1fa4f4f7e6fc89756582f28f3b59cdd1444",
+      "scope": "hosting_configuration"
     },
     {
       "path": "scripts/data/build_catalog.py",
@@ -7440,9 +7914,21 @@
       "scope": "application"
     },
     {
+      "path": "scripts/data/build_global_holdings.py",
+      "bytes": 10008,
+      "sha256": "3dc6dc9ffe3bd1948cf2c94d96cff9da5cc0b85846f2deb4ba11ede0aa1fe340",
+      "scope": "application"
+    },
+    {
       "path": "scripts/data/discover_disclosures.py",
       "bytes": 4201,
       "sha256": "24a2fe3743d443f3241046d2c2825a4e2dc8bf576e87ab8e2e446105e3f50767",
+      "scope": "application"
+    },
+    {
+      "path": "scripts/data/fetch_global_holdings.py",
+      "bytes": 1683,
+      "sha256": "c07b388b3f02d2ce6334783fd8cff4b5a5831b316d5cd997bae18c06677905ab",
       "scope": "application"
     },
     {
@@ -7476,63 +7962,9 @@
       "scope": "application"
     },
     {
-      "path": "scripts/execution-profile.mjs",
-      "bytes": 624,
-      "sha256": "2e71116f4d2b70cff8bb70436f8dd5c709ec7ff62893424530f404e0193d3630",
-      "scope": "application"
-    },
-    {
-      "path": "scripts/install-ci.mjs",
-      "bytes": 1685,
-      "sha256": "4a5a92d60a08d0ba54effd8373da2da06284312c55b767287c68a0bec7200da7",
-      "scope": "application"
-    },
-    {
-      "path": "scripts/install-ci.sh",
-      "bytes": 6783,
-      "sha256": "10d8764a61be50351dc3496e13588270de7956f0aa5f1189c49cabb2d89fe5c0",
-      "scope": "application"
-    },
-    {
-      "path": "scripts/install-pnpm.sh",
-      "bytes": 9015,
-      "sha256": "a684c02c2b493dfbf262a66252a5cd36f81ca995a4024761728662ae63aa40c0",
-      "scope": "application"
-    },
-    {
-      "path": "scripts/npm-install.mjs",
-      "bytes": 7025,
-      "sha256": "9715c6a32d1d4a0289ef6376a0e819c3b6a6416b8a9877733d9fb4339ce626b6",
-      "scope": "application"
-    },
-    {
-      "path": "scripts/pnpm-install.mjs",
-      "bytes": 10633,
-      "sha256": "a83164e344c1947053def83b546be8115deaa827314bbaead7afe6b6451c5cdf",
-      "scope": "application"
-    },
-    {
-      "path": "scripts/run-framework.mjs",
-      "bytes": 993,
-      "sha256": "9bf9f41a29314cabe0238b8e9c540ec3f7b5a6adafc7c8fb6c3940722d061dca",
-      "scope": "application"
-    },
-    {
-      "path": "scripts/sites-env.mjs",
-      "bytes": 906,
-      "sha256": "5de99d6806b01f0ee0b941af3684d75dcf1afbbcff22cb95bfa2e584c5dafa88",
-      "scope": "application"
-    },
-    {
-      "path": "scripts/sites-env.sh",
-      "bytes": 1530,
-      "sha256": "df86ebfc27d2f00860036658e933ac0ddd7b5f6879aa5d51218f0863c7e1fb60",
-      "scope": "application"
-    },
-    {
       "path": "scripts/verify-all.mjs",
-      "bytes": 978,
-      "sha256": "ec646b78c1c7d9b6d2d73cd5a0218357c930521fae44abae3141f53c3c5440aa",
+      "bytes": 970,
+      "sha256": "a0c5ccd24ecb974538f9920c4cc9a1f28db8bc58f307076ffe375069454db5f5",
       "scope": "application"
     },
     {
@@ -7545,6 +7977,12 @@
       "path": "scripts/verify-finance.mjs",
       "bytes": 4977,
       "sha256": "1d12b605c8cebeb517192c2aa8fe68f44779d9fbb25ce5eaee0caf251447fcc5",
+      "scope": "application"
+    },
+    {
+      "path": "scripts/verify-global-portfolios.mjs",
+      "bytes": 5732,
+      "sha256": "ed31187575dd08c1e509eb343ac62189e9695174210c91731603af557912904f",
       "scope": "application"
     },
     {
@@ -7585,27 +8023,23 @@
     },
     {
       "path": "vite.config.ts",
-      "bytes": 3115,
-      "sha256": "6f6d890794fbe23f3e35cceb327f49d5977432a5aaf715e040a6408932da395b",
+      "bytes": 308,
+      "sha256": "815c4b392f0971bdd2a4bb5c00b1c7a6c241c96f0eee45b75f3f09c57897dde8",
       "scope": "application"
+    },
+    {
+      "path": "wrangler.jsonc",
+      "bytes": 352,
+      "sha256": "0ee93bae46a5cc6118b069d890415c97905c056c46f8285ed34d9217b96363d1",
+      "scope": "hosting_configuration"
     }
   ],
   "intentional_changes": [
     {
-      "path": ".openai/hosting.json",
-      "reason": "Removed live Site project binding from separate GitHub export; null D1/R2 preserved for imports."
-    },
-    {
-      "path": "README.md",
-      "reason": "Replaced entry point with migration status; original retained under docs/migration/."
-    },
-    {
-      "path": "components/fund-catalog.tsx",
-      "reason": "Extracted the source-check display date into public/data/site-metadata.json; exact inverse checked against original bytes."
-    },
-    {
-      "path": "components/global-catalog.tsx",
-      "reason": "Extracted the source-check display date into public/data/site-metadata.json; exact inverse checked against original bytes."
+      "scope": "hosting and developer documentation",
+      "reason": "Remove unused platform integration code and use standalone Cloudflare configuration; preserve application behavior and financial datasets."
     }
-  ]
+  ],
+  "parent_repository_commit": "277b34625196cd98ff34b3a9f5c2e761714b49a5",
+  "previous_manifest_sha256": "f0206da755e13e7f5fefd52305d799bed3ba691d032f064e33ccd0030ab20830"
 }

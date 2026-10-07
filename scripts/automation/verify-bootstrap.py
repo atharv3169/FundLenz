@@ -27,30 +27,9 @@ def read_json(path):
 
 def verify():
     manifest = read_json(ROOT / "automation/baseline-manifest.json")
-    # Keep the original import manifest immutable. This explicit, reviewed
-    # release authorizes only the listed feature changes and added snapshots.
-    manual = read_json(ROOT / "automation/manual-releases/global-portfolio-lab.json")
-    original = {item["path"]: item for item in manifest["files"]}
-    combined = dict(original)
-    release_paths = set()
-    for item in manual["files"]:
-        relative = item["path"]
-        assert relative not in release_paths, f"Duplicate manual release path: {relative}"
-        release_paths.add(relative)
-        assert item["previous_sha256"] == original.get(relative, {}).get("sha256"), relative
-        combined[relative] = item
-    hosting = read_json(ROOT / "automation/manual-releases/cloudflare-hosting.json")
-    hosting_paths = set()
-    for item in hosting["files"]:
-        relative = item["path"]
-        assert relative not in hosting_paths, f"Duplicate hosting path: {relative}"
-        hosting_paths.add(relative)
-        assert item["previous_sha256"] == combined.get(relative, {}).get("sha256"), relative
-        assert not relative.startswith(("app/", "components/", "lib/", "public/", "data/")), relative
-        combined[relative] = item
+    combined = {item["path"]: item for item in manifest["files"]}
+    assert len(combined) == len(manifest["files"]), "Duplicate manifest paths"
     counts = collections.Counter()
-    metadata_import = 'import { catalogueSourceCheckLabel } from "@/lib/site-metadata";\n'
-    changed_components = {"components/global-catalog.tsx", "components/fund-catalog.tsx"}
     hashes = []
     seen = set()
     for item in combined.values():
@@ -61,15 +40,6 @@ def verify():
         assert not path.is_symlink() and path.is_file(), f"Missing/unsafe file: {relative}"
         assert path.resolve().is_relative_to(ROOT), f"Escaping path: {relative}"
         raw = path.read_bytes()
-        if relative in changed_components:
-            text = raw.decode()
-            assert text.count(metadata_import) == 1
-            assert text.count("Sources checked {catalogueSourceCheckLabel}.") == 1
-            # Reverse only the migration's date-label extraction. All other
-            # bytes must match the original or explicitly reviewed Site release.
-            raw = text.replace(metadata_import, "", 1).replace(
-                "Sources checked {catalogueSourceCheckLabel}.",
-                "Sources checked 5 October 2026.", 1).encode()
         assert len(raw) == item["bytes"], f"Length changed: {relative}"
         digest = hashlib.sha256(raw).hexdigest()
         assert digest == item["sha256"], f"Content changed: {relative}"
@@ -80,8 +50,8 @@ def verify():
         for path in (ROOT / tree).rglob("*.json"):
             read_json(path)
     release = read_json(ROOT / "audit/release-state.json")
-    assert release["source_commit"] == manual["source_commit"]
-    assert release["source_site_version"] == manual["source_site_version"]
+    assert release["source_commit"] == manifest["source_commit"]
+    assert release["source_site_version"] == manifest["source_site_version"]
     digest = hashlib.sha256("".join(p + "\0" + h + "\n" for p, h in sorted(hashes)).encode()).hexdigest()
     assert digest == release["dataset_sha256"]
     policy = read_json(ROOT / "automation/policy.json")
@@ -93,8 +63,6 @@ def verify():
     freshness = read_json(ROOT / "public/data/freshness.json")
     assert date.isoformat() == freshness["completedAt"][:10]
     assert date.isoformat() == "2026-10-05", "Bootstrap must retain the original checked date."
-    binding = read_json(ROOT / ".openai/hosting.json")
-    assert binding == {"d1": None, "r2": None}, "Export must not retain a live Site binding."
     queue = read_json(ROOT / "audit/open-issues.json")
     ids = [i["issue_id"] for i in queue["issues"]]
     assert len(ids) == len(set(ids)) == 4
@@ -103,10 +71,9 @@ def verify():
     india = read_json(ROOT / "public/data/catalog.json")
     global_data = read_json(ROOT / "public/data/global/catalog.json")
     securities = read_json(ROOT / "public/data/securities/catalog.json")
-    return {"status": "passed", "scope": "original migration plus reviewed manual release; not an automatic source validator",
+    return {"status": "passed", "scope": "reviewed standalone repository snapshot; not an automatic source validator",
             "release_files_verified": sum(counts.values()), "files_by_scope": dict(counts),
-            "manual_release_files": len(release_paths), "hosting_release_files": len(hosting_paths),
-            "dataset_sha256": digest, "metadata_extractions": sorted(changed_components),
+            "dataset_sha256": digest,
             "india_funds": len(india["funds"]), "india_plans": sum(len(f["plans"]) for f in india["funds"]),
             "global_records": len(global_data["funds"]), "security_records": len(securities["records"]),
             "persistent_issues": len(ids)}

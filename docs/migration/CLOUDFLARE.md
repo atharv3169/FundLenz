@@ -36,8 +36,8 @@ Saved browser sessions are origin-specific. Existing sessions on fundlenz.com do
 - Six existing suites passed: 620,894 counted assertions plus additional checks.
 - Deploy and preview-upload dry runs passed; Worker gzip size about 416 KiB.
 - All 1,114 public source files were copied byte-for-byte; 1,160 total built assets.
-- The original immutable import and reviewed release integrity checks remain enforced through a separate hosting manifest.
-- The local Wrangler server could not start in the restricted execution environment (`uv_interface_addresses`). No live Cloudflare runtime or browser result is claimed yet.
+- The reviewed standalone snapshot is enforced by the current integrity manifest; historical snapshots remain in Git history.
+- The local Wrangler server could not start in the restricted execution environment (`uv_interface_addresses`). Cloudflare deployment subsequently succeeded; the owner confirmed the live catalogue, analysis, download/session and mobile checks.
 
 ## Later steps
 

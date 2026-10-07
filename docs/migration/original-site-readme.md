@@ -108,7 +108,7 @@ Browser UI testing was unavailable in the current managed environment. Type chec
 
 React, TypeScript, Vinext/Vite, Shadcn/Radix and Recharts. Catalogue access is in `lib/catalog.ts` and `lib/global-catalog.ts`, calculations in `lib/finance.ts`, CSV handling in `lib/import.ts`, and reproducible ingestion in `scripts/data`. The source repository is the authority for the published read-only snapshot. No database, paid data feed, generative-AI API or financial-account connection is needed.
 
-Hosting uses Sites with the existing identity in `.openai/hosting.json`. Preserve the Site's audience and the pinned package manager when updating it.
+Historical hosting configuration has been retired. Use `wrangler.jsonc` and the Cloudflare setup guide for current deployment instructions; retain the pinned package manager.
 
 ## October 5 revision
 

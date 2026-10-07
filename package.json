@@ -1,12 +1,12 @@
 {
-  "name": "site-creator-vinext-starter",
+  "name": "fundlenz",
   "version": "0.1.0",
   "private": true,
   "engines": {
     "node": ">=22.13.0"
   },
   "scripts": {
-    "install:ci": "bash scripts/install-pnpm.sh",
+    "install:ci": "pnpm install --frozen-lockfile",
     "dev": "vinext dev",
     "build": "vinext build",
     "start": "wrangler dev --config dist/server/wrangler.json --local",

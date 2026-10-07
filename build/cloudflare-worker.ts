@@ -1,3 +1,2 @@
-// Standalone Cloudflare entry point. FundLenz uses public snapshots and
-// browser-local portfolio calculations; no Sites connector binding is needed.
+// FundLenz serves public snapshots; portfolio calculations run in the browser.
 export { default } from "vinext/server/fetch-handler";

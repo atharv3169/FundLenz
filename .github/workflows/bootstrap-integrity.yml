@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   bootstrap-integrity:
-    name: Verify FundLenz baseline and reviewed release
+    name: Verify FundLenz reviewed release
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -24,7 +24,7 @@ jobs:
       - name: Check source and data against approved release
         run: python3 scripts/automation/verify-bootstrap.py
 
-# This verifies the original import plus explicitly reviewed manual releases.
+# This verifies the current reviewed repository snapshot.
 # It is not an automatic production catalogue validator.
 # No schedule, API secret, repository write or deploy step is present.
 # Replace the baseline-only CI role through reviewed implementation before

@@ -7,12 +7,12 @@
 - Master operating agreement, two Gemini task prompts, candidate and bootstrap-audit contracts, source inventory and persistent issue queue added.
 - Four inconclusive source-page checks imported from the existing freshness ledger. These are source-discovery warnings, not assertions of incorrect holdings.
 - Two hard-coded source-check labels now read the same date from `public/data/site-metadata.json`; current displayed wording remains **5 October 2026**. Theme, layout, financial calculations and catalogue records are unchanged.
-- Existing live Site binding removed only from the separate export's `.openai/hosting.json`. Null D1/R2 configuration remains so the existing build imports are valid.
+- The previous hosting bindings and unused authentication/connector code have been removed from the Cloudflare repository.
 - Original README retained as `docs/migration/original-site-readme.md`. Bootstrap integrity checker distinguishes the deliberate metadata extraction from unchanged original bytes.
 
 ## GitHub repository
 
-The private repository `atharv3169/FundLenz` was created on 6 October 2026. Repository access is restricted to the selected FundLenz repository for the ChatGPT Codex Connector. This source commit contains the prepared code, data and automation specification.
+The private repository `atharv3169/FundLenz` was created on 6 October 2026. Repository integration access is restricted to the selected FundLenz repository. This source commit contains the prepared code, data and automation specification.
 
 ## Not completed
 
@@ -33,3 +33,7 @@ The existing dependency audit is retained in `docs/quality-audit-2026-10-06.md`;
 Published source: `fda0ed5f341c80f8c0afb9557f073f6a3e481dee`. The global catalogue now has selection checkboxes, an available-holdings filter, issuer holdings detail and a link into the portfolio lab. Coverage is 38 verified iShares ETFs and 17,126 positions. The original Indian catalogue and homepage example are retained.
 
 All six verification suites passed (620,894 counted assertions plus additional identity and exception checks), as did TypeScript checking and the production build. Browser preview infrastructure was unavailable. The original version 9 baseline is retained, with exact authorized changes recorded in the manual-release manifest. `audit/latest.json` remains a historical bootstrap report, not a new daily scan. See `docs/global-portfolio-lab.md` for source dates and modeling limits.
+
+## Standalone repository cleanup — 7 October 2026
+
+Cloudflare deployment succeeded and the owner confirmed the catalogue, portfolio, download/session and mobile checks. The custom domain remains on the previous host until API integration and further tests are complete. Unused hosting adapters, sign-in helpers and connector code have been removed; developer documentation now describes the standalone project. The current integrity manifest is rebased to the reviewed repository snapshot, retaining the unchanged financial dataset digest. Previous manifests remain recoverable in Git history. Gemini scheduling and data publication are still inactive.

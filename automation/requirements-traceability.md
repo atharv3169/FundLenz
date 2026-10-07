@@ -24,7 +24,7 @@ These are requirements, not claims that the live automation exists. `OPERATING-S
 | R18 | Sanitized updates alone reach auto-merge | Workflow specification; automatic publisher not yet enabled |
 | R19 | Protect UI/calculations/configuration | Policy and CODEOWNERS; enforce with repository rules at activation |
 | R20 | PASS/PARTIAL/FAIL/NO_CHANGE | Audit schema and explicit status semantics |
-| R21 | ChatGPT optional, no daily manual merge | Steady-state workflow; no ChatGPT approval trigger |
+| R21 | Optional human review, no daily manual merge | Steady-state workflow; no conversational approval trigger |
 | R22 | Keep secrets out of public files/model input | Master prompt and credential separation requirements |
 | R23 | Rollback and exact deployed dataset | Deployment specification, manifest hashes |
 | R24 | Check date is not snapshot date | Schema, prompts, retained source dates |
