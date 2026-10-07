@@ -11,7 +11,7 @@ import urllib.error
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from common import ROOT, dataset_hash, encoded, loads, read, require, safe_path, schema, sha
-from acquire import due_sources, validate_url
+from acquire import due_sources, validate_url, validate_registry
 from adapters import chronology, nav_candidates, parse_nav, holdings_candidate, allowed_paths, build_files
 from issues import issue_id, reconcile_issues
 from publish import protection_gate, verify_release
@@ -61,10 +61,16 @@ class PipelineTests(unittest.TestCase):
         with self.assertRaises(ValueError): validate_url("http://official.example/file", {"http://official.example/file"}, public)
 
     def test_registry_has_exact_supported_scope(self):
+        validate_registry(self.registry)
         self.assertEqual(sum(s["adapter"] == "amfi_nav" for s in self.registry), 1)
         self.assertEqual(sum(s["adapter"] == "ishares_holdings" for s in self.registry), 38)
         self.assertEqual(len({s["url"] for s in self.registry}), len(self.registry))
         self.assertTrue(all(s["approved_redirects"] == [] for s in self.registry))
+
+    def test_malformed_inventory_cannot_become_network_allowlist(self):
+        source = copy.deepcopy(self.registry[0]);source["url"] = "https://example.invalid/" + "x" * 3000
+        source["id"] = "src-" + sha(source["url"].encode())[:16]
+        with self.assertRaises(ValueError): validate_registry([source])
 
     def test_bounded_schedule_checks_adapters_and_old_discovery_issues(self):
         queue = read(ROOT / "audit/open-issues.json")

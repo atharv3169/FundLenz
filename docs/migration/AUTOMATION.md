@@ -23,9 +23,12 @@ steps below. Having a Gemini key alone does not activate publication.
 | Global fund/share-class directories, stocks and bonds | Monitor approved official URLs. No automatic new listings, delistings, security identity changes, inferred prices, yields or ratings. |
 | Existing US homepage example | Retain its previous common-period file. Individually selectable global ETF portfolios have their own supported update path. |
 
-The registry contains 478 exact source URLs: 39 supported acquisition/validation
-adapters and 439 monitoring-only entries. Historical URLs are explicitly labelled
+The registry contains 476 exact source URLs: 39 supported acquisition/validation
+adapters and 437 monitoring-only entries. Historical URLs are explicitly labelled
 integrity checks: fetching an August workbook again does not discover September.
+Two malformed entries from the original inventory are quarantined in
+`automation/source-quarantine.json`, with original hashes retained for traceability.
+Every approved registry URL is validated before acquisition.
 New URLs, redirects or formats require a reviewed code change. Unsupported
 sources never receive a fabricated “verified financial update.”
 

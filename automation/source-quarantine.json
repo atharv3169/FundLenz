@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "note": "These inventory entries are not approved acquisition URLs. Original inventory retained for traceability. Re-enable only after a reviewed, verified exact URL replacement.",
+  "entries": [
+    {
+      "source_id": "src-c80951000fbf2eda",
+      "original_url_sha256": "c80951000fbf2edafba946877c84585560f19aefd11d71e4ab059d1d3e20e5b5",
+      "original_url_characters": 91,
+      "original_inventory": "automation/source-inventory.json",
+      "reason": "URL contains unencoded whitespace; verified replacement required",
+      "status": "quarantined_pending_source_review"
+    },
+    {
+      "source_id": "src-308ab67f78889b69",
+      "original_url_sha256": "308ab67f78889b69af22b100cf2375584b52a5b1cb022e65f8f6571ebfde4cb0",
+      "original_url_characters": 80381,
+      "original_inventory": "automation/source-inventory.json",
+      "reason": "Malformed URL captured with embedded document content",
+      "status": "quarantined_pending_source_review"
+    }
+  ]
+}

@@ -93,7 +93,14 @@ def schema(value, name):
     def date(item):
         if not isinstance(item, str): return True
         return bool(re.fullmatch(r"\d{4}-\d{2}-\d{2}", item)) and dt.date.fromisoformat(item) is not None
-    jsonschema.Draft7Validator(contract, format_checker=checker).validate(value)
+    try:
+        jsonschema.Draft7Validator(contract, format_checker=checker).validate(value)
+    except jsonschema.ValidationError as error:
+        # Preserve diagnostic locations without dumping a whole source document
+        # or oversized malformed URL into Actions logs.
+        brief = ValueError(f"Contract {name} failed at {str(list(error.path))[:180]} ({error.validator})")
+        brief.schema_path, brief.path = list(error.schema_path), list(error.path)
+        raise brief from None
 
 
 def manifest(files):

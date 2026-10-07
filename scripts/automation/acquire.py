@@ -5,6 +5,7 @@ import ipaddress
 import os
 import socket
 import math
+import re
 from zoneinfo import ZoneInfo
 import threading
 import urllib.error
@@ -31,6 +32,18 @@ def validate_url(url, allowed, resolver=socket.getaddrinfo):
             and parsed.port in (None, 443) and not parsed.fragment, "HTTPS public source required")
     addresses = resolver(parsed.hostname, 443, type=socket.SOCK_STREAM)
     require(addresses and all(ipaddress.ip_address(x[4][0]).is_global for x in addresses), "Non-public source address")
+
+
+def validate_registry(registry):
+    require(len({s["id"] for s in registry}) == len(registry), "Duplicate source ID")
+    require(len({s["url"] for s in registry}) == len(registry), "Duplicate source URL")
+    for source in registry:
+        url = source["url"]
+        require(0 < len(url) <= 3000 and not re.search(r'\s|[<>"{}]', url), "Malformed source URL; quarantine before acquisition")
+        require(source["id"] == "src-" + sha(url.encode())[:16], "Source ID/URL mismatch")
+        require(source["adapter"] in {"amfi_nav", "ishares_holdings", "monitor"}, "Unreviewed adapter")
+        parsed = urllib.parse.urlsplit(url)
+        require(parsed.scheme == "https" and parsed.hostname and not parsed.username and not parsed.password, "Invalid official-source URL")
 
 
 def retrieve(source, policy):
@@ -79,7 +92,7 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     policy = read(ROOT / "automation/runtime.json")
     registry = read(ROOT / "automation/source-registry.json")["sources"]
-    require(len({s["id"] for s in registry}) == len(registry), "Duplicate source ID")
+    validate_registry(registry)
     state_path = ROOT / "work/state/state.json"
     state = read(state_path) if state_path.exists() else {"sources": {}, "issues": read(ROOT / "audit/open-issues.json"), "applied_runs": []}
     started = now()
