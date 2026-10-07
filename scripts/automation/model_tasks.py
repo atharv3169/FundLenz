@@ -1,6 +1,8 @@
 """Two bounded Gemini requests. No shell tools, browsing tools or write credentials."""
 import os
 import copy
+import time
+import re
 import urllib.error
 import urllib.request
 from common import ROOT, clean_error, encoded, loads, now, read, require, schema, sha, write
@@ -24,19 +26,33 @@ def packets(acquisition, units, task, policy, run=None):
         entry["excerpt"] = raw.decode("utf-8", errors="replace")[:700] if textual else "Binary disclosure: no text extraction adapter in this release."
         entry["excerpt_is_complete_source"] = textual and len(raw) <= 700
         result.append(entry)
+    eligible = sorted([i for i in issues if i["source_url"] in {s["source_url"] for s in sources}], key=lambda i: i["issue_id"])
+    cursor = acquisition["previous_state"].get("investigation_after", "")
+    eligible = [i for i in eligible if i["issue_id"] > cursor] + [i for i in eligible if i["issue_id"] <= cursor]
+    selected_issues = copy.deepcopy(eligible[:8]) if task == "reinvestigation" else []
     relevant = [u for u in units if u["decision"] not in {"unchanged", "older_snapshot", "retained_unsupported"}
                 and u["source_url"] in {s["source_url"] for s in sources}]
+    if task == "reinvestigation":
+        wanted = {(i["record_id"] or i["scope"]).removeprefix("model:") for i in selected_issues}
+        relevant = [u for u in units if u["unit"] in wanted]
     relevant.sort(key=lambda u: u["decision"] == "accepted")
     samples = []
     for unit in relevant[:8]:
         item = dict(unit)
+        s = next((s for s in sources if s["source_id"] == unit["source_id"]), None)
+        locator = re.match(r"AMFI line (\d+)", unit["locator"])
+        if s and s.get("path") and locator:
+            raw = (run / s["path"]).read_bytes()
+            line = int(locator[1])
+            rows = raw.decode("utf-8-sig").splitlines()
+            item["actual_source_rows"] = {"source_sha256": s["source_sha256"], "header": rows[0],
+                                          "line": line, "text": rows[line - 1][:2000]}
         for key in ["previous_verified", "proposed_value"]:
             if len(encoded(item[key])) > 2500:
                 value = item[key]
                 item[key] = {"sample_only": True, "sha256_of_complete_value": sha(encoded(value)),
                              "snapshot_date": value.get("date") if isinstance(value, dict) else None}
         samples.append(item)
-    selected_issues = copy.deepcopy([i for i in issues if i["source_url"] in {s["source_url"] for s in sources}][:8]) if task == "reinvestigation" else []
     for issue in selected_issues:
         for key in ["previous_candidate", "previous_verified"]:
             if len(encoded(issue[key])) > 2500:
@@ -94,22 +110,37 @@ def main():
     policy = read(ROOT / "automation/runtime.json")
     raws = {s["source_id"]: (root / s["path"]).read_bytes() for s in acquisition["source_checks"] if s.get("path")}
     units, _ = reconcile(ROOT, acquisition, policy, raws)
-    require(policy["max_model_calls"] == 2 and policy["model_retries"] == 0, "Reviewed two-call budget changed")
+    require(policy["max_model_calls"] == 4 and policy["model_retries"] == 1, "Reviewed four-attempt budget changed")
     for task in ["fresh_scan", "reinvestigation"]:
         packet = packets(acquisition, units, task, policy)
         write(root / (task + "-input.json"), packet)
         started = now()
         try:
-            candidate, usage = call_model(packet, task, policy)
+            candidate, usage, attempts = bounded_call(packet, task, policy)
             write(root / (task + ".json"), candidate)
             report = {"task": task, "status": "completed", "started_at": started, "completed_at": now(), "usage": usage,
-                      "source_packets": len(packet["sources"]), "issues_in_packet": len(packet["issues"])}
+                      "source_packets": len(packet["sources"]), "issues_in_packet": len(packet["issues"]), "attempts": attempts}
         except Exception as error:
             report = {"task": task, "status": "failed", "started_at": started, "completed_at": now(), "error_type": clean_error(error)}
+            report["attempts"] = getattr(error, "fundlenz_attempts", 1)
             if isinstance(error, urllib.error.HTTPError):
                 report["http_status"] = error.code
         write(root / (task + "-status.json"), report)
         print(task + ": " + report["status"])
+
+
+
+def bounded_call(packet, task, policy, caller=call_model, wait=time.sleep):
+    for attempt in range(1, policy["model_retries"] + 2):
+        try:
+            candidate, usage = caller(packet, task, policy)
+            return candidate, usage, attempt
+        except urllib.error.HTTPError as error:
+            error.fundlenz_attempts = attempt
+            if attempt > policy["model_retries"] or error.code not in policy["model_retry_http_statuses"]:
+                raise
+            wait(policy["model_retry_delay_seconds"])
+    raise ValueError("Model attempt budget exhausted")
 
 
 if __name__ == "__main__":

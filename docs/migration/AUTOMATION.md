@@ -32,16 +32,16 @@ sources never receive a fabricated “verified financial update.”
 ## Daily schedule and budgets
 
 - GitHub schedule: **03:47 UTC / 09:17 India time**, best effort, not an exact-time SLA.
-- Supported feeds: daily; discovery/registry monitoring: weekly; explicitly dated
+- Cadence uses India calendar dates so a delayed/manual run cannot suppress the next scheduled day. Supported feeds: daily; discovery/registry monitoring: weekly; explicitly dated
   historical documents: every 30 days. The four pre-existing discovery issues are
   retried daily. Other pending sources rotate by their last actual attempt.
 - Up to 64 source requests, four workers, one request at a time per host, 15-second
   request timeout, 12 MiB per file and 32 MiB of retained source bytes per run.
 - No automatic source retries. A blocked/redirected source is recorded honestly.
-- At most two Gemini requests, one fresh scan and one independent investigation.
+- Two Gemini tasks: one fresh scan and one independent investigation. Each may retry once after 15 seconds for HTTP 500/502/503/504, with a hard cap of four requests per run. HTTP 429 quota errors and authentication errors are not retried.
   Model: `gemini-3.1-flash-lite`; 100,000 input bytes/task, 8,192 output tokens/task,
-  60-second timeout, no retry. No grounding/search tools or executable tools.
-- Gemini gets labelled excerpts and sample units. Deterministic adapters inspect
+  60-second timeout per attempt. No grounding/search tools or executable tools.
+- Gemini gets up to 12 labelled source excerpts and eight sample units per task. Flagged issues rotate across successful investigation runs so a persistent first batch does not permanently hide later issues. Deterministic adapters inspect
   complete supported files. Neither process claims universal factual certainty.
 
 Budget-deferred and failed sources remain distinct from successfully checked
@@ -62,7 +62,7 @@ from downloaded bytes. Confidence is not verification.
 A previous warning may reflect an extraction mistake, changed source, formatting
 problem or validator false positive. The investigation must return to source
 evidence. It cannot move decimals, reuse old values or adjust thresholds simply
-to pass. False positives remain blocked for rule review. Unresolved/null model
+to pass. False positives remain blocked for rule review. A reviewed entry in the protected `automation/reviewed-resolutions.json` can close an issue only when that exact atomic unit and source SHA pass the current validator. Merely adding an issue ID cannot approve bad data. Unresolved/null model
 values never erase a previous value.
 
 ## Deterministic acceptance rules
@@ -190,3 +190,7 @@ Official references used for activation rules:
 
 No claim of indefinite free operation, perfect source accuracy or a fully
 automated refresh of unsupported financial fields is made.
+
+## First live integration trial
+
+Commit `b905bf0a25d3ac14fe5abc56d82825cbd87d1010`, run `37600951938`: 59 source downloads succeeded, five were unavailable, and 414 were deferred by the acquisition budget. Trusted adapters identified 8,569 acceptable candidate units and 186 blocked units. Both model tasks received HTTP 503; no financial files were emitted or published. The complete 7.3 MB audit archive and 11 KB persistent-state archive were successfully saved. This verified the retain-data failure path, not a successful Gemini research run. A follow-up trial tests bounded service retries and state restoration.

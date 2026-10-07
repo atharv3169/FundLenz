@@ -101,20 +101,34 @@ def validate(root, run, output):
     raws = verify_acquisition(root, run, acquisition)
     units, extras = reconcile(root, acquisition, policy, raws)
     findings, model_results, critical = [], [], []
+    completed_at = acquisition["completed_at"]
+    investigation_after = acquisition["previous_state"].get("investigation_after", "")
     for task in ["fresh_scan", "reinvestigation"]:
         status_path = run / (task + "-status.json")
         status = read(status_path) if status_path.exists() else {"status": "failed", "error_type": "TaskMissing"}
+        if status.get("completed_at"):
+            completed_at = max(completed_at, status["completed_at"], key=timestamp)
         try:
             require(status["status"] == "completed", "Model task failed/unavailable")
             # Reconstruct model input from trusted bytes, not an artifact's proposed context.
             from model_tasks import packets
             packet = packets(acquisition, units, task, policy, run)
             findings.extend(validate_model(read(run / (task + ".json")), task, acquisition, units, packet))
-            model_results.append({"task": task, "status": "validated", "usage": status.get("usage", {})})
+            model_results.append({"task": task, "status": "validated", "usage": status.get("usage", {}), "attempts": status.get("attempts", 1)})
+            if task == "reinvestigation" and packet["issues"]:
+                investigation_after = packet["issues"][-1]["issue_id"]
         except Exception as error:
-            model_results.append({"task": task, "status": "failed", "error_type": type(error).__name__, "http_status": status.get("http_status")})
+            details = {"task": task, "status": "failed", "error_type": status.get("error_type") or type(error).__name__, "http_status": status.get("http_status")}
+            if hasattr(error, "schema_path"):
+                details["schema_path"] = list(error.schema_path)
+                details["instance_path"] = list(error.path)
+            elif isinstance(error, ValueError):
+                details["validation_reason"] = str(error)[:300]
+            model_results.append(details)
             critical.append(task + " did not pass the independent response contract.")
     state, resolutions = reconcile_issues(acquisition["previous_state"], acquisition, units, findings)
+    state["investigation_after"] = investigation_after
+    state["issues"]["updated_at"] = completed_at
     schema(state["issues"], "open-issues")
     # No partial file emission if either required task is malformed/unavailable.
     # All source-derived decisions remain in the report for diagnosis.
@@ -129,7 +143,7 @@ def validate(root, run, output):
     blockers = counts["blocked"] + counts["same_date_conflict"] + len(state["issues"]["issues"])
     incomplete = checks["unavailable"] + checks["budget_exhausted"]
     report = {"schema_version": 1, "report_kind": "daily", "run_id": acquisition["run_id"],
-              "started_at": acquisition["started_at"], "completed_at": acquisition["completed_at"],
+              "started_at": acquisition["started_at"], "completed_at": completed_at,
               "base_commit": acquisition["base_commit"], "base_dataset_sha256": acquisition["base_dataset_sha256"],
               "candidate_dataset_sha256": dataset_hash(root, files), "mode": policy["mode"],
               "status": run_status(len(files), blockers, checks["checked_changed"] + checks["checked_unchanged"], incomplete, critical),

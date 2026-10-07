@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '47 3 * * *'
   workflow_dispatch:
+    inputs:
+      force_supported_sources:
+        description: 'Re-fetch supported daily feeds for an integration test, even if checked recently'
+        type: boolean
+        default: false
   push:
     branches: [main]
     paths:
@@ -51,6 +56,8 @@ jobs:
           github-token: ${{ github.token }}
           path: work/state
       - name: Acquire approved official sources
+        env:
+          FUNDLENZ_FORCE_SUPPORTED: ${{ github.event_name == 'push' || inputs.force_supported_sources }}
         run: python3 scripts/automation/acquire.py
       - name: Run the two bounded Gemini tasks
         env:

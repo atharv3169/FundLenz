@@ -1,6 +1,6 @@
 """Persistent queue, idempotent attempts and recorded resolutions."""
 import copy
-from common import require, sha
+from common import ROOT, read, require, sha
 
 
 def issue_id(unit):
@@ -17,6 +17,7 @@ def reconcile_issues(previous, acquisition, units, model_findings):
     outcomes = {issue_id(u["unit"]): u for u in units}
     issues = {i["issue_id"]: i for i in state["issues"]["issues"]}
     resolutions = []
+    reviewed = read(ROOT / "automation/reviewed-resolutions.json")["resolutions"]
     for identifier, issue in list(issues.items()):
         source = checks.get(issue["source_url"])
         if not source or not source["checked_at"]:
@@ -27,10 +28,22 @@ def reconcile_issues(previous, acquisition, units, model_findings):
         # A generic source failure can resolve when its specific adapter/source
         # recovers, but bootstrap discovery and model rule warnings need evidence.
         recovered = outcome and outcome["decision"] in {"accepted", "unchanged"}
+        if identifier == issue_id("source:" + source["source_id"]):
+            source_units = [u for u in units if u["source_url"] == source["source_url"]]
+            if source_units and all(u["decision"] in {"accepted", "unchanged", "retained_unsupported"} for u in source_units):
+                recovered = True
         if issue["reason_code"] == "SOURCE_UNAVAILABLE" and source["outcome"].startswith("checked_"):
             recovered = True
-        if recovered and issue["reason_code"] != "MODEL_RULE_REVIEW":
-            resolutions.append({"issue_id": identifier, "at": at, "reason": "Same atomic unit independently verified.",
+        reviewed_recovery = False
+        for approval in reviewed:
+            require(set(approval) == {"issue_id", "unit", "source_sha256", "reason", "reviewed_at"}, "Invalid reviewed resolution")
+            if approval["issue_id"] == identifier:
+                matches = [u for u in units if u["unit"] == approval["unit"] and u["decision"] in {"accepted", "unchanged"}
+                           and u["source_sha256"] == approval["source_sha256"]]
+                reviewed_recovery = bool(matches)
+                if reviewed_recovery: outcome = matches[0]
+        if (recovered and issue["reason_code"] != "MODEL_RULE_REVIEW") or reviewed_recovery:
+            resolutions.append({"issue_id": identifier, "at": at, "reason": "Reviewed resolution and exact source independently verified." if reviewed_recovery else "Same source/atomic unit independently verified.",
                                 "source_url": source["source_url"], "source_sha256": source["source_sha256"],
                                 "unit": outcome["unit"] if outcome else None})
             del issues[identifier]

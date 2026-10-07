@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "resolutions": [],
+  "note": "Protected, human-reviewed exceptions only. An entry does not close an issue unless its exact atomic unit and source SHA independently pass the current validator. Gemini cannot edit this file."
+}

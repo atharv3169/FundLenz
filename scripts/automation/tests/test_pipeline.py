@@ -7,6 +7,7 @@ import socket
 import sys
 import tempfile
 import unittest
+import urllib.error
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from common import ROOT, dataset_hash, encoded, loads, read, require, safe_path, schema, sha
@@ -15,6 +16,7 @@ from adapters import chronology, nav_candidates, parse_nav, holdings_candidate, 
 from issues import issue_id, reconcile_issues
 from publish import protection_gate, verify_release
 from validate import run_status, validate_model
+from model_tasks import bounded_call
 
 
 class PipelineTests(unittest.TestCase):
@@ -269,6 +271,38 @@ class PipelineTests(unittest.TestCase):
                 else:
                     self.assertEqual(new_plans[p["code"]], p)
         self.assertEqual(updated["retrievedAt"], self.india["retrievedAt"])
+
+    def test_one_bounded_service_retry_and_no_quota_or_auth_retry(self):
+        calls, waits = [], []
+        def temporary(*args):
+            calls.append(1)
+            if len(calls) == 1: raise urllib.error.HTTPError("https://example.invalid", 503, "fixture", {}, None)
+            return {}, {}
+        _, _, attempts = bounded_call({}, "fresh_scan", self.policy, caller=temporary, wait=waits.append)
+        self.assertEqual(attempts, 2)
+        self.assertEqual(waits, [15])
+        for status in [401, 403, 429, 503]:
+            calls.clear(); waits.clear()
+            def always_failed(*args):
+                calls.append(1)
+                raise urllib.error.HTTPError("https://example.invalid", status, "fixture", {}, None)
+            with self.assertRaises(urllib.error.HTTPError): bounded_call({}, "fresh_scan", self.policy, caller=always_failed, wait=waits.append)
+            self.assertEqual(len(calls), 2 if status == 503 else 1)
+
+    def test_source_parser_issue_resolves_only_when_complete_scope_passes(self):
+        broken = self.unit("1", "blocked"); broken["unit"] = "source:" + self.source["source_id"]
+        state, _ = reconcile_issues(self.make_state(), self.acquisition(), [broken], [])
+        unresolved, _ = reconcile_issues(state, self.acquisition(identifier="fictional-2"), [self.unit("1", "accepted"), self.unit("2", "blocked")], [])
+        self.assertTrue(any(i["issue_id"] == issue_id(broken["unit"]) for i in unresolved["issues"]["issues"]))
+        resolved, history = reconcile_issues(state, self.acquisition(identifier="fictional-3"), [self.unit("1", "unchanged")], [])
+        self.assertFalse(resolved["issues"]["issues"])
+        self.assertEqual(len(history), 1)
+
+    def test_next_local_day_is_due_even_if_schedule_runs_earlier(self):
+        source = next(s for s in self.registry if s["adapter"] == "amfi_nav")
+        state = {source["id"]: {"last_attempt_at": "2026-10-07T09:30:00Z"}}
+        selected, _, _ = due_sources([source], state, {"issues": []}, "2026-10-08T03:47:00Z", 64)
+        self.assertEqual(selected, [source])
 
 
 if __name__ == "__main__":

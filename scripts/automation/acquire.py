@@ -4,6 +4,8 @@ import datetime as dt
 import ipaddress
 import os
 import socket
+import math
+from zoneinfo import ZoneInfo
 import threading
 import urllib.error
 import urllib.parse
@@ -48,15 +50,18 @@ def retrieve(source, policy):
         return raw, response.geturl(), response.headers.get("Content-Type", ""), response.headers.get("Last-Modified")
 
 
-def due_sources(registry, state, issues, at, limit):
+def due_sources(registry, state, issues, at, limit, force_supported=False):
     issue_urls = {i["source_url"] for i in issues["issues"]}
     due, later = [], []
     for source in registry:
         previous = state.get(source["id"], {})
         last = previous.get("last_attempt_at")
-        is_due = not last or (timestamp(at) - timestamp(last)).total_seconds() >= source["cadence_hours"] * 3600
+        local = ZoneInfo("Asia/Kolkata")
+        elapsed_days = (timestamp(at).astimezone(local).date() - timestamp(last).astimezone(local).date()).days if last else None
+        is_due = not last or elapsed_days >= math.ceil(source["cadence_hours"] / 24)
+        is_due = is_due or (force_supported and source["adapter"] != "monitor")
         if source["url"] in issue_urls:
-            is_due = not last or (timestamp(at) - timestamp(last)).total_seconds() >= 20 * 3600
+            is_due = is_due or not last or elapsed_days >= 1
         (due if is_due else later).append(source)
     # All daily adapters first. Remaining slots rotate fairly by actual attempt time,
     # including unresolved monitoring issues; one broken site cannot starve all others.
@@ -75,7 +80,8 @@ def main():
     state_path = ROOT / "work/state/state.json"
     state = read(state_path) if state_path.exists() else {"sources": {}, "issues": read(ROOT / "audit/open-issues.json"), "applied_runs": []}
     started = now()
-    selected, budget, later = due_sources(registry, state["sources"], state["issues"], started, policy["max_sources_per_run"])
+    selected, budget, later = due_sources(registry, state["sources"], state["issues"], started, policy["max_sources_per_run"],
+                                        os.environ.get("FUNDLENZ_FORCE_SUPPORTED") == "true")
     host_locks = {urllib.parse.urlsplit(s["url"]).hostname: threading.Lock() for s in selected}
     byte_lock, used = threading.Lock(), [0]
 
