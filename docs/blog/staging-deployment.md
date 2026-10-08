@@ -57,3 +57,25 @@ Cloudflare UI displays an orange warning suggesting changing **`wrangler.jsonc`*
 ## First staging deployment checkpoint
 
 8 October 2026: Owner confirmed saving the staging Worker's Git build command (`node scripts/build-blog-staging.mjs`) and guarded deploy command (`FUNDLENZ_ALLOW_STAGING_DEPLOY=yes node scripts/deploy-blog-staging.mjs`) in Cloudflare. This documentation-only commit is intended to trigger the first staging build. **Deployment success and resource isolation must still be verified in Cloudflare; a GitHub commit does not prove either.** Do not add administrator secrets, publish visitor forms, or merge PR #4 until those checks complete. Existing financial-data release controls remain unchanged.
+
+## Free staging-only access gate (Zero Trust billing avoided)
+
+Owner declined Cloudflare Zero Trust enrollment because its checkout requested payment authorization for potential future charges. Use a **staging-only HTTP Basic gate** that requires no external subscription or additional SaaS.
+
+Implementation:
+- `scripts/blog-staging-gate-core.mjs` verifies a private, long, randomly generated password against the `Authorization: Basic` header, accepting username `fundlenz-staging`. Requests without valid credentials receive an HTTP 401 browser challenge.
+- Password stored as `FUNDLENZ_STAGING_GATE_PASSWORD` **encrypted Cloudflare Worker Secret** on **`fundlenz-blog-staging` ONLY**; at least 24 ASCII characters, max 256, and unrelated to the eventual editor/admin password. Never commit it, paste it in chat, or put it in `wrangler.blog-staging.jsonc`. A password manager's random generator is recommended.
+- If secret missing/invalid, **all staging requests return HTTP 503 (fail closed)**. This is expected until owner adds the secret. The original `fundlenz` Worker never imports this gate.
+- `scripts/build-blog-staging.mjs` builds the original reviewed source unchanged, copies the gate into **generated output only**, wraps the generated Worker fetch entrypoint, and sets `assets.run_worker_first: true`. Cloudflare documents that static assets bypass the Worker by default; without this setting they would be publicly fetchable. See https://developers.cloudflare.com/workers/static-assets/routing/worker-script/.
+- `scripts/deploy-blog-staging.mjs` refuses deployment if generated entrypoint and static asset gating are absent. The CI suite validates both the gate behavior and final generated Wrangler config.
+- The wrapper removes the Basic Authorization header before forwarding requests to Vinext. It adds no-index and no-store response headers on staging.
+- If the admin page is subsequently enabled, the staging Basic password is **additional** to the editor's independent server-backed password and session checks. It does not grant GitHub publishing privileges.
+- This is a **development convenience, not enterprise identity management**: everyone knowing this staging password can browse the staging site; browser HTTP Basic credentials can be cached until the browser closes, there is no per-user revocation, and password rotation is manual. No brute-force lockout is implemented for the staging gate. The separate admin login keeps its rate limiting and D1 sessions. Do not expose real subscriber/contributor data or copy production Google credentials to staging merely because the staging gate exists.
+
+**Owner next steps after GitHub checks pass and staging deploys:**
+1. Cloudflare → Workers & Pages → **fundlenz-blog-staging** → Settings → Variables and Secrets → Add variable. Name `FUNDLENZ_STAGING_GATE_PASSWORD`, select **Secret**, select staging Worker's **Production** environment, and enter your own 32+ character random printable-ASCII password (do not share with chat).
+2. Save / Deploy changes. Check that the staging URL prompts for Basic credentials; username: `fundlenz-staging`, password: privately generated value.
+3. After entering Basic credentials, verify `/blogpost` and `/blogpost/admin` load; the admin page should still say login isn't configured.
+4. Separately, configure private `FUNDLENZ_ADMIN_PASSWORD_HASH` and `FUNDLENZ_ADMIN_SESSION_SECRET` with the offline setup utility. Test authentication with D1 staging DB. Keep PR in draft until further development and validation.
+
+The live `fundlenz.com` website and original Worker must remain unrestricted and unchanged.
