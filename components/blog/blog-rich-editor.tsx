@@ -70,12 +70,12 @@ function StyledRun({ run }: { run: RichRun }) {
   }}>{run.text}</span>;
   return run.href ? <a href={run.href} target="_blank" rel="noopener noreferrer">{text}</a> : text;
 }
-export function BlogRichEditor({ document, onChange, disabled }: {
-  document: RichDocument;
+export function BlogRichEditor({ value, onChange, disabled }: {
+  value: RichDocument;
   onChange: (next: RichDocument) => void;
   disabled?: boolean;
 }) {
-  const [activeId, setActiveId] = useState(document.blocks[0]?.id || "");
+  const [activeId, setActiveId] = useState(value.blocks[0]?.id || "");
   const [message, setMessage] = useState("");
   const nodeMap = useRef(new Map<string, HTMLDivElement>());
   const range = useRef<Range | null>(null);
@@ -85,9 +85,9 @@ export function BlogRichEditor({ document, onChange, disabled }: {
     const selection = window.getSelection();
     if (selection && selection.rangeCount) range.current = selection.getRangeAt(0).cloneRange();
   }
-  function patch(blocks: RichBlock[]) { onChange({ ...document, blocks }); setMessage(""); }
+  function patch(blocks: RichBlock[]) { onChange({ ...value, blocks }); setMessage(""); }
   function replaceBlock(id: string, update: (block: RichBlock) => RichBlock) {
-    patch(document.blocks.map(block => block.id === id ? update(block) : block));
+    patch(value.blocks.map(block => block.id === id ? update(block) : block));
   }
   function flushText(id: string) {
     const root = nodeMap.current.get(id);
@@ -110,8 +110,8 @@ export function BlogRichEditor({ document, onChange, disabled }: {
     saveSelection();
   }
   function insert(block: RichBlock) {
-    const index = document.blocks.findIndex(item => item.id === activeId);
-    const out = [...document.blocks];
+    const index = value.blocks.findIndex(item => item.id === activeId);
+    const out = [...value.blocks];
     out.splice(index < 0 ? out.length : index + 1, 0, block);
     patch(out); setActiveId(block.id);
   }
@@ -141,10 +141,10 @@ export function BlogRichEditor({ document, onChange, disabled }: {
   }
   function moveBlock(source: string, target: string) {
     if (!source || source === target) return;
-    const old = document.blocks.findIndex(item => item.id === source);
-    const to = document.blocks.findIndex(item => item.id === target);
+    const old = value.blocks.findIndex(item => item.id === source);
+    const to = value.blocks.findIndex(item => item.id === target);
     if (old < 0 || to < 0) return;
-    const blocks = [...document.blocks];
+    const blocks = [...value.blocks];
     const [moving] = blocks.splice(old, 1);
     blocks.splice(to, 0, moving);
     patch(blocks); setActiveId(source);
@@ -215,7 +215,7 @@ export function BlogRichEditor({ document, onChange, disabled }: {
       Drag blocks by the six-dot handle to reorder them. All media currently use HTTPS URLs.</p>
     {message && <p className={styles.warning} role="status">{message}</p>}
     <div className={styles.blocks}>
-      {document.blocks.map((block, index) => <section key={block.id}
+      {value.blocks.map((block, index) => <section key={block.id}
         className={styles.block + (activeId === block.id ? " " + styles.selected : "")}
         onDragOver={event => event.preventDefault()} onDrop={event => drop(event, block.id)}>
         <div className={styles.blockControls}>
@@ -226,11 +226,11 @@ export function BlogRichEditor({ document, onChange, disabled }: {
             }} onDragEnd={() => { dragging.current = null; }}>⠿</button>
           <span>{index + 1} · {block.type.replace("-", " ")}</span>
           <button type="button" className={styles.mini} disabled={disabled || index === 0}
-            onClick={() => moveBlock(block.id, document.blocks[index - 1].id)}>↑</button>
-          <button type="button" className={styles.mini} disabled={disabled || index === document.blocks.length - 1}
-            onClick={() => moveBlock(block.id, document.blocks[index + 1].id)}>↓</button>
+            onClick={() => moveBlock(block.id, value.blocks[index - 1].id)}>↑</button>
+          <button type="button" className={styles.mini} disabled={disabled || index === value.blocks.length - 1}
+            onClick={() => moveBlock(block.id, value.blocks[index + 1].id)}>↓</button>
           <button type="button" className={styles.remove} disabled={disabled}
-            onClick={() => patch(document.blocks.filter(item => item.id !== block.id))}>Remove</button>
+            onClick={() => patch(value.blocks.filter(item => item.id !== block.id))}>Remove</button>
         </div>
         {isText(block)
           ? <div className={styles.editable + " " + styles[block.type]}
@@ -258,7 +258,7 @@ export function BlogRichEditor({ document, onChange, disabled }: {
           </div>}
       </section>)}
     </div>
-    {!document.blocks.length && <button type="button" className={styles.tool} onClick={() => insertText("paragraph")}>
+    {!value.blocks.length && <button type="button" className={styles.tool} onClick={() => insertText("paragraph")}>
       + Add your first paragraph
     </button>}
   </div>;
