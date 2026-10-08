@@ -22,8 +22,10 @@ assert.equal(stage.route, undefined);
 assert.equal(stage.triggers, undefined);
 assert.equal(prod.d1_databases, undefined, "Staging D1 must not be bound to production");
 const vite = readFileSync("vite.config.ts", "utf8");
-assert.ok(vite.includes('FUNDLENZ_BUILD_TARGET === "blog-staging"'));
-assert.ok(vite.includes("wrangler.blog-staging.jsonc"));
+assert.ok(!vite.includes("wrangler.blog-staging.jsonc"), "Protected Vite config must not select a staging Worker.");
+const builder = readFileSync("scripts/build-blog-staging.mjs", "utf8");
+assert.ok(builder.includes("dist/server/wrangler.json"), "Staging must rewrite only generated build artifacts.");
+assert.ok(builder.includes("generated.name = staging.name"));
 if (process.argv.includes("--built")) {
   const variants = [
     resolve("dist/server/wrangler.json"),
