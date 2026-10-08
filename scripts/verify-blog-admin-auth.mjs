@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
+import { readFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 
 const require = createRequire(import.meta.url);
@@ -23,6 +24,21 @@ async function importTS(entryPoint, withCloudflareEnv = false) {
   const encoded = Buffer.from(built.outputFiles[0].text, "utf8").toString("base64");
   return import("data:text/javascript;base64," + encoded);
 }
+// The owner generates the verifier OFFLINE; its format must match the Worker
+// EXACTLY. Mismatched work factors caused the production FL-KDF failure.
+const offlineSetup = readFileSync("tools/offline-blog-admin-setup.html", "utf8");
+const offlineRotation = readFileSync("tools/offline-blog-admin-rehash.html", "utf8");
+const terminalGenerator = readFileSync("scripts/generate-blog-admin-secrets.mjs", "utf8");
+assert.ok(offlineSetup.includes("iterations: 100000") && offlineSetup.includes('"100000"'));
+assert.ok(offlineRotation.includes("iterations: 100000") && offlineRotation.includes('"100000"'));
+assert.ok(!offlineRotation.includes("FUNDLENZ_ADMIN_SESSION_SECRET"),
+  "Password-hash-only rotation must not tempt the owner to rotate their session secret");
+assert.ok(!offlineRotation.includes('id="session"'), "No new session secret should be generated");
+assert.ok(terminalGenerator.includes("const rounds = 100_000;"));
+for (const source of [offlineSetup, offlineRotation, terminalGenerator]) {
+  assert.equal(/600[_,]?000/.test(source), false, "Offline generator must not output unsupported 600k hashes");
+}
+
 const cryptoModule = await importTS("lib/blog-admin-crypto.ts");
 const state = await importTS("lib/blog-admin-state.ts");
 
