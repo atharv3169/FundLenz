@@ -64,7 +64,7 @@ async function findChild(token: string, parent: string, name: string, mime?: str
     "trashed = false",
   ];
   if (mime) conditions.push("mimeType = '" + quoteQuery(mime) + "'");
-  const url = DRIVE_API + "?fields=files(id,name),nextPageToken&page_size=100&q=" + encodeURIComponent(conditions.join(" and "));
+  const url = DRIVE_API + "?fields=files(id,name),nextPageToken&pageSize=100&q=" + encodeURIComponent(conditions.join(" and "));
   const found = await driveJSON<GoogleFileList>(token, url);
   return found.files?.find(file => Boolean(file.id));
 }
