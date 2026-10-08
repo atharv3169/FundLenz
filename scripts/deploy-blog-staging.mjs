@@ -20,6 +20,10 @@ if (configuration.name !== "fundlenz-blog-staging" ||
     configuration.d1_databases?.[0]?.binding !== "BLOG_ADMIN_DB" ||
     configuration.d1_databases?.[0]?.database_id !== expectedDB ||
     !configuration.keep_vars || configuration.routes || configuration.route ||
+    configuration.main !== "./blog-staging-gate-entry.mjs" ||
+    configuration.assets?.run_worker_first !== true ||
+    !existsSync(resolve("dist/server/blog-staging-gate-entry.mjs")) ||
+    !existsSync(resolve("dist/server/blog-staging-gate-core.mjs")) ||
     configuration.vars?.BLOG_ADMIN_ALLOWED_HOSTNAMES !== "fundlenz-blog-staging.atharvsahu711.workers.dev") {
   throw new Error("Refusing deployment: build output is not an isolated, verified staging Worker.");
 }
