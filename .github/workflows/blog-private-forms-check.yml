@@ -9,6 +9,9 @@ on:
       - "components/blog/**"
       - "content/blog-homepage.json"
       - "lib/blog-homepage-content.ts"
+      - "lib/blog-admin-**"
+      - "db/blog-admin/**"
+      - "scripts/verify-blog-admin-auth.mjs"
       - "scripts/verify-blog-homepage-copy.mjs"
       - "lib/blog-private-**"
       - "scripts/verify-blog-forms.mjs"
@@ -40,6 +43,8 @@ jobs:
         run: node scripts/verify-blog-forms.mjs
       - name: Editable homepage validation checks
         run: node scripts/verify-blog-homepage-copy.mjs
+      - name: Single-admin authentication security checks
+        run: node scripts/verify-blog-admin-auth.mjs
       - name: TypeScript validation
         run: pnpm run typecheck
       - name: Production build
