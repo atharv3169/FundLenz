@@ -1,4 +1,5 @@
 import initialContent from "@/content/blog-homepage.json";
+import { safeHttpUrl } from "@/lib/blog-rich-document";
 
 /** Public, editable marketing copy only. This must never include admin secrets or visitor records. */
 export const blogHomepageFields = [
@@ -16,6 +17,17 @@ export const blogHomepageFields = [
   { key: "contributionButtonLabel", label: "Contributor popup button", group: "Footer", max: 100, multiline: false },
   { key: "footerDescription", label: "Footer education disclaimer", group: "Footer", max: 220, multiline: true },
   { key: "instagramLead", label: "Instagram text before the link", group: "Footer", max: 120, multiline: false },
+  { key: "articleMastheadRight", label: "Article header tagline (leave blank to hide)", group: "Article appearance", max: 120, multiline: false, optional: true },
+  { key: "socialInstagramUrl", label: "Instagram URL", group: "Social links", max: 2048, multiline: false, optional: true, url: true },
+  { key: "socialInstagramEnabled", label: "Show Instagram icon", group: "Social links", max: 5, multiline: false, toggle: true },
+  { key: "socialFacebookUrl", label: "Facebook URL", group: "Social links", max: 2048, multiline: false, optional: true, url: true },
+  { key: "socialFacebookEnabled", label: "Show Facebook icon", group: "Social links", max: 5, multiline: false, toggle: true },
+  { key: "socialXUrl", label: "X URL", group: "Social links", max: 2048, multiline: false, optional: true, url: true },
+  { key: "socialXEnabled", label: "Show X icon", group: "Social links", max: 5, multiline: false, toggle: true },
+  { key: "socialTikTokUrl", label: "TikTok URL", group: "Social links", max: 2048, multiline: false, optional: true, url: true },
+  { key: "socialTikTokEnabled", label: "Show TikTok icon", group: "Social links", max: 5, multiline: false, toggle: true },
+  { key: "socialLinkedinUrl", label: "LinkedIn URL", group: "Social links", max: 2048, multiline: false, optional: true, url: true },
+  { key: "socialLinkedinEnabled", label: "Show LinkedIn icon", group: "Social links", max: 5, multiline: false, toggle: true },
 ] as const;
 
 export type BlogHomepageField = (typeof blogHomepageFields)[number]["key"];
@@ -32,12 +44,22 @@ export function validateBlogHomepageContent(value: unknown): BlogHomepageContent
     throw new Error("Unexpected homepage content field.");
   const result = {} as BlogHomepageContent;
   for (const field of blogHomepageFields) {
-    const text = record[field.key];
-    if (typeof text !== "string" || text.trim().length === 0 || text.length > field.max ||
+    // Existing D1 drafts predate the article masthead and opt-in social URLs.
+    const text = record[field.key] ?? ("optional" in field || "toggle" in field ? defaultBlogHomepageContent[field.key] : undefined);
+    if (typeof text !== "string" || (!("optional" in field) && text.trim().length === 0) || text.length > field.max ||
         /[\u0000-\u0008\u000B\u000C\u000E-\u001F]/.test(text)) {
       throw new Error("Invalid value for " + field.label + ".");
     }
+    if ("toggle" in field && text !== "true" && text !== "false")
+      throw new Error("Invalid visibility setting for " + field.label + ".");
+    if ("url" in field && text && !safeHttpUrl(text))
+      throw new Error("Social profile URL must be HTTPS.");
     result[field.key] = text.trim();
+  }
+  for (const network of ["Instagram", "Facebook", "X", "TikTok", "Linkedin"] as const) {
+    if (result[`social${network}Enabled`] === "true" &&
+        !safeHttpUrl(result[`social${network}Url`]))
+      throw new Error(network + " is visible but does not have a valid HTTPS profile link.");
   }
   // The footer disclaimer must retain an unambiguous educational/investment-risk notice.
   if (!/not investment advice/i.test(result.footerDescription))
