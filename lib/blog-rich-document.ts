@@ -47,7 +47,41 @@ export type RichMediaBlock = {
   widthPct?: number; align?: "left" | "center" | "right";
 };
 export type RichBlock = RichTextBlock | RichMediaBlock;
-export type RichDocument = { format: "fundlenz-rich-1"; category: string; blocks: RichBlock[] };
+export type ArticleAuthor = {
+  name?: string; socialLabel?: string; socialUrl?: string;
+  avatarDataUrl?: string; displayDate?: string; readingMinutes?: number;
+};
+export type RichDocument = {
+  format: "fundlenz-rich-1"; category: string; blocks: RichBlock[];
+  author?: ArticleAuthor;
+};
+export function safeAvatarDataUrl(input: unknown): input is string {
+  return typeof input === "string" && input.length <= 20000 &&
+    /^data:image\/jpeg;base64,(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(input) &&
+    input.length > 30;
+}
+export function validateArticleAuthor(input: unknown): ArticleAuthor {
+  if (!record(input) || !exactKeys(input, [
+    "name", "socialLabel", "socialUrl", "avatarDataUrl", "displayDate", "readingMinutes",
+  ])) throw new Error("Invalid author details.");
+  const v = input as Record<string, unknown>;
+  if (v.name !== undefined && (typeof v.name !== "string" || !v.name.trim() ||
+    v.name.length > 120 || controls.test(v.name) || /[<>]/.test(v.name))) throw new Error("Invalid author name.");
+  if (v.socialLabel !== undefined && (typeof v.socialLabel !== "string" ||
+    v.socialLabel.length > 60 || controls.test(v.socialLabel) || /[<>]/.test(v.socialLabel)))
+      throw new Error("Invalid social link label.");
+  if (v.socialUrl !== undefined && v.socialUrl !== "" && !safeHttpUrl(v.socialUrl))
+    throw new Error("Author social link must be HTTPS.");
+  if (v.avatarDataUrl !== undefined && !safeAvatarDataUrl(v.avatarDataUrl))
+    throw new Error("Avatar must be a small JPEG image.");
+  if (v.displayDate !== undefined && (typeof v.displayDate !== "string" ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(v.displayDate) || Number.isNaN(Date.parse(v.displayDate))))
+    throw new Error("Invalid article display date.");
+  if (v.readingMinutes !== undefined && (!Number.isInteger(v.readingMinutes) ||
+    (v.readingMinutes as number) < 1 || (v.readingMinutes as number) > 90))
+    throw new Error("Reading time must be 1–90 minutes.");
+  return input as ArticleAuthor;
+}
 const basicId = /^[a-zA-Z0-9_-]{1,80}$/;
 const safeColor = /^#[a-fA-F0-9]{6}$/;
 const fonts: readonly string[] = BLOG_FONTS.map(option => option.id);
@@ -73,7 +107,7 @@ export function isCategory(input: unknown): input is string {
     input.trim().length <= 80 && !controls.test(input) && !/[<>]/.test(input);
 }
 export function validateRichDocument(input: unknown): RichDocument {
-  if (!record(input) || !exactKeys(input, ["format", "category", "blocks"]) ||
+  if (!record(input) || !exactKeys(input, ["format", "category", "blocks", "author"]) ||
       input.format !== "fundlenz-rich-1" || !isCategory(input.category) ||
       !Array.isArray(input.blocks) || input.blocks.length > 120) {
     throw new Error("Invalid rich article format.");
@@ -124,9 +158,11 @@ export function validateRichDocument(input: unknown): RichDocument {
         ...(value.align === undefined ? {} : { align: value.align as RichMediaBlock["align"] }) });
     }
   }
-  if (JSON.stringify({ format: "fundlenz-rich-1", category: input.category, blocks }).length > 48000)
+  const author = input.author === undefined ? undefined : validateArticleAuthor(input.author);
+  if (JSON.stringify({ format: "fundlenz-rich-1", category: input.category, blocks, author }).length > 48000)
     throw new Error("Article content exceeds private draft storage capacity.");
-  return { format: "fundlenz-rich-1", category: input.category.trim(), blocks };
+  return { format: "fundlenz-rich-1", category: input.category.trim(), blocks,
+    ...(author === undefined ? {} : { author }) };
 }
 export function emptyRichDocument(category = "Research"): RichDocument {
   return { format: "fundlenz-rich-1", category, blocks: [
