@@ -1,0 +1,28 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fundlenz-blog-staging",
+  "main": "build/cloudflare-worker.ts",
+  "compatibility_date": "2026-05-15",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "workers_dev": true,
+  "preview_urls": false,
+  "keep_vars": true,
+  "assets": {
+    "directory": "./public"
+  },
+  "d1_databases": [
+    {
+      "binding": "BLOG_ADMIN_DB",
+      "database_name": "fundlenz-blog-admin-staging",
+      "database_id": "7849f805-0efa-49d3-b5bb-26c2527e4cfd"
+    }
+  ],
+  "vars": {
+    "BLOG_ADMIN_ALLOWED_HOSTNAMES": "fundlenz-blog-staging.atharvsahu711.workers.dev"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
