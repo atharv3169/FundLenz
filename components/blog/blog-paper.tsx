@@ -1,10 +1,11 @@
 import { type ReactNode } from "react";
-import { type RichBlock, type RichRun, safeEmbedUrl } from "@/lib/blog-rich-document";
+import { type RichBlock, type RichRun, safeEmbedUrl, safeHttpUrl } from "@/lib/blog-rich-document";
 import styles from "./blog-paper.module.css";
 
 export type ArticlePaperProps = {
   title: string; summary: string; category: string; blocks: RichBlock[];
-  related?: { id: string; title: string; category: string }[];
+  related?: { id: string; title: string; category: string; url?: string }[];
+  onSelectRelated?: (id: string) => void;
   publishedUrl?: string; author?: string; updatedAt?: number;
 };
 
@@ -64,7 +65,7 @@ export function RenderRichBlock({ block }: { block: RichBlock }) {
   </figure>;
 }
 
-export function BlogPaper({ title, summary, category, blocks, related = [], publishedUrl,
+export function BlogPaper({ title, summary, category, blocks, related = [], publishedUrl, onSelectRelated,
   author = "FundLenz Editorial", updatedAt }: ArticlePaperProps) {
   const hasShare = Boolean(publishedUrl);
   const link = publishedUrl || "";
@@ -112,7 +113,12 @@ export function BlogPaper({ title, summary, category, blocks, related = [], publ
           <div className={styles.sideHeading}>RELATED READING</div>
           {related.length ? related.slice(0, 5).map((item, index) => <div className={styles.related} key={item.id}>
             <span>{String(index + 1).padStart(2, "0")}</span>
-            <div><strong>{item.title}</strong><small>{item.category} · Editorial draft</small></div>
+            <div>{onSelectRelated
+                ? <button type="button" className={styles.relatedLink} onClick={() => onSelectRelated(item.id)}>{item.title}</button>
+                : item.url && safeHttpUrl(item.url)
+                  ? <a className={styles.relatedLink} href={item.url}>{item.title}</a>
+                  : <strong>{item.title}</strong>}
+              <small>{item.category}{onSelectRelated ? " · Private preview" : ""}</small></div>
           </div>) : <p className={styles.sideNote}>Explore more FundLenz analysis as new articles are published.</p>}
         </section>
         <section className={styles.featureCard}>
