@@ -12,6 +12,8 @@ on:
       - "lib/blog-admin-**"
       - "db/blog-admin/**"
       - "scripts/verify-blog-admin-auth.mjs"
+      - "scripts/blog-staging-gate-core.mjs"
+      - "scripts/verify-blog-staging-gate.mjs"
       - "scripts/verify-blog-admin-schema.py"
       - "wrangler.blog-staging.jsonc"
       - "vite.config.ts"
@@ -52,6 +54,8 @@ jobs:
         run: node scripts/verify-blog-homepage-copy.mjs
       - name: Single-admin authentication security checks
         run: node scripts/verify-blog-admin-auth.mjs
+      - name: Staging access gate security tests
+        run: node scripts/verify-blog-staging-gate.mjs
       - name: Blog admin database schema validation
         run: python3 scripts/verify-blog-admin-schema.py
       - name: TypeScript validation
