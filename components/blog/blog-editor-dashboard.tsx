@@ -210,6 +210,7 @@ export function BlogEditorDashboard() {
             </label>
             </div>
             {rich && <BlogRichEditor value={rich} disabled={busy}
+              onDirty={() => { setDirty(true); setNotice(""); }}
               onChange={updated => { setRich(updated); setDirty(true); setNotice(""); }}/>}
             <div className={styles.buttons}>
               <button type="submit" className={styles.primary} disabled={!dirty || busy}>{busy ? "Saving…" : "Save private draft"}</button>
