@@ -22,6 +22,10 @@ on:
       - "scripts/deploy-blog-staging.mjs"
       - "scripts/verify-blog-staging-config.mjs"
       - "scripts/verify-blog-homepage-copy.mjs"
+      - "scripts/verify-blog-editor-drafts.mjs"
+      - "lib/blog-editor-auth.ts"
+      - "lib/blog-article-draft.ts"
+      - "db/blog-admin/0002_editor_drafts.sql"
       - "lib/blog-private-**"
       - "scripts/verify-blog-forms.mjs"
       - ".github/workflows/blog-private-forms-check.yml"
@@ -56,6 +60,8 @@ jobs:
         run: node scripts/verify-blog-admin-auth.mjs
       - name: Staging access gate security tests
         run: node scripts/verify-blog-staging-gate.mjs
+      - name: Blog private editorial draft checks
+        run: node scripts/verify-blog-editor-drafts.mjs
       - name: Blog admin database schema validation
         run: python3 scripts/verify-blog-admin-schema.py
       - name: TypeScript validation
