@@ -37,6 +37,7 @@ export function BlogEditorDashboard() {
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [dirty, setDirty] = useState(false);
+  const [editorValid, setEditorValid] = useState(true);
   const [preview, setPreview] = useState(false);
 
   const refresh = useCallback(async () => {
@@ -61,7 +62,7 @@ export function BlogEditorDashboard() {
     try {
       const data = await jsonRequest<{ draft: BlogArticleDraft }>(articleApi + "?id=" + encodeURIComponent(id));
       setArticle(data.draft); setRich(decodeRichDocument(data.draft.body_markdown, data.draft.category));
-      setDirty(false); setPreview(keepPreview); setTab("articles");
+      setDirty(false); setEditorValid(true); setPreview(keepPreview); setTab("articles");
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Unable to open draft."); }
     finally { setBusy(false); }
   }
@@ -73,7 +74,7 @@ export function BlogEditorDashboard() {
       const data = await jsonRequest<{ draft: BlogArticleDraft }>(articleApi,
         { method: "POST", body: "{}" });
       setArticle(data.draft); setRich(emptyRichDocument(data.draft.category));
-      setDirty(false); setPreview(false);
+      setDirty(false); setEditorValid(true); setPreview(false);
       setArticles(current => [{ id: data.draft.id, title: data.draft.title, summary: "",
         category: data.draft.category, version: data.draft.version, updated_at: data.draft.updated_at },
         ...current]);
@@ -90,7 +91,7 @@ export function BlogEditorDashboard() {
 
   async function saveArticle(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!article || !rich || !dirty || busy) return;
+    if (!article || !rich || !dirty || busy || !editorValid) return;
     setBusy(true); setError(""); setNotice("");
     try {
       const encodedBody = encodeRichDocument({ ...rich, category: article.category });
@@ -116,7 +117,7 @@ export function BlogEditorDashboard() {
     try {
       await jsonRequest(articleApi, { method: "DELETE", body: JSON.stringify({ id: article.id, version: article.version }) });
       setArticles(current => current.filter(item => item.id !== article.id));
-      setArticle(null); setRich(null); setDirty(false); setNotice("Private draft deleted.");
+      setArticle(null); setRich(null); setDirty(false); setEditorValid(true); setNotice("Private draft deleted.");
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Could not delete draft."); }
     finally { setBusy(false); }
   }
@@ -142,7 +143,7 @@ export function BlogEditorDashboard() {
         <button type="button" role="tab" aria-selected={tab === "homepage"}
           className={tab === "homepage" ? styles.active : ""} onClick={() => {
             if (dirty && !window.confirm("Discard unsaved article edits?")) return;
-            setArticle(null); setRich(null); setDirty(false); setPreview(false); setTab("homepage"); }}>Homepage wording</button>
+            setArticle(null); setRich(null); setDirty(false); setEditorValid(true); setPreview(false); setTab("homepage"); }}>Homepage wording</button>
       </div>
       <button type="button" className={styles.secondary} disabled={busy || loading} onClick={() => {
         if (dirty && !window.confirm("Discard unsaved article edits?")) return;
@@ -211,12 +212,14 @@ export function BlogEditorDashboard() {
             </div>
             {rich && <BlogRichEditor value={rich} disabled={busy}
               onDirty={() => { setDirty(true); setNotice(""); }}
+              onValidityChange={setEditorValid}
               onChange={updated => { setRich(updated); setDirty(true); setNotice(""); }}/>}
             <div className={styles.buttons}>
-              <button type="submit" className={styles.primary} disabled={!dirty || busy}>{busy ? "Saving…" : "Save private draft"}</button>
+              <button type="submit" className={styles.primary} disabled={!dirty || busy || !editorValid}>{busy ? "Saving…" : "Save private draft"}</button>
               <button type="button" className={styles.danger} disabled={busy} onClick={() => { void deleteArticle(); }}>Delete draft</button>
             </div>
           </form>}
+          {!editorValid && <p role="alert" className={styles.error}>A paragraph contains text or formatting that exceeds the editor's safe storage limits. Reduce that paragraph before saving.</p>}
           {dirty && <p className={styles.note}>Unsaved changes. Save your private draft before leaving.</p>}
         </>}
       </div>
