@@ -95,9 +95,9 @@ function paintRuns(root: HTMLDivElement, runs: RichRun[]) {
       link.href = run.href;
       link.rel = "noopener noreferrer";
       link.target = "_blank";
-      link.append(span);
-      fragment.append(link);
-    } else fragment.append(span);
+      link.appendChild(span);
+      fragment.appendChild(link);
+    } else fragment.appendChild(span);
   }
   root.replaceChildren(fragment);
 }
