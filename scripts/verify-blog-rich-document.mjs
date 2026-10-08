@@ -18,12 +18,13 @@ const valid = {
   category: "Corporate Governance & M&A",
   blocks: [
     { id: "intro", type: "heading", runs: [
-      { text: "New research", font: "serif", color: "#174467", bold: true },
+      { text: "New research", font: "baskerville", color: "#174467", bold: true, sizePx: 28 },
       { text: " read more", href: "https://fundlenz.com/blogpost", underline: true },
     ] },
     { id: "photo", type: "image", src: "https://images.example.org/photo.jpg",
-      alt: "Fund manager", caption: "Image caption" },
-    { id: "video", type: "video", src: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
+      alt: "Fund manager", caption: "Image caption", widthPct: 45, align: "right" },
+    { id: "video", type: "video", src: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      widthPct: 60, align: "center" },
     { id: "video-link", type: "video-thumbnail", src: "https://vimeo.com/12345678",
       thumbnail: "https://images.example.org/poster.jpg", caption: "Watch interview" },
   ],
@@ -32,6 +33,12 @@ const serialized = mod.encodeRichDocument(valid);
 assert.ok(serialized.startsWith("FLRICH1:"));
 assert.deepEqual(mod.decodeRichDocument(serialized, "Research"), valid);
 assert.equal(mod.storedDraftCategory(serialized, "Research"), valid.category);
+assert.equal(mod.BLOG_FONTS.length, 22, "All font choices must be whitelisted");
+assert.equal(mod.blogFontFamily("baskerville"), "Baskerville, Georgia, serif");
+assert.equal(mod.mediaWidth(undefined, "video"), 72, "Older video embeds should default narrower");
+assert.equal(mod.mediaWidth(undefined, "image"), 85, "Older images should default narrower");
+assert.equal(mod.mediaWidth(35, "video"), 35, "Explicit sizing must override defaults");
+assert.deepEqual(mod.decodeRichDocument(serialized).blocks[2], valid.blocks[2]);
 assert.ok(mod.legacyArticleDocument("# Introduction\n\nBody paragraph", "Research").blocks.length === 2);
 assert.equal(mod.safeEmbedUrl("https://youtu.be/dQw4w9WgXcQ"),
   "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ");
@@ -51,6 +58,25 @@ assert.throws(() => mod.validateRichDocument(wrongImage), /unsafe media URL/);
 const extraKey = clone(valid);
 extraKey.blocks[0].runs[0].style = "position:fixed";
 assert.throws(() => mod.validateRichDocument(extraKey));
+const invalidMediaWidth = clone(valid);
+invalidMediaWidth.blocks[2].widthPct = 9;
+assert.throws(() => mod.validateRichDocument(invalidMediaWidth), /unsafe media URL/);
+const fractionalMediaWidth = clone(valid);
+fractionalMediaWidth.blocks[2].widthPct = 63.5;
+assert.throws(() => mod.validateRichDocument(fractionalMediaWidth));
+const invalidAlignment = clone(valid);
+invalidAlignment.blocks[1].align = "position:fixed";
+assert.throws(() => mod.validateRichDocument(invalidAlignment));
+const invalidTextSize = clone(valid);
+invalidTextSize.blocks[0].runs[0].sizePx = 150;
+assert.throws(() => mod.validateRichDocument(invalidTextSize));
+const invalidFont = clone(valid);
+invalidFont.blocks[0].runs[0].font = "evil-font()";
+assert.throws(() => mod.validateRichDocument(invalidFont));
+const legacyMedia = clone(valid);
+delete legacyMedia.blocks[1].widthPct;
+delete legacyMedia.blocks[1].align;
+assert.equal(mod.validateRichDocument(legacyMedia).blocks[1].widthPct, undefined);
 const duplicateIds = clone(valid);
 duplicateIds.blocks[1].id = "intro";
 assert.throws(() => mod.validateRichDocument(duplicateIds));
@@ -63,6 +89,13 @@ assert.throws(() => mod.validateRichDocument(huge));
 const renderer = readFileSync("components/blog/blog-paper.tsx", "utf8");
 assert.ok(renderer.includes("<RenderRichBlock"));
 assert.ok(renderer.includes("safeEmbedUrl("));
+assert.ok(renderer.includes("mediaWidth(media.widthPct, media.type)"));
+assert.ok(renderer.includes('media.align === "right"'));
+const editor = readFileSync("components/blog/blog-rich-editor.tsx", "utf8");
+assert.ok(editor.includes("Text size (px)") && editor.includes('min={12} max={72}'));
+assert.ok(editor.includes("BLOG_FONTS.map"));
+assert.ok(editor.includes('type="range" min={20} max={100}'));
+assert.ok(editor.includes('aria-label="Media alignment"'));
 assert.ok(!renderer.includes("dangerouslySetInnerHTML"));
 const dashboard = readFileSync("components/blog/blog-editor-dashboard.tsx", "utf8");
 assert.ok(dashboard.includes("<BlogPaper "));
