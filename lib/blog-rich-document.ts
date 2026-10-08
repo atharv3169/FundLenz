@@ -2,9 +2,40 @@
  * No untrusted HTML. All rendering uses React's escaped text nodes.
  */
 export const RICH_PREFIX = "FLRICH1:";
+
+export const BLOG_FONTS = [
+  { id: "serif", label: "Georgia", family: "Georgia, serif" },
+  { id: "times", label: "Times New Roman", family: "'Times New Roman', serif" },
+  { id: "palatino", label: "Palatino", family: "'Palatino Linotype', Palatino, serif" },
+  { id: "garamond", label: "Garamond", family: "Garamond, Georgia, serif" },
+  { id: "baskerville", label: "Baskerville", family: "Baskerville, Georgia, serif" },
+  { id: "cambria", label: "Cambria", family: "Cambria, Georgia, serif" },
+  { id: "book-antiqua", label: "Book Antiqua", family: "'Book Antiqua', Palatino, serif" },
+  { id: "sans", label: "Arial", family: "Arial, Helvetica, sans-serif" },
+  { id: "helvetica", label: "Helvetica", family: "Helvetica, Arial, sans-serif" },
+  { id: "verdana", label: "Verdana", family: "Verdana, sans-serif" },
+  { id: "trebuchet", label: "Trebuchet MS", family: "'Trebuchet MS', sans-serif" },
+  { id: "tahoma", label: "Tahoma", family: "Tahoma, sans-serif" },
+  { id: "segoe", label: "Segoe UI", family: "'Segoe UI', Arial, sans-serif" },
+  { id: "calibri", label: "Calibri", family: "Calibri, Arial, sans-serif" },
+  { id: "candara", label: "Candara", family: "Candara, Arial, sans-serif" },
+  { id: "century-gothic", label: "Century Gothic", family: "'Century Gothic', Arial, sans-serif" },
+  { id: "franklin", label: "Franklin Gothic", family: "'Franklin Gothic Medium', Arial, sans-serif" },
+  { id: "impact", label: "Impact", family: "Impact, sans-serif" },
+  { id: "mono", label: "Courier New", family: "'Courier New', monospace" },
+  { id: "consolas", label: "Consolas", family: "Consolas, 'Courier New', monospace" },
+  { id: "lucida", label: "Lucida Console", family: "'Lucida Console', monospace" },
+  { id: "comic", label: "Comic Sans MS", family: "'Comic Sans MS', cursive" },
+] as const;
+export type BlogFontId = (typeof BLOG_FONTS)[number]["id"];
+export function blogFontFamily(font?: string): string | undefined {
+  return BLOG_FONTS.find(option => option.id === font)?.family;
+}
+export const mediaWidth = (value: number | undefined, type: RichMediaBlock["type"]) =>
+  value ?? (type === "video" ? 72 : type === "video-thumbnail" ? 65 : 85);
 export type RichRun = {
   text: string; bold?: boolean; italic?: boolean; underline?: boolean;
-  href?: string; color?: string; font?: "serif" | "sans" | "mono" | "times" | "verdana" | "trebuchet"; size?: "small" | "normal" | "large" | "xlarge";
+  href?: string; color?: string; font?: BlogFontId; size?: "small" | "normal" | "large" | "xlarge"; sizePx?: number;
 };
 export type RichTextBlock = {
   id: string; type: "paragraph" | "heading" | "subheading" | "quote";
@@ -13,12 +44,13 @@ export type RichTextBlock = {
 export type RichMediaBlock = {
   id: string; type: "image" | "video" | "video-thumbnail";
   src: string; caption?: string; alt?: string; thumbnail?: string;
+  widthPct?: number; align?: "left" | "center" | "right";
 };
 export type RichBlock = RichTextBlock | RichMediaBlock;
 export type RichDocument = { format: "fundlenz-rich-1"; category: string; blocks: RichBlock[] };
 const basicId = /^[a-zA-Z0-9_-]{1,80}$/;
 const safeColor = /^#[a-fA-F0-9]{6}$/;
-const fonts = ["serif", "sans", "mono", "times", "verdana", "trebuchet"];
+const fonts: readonly string[] = BLOG_FONTS.map(option => option.id);
 const sizes = ["small", "normal", "large", "xlarge"];
 const kinds = ["paragraph", "heading", "subheading", "quote", "image", "video", "video-thumbnail"];
 const controls = /[\u0000-\u0008\u000B\u000C\u000E-\u001F]/;
@@ -60,7 +92,7 @@ export function validateRichDocument(input: unknown): RichDocument {
         throw new Error("Invalid text block.");
       const runs: RichRun[] = [];
       for (const run of value.runs) {
-        if (!record(run) || !exactKeys(run, ["text", "bold", "italic", "underline", "href", "color", "font", "size"]) ||
+        if (!record(run) || !exactKeys(run, ["text", "bold", "italic", "underline", "href", "color", "font", "size", "sizePx"]) ||
             typeof run.text !== "string" || run.text.length > 12000 || controls.test(run.text) ||
             (run.bold !== undefined && typeof run.bold !== "boolean") ||
             (run.italic !== undefined && typeof run.italic !== "boolean") ||
@@ -68,15 +100,18 @@ export function validateRichDocument(input: unknown): RichDocument {
             (run.href !== undefined && !safeHttpUrl(run.href)) ||
             (run.color !== undefined && (typeof run.color !== "string" || !safeColor.test(run.color))) ||
             (run.font !== undefined && !fonts.includes(String(run.font))) ||
-            (run.size !== undefined && !sizes.includes(String(run.size))))
+            (run.size !== undefined && !sizes.includes(String(run.size))) ||
+            (run.sizePx !== undefined && (!Number.isInteger(run.sizePx) || (run.sizePx as number) < 12 || (run.sizePx as number) > 72)))
           throw new Error("Invalid inline styling or unsafe link.");
         runs.push(run as RichRun);
       }
       blocks.push({ id: value.id, type: value.type as RichTextBlock["type"], runs });
     } else {
-      if (!exactKeys(value, ["id", "type", "src", "caption", "alt", "thumbnail"]) ||
+      if (!exactKeys(value, ["id", "type", "src", "caption", "alt", "thumbnail", "widthPct", "align"]) ||
           !safeHttpUrl(value.src) ||
           (value.thumbnail !== undefined && !safeHttpUrl(value.thumbnail)) ||
+          (value.widthPct !== undefined && (!Number.isInteger(value.widthPct) || (value.widthPct as number) < 20 || (value.widthPct as number) > 100)) ||
+          (value.align !== undefined && !["left", "center", "right"].includes(String(value.align))) ||
           (value.alt !== undefined && (typeof value.alt !== "string" || value.alt.length > 350 || controls.test(value.alt))) ||
           (value.caption !== undefined && (typeof value.caption !== "string" ||
             value.caption.length > 350 || controls.test(value.caption))))
@@ -84,7 +119,9 @@ export function validateRichDocument(input: unknown): RichDocument {
       blocks.push({ id: value.id, type: value.type as RichMediaBlock["type"], src: value.src,
         ...(value.alt === undefined ? {} : { alt: value.alt as string }),
         ...(value.caption === undefined ? {} : { caption: value.caption as string }),
-        ...(value.thumbnail === undefined ? {} : { thumbnail: value.thumbnail as string }) });
+        ...(value.thumbnail === undefined ? {} : { thumbnail: value.thumbnail as string }),
+        ...(value.widthPct === undefined ? {} : { widthPct: value.widthPct as number }),
+        ...(value.align === undefined ? {} : { align: value.align as RichMediaBlock["align"] }) });
     }
   }
   if (JSON.stringify({ format: "fundlenz-rich-1", category: input.category, blocks }).length > 48000)
