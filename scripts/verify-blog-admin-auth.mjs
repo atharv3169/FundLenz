@@ -37,17 +37,20 @@ const {
 } = state;
 
 const verifier = await createPasswordVerifier("super-long-example-password-for-testing");
-assert.ok(verifier.startsWith("pbkdf2_sha256$600000$"));
+assert.ok(verifier.startsWith("pbkdf2_sha256$100000$"));
 assert.ok(await verifyPassword("super-long-example-password-for-testing", verifier));
 assert.equal(await verifyPassword("incorrect-long-example-password", verifier), false);
 assert.equal(await verifyPassword("secret", "plaintext-not-a-valid-verifier"), false);
 assert.equal(await verifyPassword("secret", "pbkdf2_sha256$1$no$no"), false);
+assert.equal(await verifyPassword("super-long-example-password-for-testing",
+  verifier.replace("$100000$", "$600000$")), false,
+  "Old six-hundred-thousand-round verifier must not silently downgrade");
 assert.notEqual(await createPasswordVerifier("super-long-example-password-for-testing"), verifier);
 await assert.rejects(() => createPasswordVerifier("abcdefghijk"), /12/);
 const twelveCharVerifier = await createPasswordVerifier("Abc123xYz987");
 assert.ok(await verifyPassword("Abc123xYz987", twelveCharVerifier), "Exactly 12 characters must verify");
 assert.equal(await verifyPassword("Abc123xYz98", twelveCharVerifier), false);
-assert.equal((await createPasswordVerifier("Abc123xYz987")).startsWith("pbkdf2_sha256$600000$"), true);
+assert.equal((await createPasswordVerifier("Abc123xYz987")).startsWith("pbkdf2_sha256$100000$"), true);
 assert.ok(validSessionSecret("a".repeat(43)));
 assert.equal(validSessionSecret("not-long-enough"), false);
 
