@@ -2,7 +2,7 @@
 
 FundLenz is a free educational portfolio lab and source-based fund, stock and bond catalogue created by Atharva Sahu. It does not provide investment advice or recommend investments.
 
-This is the prepared GitHub migration package for the existing website. It preserves the application and its current data snapshots, and adds the operating specification for controlled catalogue updates. **Cloudflare hosting is active on the temporary workers.dev address. Daily Gemini checks are active in dry-run mode; automatic financial publication is still disabled.** See [migration status](docs/migration/STATUS.md).
+This is the prepared GitHub migration package for the existing website. It preserves the application and its current data snapshots, and adds the operating specification for controlled catalogue updates. **Cloudflare hosting is active on the temporary workers.dev address. Daily Gemini checks and protected automatic financial publication are active for supported sources.** See [migration status](docs/migration/STATUS.md).
 
 ## Included catalogue
 
@@ -11,7 +11,7 @@ This is the prepared GitHub migration package for the existing website. It prese
 | Indian funds | 3,372 grouped records; 14,354 plan/option codes | `public/data/catalog.json` |
 | Indian holdings | 803 portfolios; 49,022 positions; 21 fund houses | `public/data/holdings/` |
 | International funds | 21,389 directory records | `public/data/global/` |
-| International analysis | 38 selectable ETFs; 17,126 holdings | `public/data/global/holdings/` |
+| International analysis | 38 selectable ETFs; holdings count varies with validated releases | `public/data/global/holdings/` |
 | Stocks, bonds and other securities | 31,664 reference records | `public/data/securities/` |
 | US example | IVV, IWB and IWF; illustrative investment amounts | `public/data/us-example.json` |
 
