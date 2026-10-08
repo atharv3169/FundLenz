@@ -1,4 +1,4 @@
-import { adminRuntime, isAuthenticatedAdmin, requireAdminOrigin } from "@/lib/blog-admin-server";
+import { adminRuntime, isAuthenticatedAdmin, requireAdminOrigin, AdminForbidden, AdminUnavailable } from "@/lib/blog-admin-server";
 import type { BlogAdminDatabase } from "@/lib/blog-admin-state";
 import { privateAdminResponse } from "@/lib/blog-admin-crypto";
 
@@ -61,6 +61,10 @@ export async function readEditorJson(request: Request, max = 54000): Promise<Rec
 export function safeEditorError(error: unknown): Response {
   if (error instanceof BlogEditorError)
     return privateAdminResponse({ error: error.message }, error.status);
+  if (error instanceof AdminForbidden)
+    return privateAdminResponse({ error: "Invalid editing origin." }, 403);
+  if (error instanceof AdminUnavailable)
+    return privateAdminResponse({ error: "Editorial authentication is unavailable." }, 503);
   // Do not leak D1 statements, session data, secrets, or SQL errors.
   return privateAdminResponse({ error: "Draft storage is temporarily unavailable. Verify the staging database migration." }, 503);
 }
