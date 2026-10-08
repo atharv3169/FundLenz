@@ -185,7 +185,7 @@ try {
     const editor=document.querySelector('[role="textbox"]');editor.focus();
     const r=document.createRange();r.selectNodeContents(editor);
     const s=window.getSelection();s.removeAllRanges();s.addRange(r);
-    const data=new DataTransfer();data.setData('text/plain','Pasted immediately\nWith a second line');
+    const data=new DataTransfer();data.setData('text/plain','Pasted immediately\\nWith a second line');
     editor.dispatchEvent(new ClipboardEvent('paste',{bubbles:true,clipboardData:data}));
   })()`);
   await until(async () => (await state()).blocks[0].runs.map(r=>r.text).join('')==='Pasted immediately\nWith a second line');
