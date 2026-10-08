@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { BlogHomepageEditor } from "@/components/blog/blog-homepage-editor";
 import { type BlogHomepageContent } from "@/lib/blog-homepage-content";
 import { type BlogArticleDraft, type BlogDraftSummary } from "@/lib/blog-article-draft";
@@ -26,7 +26,7 @@ async function jsonRequest<T>(path: string, init?: RequestInit): Promise<T> {
 const articleApi = "/api/blog/admin/article-drafts";
 const homepageApi = "/api/blog/admin/homepage-draft";
 
-export function BlogEditorDashboard() {
+export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (dirty: boolean) => void }) {
   const [tab, setTab] = useState<Tab>("articles");
   const [articles, setArticles] = useState<BlogDraftSummary[]>([]);
   const [article, setArticle] = useState<BlogArticleDraft | null>(null);
@@ -39,6 +39,39 @@ export function BlogEditorDashboard() {
   const [dirty, setDirty] = useState(false);
   const [editorValid, setEditorValid] = useState(true);
   const [preview, setPreview] = useState(false);
+  const [homepageDirty, setHomepageDirty] = useState(false);
+  const [query, setQuery] = useState("");
+  const articleForm = useRef<HTMLFormElement>(null);
+  const unsaved = dirty || homepageDirty;
+  useEffect(() => { onUnsavedChange?.(unsaved); }, [unsaved, onUnsavedChange]);
+  useEffect(() => {
+    if (!unsaved) return;
+    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ""; };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [unsaved]);
+  useEffect(() => {
+    const shortcut = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s" && tab === "articles" && !preview) {
+        event.preventDefault(); articleForm.current?.requestSubmit();
+      }
+    };
+    window.addEventListener("keydown", shortcut);
+    return () => window.removeEventListener("keydown", shortcut);
+  }, [tab, preview]);
+  function leaveHomepage() {
+    if (busy || (homepageDirty && !window.confirm("Discard unsaved homepage edits?"))) return;
+    setHomepageDirty(false); setTab("articles");
+  }
+  async function reloadDrafts() {
+    if (busy || (unsaved && !window.confirm("Discard unsaved edits and reload drafts?"))) return;
+    setBusy(true);
+    if (await refresh()) {
+      setArticle(null); setRich(null); setDirty(false); setHomepageDirty(false);
+      setEditorValid(true); setPreview(false); setTab("articles"); setNotice("Draft list reloaded.");
+    }
+    setBusy(false);
+  }
 
   const refresh = useCallback(async () => {
     try {
@@ -49,14 +82,17 @@ export function BlogEditorDashboard() {
       setArticles(a.drafts);
       setHomepage(h);
       setError("");
+      return true;
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Cannot load staging drafts.");
+      return false;
     } finally { setLoading(false); }
   }, []);
 
   useEffect(() => { void refresh(); }, [refresh]);
 
   async function openArticle(id: string, keepPreview = false) {
+    if (busy) return;
     if (dirty && !window.confirm("Discard unsaved article edits?")) return;
     setBusy(true); setError(""); setNotice("");
     try {
@@ -68,6 +104,7 @@ export function BlogEditorDashboard() {
   }
 
   async function newArticle() {
+    if (busy) return;
     if (dirty && !window.confirm("Discard unsaved article edits?")) return;
     setBusy(true); setNotice(""); setError("");
     try {
@@ -98,6 +135,7 @@ export function BlogEditorDashboard() {
     if (!["image/jpeg","image/png","image/webp"].includes(file.type) || file.size > 2_000_000) {
       setError("Select a JPG, PNG or WebP profile photo under 2 MB."); return;
     }
+    setBusy(true);
     try {
       const bitmap = await createImageBitmap(file);
       const canvas = document.createElement("canvas");
@@ -120,6 +158,7 @@ export function BlogEditorDashboard() {
       changeAuthor("avatarDataUrl", output);
       setError("");
     } catch (e) { setError(e instanceof Error ? e.message : "Unable to process this profile picture."); }
+    finally { setBusy(false); }
   }
 
   function changeArticle(key: "title" | "summary" | "category", value: string) {
@@ -163,10 +202,13 @@ export function BlogEditorDashboard() {
 
   async function saveHomepage(content: BlogHomepageContent) {
     if (!homepage) throw new Error("Homepage draft is not ready.");
+    setBusy(true);
+    try {
     const data = await jsonRequest<{ version: number }>(homepageApi,
       { method: "PUT", body: JSON.stringify({ content, version: homepage.version }) });
-    setHomepage({ content, version: data.version });
+    setHomepage({ content, version: data.version }); setHomepageDirty(false);
     setNotice("Homepage settings saved. Refresh the staging blog homepage to see them; the public FundLenz site is unchanged.");
+    } finally { setBusy(false); }
   }
 
   return <div className={styles.dashboard}>
@@ -178,30 +220,33 @@ export function BlogEditorDashboard() {
     <div className={styles.toolbar}>
       <div role="tablist" aria-label="Editorial tools" className={styles.tabs}>
         <button type="button" role="tab" aria-selected={tab === "articles"}
-          className={tab === "articles" ? styles.active : ""} onClick={() => setTab("articles")}>Article drafts</button>
+          className={tab === "articles" ? styles.active : ""} disabled={busy} onClick={leaveHomepage}>Article drafts</button>
         <button type="button" role="tab" aria-selected={tab === "homepage"}
-          className={tab === "homepage" ? styles.active : ""} onClick={() => {
-            if (dirty && !window.confirm("Discard unsaved article edits?")) return;
-            setArticle(null); setRich(null); setDirty(false); setEditorValid(true); setPreview(false); setTab("homepage"); }}>Homepage wording</button>
+          className={tab === "homepage" ? styles.active : ""} disabled={busy || !editorValid} onClick={() => {
+            setPreview(false); setTab("homepage"); }}>Homepage wording</button>
       </div>
-      <button type="button" className={styles.secondary} disabled={busy || loading} onClick={() => {
-        if (dirty && !window.confirm("Discard unsaved article edits?")) return;
-        void refresh();
-      }}>Reload drafts</button>
+      <button type="button" className={styles.secondary} disabled={busy || loading}
+        onClick={() => { void reloadDrafts(); }}>Reload drafts</button>
     </div>
     {loading && <p role="status" className={styles.note}>Loading protected staging drafts…</p>}
     {error && <p role="alert" className={styles.error}>{error}</p>}
     {notice && <p role="status" className={styles.success}>{notice}</p>}
 
     {tab === "homepage" && homepage && <BlogHomepageEditor key={homepage.version}
-      initial={homepage.content} onSave={saveHomepage} onCancel={() => setTab("articles")}/>}
+      initial={homepage.content} onSave={saveHomepage} onCancel={leaveHomepage} onDirtyChange={setHomepageDirty}/>}
     {tab === "articles" && !loading && <section className={preview ? styles.previewLayout : styles.split}>
       {!preview && <aside className={styles.articleList}>
         <h3>Private article drafts</h3>
         <p className={styles.hint}>Up to 100 recent drafts shown.</p>
         <button className={styles.primary} type="button" disabled={busy} onClick={() => { void newArticle(); }}>+ New article</button>
         {articles.length === 0 && <p className={styles.note}>No drafts yet. Create one to begin.</p>}
-        {articles.map(item => <button key={item.id} type="button" disabled={busy}
+        <label className={styles.draftSearch}>Find a draft
+          <input type="search" value={query} placeholder="Title or category"
+            onChange={event => setQuery(event.target.value)}/>
+        </label>
+        {articles.length > 0 && !articles.some(item => (item.title + " " + item.category).toLowerCase().includes(query.toLowerCase())) &&
+          <p className={styles.note}>No matching drafts.</p>}
+        {articles.filter(item => (item.title + " " + item.category).toLowerCase().includes(query.toLowerCase())).map(item => <button key={item.id} type="button" disabled={busy}
           className={item.id === article?.id ? styles.selected : ""}
           onClick={() => { void openArticle(item.id); }}>
           {item.title}
@@ -218,7 +263,7 @@ export function BlogEditorDashboard() {
                 : "Use the formatting toolbar and drag handles to build a complete article. Media use HTTPS URLs during staging."}</p>
             </div>
             <button type="button" className={styles.secondary}
-              onClick={() => setPreview(current => !current)}>
+              disabled={busy || !editorValid} onClick={() => setPreview(current => !current)}>
               {preview ? "← Back to editor" : "Preview article →"}
             </button>
           </div>
@@ -229,7 +274,7 @@ export function BlogEditorDashboard() {
             onSelectRelated={id => { void openArticle(id, true); }}
             related={articles.filter(item => item.id !== article.id).map(item => ({
               id: item.id, title: item.title, category: item.category,
-            }))}/> : <form className={styles.form} onSubmit={saveArticle}>
+            }))}/> : <form ref={articleForm} className={styles.form} onSubmit={saveArticle}>
             <label>Title
               <input value={article.title} maxLength={160} required disabled={busy}
                 onChange={event => changeArticle("title", event.target.value)}/>
@@ -301,7 +346,7 @@ export function BlogEditorDashboard() {
               <button type="button" className={styles.danger} disabled={busy} onClick={() => { void deleteArticle(); }}>Delete draft</button>
             </div>
           </form>}
-          {!editorValid && <p role="alert" className={styles.error}>A paragraph contains text or formatting that exceeds the editor's safe storage limits. Reduce that paragraph before saving.</p>}
+          {!editorValid && <p role="alert" className={styles.error}>A paragraph contains text or formatting that exceeds the editor’s safe storage limits. Reduce that paragraph before saving.</p>}
           {dirty && <p className={styles.note}>Unsaved changes. Save your private draft before leaving.</p>}
         </>}
       </div>

@@ -9,6 +9,7 @@ on:
       - "components/blog/**"
       - "content/blog-homepage.json"
       - "lib/blog-homepage-content.ts"
+      - "lib/blog-staging-homepage.ts"
       - "lib/blog-admin-**"
       - "db/blog-admin/**"
       - "scripts/verify-blog-admin-auth.mjs"
@@ -60,6 +61,8 @@ jobs:
           corepack prepare pnpm@11.25.0 --activate
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Blog code lint
+        run: pnpm exec eslint components/blog lib/blog-*.ts app/blogpost app/api/blog
       - name: Security unit checks
         run: node scripts/verify-blog-forms.mjs
       - name: Editable homepage validation checks
@@ -70,8 +73,18 @@ jobs:
         run: node scripts/verify-blog-staging-gate.mjs
       - name: Selected-text editing regression tests
         run: node scripts/verify-blog-rich-format.mjs
-      - name: Chromium selected-text interaction smoke test
+      - name: Chromium editor and responsive layout regressions
+        env:
+          BLOG_QA_SCREENSHOTS: ${{ runner.temp }}/blog-qa-screenshots
         run: node scripts/verify-blog-editor-browser.mjs
+      - name: Upload fixture screenshots for visual review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blog-qa-screenshots
+          path: ${{ runner.temp }}/blog-qa-screenshots
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Rich article content validation
         run: node scripts/verify-blog-rich-document.mjs
       - name: Blog private editorial draft checks

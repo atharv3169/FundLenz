@@ -46,3 +46,11 @@
 .mediaPresets button{font-weight:600;padding:7px 10px;font-size:11px;}
 .mediaGauge{background:white;padding:13px;border:1px dashed #d0e1e7;border-radius:7px;min-height:62px;}
 .mediaGaugeInner{height:40px;background:linear-gradient(135deg,#cfe8ee,#e4f3f5);color:#346374;border:1px solid #9acbd6;border-radius:5px;display:grid;place-items:center;font-size:12px;font-weight:800;transition:width .12s;}
+
+.editorStats{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 12px;color:#496b79;font-size:12px;font-variant-numeric:tabular-nums}
+.editorStats>div{display:flex;gap:7px}
+.root :is(button,input,select):focus-visible{outline:3px solid #7bc3ce;outline-offset:3px}
+.block:focus-within{border-color:#4994a3;box-shadow:0 0 0 2px #bde1e755}
+.mini:disabled,.remove:disabled{opacity:.4;cursor:not-allowed}
+@media(max-width:460px){.toolSection{padding:12px}.toolLine{gap:7px}.tool{min-height:38px}.blockControls{gap:7px;padding:8px}.handle,.mini,.remove{min-height:34px}.toolSelect select{min-width:130px}.mediaSizeEditor{padding:12px}}
+@media(prefers-reduced-motion:reduce){.mediaGaugeInner{transition:none}}

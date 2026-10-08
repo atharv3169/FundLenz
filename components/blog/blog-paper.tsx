@@ -24,17 +24,19 @@ function InlineRun({ run }: { run: RichRun }) {
     whiteSpace: "pre-wrap" as const,
   };
   const text = <span style={style}>{run.text}</span>;
-  return run.href ? <a href={run.href} target="_blank" rel="noopener noreferrer nofollow">{text}</a> : text;
+  return run.href && safeHttpUrl(run.href) ? <a href={run.href} target="_blank" rel="noopener noreferrer nofollow">{text}</a> : text;
 }
 
 export function RenderRichBlock({ block }: { block: RichBlock }) {
   if ("runs" in block) {
     const children: ReactNode = block.runs.map((run, i) => <InlineRun key={i} run={run} />);
-    if (block.type === "heading") return <h2 className={styles.articleHeading}>{children}</h2>;
-    if (block.type === "subheading") return <h3 className={styles.articleSubheading}>{children}</h3>;
+    if (block.type === "heading") return <h2 id={"article-section-" + block.id} className={styles.articleHeading}>{children}</h2>;
+    if (block.type === "subheading") return <h3 id={"article-section-" + block.id} className={styles.articleSubheading}>{children}</h3>;
     if (block.type === "quote") return <blockquote className={styles.quote}>{children}</blockquote>;
     return <p className={styles.paragraph}>{children}</p>;
   }
+  // Preview receives unsaved editor values too, so validate before creating a URL sink.
+  if (!safeHttpUrl(block.src)) return <p className={styles.sideNote}>Add a valid HTTPS media URL to preview this block.</p>;
   const media = block as RichMediaBlock;
   const width = mediaWidth(media.widthPct, media.type);
   const mediaStyle = { width: width + "%", marginLeft: media.align === "right" ? "auto" :
@@ -49,7 +51,7 @@ export function RenderRichBlock({ block }: { block: RichBlock }) {
   if (block.type === "video-thumbnail") return <figure className={styles.figure} style={mediaStyle}>
     <a href={block.src} className={styles.videoThumbnail} target="_blank" rel="noopener noreferrer"
       aria-label={"Open linked video: " + (block.caption || "external video")}>
-      {block.thumbnail
+      {block.thumbnail && safeHttpUrl(block.thumbnail)
         // eslint-disable-next-line @next/next/no-img-element
         ? <img src={block.thumbnail} alt={block.alt || block.caption || "Video thumbnail"} loading="lazy" />
         : <span className={styles.missingThumb}>Open video</span>}
@@ -73,8 +75,9 @@ export function RenderRichBlock({ block }: { block: RichBlock }) {
 
 export function BlogPaper({ title, summary, category, blocks, related = [], publishedUrl, onSelectRelated,
   author = "FundLenz Editorial", updatedAt, authorProfile, branding = defaultBlogHomepageContent }: ArticlePaperProps) {
-  const hasShare = Boolean(publishedUrl);
+  const hasShare = safeHttpUrl(publishedUrl);
   const link = publishedUrl || "";
+  const headings = blocks.filter(block => "runs" in block && ["heading", "subheading"].includes(block.type));
   return <div className={styles.shell}>
     <div className={styles.masthead}>
       <div><span className={styles.brand}>{branding.eyebrow}</span></div>
@@ -101,9 +104,9 @@ export function BlogPaper({ title, summary, category, blocks, related = [], publ
                 ? new Date(authorProfile.displayDate + "T12:00:00Z").toLocaleDateString("en-GB", { timeZone: "UTC",
                     day: "numeric", month: "long", year: "numeric" })
                 : updatedAt ? new Date(updatedAt * 1000).toLocaleDateString("en-GB", {
-                    day: "numeric", month: "long", year: "numeric" }) : "Editorial preview"} ·
+                    timeZone: "UTC", day: "numeric", month: "long", year: "numeric" }) : "Editorial preview"} ·
                 {" "}{authorProfile?.readingMinutes ?? Math.max(1,
-                  Math.round(blocks.reduce((n, b) => n + ("runs" in b ? b.runs.map(r => r.text).join("").split(/\s+/).length : 0), 0) / 210))} min read</small></div>
+                  Math.ceil(blocks.filter(b => "runs" in b).map(b => "runs" in b ? b.runs.map(r => r.text).join("") : "").join(" ").trim().split(/\s+/).filter(Boolean).length / 220))} min read</small></div>
           </div>
           {summary && <p className={styles.deck}>{summary.replace(/\s+/g, " ").trim()}</p>}
         </header>
@@ -114,6 +117,11 @@ export function BlogPaper({ title, summary, category, blocks, related = [], publ
         </footer>
       </article>
       <aside className={styles.sidebar}>
+        {headings.length > 0 && <nav aria-label="In this article" className={styles.sideCard}>
+          <div className={styles.sideHeading}>IN THIS ARTICLE</div>
+          <ol className={styles.contents}>{headings.map(block => "runs" in block &&
+            <li key={block.id}><a href={"#article-section-" + block.id}>{block.runs.map(run => run.text).join("") || "Untitled section"}</a></li>)}</ol>
+        </nav>}
         <section className={styles.sideCard}>
           <div className={styles.sideHeading}>SHARE THIS ARTICLE</div>
           <p className={styles.sideNote}>Share useful research with your network.</p>

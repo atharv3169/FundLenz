@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
   blogHomepageFields, type BlogHomepageContent,
   validateBlogHomepageContent,
@@ -12,12 +12,13 @@ import { SocialIcon, type SocialNetwork } from "./social-icon";
 /**
  * This editor is intentionally only a component, NOT a public route or an API.
  * Mount it only after verifying the server-side admin session. The onSave
- * callback MUST be a server-protected write to the approved GitHub content path.
+ * callback MUST use the authenticated, version-checked private draft API.
  */
-export function BlogHomepageEditor({ initial, onSave, onCancel }: {
+export function BlogHomepageEditor({ initial, onSave, onCancel, onDirtyChange }: {
   initial: BlogHomepageContent;
   onSave: (draft: BlogHomepageContent) => Promise<void>;
   onCancel: () => void;
+  onDirtyChange?: (dirty: boolean) => void;
 }) {
   const [draft, setDraft] = useState<BlogHomepageContent>(() => ({ ...initial }));
   const [busy, setBusy] = useState(false);
@@ -29,6 +30,8 @@ export function BlogHomepageEditor({ initial, onSave, onCancel }: {
     [],
   );
   const changed = blogHomepageFields.some(field => draft[field.key] !== initial[field.key]);
+
+  useEffect(() => { onDirtyChange?.(changed); }, [changed, onDirtyChange]);
 
   function change(key: keyof BlogHomepageContent, value: string) {
     setDraft(current => ({ ...current, [key]: value }));
@@ -144,6 +147,6 @@ export function BlogHomepageEditor({ initial, onSave, onCancel }: {
     </div>
     <p className={styles.note}>Save stores a private draft in the staging D1 database, not GitHub. It becomes visible
       on the password-protected staging blog when you refresh that page, but is not
-      published on the public FundLenz site. Privacy-consent wording and private visitor details aren't editable here.</p>
+      published on the public FundLenz site. Privacy-consent wording and private visitor details are not editable here.</p>
   </section>;
 }

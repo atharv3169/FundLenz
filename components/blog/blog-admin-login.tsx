@@ -12,6 +12,7 @@ export function BlogAdminLogin() {
   const [username, setUsername] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  const [unsaved, setUnsaved] = useState(false);
   useEffect(() => {
     let active = true;
     fetch("/api/blog/admin/session", { cache: "no-store", credentials: "same-origin" })
@@ -49,7 +50,7 @@ export function BlogAdminLogin() {
   }
 
   async function logout() {
-    if (busy) return;
+    if (busy || (unsaved && !window.confirm("Discard unsaved edits and log out?"))) return;
     setBusy(true);
     setMessage("");
     try {
@@ -78,7 +79,7 @@ export function BlogAdminLogin() {
       </button>
     </div>
     {message && <p role="status" className={styles.note}>{message}</p>}
-    <BlogEditorDashboard />
+    <BlogEditorDashboard onUnsavedChange={setUnsaved} />
   </>;
   return <section className={styles.panel}>
     <h1>Blog administration</h1>

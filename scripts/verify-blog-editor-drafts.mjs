@@ -39,7 +39,7 @@ assert.ok(articles.match(/await requireBlogEditor\(request, true\)/g)?.length ==
 assert.ok(homepage.includes("version=version+1"));
 assert.ok(articles.includes("AND status='draft'"));
 assert.ok(!articles.includes('status=\'published\''));
-assert.ok(adminView.includes('<BlogEditorDashboard />'));
+assert.ok(adminView.includes('<BlogEditorDashboard onUnsavedChange={setUnsaved} />'));
 assert.ok(dashboard.includes('Not published'));
 assert.ok(!dashboard.includes("dangerouslySetInnerHTML"));
 console.log("PASS: validated private article fields, staging auth boundaries, revision checks and no publish surface");

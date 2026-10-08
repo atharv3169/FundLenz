@@ -124,3 +124,8 @@ const endpoint = readFileSync("app/api/blog/admin/article-drafts/route.ts", "utf
 assert.ok(endpoint.includes("legacyDbCategory(validated.category)"));
 assert.ok(endpoint.includes("storedDraftCategory("));
 console.log("PASS: custom categories, rich block roundtrip, HTTPS media safety, preview and admin storage wiring");
+
+for (const date of ["2026-02-30", "2025-02-29", "2026-13-01"])
+  assert.throws(() => mod.validateArticleAuthor({displayDate: date}), /date/);
+assert.equal(mod.validateArticleAuthor({displayDate:"2024-02-29"}).displayDate,"2024-02-29");
+console.log("PASS: impossible calendar dates rejected; leap-day author metadata preserved");

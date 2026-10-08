@@ -19,7 +19,11 @@ declare global { interface Window { turnstile?: TurnstileAPI } }
 function useTurnstileScript(): boolean {
   const [ready, setReady] = useState(false);
   useEffect(() => {
-    if (window.turnstile) { setReady(true); return; }
+    if (window.turnstile) {
+      let active = true;
+      queueMicrotask(() => { if (active) setReady(true); });
+      return () => { active = false; };
+    }
     let script = document.querySelector<HTMLScriptElement>("script[data-fundlenz-turnstile]");
     if (!script) {
       script = document.createElement("script");

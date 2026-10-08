@@ -75,7 +75,7 @@ export function validateArticleAuthor(input: unknown): ArticleAuthor {
   if (v.avatarDataUrl !== undefined && !safeAvatarDataUrl(v.avatarDataUrl))
     throw new Error("Avatar must be a small JPEG image.");
   if (v.displayDate !== undefined && (typeof v.displayDate !== "string" ||
-    !/^\d{4}-\d{2}-\d{2}$/.test(v.displayDate) || Number.isNaN(Date.parse(v.displayDate))))
+    !/^\d{4}-\d{2}-\d{2}$/.test(v.displayDate) || (Number.isNaN(Date.parse(v.displayDate)) || new Date(v.displayDate).toISOString().slice(0, 10) !== v.displayDate)))
     throw new Error("Invalid article display date.");
   if (v.readingMinutes !== undefined && (!Number.isInteger(v.readingMinutes) ||
     (v.readingMinutes as number) < 1 || (v.readingMinutes as number) > 90))

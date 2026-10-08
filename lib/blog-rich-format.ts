@@ -11,9 +11,9 @@ export function sameRuns(left: RichRun[], right: RichRun[]): boolean {
   return JSON.stringify(left) === JSON.stringify(right);
 }
 function equalFormatting(a: RichRun, b: RichRun): boolean {
-  const { text: _a, ...aStyle } = a;
-  const { text: _b, ...bStyle } = b;
-  return JSON.stringify(aStyle) === JSON.stringify(bStyle);
+  const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+  keys.delete("text");
+  return [...keys].every(key => a[key as keyof RichRun] === b[key as keyof RichRun]);
 }
 export function mergeAdjacentRuns(runs: RichRun[]): RichRun[] {
   const out: RichRun[] = [];
