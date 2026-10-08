@@ -15,7 +15,10 @@
     "verify": "node scripts/verify-all.mjs",
     "typecheck": "tsc --noEmit --incremental false",
     "deploy": "wrangler deploy --config dist/server/wrangler.json",
-    "deploy:preview": "wrangler versions upload --config dist/server/wrangler.json"
+    "deploy:preview": "wrangler versions upload --config dist/server/wrangler.json",
+    "build:blog-staging": "node scripts/build-blog-staging.mjs",
+    "verify:blog-staging": "node scripts/verify-blog-staging-config.mjs",
+    "deploy:blog-staging": "node scripts/deploy-blog-staging.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
