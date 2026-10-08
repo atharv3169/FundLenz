@@ -23,6 +23,10 @@ on:
       - "scripts/verify-blog-staging-config.mjs"
       - "scripts/verify-blog-homepage-copy.mjs"
       - "scripts/verify-blog-editor-drafts.mjs"
+      - "scripts/verify-blog-rich-document.mjs"
+      - "lib/blog-rich-document.ts"
+      - "components/blog/blog-rich-editor.tsx"
+      - "components/blog/blog-paper.tsx"
       - "lib/blog-editor-auth.ts"
       - "lib/blog-article-draft.ts"
       - "db/blog-admin/0002_editor_drafts.sql"
@@ -60,6 +64,8 @@ jobs:
         run: node scripts/verify-blog-admin-auth.mjs
       - name: Staging access gate security tests
         run: node scripts/verify-blog-staging-gate.mjs
+      - name: Rich article content validation
+        run: node scripts/verify-blog-rich-document.mjs
       - name: Blog private editorial draft checks
         run: node scripts/verify-blog-editor-drafts.mjs
       - name: Blog admin database schema validation
