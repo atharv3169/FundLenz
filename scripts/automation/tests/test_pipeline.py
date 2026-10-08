@@ -25,6 +25,10 @@ class PipelineTests(unittest.TestCase):
     def setUpClass(cls):
         cls.policy = read(ROOT / "automation/runtime.json")
         cls.india = read(ROOT / "public/data/catalog.json")
+        # Mutations are tested against a fixed fictional tuple. The actual
+        # catalogue is an evolving published dataset, not an immutable fixture.
+        cls.nav_fixture = copy.deepcopy(cls.india)
+        cls.nav_fixture["funds"][0]["plans"][0].update(nav=13.5, navDate="2026-10-05")
         cls.raw_nav = (ROOT / "data/sources/navall.txt").read_bytes()
         cls.registry = read(ROOT / "automation/source-registry.json")["sources"]
         cls.source = {"source_id": "fixture-source", "source_url": "https://portal.amfiindia.com/spages/NAVAll.txt",
@@ -74,7 +78,11 @@ class PipelineTests(unittest.TestCase):
         with self.assertRaises(ValueError): validate_registry([source])
 
     def test_bounded_schedule_checks_adapters_and_old_discovery_issues(self):
-        queue = read(ROOT / "audit/open-issues.json")
+        # Build a bounded fictional queue. The committed audit's number of
+        # real unresolved issues can grow independently of this test's budget.
+        issue_sources = [s for s in self.registry if s["adapter"] == "monitor"][:5]
+        queue = {"issues": [{"source_url": s["url"], "origin": "bootstrap_existing_source_check"}
+                            for s in issue_sources]}
         selected, budget, later = due_sources(self.registry, {}, queue, "2026-10-07T08:00:00Z", 64)
         self.assertEqual(len(selected), 64)
         self.assertEqual(sum(s["adapter"] != "monitor" for s in selected), 39)
@@ -104,7 +112,7 @@ class PipelineTests(unittest.TestCase):
 
     def nav_decision(self, **changes):
         code, raw = self.mutate_nav(**changes)
-        return next(u for u in nav_candidates(self.india, raw, dict(self.source, source_sha256=sha(raw)), self.policy) if u["unit"] == "nav:" + code)
+        return next(u for u in nav_candidates(self.nav_fixture, raw, dict(self.source, source_sha256=sha(raw)), self.policy) if u["unit"] == "nav:" + code)
 
     def test_new_nav_is_complete_atomic_tuple(self):
         unit = self.nav_decision(nav="13.6", date="06-Oct-2026")
@@ -120,7 +128,7 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(self.nav_decision(identity="INF000000000", date="06-Oct-2026")["decision"], "blocked")
 
     def test_same_date_disagreement_and_older_correction(self):
-        self.assertEqual(self.nav_decision(nav="13.6")["decision"], "same_date_conflict")
+        self.assertEqual(self.nav_decision(nav="13.6", date="05-Oct-2026")["decision"], "same_date_conflict")
         self.assertEqual(self.nav_decision(nav="13.6", date="01-Sep-2026")["decision"], "older_snapshot")
         self.assertEqual(chronology("2026-10-06", "2026-10-05", 3, 4), "older_snapshot")
 
@@ -144,7 +152,14 @@ class PipelineTests(unittest.TestCase):
         with self.assertRaises((ValueError, AssertionError, StopIteration)): self.holding_candidate(raw)
 
     def test_wrong_currency_and_identity_and_future_date(self):
-        for old, new in [(b'"USD"', b'"EUR"'), (b"iShares Core S&P 500 ETF", b"Other Fund"), (b"Oct 02, 2026", b"Oct 09, 2026")]:
+        date_header = next(line for line in self.raw_holdings.splitlines()
+                           if line.startswith(b"Fund Holdings as of,"))
+        mutations = [
+            (b'"USD"', b'"EUR"'),
+            (b"iShares Core S&P 500 ETF", b"Other Fund"),
+            (date_header, b'Fund Holdings as of,"Dec 31, 2099"'),
+        ]
+        for old, new in mutations:
             raw = self.raw_holdings.replace(old, new)
             self.assertNotEqual(raw, self.raw_holdings)
             with self.assertRaises((ValueError, AssertionError)): self.holding_candidate(raw)
@@ -335,7 +350,7 @@ class PipelineTests(unittest.TestCase):
     def test_partial_update_retains_other_plans_and_complete_portfolios(self):
         code, raw = self.mutate_nav(nav="13.6", date="06-Oct-2026")
         s = dict(self.source, source_sha256=sha(raw))
-        units = nav_candidates(self.india, raw, s, self.policy)
+        units = nav_candidates(self.nav_fixture, raw, s, self.policy)
         files = build_files(ROOT, units, {}, {s["source_id"]: raw}, {"completed_at": s["checked_at"]})
         self.assertEqual(set(files), {"public/data/catalog.json", "data/sources/automation/amfi-nav.txt"})
         updated = loads(files["public/data/catalog.json"])
