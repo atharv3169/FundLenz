@@ -1,63 +1,87 @@
-# FundLenz private visitor form storage
+# FundLenz blog visitor forms — staging implementation
 
-STATUS: Development branch only. Not yet connected to Google, integrated into blog pages or deployed. No changes to the portfolio lab, financial data or Gemini permissions.
+**Status: DRAFT PR #4, NOT MERGED OR DEPLOYED.** The owner has configured Google OAuth + Turnstile production credentials in the Cloudflare dashboard, but no live Google Drive upload has been validated. Do not expose these forms publicly until staging verification is complete.
 
-## Storage architecture
+## Architecture and access
 
-The public FundLenz GitHub repository keeps only website source code and published blog articles. Visitor data is written DIRECTLY to the owner's Google Drive by server-side form endpoints, not committed to GitHub.
+The public GitHub repository stores only application source and eventual public articles. **No visitor PII enters GitHub.** Server-side endpoints use an OAuth refresh token with `https://www.googleapis.com/auth/drive.file` to write directly to the owner's Google Drive. Gemini financial-data credentials and workflows remain independent.
 
-On first successful request the Drive API automatically creates these private folders owned by the consenting Google user:
+The first successful write creates:
 
+```text
 FundLenz Private/
   NEWSLETTERS/
-    <email-sha256>.json
+    <sha256-normalized-email>.json
   Contributions/
-    <YYYY-MM-DD>_<contributor-name>_<UUID>/
+    <YYYY-MM-DD>_<sanitized-name>_<uuid>/
       details.json
-      uploaded-manuscript.pdf (or .doc/.docx)
+      document.pdf | document.doc | document.docx
+```
 
-Each subscriber file records the email, timestamp and a flag that mailing is disabled. Newsletter delivery is not implemented. Each contribution contains the name, email, title, social URL, timestamp and document (maximum 5 MiB). Drive folder access stays private and Gemini must not receive these credentials.
+Newsletter records contain email, timestamp and `mailingEnabled: false`. **There is no newsletter sending.** Contribution metadata contains name, email, optional title/social URL and submission timestamp. Contributor manuscripts do not publish automatically.
 
-Subscriber duplicate prevention is best effort; Google Drive listing is not an atomic uniqueness transaction. The server fails closed when required credentials or Turnstile are missing, or Google Drive rejects the write. There is no Google-to-GitHub or GitHub-to-Drive transfer step.
+## Credentials already configured by owner — not inspected
 
-## Required Google account setup (OWNER ACTION)
+The owner reports having set the following in **Cloudflare Production**:
 
-1. In Google Cloud Console, enable Google Drive API for a Google Cloud project.
-2. Configure Google OAuth consent and the least-privileged Drive scope https://www.googleapis.com/auth/drive.file. Grant permission only to the owner account.
-3. Complete an offline OAuth consent flow for the owner's account and obtain an OAuth refresh token using the same scope. An external OAuth app left in testing mode may issue refresh tokens with a seven-day lifespan; configure production mode for long-running use, subject to Google's rules.
-4. Create Cloudflare Turnstile widgets for forms, allow the website hostname and staging hostname.
-5. Store the following server-side values in Cloudflare encrypted Worker secrets, never in GitHub or chat:
+- `GOOGLE_OAUTH_CLIENT_ID` — Secret
+- `GOOGLE_OAUTH_CLIENT_SECRET` — Secret
+- `GOOGLE_OAUTH_REFRESH_TOKEN` — Secret
+- `TURNSTILE_SECRET_KEY` — Secret
+- `FORMS_ALLOWED_HOSTNAMES` — Variable, currently `fundlenz.com`
 
-    GOOGLE_OAUTH_CLIENT_ID
-    GOOGLE_OAUTH_CLIENT_SECRET
-    GOOGLE_OAUTH_REFRESH_TOKEN
-    TURNSTILE_SECRET_KEY
-    FORMS_ALLOWED_HOSTNAMES
+Do not ask the owner to paste secrets into chat or GitHub. These values may require deployment-specific secret/variable synchronization when updating the Worker. Do not put secret values in Wrangler JSON.
 
-The last value is a comma-separated list of exact Turnstile hostnames, e.g. fundlenz.com,www.fundlenz.com,plus-your-actual-staging-hostname.
+**Still required:** `TURNSTILE_SITE_KEY` as a **nonsecret server-side Cloudflare runtime variable** containing the matching widget's public site key. The blog page reads that value server-side and passes only the public site key into the form components.
 
-The public Turnstile site key must be rendered by the future blog frontend. ChatGPT's Google Drive connector DOES NOT provide credentials to FundLenz's Cloudflare Worker. Website OAuth authorization must be configured independently.
+Turnstile widget **FundLenz Blog Forms** has been created with Managed mode and no pre-clearance. The actual widget hostname must be checked. For a Cloudflare workers.dev staging hostname, register that exact hostname in Turnstile or create a separate staging widget and credentials. Extend `FORMS_ALLOWED_HOSTNAMES` to include only verified, expected staging hostname(s). Production credential setup is not evidence that the endpoint works.
 
-## Backend API (ready for frontend wiring)
+The Google OAuth application was reportedly published to Production, the Drive API enabled, and the `drive.file` scope and redirect URI configured. Refresh token was saved privately. Confirm that the token actually renews when testing.
 
-POST /api/blog/subscribe
-Content-Type: application/json
-Fields: email (required), consent (boolean true, required), turnstileToken (required).
-Example: {"email":"person@example.com","consent":true,"turnstileToken":"TOKEN"}
+## Public UX on draft branch
 
-POST /api/blog/contribute
-Content-Type: multipart/form-data
-Fields: name (required, max 120 chars), email (required), document (required, PDF/DOC/DOCX, max 5 MiB), title (optional, max 240 chars), social (optional, max 500 chars), turnstileToken (required).
+- `/blogpost` contains a **temporary empty article listing** and the initial visitor forms. The complete article publishing/admin system is a separate unfinished phase.
+- Newsletter component displays purpose, email field, required privacy consent, and Managed Turnstile action `blog_subscribe`.
+- Article contribution modal displays required name, email, DOC/DOCX/PDF up to 5 MiB, optional social and title, required privacy consent, and Turnstile action `blog_contribute`.
+- Forms submit directly to their server-side endpoints and only show success after HTTP success.
+- Public contribution fallback email: `atharva@fundlenz.com`.
+- Mobile layouts are present but **not browser-tested**.
 
-Successful requests return JSON with ok=true after Google Drive confirms the upload. Failed writes return HTTP errors; the frontend must NOT show a false success message.
+The original legal pages `/privacy` and `/terms` were merged to main in PR #5 and the owner reports Work separately published them to the live custom-domain Site. They must be verified as public before collecting user data.
 
-## Work needed before production
+## API contract
 
-- Build blog UI and connect both forms, including visitor privacy notice/explicit consent and Turnstile.
-- Configure WAF rate limits. Magic-byte checking does NOT replace virus scanning or attachment quarantine; never automatically publish user uploads.
-- Test OAuth expiry/revocation, Google Drive quota issues, duplicate submissions, Turnstile challenge, 5 MiB limit, and partial upload failures.
-- Add a reliable notification service if owner wants an alert containing the submitter's name. Notification is NOT implemented in this draft.
-- For frequent submissions, add a durable retry queue. The current endpoints acknowledge only completed Drive writes, and partial files may remain if a later step fails.
-- Validate with actual Google credentials against staging, then run all existing catalogue/Gemini/portfolio regression checks before merging. Nothing should affect production until reviewed and deployed.
+`POST /api/blog/subscribe` — JSON:
 
-Reference docs: https://developers.google.com/workspace/drive/api/guides/create-file ; https://developers.google.com/workspace/drive/api/guides/manage-uploads ; https://developers.cloudflare.com/workers/configuration/secrets/
+```json
+{"email":"person@example.com","consent":true,"turnstileToken":"TURNSTILE_TOKEN"}
+```
+
+`POST /api/blog/contribute` — multipart fields:
+`name`, `email`, `document` (required); `title`, `social` (optional);
+`consent=true`, `turnstileToken` (required).
+
+Both routes require an allowed HTTPS `Origin` and server-validated Turnstile with exact expected hostname and action. Body limits are enforced before multipart parsing. Successful writes return a JSON status. Server errors do not echo credentials or submissions.
+
+## Security and operational caveats before production
+
+1. **Rate limiting / WAF is not set up.** Configure Cloudflare rate limits for the two API routes. Turnstile alone is not sufficient.
+2. **File signature checks are not antivirus scanning.** Quarantine or scan contributed files and avoid auto-opening/untrusted document execution.
+3. **No submission notifications yet.** The user wants a message containing contributor name; choose an owner-approved independent notification service.
+4. **No durable queue / partial-upload cleanup yet.** A Google API failure between metadata and file upload can leave a partial submission directory. User-facing success is returned only after both writes succeed.
+5. **Deduplication is best effort.** Listing and creating a hashed newsletter record is not an atomic uniqueness operation, and parallel submissions may race.
+6. **No Drive quota monitoring or 90% fallback yet.** A `drive.file` token may not have sufficient permissions to obtain full storage usage. Do not invent an available quota.
+7. **No independently verified 5 MiB end-to-end upload yet.** Confirm Cloudflare Worker request limits and multipart behavior with staging data.
+8. **Unpublished/archived article administration is not implemented.** The landing page is an intentionally incomplete draft.
+9. **GitHub financial-data/portfolio regression tests still required before merge.** Do not change Gemini permissions or financial catalogues.
+
+## Verification
+
+The isolated pull request workflow `.github/workflows/blog-private-forms-check.yml` runs:
+- `node scripts/verify-blog-forms.mjs` for email/origin/body-limit/Turnstile/error-privacy unit checks.
+- `pnpm run typecheck`.
+- `pnpm run build`.
+
+These are **not** live OAuth, Drive, Turnstile or security penetration tests. After CI passes, use an owner-approved staging Worker with a matching Turnstile widget and safely scoped secrets, run a controlled real submission, verify Drive files and clean up test data. Keep the original portfolio lab stable and do not merge/deploy without review.
+
+References: https://developers.google.com/workspace/drive/api/guides/create-file and https://developers.cloudflare.com/workers/configuration/secrets/
