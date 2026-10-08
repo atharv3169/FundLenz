@@ -12,6 +12,7 @@ on:
       - "lib/blog-admin-**"
       - "db/blog-admin/**"
       - "scripts/verify-blog-admin-auth.mjs"
+      - "scripts/verify-blog-admin-schema.py"
       - "scripts/verify-blog-homepage-copy.mjs"
       - "lib/blog-private-**"
       - "scripts/verify-blog-forms.mjs"
@@ -45,6 +46,8 @@ jobs:
         run: node scripts/verify-blog-homepage-copy.mjs
       - name: Single-admin authentication security checks
         run: node scripts/verify-blog-admin-auth.mjs
+      - name: Blog admin database schema validation
+        run: python3 scripts/verify-blog-admin-schema.py
       - name: TypeScript validation
         run: pnpm run typecheck
       - name: Production build
