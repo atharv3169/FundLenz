@@ -61,7 +61,7 @@ if (generated.name !== production.name || generated.routes || generated.route ||
 // before ALL application routes or assets. Never modify the production source entrypoint.
 const workerEntry = generated.main;
 if (typeof workerEntry !== "string" ||
-    !/^(?:\\.\\/)?[a-zA-Z0-9_./-]+\\.js$/.test(workerEntry) ||
+    !/^(?:\.\/)?[a-zA-Z0-9_./-]+\.js$/.test(workerEntry) ||
     workerEntry.includes("..") ||
     !existsSync(resolve("dist/server", workerEntry))) {
   throw new Error("Unexpected generated Worker entrypoint; refusing to install staging gate.");
@@ -71,7 +71,7 @@ if (!generated.assets || typeof generated.assets !== "object" || Array.isArray(g
 }
 const gateModule = resolve("dist/server/blog-staging-gate-core.mjs");
 copyFileSync(resolve("scripts/blog-staging-gate-core.mjs"), gateModule);
-const entry = "./" + workerEntry.replace(/^\\.\\//, "");
+const entry = "./" + workerEntry.replace(/^\.\//, "");
 const wrapper = resolve("dist/server/blog-staging-gate-entry.mjs");
 writeFileSync(wrapper, [
   "import application from " + JSON.stringify(entry) + ";",
@@ -80,7 +80,7 @@ writeFileSync(wrapper, [
   "  async fetch(request, env, ctx) {",
   "    const denial = await stagingGate(request, env);",
   "    if (denial) return denial;",
-  "    if (!application || typeof application.fetch !== \\"function\\")",
+  "    if (!application || typeof application.fetch !== 'function')",
   '      return new Response("Staging handler unavailable.", { status: 503 });',
   "    const nextResponse = await application.fetch(forwardWithoutBasicHeader(request), env, ctx);",
   "    const headers = new Headers(nextResponse.headers);",
@@ -90,7 +90,7 @@ writeFileSync(wrapper, [
   "  },",
   "};",
   "",
-].join("\\n"), "utf8");
+].join("\n"), "utf8");
 generated.main = "./blog-staging-gate-entry.mjs";
 // Without this, Cloudflare serves /_next/static assets before the Worker sees auth.
 generated.assets.run_worker_first = true;
