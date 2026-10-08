@@ -93,7 +93,9 @@ export function BlogRichEditor({ value, onChange, disabled }: {
     const root = nodeMap.current.get(id);
     if (!root) return;
     const updated = safeInlineRuns(root);
-    replaceBlock(id, block => isText(block) ? { ...block, runs: updated } : block);
+    const current = value.blocks.find(block => block.id === id);
+    if (current && isText(current) && JSON.stringify(current.runs) !== JSON.stringify(updated))
+      replaceBlock(id, block => isText(block) ? { ...block, runs: updated } : block);
   }
   function selectionRestore() {
     const selection = window.getSelection();
