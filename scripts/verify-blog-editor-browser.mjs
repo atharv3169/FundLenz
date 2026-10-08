@@ -117,7 +117,22 @@ try {
     "Alpha beta gamma delta freshly typed");
   assert.equal((await state()).blocks[0].runs.find(run=>run.text==="beta")?.sizePx,30);
   assert.equal(await js('document.getElementById("status").dataset.valid'),"true");
-  console.log("PASS: Chromium React editor selected font/bold/size, subsequent typing, blur, and exact text preservation");
+  // Cross-paragraph selections must fail visibly, never style the wrong block.
+  await js('(() => {const editors=document.querySelectorAll(\'[role="textbox"]\');editors[0].focus();'+
+    'const first=editors[0].querySelector("span").firstChild;'+
+    'const last=editors[1].querySelector("span").firstChild;'+
+    'const range=document.createRange();range.setStart(first,0);range.setEnd(last,6);'+
+    'const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);'+
+    'editors[0].dispatchEvent(new MouseEvent("mouseup",{bubbles:true}));})()');
+  await js('(() => {const menu=document.querySelector(\'select[aria-label="Font family"]\');'+
+    'menu.focus();menu.value="cambria";menu.dispatchEvent(new Event("change",{bubbles:true}));})()');
+  await sleep(150);
+  assert.ok(!(await state()).blocks[0].runs.some(run=>run.font==="cambria"),
+    "Cross-block selection must not restyle the first block");
+  assert.ok(!(await state()).blocks[1].runs.some(run=>run.font==="cambria"),
+    "Cross-block selection must not restyle the second block");
+  assert.equal((await state()).blocks[1].runs.map(run=>run.text).join(""),"Second paragraph remains separate");
+  console.log("PASS: Chromium selected font/bold/size, typing preservation and cross-paragraph protection");
 } finally {
   if (socket) socket.close();
   if (chrome && chrome.exitCode === null) {
