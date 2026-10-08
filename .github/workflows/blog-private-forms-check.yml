@@ -7,6 +7,9 @@ on:
       - "app/api/blog/**"
       - "app/blogpost/**"
       - "components/blog/**"
+      - "content/blog-homepage.json"
+      - "lib/blog-homepage-content.ts"
+      - "scripts/verify-blog-homepage-copy.mjs"
       - "lib/blog-private-**"
       - "scripts/verify-blog-forms.mjs"
       - ".github/workflows/blog-private-forms-check.yml"
@@ -35,6 +38,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Security unit checks
         run: node scripts/verify-blog-forms.mjs
+      - name: Editable homepage validation checks
+        run: node scripts/verify-blog-homepage-copy.mjs
       - name: TypeScript validation
         run: pnpm run typecheck
       - name: Production build
