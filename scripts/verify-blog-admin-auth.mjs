@@ -88,7 +88,7 @@ function mockDatabase() {
             const key = args[0] + ":" + args[1];
             attempts.get(key).failure_count++;
           } else if (sql.startsWith("INSERT OR IGNORE INTO blog_admin_security_events")) {
-            events.set(args[0], { created_at: args[1], actor_hash: args[2], failure_count: args[3] });
+            if (!events.has(args[0])) events.set(args[0], { created_at: args[1], actor_hash: args[2], failure_count: args[3] });
           } else {
             throw Error("Unknown update: " + sql);
           }
