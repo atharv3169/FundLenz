@@ -34,7 +34,11 @@ assert.equal(await verifyPassword("incorrect-long-example-password", verifier), 
 assert.equal(await verifyPassword("secret", "plaintext-not-a-valid-verifier"), false);
 assert.equal(await verifyPassword("secret", "pbkdf2_sha256$1$no$no"), false);
 assert.notEqual(await createPasswordVerifier("super-long-example-password-for-testing"), verifier);
-await assert.rejects(() => createPasswordVerifier("weak"), /16/);
+await assert.rejects(() => createPasswordVerifier("abcdefghijk"), /12/);
+const twelveCharVerifier = await createPasswordVerifier("Abc123xYz987");
+assert.ok(await verifyPassword("Abc123xYz987", twelveCharVerifier), "Exactly 12 characters must verify");
+assert.equal(await verifyPassword("Abc123xYz98", twelveCharVerifier), false);
+assert.equal((await createPasswordVerifier("Abc123xYz987")).startsWith("pbkdf2_sha256$600000$"), true);
 assert.ok(validSessionSecret("a".repeat(43)));
 assert.equal(validSessionSecret("not-long-enough"), false);
 
