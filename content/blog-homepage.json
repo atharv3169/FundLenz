@@ -12,5 +12,16 @@
   "newsletterSubmitLabel": "Submit",
   "contributionButtonLabel": "Add your own article",
   "footerDescription": "Independent education, not investment advice.",
-  "instagramLead": "Follow on Instagram -"
+  "instagramLead": "Follow on Instagram -",
+  "articleMastheadRight": "Ideas · Evidence · Markets",
+  "socialInstagramUrl": "https://www.instagram.com/fundlenz",
+  "socialInstagramEnabled": "true",
+  "socialFacebookUrl": "",
+  "socialFacebookEnabled": "false",
+  "socialXUrl": "",
+  "socialXEnabled": "false",
+  "socialTikTokUrl": "",
+  "socialTikTokEnabled": "false",
+  "socialLinkedinUrl": "",
+  "socialLinkedinEnabled": "false"
 }
