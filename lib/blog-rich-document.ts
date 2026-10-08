@@ -134,7 +134,9 @@ export function emptyRichDocument(category = "Research"): RichDocument {
   ] };
 }
 export function legacyArticleDocument(body: string, category: string): RichDocument {
-  const lines = body.split(/\n{2,}/).slice(0, 120);
+  const lines = body.split(/\n{2,}/);
+  // Never silently truncate older Markdown when upgrading it to the rich editor.
+  if (lines.length > 120) throw new Error("Legacy draft has more than 120 paragraphs. It needs a reviewed migration.");
   return validateRichDocument({
     format: "fundlenz-rich-1", category,
     blocks: lines.map((part, index) => ({ id: "legacy-" + index,
