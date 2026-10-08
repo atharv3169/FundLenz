@@ -1,0 +1,41 @@
+name: FundLenz blog visitor forms checks
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "app/api/blog/**"
+      - "app/blogpost/**"
+      - "components/blog/**"
+      - "lib/blog-private-**"
+      - "scripts/verify-blog-forms.mjs"
+      - ".github/workflows/blog-private-forms-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Typecheck, test and build blog changes
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.16.0"
+      - name: Install pinned pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.25.0 --activate
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Security unit checks
+        run: node scripts/verify-blog-forms.mjs
+      - name: TypeScript validation
+        run: pnpm run typecheck
+      - name: Production build
+        run: pnpm run build
