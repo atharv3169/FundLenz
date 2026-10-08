@@ -112,6 +112,10 @@ export function BlogRichEditor({ value, onChange, onDirty, onValidityChange, dis
   const [message, setMessage] = useState("");
   const [fontSizePx, setFontSizePx] = useState(18);
   const nodeMap = useRef(new Map<string, HTMLDivElement>());
+  // Stable React ref functions: a new inline ref callback on every render
+  // causes React to unmount/remount the ref even when the DOM node is unchanged.
+  // Repainting the old runs at that moment can erase the user's current typing.
+  const stableRefs = useRef(new Map<string, (node: HTMLDivElement | null) => void>());
   const paintSignatures = useRef(new Map<string, string>());
   const valueRef = useRef(value);
   valueRef.current = value;
@@ -134,6 +138,26 @@ export function BlogRichEditor({ value, onChange, onDirty, onValidityChange, dis
       if (!active.has(id)) paintSignatures.current.delete(id);
     }
   }, [value.blocks]);
+
+  function refForBlock(id: string): (node: HTMLDivElement | null) => void {
+    const existing = stableRefs.current.get(id);
+    if (existing) return existing;
+    const stable = (node: HTMLDivElement | null) => {
+      if (!node) {
+        nodeMap.current.delete(id);
+        paintSignatures.current.delete(id);
+        return;
+      }
+      nodeMap.current.set(id, node);
+      const current = valueRef.current.blocks.find(block => block.id === id);
+      if (current && isText(current)) {
+        paintRuns(node, current.runs);
+        paintSignatures.current.set(id, JSON.stringify(current.runs));
+      }
+    };
+    stableRefs.current.set(id, stable);
+    return stable;
+  }
 
   const selectionRef = useRef<{ blockId: string; start: number; end: number } | null>(null);
   const selectionSpansBlocks = useRef(false);
@@ -358,15 +382,7 @@ export function BlogRichEditor({ value, onChange, onDirty, onValidityChange, dis
         {isText(block)
           ? <div className={styles.editable + " " + styles[block.type]}
             contentEditable={!disabled} suppressContentEditableWarning
-            ref={el => {
-              if (el) {
-                if (nodeMap.current.get(block.id) !== el) {
-                  nodeMap.current.set(block.id, el);
-                  paintRuns(el, block.runs);
-                  paintSignatures.current.set(block.id, JSON.stringify(block.runs));
-                }
-              } else nodeMap.current.delete(block.id);
-            }}
+            ref={refForBlock(block.id)}
             onFocus={() => { setActiveId(block.id); selectionRef.current = null; selectionSpansBlocks.current = false; }}
             onBlur={() => flushText(block.id)}
             onInput={() => {
