@@ -193,6 +193,7 @@ export function BlogEditorDashboard() {
               <input value={article.title} maxLength={160} required disabled={busy}
                 onChange={event => changeArticle("title", event.target.value)}/>
             </label>
+            <div className={styles.articleMetaFields}>
             <label>Category — choose any topic
               <input type="text" list="fundlenz-categories" value={article.category}
                 required maxLength={80} disabled={busy}
@@ -207,6 +208,7 @@ export function BlogEditorDashboard() {
               <textarea rows={3} maxLength={600} disabled={busy}
                 value={article.summary} onChange={event => changeArticle("summary", event.target.value)}/>
             </label>
+            </div>
             {rich && <BlogRichEditor value={rich} disabled={busy}
               onChange={updated => { setRich(updated); setDirty(true); setNotice(""); }}/>}
             <div className={styles.buttons}>
