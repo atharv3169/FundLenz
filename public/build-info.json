@@ -1,6 +1,1 @@
-{
-  "release": "cloudflare-standalone-2026-10-07",
-  "datasetSha256": "1337c0704b11c818459a1ac0976e0c98424c7338c547e2e73c6296a59c71fd52",
-  "catalogueSourceCheckDate": "2026-10-05",
-  "automaticDataUpdates": false
-}
+{"automaticDataUpdates":true,"catalogueSourceCheckDate":"2026-10-05","datasetSha256":"7c0450e61afaf140db9e540e5e08465de6b9f5c9dab1686e6746f11f8fe95b53","release":"catalogue-37731471235-1"}
