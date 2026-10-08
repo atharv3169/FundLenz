@@ -1,0 +1,31 @@
+name: FundLenz automation regression checks
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "scripts/automation/**"
+      - "automation/**"
+      - ".github/workflows/automation-regression-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Trusted source and catalogue validator regressions
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Install pinned validator dependencies
+        run: python3 -m pip install --disable-pip-version-check -r scripts/automation/requirements.txt
+      - name: Run adversarial validator tests
+        run: python3 -m unittest discover -s scripts/automation/tests -v
+      - name: Validate retained baseline and audit contracts
+        run: |
+          python3 scripts/automation/verify-bootstrap.py
+          node scripts/automation/verify-contracts.mjs
