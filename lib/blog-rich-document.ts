@@ -4,7 +4,7 @@
 export const RICH_PREFIX = "FLRICH1:";
 export type RichRun = {
   text: string; bold?: boolean; italic?: boolean; underline?: boolean;
-  href?: string; color?: string; font?: "serif" | "sans" | "mono"; size?: "small" | "normal" | "large";
+  href?: string; color?: string; font?: "serif" | "sans" | "mono" | "times" | "verdana" | "trebuchet"; size?: "small" | "normal" | "large" | "xlarge";
 };
 export type RichTextBlock = {
   id: string; type: "paragraph" | "heading" | "subheading" | "quote";
@@ -18,8 +18,8 @@ export type RichBlock = RichTextBlock | RichMediaBlock;
 export type RichDocument = { format: "fundlenz-rich-1"; category: string; blocks: RichBlock[] };
 const basicId = /^[a-zA-Z0-9_-]{1,80}$/;
 const safeColor = /^#[a-fA-F0-9]{6}$/;
-const fonts = ["serif", "sans", "mono"];
-const sizes = ["small", "normal", "large"];
+const fonts = ["serif", "sans", "mono", "times", "verdana", "trebuchet"];
+const sizes = ["small", "normal", "large", "xlarge"];
 const kinds = ["paragraph", "heading", "subheading", "quote", "image", "video", "video-thumbnail"];
 const controls = /[\u0000-\u0008\u000B\u000C\u000E-\u001F]/;
 function exactKeys(value: Record<string, unknown>, allowed: string[]): boolean {
