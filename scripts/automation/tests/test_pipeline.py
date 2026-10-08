@@ -208,6 +208,7 @@ class PipelineTests(unittest.TestCase):
                             "head": {"repo": {"full_name": self.repo}, "ref": "automation/catalogue-fixture",
                                      "sha": "changed" if move_head and self.attempts > 1 else "head"},
                             "base": {"sha": "base", "ref": "main"},
+                            "mergeable": states[min(self.attempts - 1, len(states) - 1)] in {"clean", "unstable"},
                             "mergeable_state": states[min(self.attempts - 1, len(states) - 1)]}
                 if path == "/branches/main":
                     return {"commit": {"sha": "base"}, "protected": True,
@@ -218,8 +219,9 @@ class PipelineTests(unittest.TestCase):
                             "allow_deletions": {"enabled": False}}
                 raise AssertionError("Unexpected API mutation/request")
             def all(self, path, key):
-                return [{"id": 1, "name": policy["required_check"], "app": {"slug": "github-actions"},
-                         "status": "completed", "conclusion": "failure" if failed else "success"}]
+                return [{"id": i, "name": name, "app": {"slug": "github-actions"},
+                         "status": "completed", "conclusion": "failure" if failed else "success"}
+                        for i, name in enumerate([policy["required_check"], "Verify FundLenz reviewed release"], 1)]
         return FakeAPI()
 
     def test_merge_waits_for_transient_state_then_accepts_exact_head(self):
@@ -228,6 +230,14 @@ class PipelineTests(unittest.TestCase):
         wait_for_checks(api, 1, self.policy, "head", "base", "publisher", attempts=3, wait=waits.append)
         self.assertEqual(waits, [15, 15])
         self.assertEqual(api.attempts, 3)
+
+    def test_optional_running_merge_job_does_not_deadlock_required_checks(self):
+        api = self.merge_api(["unstable"])
+        wait_for_checks(api, 1, self.policy, "head", "base", "publisher", attempts=1)
+        all_checks = api.all
+        api.all = lambda *args: all_checks(*args)[:1]
+        with self.assertRaisesRegex(ValueError, "still pending/blocked"):
+            wait_for_checks(api, 1, self.policy, "head", "base", "publisher", attempts=1)
 
     def test_check_reads_use_separate_read_only_credential(self):
         publisher = self.merge_api(["clean"])
