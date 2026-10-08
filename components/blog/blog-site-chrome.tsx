@@ -4,7 +4,7 @@ import { BlogSocialLinks } from "./social-links";
 import { defaultBlogHomepageContent, type BlogHomepageContent } from "@/lib/blog-homepage-content";
 import styles from "./blog-site-chrome.module.css";
 
-export function BlogSiteHeader() {
+export function BlogSiteHeader({ showAdmin = false }: { showAdmin?: boolean }) {
   return <header className={styles.header}>
     <Link href="/" className={styles.brand} aria-label="FundLenz portfolio lab homepage">
       <span className={styles.logoIcon}><ScanSearch size={25} strokeWidth={1.7}/></span>
@@ -14,7 +14,7 @@ export function BlogSiteHeader() {
     <nav className={styles.nav} aria-label="FundLenz navigation">
       <span className={styles.projectCredit}>A project by <strong>Atharva Sahu</strong></span>
       <Link href="/" className={styles.headerButton}><FileText size={16}/> Portfolio lab</Link>
-      <Link href="/blogpost/admin" className={styles.adminLink}>Admin</Link>
+      {showAdmin && <Link href="/blogpost/admin" className={styles.adminLink}>Admin</Link>}
     </nav>
   </header>;
 }

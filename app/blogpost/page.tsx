@@ -4,7 +4,9 @@ import { env } from "cloudflare:workers";
 import { ContributionButton, NewsletterBox } from "@/components/blog/visitor-forms";
 import styles from "./page.module.css";
 import { BlogSiteHeader, BlogSiteFooter } from "@/components/blog/blog-site-chrome";
-import { readStagingHomepageCopy } from "@/lib/blog-staging-homepage";
+import { BlogArticleArchive } from "@/components/blog/blog-article-archive";
+import { BLOG_STAGING_HOST, readStagingHomepageCopy } from "@/lib/blog-staging-homepage";
+import { publishedArticles } from "@/lib/blog-publications";
 import type { BlogAdminDatabase } from "@/lib/blog-admin-state";
 
 export const metadata: Metadata = {
@@ -24,15 +26,13 @@ export default async function BlogHomePage() {
   // The forms fail closed until this is configured in the Cloudflare Worker.
   const siteKey = process.env.TURNSTILE_SITE_KEY || "";
   return <div className={styles.shell}>
-    <BlogSiteHeader/>
+    <BlogSiteHeader showAdmin={host === BLOG_STAGING_HOST}/>
     <main className={styles.main}>
       <p className={styles.eyebrow}>{copy.eyebrow}</p>
       <h1>{copy.heroHeading}</h1>
       <p className={styles.intro}>{copy.heroDescription}</p>
-      <section aria-label="Article archive" className={styles.archive}>
-        <div className={styles.archiveHeader}><h2>{copy.articlesHeading}</h2><span>{copy.articlesStatus}</span></div>
-        <p className={styles.empty}>{copy.articlesEmpty}</p>
-      </section>
+      <BlogArticleArchive articles={publishedArticles} heading={copy.articlesHeading}
+        status={copy.articlesStatus} empty={copy.articlesEmpty}/>
       <NewsletterBox siteKey={siteKey} heading={copy.newsletterHeading} description={copy.newsletterDescription}
         placeholder={copy.newsletterPlaceholder} submitLabel={copy.newsletterSubmitLabel} />
     </main>

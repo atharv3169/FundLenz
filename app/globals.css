@@ -186,6 +186,13 @@ h1,h2,h3,p { margin: 0; } h1,h2,h3 { line-height: 1.25; letter-spacing: -.025em;
 @media(min-width:581px) and (max-width:1180px) { .composition .donut-wrapper { grid-column:1; grid-row:2; } .composition .chart-legend { grid-column:2; grid-row:2; } }
 @media(max-width:580px) { .masthead .header-button { display:none; } .masthead-right { gap:8px; } }
 
+/* Keep the lab's three primary destinations visible on narrow phones. */
+@media(max-width:580px) {
+  .portfolio-lab .masthead:has(.lab-blog-link) { height:auto; min-height:65px; flex-wrap:wrap; gap:8px; padding-top:10px; padding-bottom:10px; }
+  .portfolio-lab .masthead:has(.lab-blog-link) .masthead-right { width:100%; display:flex; flex-wrap:wrap; justify-content:flex-start; gap:7px; }
+  .portfolio-lab .masthead:has(.lab-blog-link) .catalog-nav-link { font-size:12px; padding:6px 9px; }
+}
+
 /* Catalogue navigation wraps without altering the existing theme. */
 .catalog-market-tabs { flex-wrap: wrap; }
 @media(max-width:600px) { .catalog-market-tabs a { padding:10px 12px; white-space:nowrap; } }

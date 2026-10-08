@@ -141,7 +141,7 @@ export function BlogPaper({ title, summary, category, blocks, related = [], publ
             <span>{String(index + 1).padStart(2, "0")}</span>
             <div>{onSelectRelated
                 ? <button type="button" className={styles.relatedLink} onClick={() => onSelectRelated(item.id)}>{item.title}</button>
-                : item.url && safeHttpUrl(item.url)
+                : item.url && (safeHttpUrl(item.url) || /^\/blogpost\/[a-z0-9-]+$/.test(item.url))
                   ? <a className={styles.relatedLink} href={item.url}>{item.title}</a>
                   : <strong>{item.title}</strong>}
               <small>{item.category}{onSelectRelated ? " · Private preview" : ""}</small></div>
