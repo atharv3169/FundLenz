@@ -1,7 +1,7 @@
 import {
   privateAdminResponse, sessionCookie,
 } from "@/lib/blog-admin-crypto";
-import { checkAdminPassword, AdminUnavailable, AdminForbidden } from "@/lib/blog-admin-server";
+import { checkAdminPassword, AdminUnavailable, AdminForbidden, AdminCredentialStageFailure } from "@/lib/blog-admin-server";
 import { limitedBody, SubmissionError } from "@/lib/blog-private-form-security";
 import { BlogAdminRateLimit, startSession } from "@/lib/blog-admin-state";
 
@@ -40,6 +40,9 @@ export async function POST(request: Request): Promise<Response> {
     // Never return detailed database errors or cryptographic error messages.
     const reference = error instanceof AdminUnavailable
       ? (error.reason === "missing-client-ip" ? "FL-AIP" : "FL-CFG")
+      : error instanceof AdminCredentialStageFailure
+        ? (error.stage === "d1-reserve" ? "FL-D1R" :
+           error.stage === "password-kdf" ? "FL-KDF" : "FL-D1F")
       : phase === "credentials" ? "FL-VER"
       : phase === "session" ? "FL-SES" : "FL-REQ";
     if (stagingOnly) {
