@@ -88,6 +88,7 @@ export function BlogHomepageEditor({ initial, onSave, onCancel }: {
         <div className={styles.previewSection}>
           <p>{draft.footerDescription}</p>
           <small>{draft.contributionButtonLabel}</small>
+          {draft.socialInstagramEnabled === "true" && <small>{draft.instagramLead}</small>}
           <BlogSocialLinks copy={draft}/>
         </div>
       </div>
