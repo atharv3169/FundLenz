@@ -140,7 +140,24 @@ try {
   assert.ok(!(await state()).blocks[1].runs.some(run=>run.font==="cambria"),
     "Cross-block selection must not restyle the second block");
   assert.equal((await state()).blocks[1].runs.map(run=>run.text).join(""),"Second paragraph remains separate");
-  console.log("PASS: Chromium selected font/bold/size, typing preservation and cross-paragraph protection");
+  // Large, mostly unbroken text reproduces the owner's font-duplication screenshot.
+  const longOriginal = (await state()).blocks[2].runs.map(run=>run.text).join("");
+  const selectionLong = await js('(() => {const editor=document.querySelectorAll(\'[role="textbox"]\')[2];'+
+    'editor.focus();const node=editor.querySelector("span").firstChild;'+
+    'const r=document.createRange();r.setStart(node,705);r.setEnd(node,1305);'+
+    'const sel=window.getSelection();sel.removeAllRanges();sel.addRange(r);'+
+    'editor.dispatchEvent(new MouseEvent("mouseup",{bubbles:true}));return sel.toString().length;})()');
+  assert.equal(selectionLong,600);
+  await js('(() => {const menu=document.querySelector(\'select[aria-label="Font family"]\');'+
+    'menu.focus();menu.value="garamond";menu.dispatchEvent(new Event("change",{bubbles:true}));})()');
+  await until(async () => (await state()).blocks[2].runs.some(run =>
+    run.font==="garamond" && run.text.length===600));
+  const longResult=(await state()).blocks[2].runs;
+  assert.equal(longResult.map(run=>run.text).join(""),longOriginal,
+    "Long paragraph must never duplicate, drop or transpose text");
+  assert.equal(longResult.filter(run=>run.font==="garamond").length,1);
+  assert.equal(longResult.filter(run=>run.font==="garamond")[0].text,longOriginal.slice(705,1305));
+  console.log("PASS: Chromium font/size, typing, cross-paragraph safety and long 5,600-character selection preservation");
 } finally {
   if (socket) socket.close();
   if (chrome && chrome.exitCode === null) {
