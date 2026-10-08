@@ -5,11 +5,20 @@ import { pathToFileURL } from "node:url";
 const require = createRequire(import.meta.url);
 const viteRequire = createRequire(require.resolve("vite"));
 const { build } = await import(pathToFileURL(viteRequire.resolve("esbuild")).href);
-async function importTS(entryPoint) {
+async function importTS(entryPoint, withCloudflareEnv = false) {
   const built = await build({
     entryPoints: [entryPoint],
     bundle: true, platform: "node", format: "esm", write: false, target: "node22",
     alias: { "@": process.cwd() },
+    plugins: withCloudflareEnv ? [{
+      name: "mock-cloudflare-env",
+      setup(pluginBuild) {
+        pluginBuild.onResolve({ filter: /^cloudflare:workers$/ }, () =>
+          ({ path: "runtime-env", namespace: "fundlenz-test" }));
+        pluginBuild.onLoad({ filter: /.*/, namespace: "fundlenz-test" }, () =>
+          ({ contents: "export const env = globalThis.__fundlenzAdminTestEnvironment;", loader: "js" }));
+      },
+    }] : [],
   });
   const encoded = Buffer.from(built.outputFiles[0].text, "utf8").toString("base64");
   return import("data:text/javascript;base64," + encoded);
@@ -123,4 +132,58 @@ assert.equal(event.failure_count, 4, "Event is opened at fourth failure, not sen
 await assert.rejects(() => reserveLoginAttempt(db, sessionSecret, "203.0.113.1"),
   error => error instanceof BlogAdminRateLimit);
 assert.equal((await reserveLoginAttempt(db, sessionSecret, "203.0.113.2")).attempts, 1);
-console.log("PASS: admin verifier, secure cookies, D1 sessions, logout revocation, attempt limits and pending alert");
+// Server integration: preserve rate-limit 429 while classifying ONLY operational
+// failures in staging. No secrets or database values are printed.
+const testEnvironment = {
+  BLOG_ADMIN_DB: mockDatabase(),
+  FUNDLENZ_ADMIN_PASSWORD_HASH: verifier,
+  FUNDLENZ_ADMIN_SESSION_SECRET: sessionSecret,
+  BLOG_ADMIN_ALLOWED_HOSTNAMES: "fundlenz-blog-staging.atharvsahu711.workers.dev",
+};
+globalThis.__fundlenzAdminTestEnvironment = testEnvironment;
+const server = await importTS("lib/blog-admin-server.ts", true);
+const request = new Request(
+  "https://fundlenz-blog-staging.atharvsahu711.workers.dev/api/blog/admin/login", {
+    method: "POST",
+    headers: {
+      Origin: "https://fundlenz-blog-staging.atharvsahu711.workers.dev",
+      "CF-Connecting-IP": "198.51.100.25",
+    },
+  },
+);
+assert.equal((await server.checkAdminPassword(request, "cookiemonster",
+  "super-long-example-password-for-testing")).authorized, true,
+  "Valid credentials should reach a session-creation-ready state");
+assert.equal((await server.checkAdminPassword(request, "cookiemonster",
+  "incorrect-password")).authorized, false,
+  "Wrong credentials should return unauthorized, not operational failure");
+const preparedDb = testEnvironment.BLOG_ADMIN_DB;
+testEnvironment.BLOG_ADMIN_DB = { prepare() { throw new Error("mock D1 offline"); } };
+await assert.rejects(() => server.checkAdminPassword(request, "cookiemonster",
+  "super-long-example-password-for-testing"), error =>
+    error instanceof server.AdminCredentialStageFailure &&
+    error.stage === "d1-reserve", "Offline D1 reserve must have a safe stage");
+testEnvironment.BLOG_ADMIN_DB = preparedDb;
+
+const failingUpdatesDB = mockDatabase();
+const prepareOriginal = failingUpdatesDB.prepare.bind(failingUpdatesDB);
+failingUpdatesDB.prepare = (sql) => {
+  if (sql.startsWith("UPDATE blog_admin_attempts"))
+    throw new Error("mock D1 write unavailable");
+  return prepareOriginal(sql);
+};
+testEnvironment.BLOG_ADMIN_DB = failingUpdatesDB;
+await assert.rejects(() => server.checkAdminPassword(request, "cookiemonster",
+  "incorrect-password"), error =>
+    error instanceof server.AdminCredentialStageFailure &&
+    error.stage === "d1-failure-count", "D1 failure-count write must be classed separately");
+testEnvironment.BLOG_ADMIN_DB = mockDatabase();
+for (let i = 0; i < 8; i++) {
+  await server.checkAdminPassword(request, "cookiemonster", "incorrect-password");
+}
+await assert.rejects(() => server.checkAdminPassword(request, "cookiemonster",
+  "incorrect-password"), error => error instanceof server.AdminCredentialStageFailure === false &&
+    error instanceof state.BlogAdminRateLimit,
+    "Exhausted D1 login attempts must remain rate-limited, not 503");
+
+console.log("PASS: admin verifier, D1 sessions and safe diagnostic stages, logout, attempt limits");
