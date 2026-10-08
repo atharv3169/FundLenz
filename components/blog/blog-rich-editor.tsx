@@ -46,11 +46,15 @@ function safeInlineRuns(root: HTMLElement): RichRun[] {
     const color = rgbToHex(node.style.color || (tag === "font" ? node.getAttribute("color") || "" : ""));
     if (color) next.color = color;
     const family = (node.style.fontFamily || (tag === "font" ? node.getAttribute("face") || "" : "")).toLowerCase();
-    if (family.includes("georgia") || family.includes("times")) next.font = "serif";
+    if (family.includes("times")) next.font = "times";
+    else if (family.includes("georgia")) next.font = "serif";
+    else if (family.includes("trebuchet")) next.font = "trebuchet";
+    else if (family.includes("verdana")) next.font = "verdana";
     else if (family.includes("mono") || family.includes("courier")) next.font = "mono";
     else if (family.includes("arial") || family.includes("helvetica")) next.font = "sans";
     const size = node.style.fontSize || (tag === "font" ? node.getAttribute("size") || "" : "");
-    if (size === "5" || size === "6" || size === "7" || /^(22|23|24|25|26|27|28|29|30)px$/.test(size)) next.size = "large";
+    if (size === "6" || size === "7" || /^(28|29|30|31|32|33|34|35|36)px$/.test(size)) next.size = "xlarge";
+    else if (size === "5" || /^(22|23|24|25|26|27)px$/.test(size)) next.size = "large";
     else if (size === "1" || size === "2" || /^(10|11|12|13)px$/.test(size)) next.size = "small";
     for (const child of Array.from(node.childNodes)) read(child, next, depth + 1);
     if ((tag === "div" || tag === "p") && node.nextSibling) push("\n", marks);
@@ -64,8 +68,11 @@ function StyledRun({ run }: { run: RichRun }) {
     textDecoration: run.underline ? "underline" : undefined,
     color: run.color,
     fontFamily: run.font === "serif" ? "Georgia,serif" :
+      run.font === "times" ? "'Times New Roman',serif" :
+      run.font === "verdana" ? "Verdana,sans-serif" :
+      run.font === "trebuchet" ? "'Trebuchet MS',sans-serif" :
       run.font === "mono" ? "monospace" : run.font === "sans" ? "Arial,sans-serif" : undefined,
-    fontSize: run.size === "large" ? "1.22em" : run.size === "small" ? "0.82em" : undefined,
+    fontSize: run.size === "xlarge" ? "1.45em" : run.size === "large" ? "1.22em" : run.size === "small" ? "0.82em" : undefined,
     whiteSpace: "pre-wrap",
   }}>{run.text}</span>;
   return run.href ? <a href={run.href} target="_blank" rel="noopener noreferrer">{text}</a> : text;
@@ -186,11 +193,13 @@ export function BlogRichEditor({ value, onChange, disabled }: {
         }}>🔗 Link</button>
       <label className={styles.toolSelect}>Font
         <select defaultValue="" disabled={disabled} onChange={event => {
-          const fonts: Record<string,string> = { serif: "Georgia", sans: "Arial", mono: "Courier New" };
+          const fonts: Record<string,string> = { serif: "Georgia", times: "Times New Roman", sans: "Arial", verdana: "Verdana", trebuchet: "Trebuchet MS", mono: "Courier New" };
           if (fonts[event.target.value]) command("fontName", fonts[event.target.value]);
         }}>
           <option value="">Choose</option>
-          <option value="serif">Serif</option><option value="sans">Sans</option><option value="mono">Mono</option>
+          <option value="serif">Georgia</option><option value="times">Times New Roman</option>
+          <option value="sans">Arial</option><option value="verdana">Verdana</option>
+          <option value="trebuchet">Trebuchet</option><option value="mono">Monospace</option>
         </select>
       </label>
       <label className={styles.toolSelect}>Size
@@ -198,7 +207,7 @@ export function BlogRichEditor({ value, onChange, disabled }: {
           if (event.target.value) command("fontSize", event.target.value);
         }}>
           <option value="">Choose</option><option value="2">Small</option><option value="3">Normal</option>
-          <option value="5">Large</option>
+          <option value="5">Large</option><option value="6">Extra large</option>
         </select>
       </label>
       <label className={styles.toolSelect}>Color
