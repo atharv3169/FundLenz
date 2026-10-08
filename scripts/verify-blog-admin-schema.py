@@ -28,4 +28,28 @@ db.execute("INSERT OR IGNORE INTO blog_admin_security_events(id, created_at, eve
            ("event-1", 200, "four-plus-failed-logins", "test-ip-hash", 4, "pending"))
 assert db.execute("SELECT notification_status FROM blog_admin_security_events").fetchone() == ("pending",)
 
-print("PASS: draft admin D1 migration tables, session revocation, counters, pending events")
+# Editorial migrations are applied to the same isolated staging D1 database.
+# No public blog content or production financial data is changed by this test.
+migration2 = Path(__file__).resolve().parents[1] / "db" / "blog-admin" / "0002_editor_drafts.sql"
+db.executescript(migration2.read_text(encoding="utf-8"))
+db.executescript(migration2.read_text(encoding="utf-8"))  # idempotency
+tables = {row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+assert {"blog_homepage_draft", "blog_article_drafts"}.issubset(tables)
+db.execute("INSERT INTO blog_homepage_draft (id, content_json, version, updated_at) VALUES (1, ?, 1, 100)", ('{"headline":"test"}',))
+assert db.execute("UPDATE blog_homepage_draft SET version=version+1 WHERE id=1 AND version=1").rowcount == 1
+assert db.execute("UPDATE blog_homepage_draft SET version=version+1 WHERE id=1 AND version=1").rowcount == 0
+db.execute("INSERT INTO blog_article_drafts (id,title,summary,body_markdown,category,status,version,created_at,updated_at) "
+           "VALUES (?,?,?,?,?,'draft',1,100,100)", ("test-uuid","Example","","Hello","Research"))
+assert db.execute("UPDATE blog_article_drafts SET title=?,version=version+1 "
+                  "WHERE id=? AND version=? AND status='draft'",
+                  ("Changed", "test-uuid", 1)).rowcount == 1
+assert db.execute("UPDATE blog_article_drafts SET title=? WHERE id=? AND version=?",
+                  ("Stale", "test-uuid", 1)).rowcount == 0
+try:
+    db.execute("UPDATE blog_article_drafts SET status='published' WHERE id='test-uuid'")
+except sqlite3.IntegrityError:
+    pass
+else:
+    raise AssertionError("Draft API database must forbid published status")
+assert db.execute("SELECT status FROM blog_article_drafts").fetchone() == ("draft",)
+print("PASS: staging admin and editor D1 migration tables, session revocation, counters, pending events")
