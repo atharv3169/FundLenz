@@ -166,7 +166,7 @@ export function BlogEditorDashboard() {
     const data = await jsonRequest<{ version: number }>(homepageApi,
       { method: "PUT", body: JSON.stringify({ content, version: homepage.version }) });
     setHomepage({ content, version: data.version });
-    setNotice("Homepage wording saved as a private staging draft. Not published.");
+    setNotice("Homepage settings saved. Refresh the staging blog homepage to see them; the public FundLenz site is unchanged.");
   }
 
   return <div className={styles.dashboard}>
