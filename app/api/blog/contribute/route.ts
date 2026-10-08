@@ -29,8 +29,10 @@ export async function POST(request: Request) {
       throw new SubmissionError(415, "Expected a file upload.");
     const bytes = await limitedBody(request, MAX_BODY);
     // Parse only after enforcing the total incoming request limit.
+    const requestBuffer = new ArrayBuffer(bytes.byteLength);
+    new Uint8Array(requestBuffer).set(bytes);
     const bounded = new Request("https://fundlenz.invalid/upload", {
-      method: "POST", headers: { "Content-Type": contentType }, body: bytes,
+      method: "POST", headers: { "Content-Type": contentType }, body: requestBuffer,
     });
     let form: FormData;
     try { form = await bounded.formData(); }
