@@ -53,3 +53,15 @@ Implementation on this staging branch:
 5. Save the private draft, reload, reopen it, confirm custom category, media order, styling and links persisted. Never expose its private URL through social sharing.
 6. Test invalid \`javascript:\` URLs; the editor/API must reject these. Validate stale-tab save conflict and logout still block editing.
 7. Keep draft PR open until browser tests succeed. Plan public article publication and optional safe R2/media-storage setup as separate reviewed tasks.
+
+## Editorial refinement: layout, numeric text size and per-media sizing
+
+Owner's review of the first newspaper-style staging preview identified overly large YouTube embeds, cramped typographic controls and unstructured editor panels. Staging-only changes:
+
+- A **numeric 12–72 px text-size input with Apply button** formats the selected passage. Clicking inside a paragraph without selecting characters applies formatting to the whole paragraph. Rich run schema now supports an optional integer `sizePx` while preserving older `small/normal/large/xlarge` marks. Browser selection offsets are captured so clicking into toolbar controls needn't lose selected text.
+- Expanded to **22 locally available/system font choices** (with fallback families). No external font files, remote font loading or license obligations. Saved format uses a fixed server-side allowlist, never arbitrary CSS or user-defined font injection. If a visitor lacks a particular font, the browser falls back to the declared alternatives.
+- Every `image`, `video`, and `video-thumbnail` block has optional integer `widthPct` (20–100%) and `align` (left, center, right), validated on the server. Editor provides a slider, numeric percentage field, small/medium/large/full presets, position dropdown and proportional inline size indicator. Rendered preview applies the same responsive width and alignment. Old media blocks display at sensible narrower defaults (video 72%, thumbnail 65%, image 85%) without changing stored legacy article data.
+- Better editorial composition: two-tier grouped toolbar; structured article category/description; headline, byline, clamped single-paragraph summary lead, and main body; refined sidebar spacing and typography; mobile layout remains responsive.
+- No migration needed: all values live inside the existing `FLRICH1` draft envelope. Old drafts remain compatible. No actual media file upload yet (URL only), no public publishing, and no changes to the production portfolio lab.
+
+**Owner browser QA once updated staging deployment completes:** select a phrase, enter a custom 28px size and click Apply; change to Garamond/Cambria; Save → Reload → Preview and inspect size/font. Insert or reopen a YouTube video and set width 35%, alignment right, then Save → Reload → Preview. Repeat with an image and clickable thumbnail. Check desktop/mobile; verify long multi-line summaries no longer push the byline below the whole summary. Verify logout and that public `fundlenz.com` remains unchanged.
