@@ -32,6 +32,25 @@ const valid = {
 const serialized = mod.encodeRichDocument(valid);
 assert.ok(serialized.startsWith("FLRICH1:"));
 assert.deepEqual(mod.decodeRichDocument(serialized, "Research"), valid);
+const authorDraft = structuredClone(valid);
+authorDraft.author = {
+  name:"Guest Researcher", socialLabel:"LinkedIn", socialUrl:"https://www.linkedin.com/in/researcher",
+  avatarDataUrl: "data:image/jpeg;base64," + "AAAA".repeat(64),
+  displayDate:"2026-10-08", readingMinutes:7,
+};
+assert.deepEqual(mod.decodeRichDocument(mod.encodeRichDocument(authorDraft)).author, authorDraft.author);
+assert.equal(mod.validateRichDocument(valid).author, undefined, "Legacy drafts should remain valid");
+assert.throws(() => mod.validateRichDocument({...authorDraft,author:{...authorDraft.author,socialUrl:"javascript:alert(1)"}}), /HTTPS/);
+assert.throws(() => mod.validateRichDocument({...authorDraft,author:{...authorDraft.author,avatarDataUrl:"data:image/svg+xml;base64,AAAA"}}), /JPEG/);
+assert.throws(() => mod.validateRichDocument({...authorDraft,author:{...authorDraft.author,readingMinutes:200}}), /Reading/);
+assert.throws(() => mod.validateRichDocument({...authorDraft,author:{...authorDraft.author,name:"<script>"}}), /author name/);
+const articleView = readFileSync("components/blog/blog-paper.tsx", "utf8");
+assert.ok(articleView.includes("branding.eyebrow"));
+assert.ok(articleView.includes("authorProfile?.socialUrl"));
+const adminView = readFileSync("components/blog/blog-editor-dashboard.tsx", "utf8");
+assert.ok(adminView.includes("uploadAuthorAvatar"));
+assert.ok(adminView.includes("branding={homepage?.content}"));
+
 assert.equal(mod.storedDraftCategory(serialized, "Research"), valid.category);
 assert.equal(mod.BLOG_FONTS.length, 22, "All font choices must be whitelisted");
 assert.equal(mod.blogFontFamily("baskerville"), "Baskerville, Georgia, serif");
