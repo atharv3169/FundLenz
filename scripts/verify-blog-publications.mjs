@@ -25,6 +25,17 @@ assert.deepEqual(publications.searchPublishedArticles(examples, ""), examples);
 assert.deepEqual(publications.searchPublishedArticles(examples, " ATHARVA RESEARCH "), [examples[0]]);
 assert.deepEqual(publications.searchPublishedArticles(examples, "pOrTfOlio"), [examples[0], examples[1]]);
 assert.deepEqual(publications.searchPublishedArticles(examples, "not present"), []);
+assert.deepEqual(publications.searchPublishedArticles(examples, "clear explanation"), examples);
+assert.deepEqual(publications.searchPublishedArticles([{ ...examples[0], blocks: [
+  { id: "styled", type: "paragraph", runs: [{ text: "liqui" }, { text: "dity stress" }] },
+  { id: "figure", type: "image", src: "https://example.com/figure.png", alt: "Small-cap redemptions" },
+] }, examples[1]], "liquidity"), [{ ...examples[0], blocks: [
+  { id: "styled", type: "paragraph", runs: [{ text: "liqui" }, { text: "dity stress" }] },
+  { id: "figure", type: "image", src: "https://example.com/figure.png", alt: "Small-cap redemptions" },
+] }]);
+assert.deepEqual(publications.searchPublishedArticles([{...examples[0], blocks: [
+  { id: "figure", type: "image", src: "https://example.com/figure.png", caption: "Redemption pressure" },
+]}], "redemption pressure").length, 1);
 assert.throws(() => publications.validatePublishedArticles([...examples, examples[0]]), /metadata/);
 assert.throws(() => publications.validatePublishedArticles([article("../admin", "Bad path", "Research", "Editor")]), /metadata/);
 assert.throws(() => publications.validatePublishedArticles([article("bad-date", "Date", "Research", "Editor"),
