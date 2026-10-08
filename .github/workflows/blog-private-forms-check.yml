@@ -59,8 +59,8 @@ jobs:
       - name: Production build
         run: pnpm run build
       - name: Verify isolated staging configuration
-        run: pnpm run verify:blog-staging
+        run: node scripts/verify-blog-staging-config.mjs
       - name: Build isolated staging Worker (NO DEPLOY)
-        run: pnpm run build:blog-staging
+        run: node scripts/build-blog-staging.mjs
       - name: Verify generated staging Worker target and D1 bindings
         run: node scripts/verify-blog-staging-config.mjs --built
