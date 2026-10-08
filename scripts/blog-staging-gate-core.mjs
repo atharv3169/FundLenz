@@ -75,3 +75,31 @@ export function forwardWithoutBasicHeader(request) {
   headers.delete("Proxy-Authorization");
   return new Request(request, { headers });
 }
+
+/**
+ * Authentication MUST happen first. With run_worker_first enabled, static assets
+ * must be explicitly fetched from the ASSETS binding after successful auth.
+ */
+function isStaticAssetPath(pathname) {
+  return pathname.startsWith("/_next/static/") ||
+    pathname.startsWith("/assets/") ||
+    /^\/(?:favicon\.(?:ico|svg|png)|manifest\.webmanifest|robots\.txt|sitemap\.xml)$/.test(pathname);
+}
+
+/** Authentication and routing of every staging request. */
+export async function serveStagingRequest(request, env, applicationFetch) {
+  const denial = await stagingGate(request, env);
+  if (denial) return denial;
+  const safeRequest = forwardWithoutBasicHeader(request);
+  const pathname = new URL(safeRequest.url).pathname;
+  if ((safeRequest.method === "GET" || safeRequest.method === "HEAD") &&
+      isStaticAssetPath(pathname)) {
+    if (!env?.ASSETS || typeof env.ASSETS.fetch !== "function") {
+      return response("Staging static asset binding is unavailable.", 503);
+    }
+    return env.ASSETS.fetch(safeRequest);
+  }
+  if (typeof applicationFetch !== "function")
+    return response("Staging application is unavailable.", 503);
+  return applicationFetch(safeRequest, env);
+}
