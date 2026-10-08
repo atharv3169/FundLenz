@@ -23,6 +23,9 @@
 .articleList button.selected { border-color:#0a7788; background:#e5f3f4; }
 .articleList small { font-size:11px; display:block; color:#718895; margin-top:4px; font-weight:450; }
 .form { display:grid; gap:22px; }
+.articleMetaFields{display:grid;grid-template-columns:minmax(195px,280px) minmax(0,1fr);gap:20px;align-items:start;}
+.articleMetaFields textarea{min-height:94px;max-height:180px;}
+.form>label:first-child input{font-size:18px;font-weight:650;color:#1a394b;}
 .form label { display:grid; gap:6px; font-size:13px; font-weight:650; color:#476574; }
 .form input,.form select,.form textarea { width:100%; padding:13px 15px; font-size:15px; font-family:inherit; background:#fff; color:#204455; border:1px solid #c9dbe3; border-radius:7px; }
 .form textarea { resize:vertical; line-height:1.5; }
@@ -36,3 +39,4 @@
 .success {font-size:13px;color:#207052;margin:12px 0;}
 .preview { border:1px solid #dae9ee; padding:14px; border-radius:8px; background:#f7fafb; white-space:pre-wrap; overflow-wrap:anywhere; font-size:13px; line-height:1.65; max-height:400px; overflow:auto;}
 @media(max-width:920px) {.split{grid-template-columns:1fr;}.panel{padding:20px;} .toolbar{align-items:flex-start;} .articleList{max-height:240px;overflow-y:auto;} }
+@media(max-width:650px){.articleMetaFields{grid-template-columns:1fr;}.panel{padding:16px;}}
