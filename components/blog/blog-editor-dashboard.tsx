@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { BlogHomepageEditor } from "@/components/blog/blog-homepage-editor";
-import { defaultBlogHomepageContent, type BlogHomepageContent } from "@/lib/blog-homepage-content";
+import { type BlogHomepageContent } from "@/lib/blog-homepage-content";
 import { blogDraftCategories, type BlogArticleDraft, type BlogDraftSummary, type BlogDraftCategory } from "@/lib/blog-article-draft";
 import styles from "./blog-editor-dashboard.module.css";
 
@@ -134,7 +134,7 @@ export function BlogEditorDashboard() {
         <button type="button" role="tab" aria-selected={tab === "homepage"}
           className={tab === "homepage" ? styles.active : ""} onClick={() => {
             if (dirty && !window.confirm("Discard unsaved article edits?")) return;
-            setTab("homepage"); }}>Homepage wording</button>
+            setArticle(null); setDirty(false); setPreview(false); setTab("homepage"); }}>Homepage wording</button>
       </div>
       <button type="button" className={styles.secondary} disabled={busy || loading} onClick={() => {
         if (dirty && !window.confirm("Discard unsaved article edits?")) return;
