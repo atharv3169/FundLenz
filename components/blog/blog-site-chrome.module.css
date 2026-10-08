@@ -19,5 +19,5 @@
 .footerRight{display:flex;align-items:center;gap:14px;max-width:660px;justify-content:flex-end}
 .footerRight>span{max-width:475px;line-height:1.65}
 @media(max-width:1180px){.projectCredit{display:none}.header{padding:0 25px}}
-@media(max-width:800px){.header{height:auto;min-height:65px;padding:12px 20px}.brand{font-size:24px}.brand small,.divider{display:none}.nav{gap:8px}.nav a{padding:7px 9px;font-size:11px}.nav a:nth-child(2){display:none}}
-@media(max-width:580px){.header{gap:9px;padding:11px 16px}.logoIcon{height:31px;width:31px;margin-right:6px}.logoIcon svg{width:20px}.brand{font-size:19px}.nav{gap:6px}.nav>a:first-child,.nav .adminLink{display:none}.footerInner{padding:22px 16px}.footerRight{justify-content:flex-start;flex-wrap:wrap}}
+@media(max-width:800px){.header{height:auto;min-height:65px;padding:12px 20px}.brand{font-size:24px}.divider{display:none}.brand small{font-size:9px;margin-left:11px}.nav{gap:8px}.nav a{padding:7px 9px;font-size:11px}}
+@media(max-width:580px){.header{gap:9px;padding:11px 16px;flex-wrap:wrap}.logoIcon{height:31px;width:31px;margin-right:6px}.logoIcon svg{width:20px}.brand{font-size:19px}.brand small{margin-left:7px;font-size:8px}.nav{gap:6px}.nav a{font-size:10px;padding:6px 7px}.footerInner{padding:22px 16px}.footerRight{justify-content:flex-start;flex-wrap:wrap}}
