@@ -11,12 +11,16 @@ export type ArticlePaperProps = {
 
 function InlineRun({ run }: { run: RichRun }) {
   const fontFamily = run.font === "serif" ? "Georgia, 'Times New Roman', serif" :
+    run.font === "times" ? "'Times New Roman', serif" :
+    run.font === "verdana" ? "Verdana, sans-serif" :
+    run.font === "trebuchet" ? "'Trebuchet MS', sans-serif" :
     run.font === "mono" ? "ui-monospace, SFMono-Regular, Menlo, monospace" :
     run.font === "sans" ? "Arial, Helvetica, sans-serif" : undefined;
   const style = {
     fontFamily, color: run.color,
     fontSize: run.size === "small" ? "0.82em" :
-      run.size === "large" ? "1.23em" : undefined,
+      run.size === "large" ? "1.23em" :
+      run.size === "xlarge" ? "1.45em" : undefined,
     fontWeight: run.bold ? 700 : undefined,
     fontStyle: run.italic ? "italic" : undefined,
     textDecoration: run.underline ? "underline" : undefined,
