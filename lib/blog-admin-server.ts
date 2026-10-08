@@ -14,6 +14,9 @@ type RuntimeConfig = {
 export class AdminUnavailable extends Error {
   constructor() { super("Administrator login is not configured."); }
 }
+export class AdminForbidden extends Error {
+  constructor() { super("Cross-origin admin requests are forbidden."); }
+}
 
 export function adminRuntime(): {
   db: BlogAdminDatabase; verifier: string; secret: string; hosts: string[];
@@ -32,14 +35,14 @@ export function adminRuntime(): {
 
 export function requireAdminOrigin(request: Request, allowedHosts: string[]): void {
   const origin = request.headers.get("Origin");
-  if (!origin) throw new AdminUnavailable();
+  if (!origin) throw new AdminForbidden();
   let url: URL;
   try { url = new URL(origin); }
-  catch { throw new AdminUnavailable(); }
+  catch { throw new AdminForbidden(); }
   const requestURL = new URL(request.url);
   if (url.protocol !== "https:" || url.origin !== requestURL.origin ||
       !allowedHosts.includes(url.hostname.toLowerCase()) || url.username || url.password) {
-    throw new AdminUnavailable();
+    throw new AdminForbidden();
   }
 }
 
