@@ -2,7 +2,7 @@
 
 FundLenz is a free educational portfolio lab and source-based fund, stock and bond catalogue created by Atharva Sahu. It does not provide investment advice or recommend investments.
 
-This is the prepared GitHub migration package for the existing website. It preserves the application and its current data snapshots, and adds the operating specification for controlled catalogue updates. **Cloudflare hosting is active on the temporary workers.dev address. Daily Gemini updates are not active yet.** See [migration status](docs/migration/STATUS.md).
+This is the prepared GitHub migration package for the existing website. It preserves the application and its current data snapshots, and adds the operating specification for controlled catalogue updates. **Cloudflare hosting is active on the temporary workers.dev address. Daily Gemini checks are active in dry-run mode; automatic financial publication is still disabled.** See [migration status](docs/migration/STATUS.md).
 
 ## Included catalogue
 
@@ -33,13 +33,13 @@ UI code is in `app/` and `components/`, financial calculations in `lib/finance.t
 
 Read [the full operating specification](automation/OPERATING-SPEC.md).
 
-1. Gemini checks due authoritative sources for new catalogue data.
+1. Trusted adapters acquire approved authoritative sources; Gemini examines supplied evidence for due catalogue checks.
 2. A separate Gemini task independently investigates persistent flagged items. A validator warning is not assumed to be true.
 3. Trusted code reconciles candidates, verifies evidence and keeps complete last-verified units when an update fails. Newer verified snapshots take priority.
 4. Only sanitized, validated data changes can enter automatic merge/deployment. Gemini cannot edit the application, rules or publishing configuration.
 5. Latest reports and the persistent issue queue keep failures visible. Human review is optional and not a subscription-dependent gate.
 
-This package includes the complete prompts, JSON contracts, source inventory, bootstrap integrity checks and four unresolved source-page checks from the existing ledger. It does **not** yet include the operational source adapters, Gemini runner, candidate validator/publisher, schedule or configured GitHub protection. See [the workflow implementation contract](automation/workflow-spec.md).
+The scheduled runner, two Gemini tasks, source-backed NAV and complete-portfolio validators, persistent issue state, protected publisher and deployment observer are implemented. Supported financial adapters cover existing AMFI plans and 38 iShares portfolios; other sources are monitoring-only. Live run 37672720902 passed the source/model/validation/audit path with an honest PARTIAL report. Protected main and a dedicated publishing identity still need owner setup. See [the current operating guide](docs/migration/AUTOMATION.md) for coverage, results and activation steps.
 
 ## Local checks
 
@@ -47,13 +47,15 @@ Use the versions declared in `package.json`: Node 22.13.0 or later and pnpm 11.2
 
 ```sh
 pnpm install --frozen-lockfile
+python3 -m pip install -r scripts/automation/requirements.txt
+python3 -m unittest discover -s scripts/automation/tests -v
 python3 scripts/automation/verify-bootstrap.py
 node scripts/automation/verify-contracts.mjs
 pnpm verify
 pnpm typecheck
 ```
 
-The integrity check verifies the reviewed standalone repository snapshot in `automation/baseline-manifest.json`. Earlier import and release manifests remain available in Git history. It must not become the future production validator: real future data changes should be verified against authoritative evidence, not forced to retain today's hashes. Current release-specific regression expectations also need a separate evolving-data validation path.
+The integrity check verifies the reviewed standalone repository snapshot in `automation/baseline-manifest.json`. Earlier import and release manifests remain available in Git history. Approved evolving data paths are separately protected by deterministic source replay and the exact-commit PR data gate. Immutable application files and unrelated catalogue releases retain their baseline checks.
 
 ## Hosting and repository status
 

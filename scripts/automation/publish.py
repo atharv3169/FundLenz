@@ -43,7 +43,7 @@ def verify_release(result, root=ROOT):
 
 def main():
     policy = read(ROOT / "automation/runtime.json")
-    if not policy["publication_enabled"]:
+    if not (policy["publication_enabled"] and read(ROOT / "automation/policy.json")["publication_enabled"]):
         print("Publication disabled: dry-run evidence only. No branch or PR created.")
         return
     require(os.environ.get("FUNDLENZ_PUBLISHER_LOGIN"), "Dedicated publisher identity not configured")

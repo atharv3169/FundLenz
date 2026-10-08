@@ -37,3 +37,19 @@ All six verification suites passed (620,894 counted assertions plus additional i
 ## Standalone repository cleanup — 7 October 2026
 
 Cloudflare deployment succeeded and the owner confirmed the catalogue, portfolio, download/session and mobile checks. The custom domain remains on the previous host until API integration and further tests are complete. Unused hosting adapters, sign-in helpers and connector code have been removed; developer documentation now describes the standalone project. The current integrity manifest is rebased to the reviewed repository snapshot, retaining the unchanged financial dataset digest. Previous manifests remain recoverable in Git history. Gemini scheduling and data publication are still inactive.
+
+
+## Catalogue automation — 8 October 2026
+
+The daily dry-run workflow is active at 03:47 UTC / 09:17 India time. Two bounded
+Gemini tasks, trusted source adapters, independent validation, persistent issue
+state and audit artifacts are implemented. Live run 37672720902 completed with
+both model tasks validated and a PARTIAL coverage report. The latest connected
+Cloudflare build succeeded; the existing financial catalogue and interface are
+unchanged.
+
+Supported financial refreshes currently cover existing AMFI NAV tuples and 38
+complete iShares portfolios. Other catalogue sources are monitored, not
+automatically re-extracted. Automatic publication remains off pending protected
+main, a dedicated publisher credential and a real merge/deployment/rollback
+trial. See [the operating guide](AUTOMATION.md) for exact scope and owner setup.

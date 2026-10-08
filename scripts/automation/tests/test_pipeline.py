@@ -17,6 +17,7 @@ from issues import issue_id, reconcile_issues
 from publish import protection_gate, verify_release
 from validate import run_status, validate_model
 from model_tasks import bounded_call, response_text, packets
+from merge import wait_for_checks
 
 
 class PipelineTests(unittest.TestCase):
@@ -194,6 +195,55 @@ class PipelineTests(unittest.TestCase):
         protection_gate(branch, self.policy, base)
         for candidate, expected in [(dict(branch, protected=False), base), (branch, "2" * 40), (dict(branch, protection={}), base)]:
             with self.assertRaises(ValueError): protection_gate(candidate, self.policy, expected)
+
+    def merge_api(self, states, move_head=False, failed=False):
+        policy = self.policy
+        class FakeAPI:
+            repo = "fixture/repo"
+            attempts = 0
+            def call(self, path):
+                if path.startswith("/pulls/"):
+                    self.attempts += 1
+                    return {"user": {"login": "publisher"}, "state": "open", "draft": False,
+                            "head": {"repo": {"full_name": self.repo}, "ref": "automation/catalogue-fixture",
+                                     "sha": "changed" if move_head and self.attempts > 1 else "head"},
+                            "base": {"sha": "base", "ref": "main"},
+                            "mergeable_state": states[min(self.attempts - 1, len(states) - 1)]}
+                if path == "/branches/main":
+                    return {"commit": {"sha": "base"}, "protected": True,
+                            "protection": {"required_status_checks": {"contexts": [policy["required_check"]]}}}
+                if path == "/branches/main/protection":
+                    return {"required_status_checks": {"strict": True}, "enforce_admins": {"enabled": True},
+                            "required_pull_request_reviews": {}, "allow_force_pushes": {"enabled": False},
+                            "allow_deletions": {"enabled": False}}
+                raise AssertionError("Unexpected API mutation/request")
+            def all(self, path, key):
+                return [{"id": 1, "name": policy["required_check"], "app": {"slug": "github-actions"},
+                         "status": "completed", "conclusion": "failure" if failed else "success"}]
+        return FakeAPI()
+
+    def test_merge_waits_for_transient_state_then_accepts_exact_head(self):
+        waits = []
+        api = self.merge_api(["unknown", "blocked", "clean"])
+        wait_for_checks(api, 1, self.policy, "head", "base", "publisher", attempts=3, wait=waits.append)
+        self.assertEqual(waits, [15, 15])
+        self.assertEqual(api.attempts, 3)
+
+    def test_merge_rechecks_identity_while_waiting(self):
+        with self.assertRaisesRegex(ValueError, "head/base moved"):
+            wait_for_checks(self.merge_api(["unknown", "clean"], move_head=True), 1, self.policy,
+                            "head", "base", "publisher", attempts=3, wait=lambda _: None)
+
+    def test_failed_or_permanently_pending_checks_never_merge(self):
+        waits = []
+        with self.assertRaisesRegex(ValueError, "check failed"):
+            wait_for_checks(self.merge_api(["clean"], failed=True), 1, self.policy,
+                            "head", "base", "publisher", attempts=2, wait=waits.append)
+        self.assertEqual(waits, [])
+        with self.assertRaisesRegex(ValueError, "still pending/blocked"):
+            wait_for_checks(self.merge_api(["blocked"]), 1, self.policy,
+                            "head", "base", "publisher", attempts=2, wait=waits.append)
+        self.assertEqual(waits, [15])
 
     def test_reports_distinguish_fail_partial_and_no_change(self):
         self.assertEqual(run_status(0, 0, 4, 0, []), "NO_CHANGE")

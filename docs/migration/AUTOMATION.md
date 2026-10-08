@@ -1,6 +1,6 @@
 # FundLenz catalogue automation
 
-Implementation date: 7 October 2026. Owner: Atharva Sahu.
+Implementation date: 7 October 2026. Last verification: 8 October 2026. Owner: Atharva Sahu.
 
 ## Current operating mode
 
@@ -133,8 +133,8 @@ existing site-wide date is not advanced for a partial scan.
    and `main` is unprotected. GitHub Free supports protected branches on public
    repositories; private protection requires an eligible plan. Do not change
    visibility or purchase a plan without the owner's choice.
-2. Protect `main`: require a pull request; require **FundLenz data gate** and the
-   release-integrity check; require branches up to date; enforce for administrators;
+2. Protect `main`: require a pull request; require **FundLenz data gate** and
+   **Verify FundLenz reviewed release**; require branches up to date; enforce for administrators;
    disallow force pushes and deletions. Do not require a daily human approval if
    unattended data publication is wanted. Configure a pull-request requirement
    with zero required approvals where supported. If the chosen protection plan
@@ -197,3 +197,37 @@ automated refresh of unsupported financial fields is made.
 ## First live integration trial
 
 Commit `b905bf0a25d3ac14fe5abc56d82825cbd87d1010`, run `37600951938`: 59 source downloads succeeded, five were unavailable, and 414 were deferred by the acquisition budget. Trusted adapters identified 8,569 acceptable candidate units and 186 blocked units. Both model tasks received HTTP 503; no financial files were emitted or published. The complete 7.3 MB audit archive and 11 KB persistent-state archive were successfully saved. This verified the retain-data failure path, not a successful Gemini research run. A follow-up trial tests bounded service retries and state restoration.
+
+
+## Successful source-and-model integration trial
+
+Run [37672720902](https://github.com/atharv3169/FundLenz/actions/runs/37672720902)
+at commit `0d764dd64f1e37a7931cdeed67a4b45e31e9636d` completed successfully
+in scheduled-dry-run mode. Both Gemini tasks passed independent validation on
+their first API attempt. Persistent state restored from the preceding run.
+
+- 64 sources attempted: 51 downloads succeeded and 13 were unavailable.
+- 345 sources were budget-deferred; 67 were not due. These were not counted as checked.
+- Trusted unit decisions: 8,578 accepted candidates, 5,492 unchanged, 190 blocked
+  and 133 retained unsupported historical values. An accepted unit is a plan
+  tuple or whole portfolio, not an arbitrary individual cell.
+- 227 open issues remained. The correct report status was **PARTIAL**.
+- The full audit and persistent-state artifacts were saved. The publisher
+  confirmed disabled mode and created no data branch or PR.
+- The release-integrity check and connected Cloudflare Workers build passed.
+  This deployment contained automation code, not the candidate financial data.
+
+Earlier integration runs exposed service unavailability, Gemini signature
+metadata, mismatched investigation context and malformed legacy source URLs.
+The bounded retry, response parser, issue-scoped packet construction and source
+quarantine fixes were verified before this successful trial.
+
+The current automated unit suite has 37 tests. Additional merge tests cover
+transient pending checks, a head changing while waiting, failed checks and bounded
+timeout. The merger can wait up to three minutes for GitHub to finish its checks,
+rechecking identity, head, base and protection each time; it never merges on
+timeout. Both publication switches must be enabled.
+
+This proves the live acquisition/model/validation/audit path and failure recovery.
+It does not claim that protected publication or a real hosting rollback has been
+tested: those still require the owner setup above.
