@@ -6,6 +6,8 @@ import {
   validateBlogHomepageContent,
 } from "@/lib/blog-homepage-content";
 import styles from "./blog-homepage-editor.module.css";
+import { BlogSocialLinks } from "./social-links";
+import { Facebook, Instagram, Linkedin, Music2 } from "lucide-react";
 
 /**
  * This editor is intentionally only a component, NOT a public route or an API.
@@ -23,7 +25,7 @@ export function BlogHomepageEditor({ initial, onSave, onCancel }: {
   const [message, setMessage] = useState("");
   const [failed, setFailed] = useState(false);
   const groups = useMemo(
-    () => [...new Set(blogHomepageFields.map(item => item.group))],
+    () => [...new Set(blogHomepageFields.map(item => item.group))].filter(group => group !== "Social links"),
     [],
   );
   const changed = blogHomepageFields.some(field => draft[field.key] !== initial[field.key]);
@@ -68,6 +70,7 @@ export function BlogHomepageEditor({ initial, onSave, onCancel }: {
     </div>
     {preview
       ? <div className={styles.preview}>
+        <div className={styles.previewSection}><strong>Article page masthead</strong><p>{draft.eyebrow}</p>{draft.articleMastheadRight && <small>{draft.articleMastheadRight}</small>}</div>
         <p className={styles.kicker}>{draft.eyebrow}</p>
         <h2>{draft.heroHeading}</h2>
         <p>{draft.heroDescription}</p>
@@ -84,7 +87,8 @@ export function BlogHomepageEditor({ initial, onSave, onCancel }: {
         </div>
         <div className={styles.previewSection}>
           <p>{draft.footerDescription}</p>
-          <small>{draft.contributionButtonLabel} · {draft.instagramLead} FundLenz</small>
+          <small>{draft.contributionButtonLabel}</small>
+          <BlogSocialLinks copy={draft}/>
         </div>
       </div>
       : <form id="blog-homepage-copy-form" onSubmit={save} className={styles.form}>
@@ -94,14 +98,42 @@ export function BlogHomepageEditor({ initial, onSave, onCancel }: {
             <label key={field.key} className={styles.field}>
               <span>{field.label}</span>
               {field.multiline
-                ? <textarea rows={3} required maxLength={field.max} disabled={busy}
+                ? <textarea rows={3} required={!('optional' in field)} maxLength={field.max} disabled={busy}
                   value={draft[field.key]} onChange={event => change(field.key, event.target.value)} />
-                : <input type="text" required maxLength={field.max} disabled={busy}
+                : <input type="text" required={!('optional' in field)} maxLength={field.max} disabled={busy}
                   value={draft[field.key]} onChange={event => change(field.key, event.target.value)} />}
               <small>{draft[field.key].length} / {field.max} characters</small>
             </label>
           ))}
         </fieldset>)}
+        <fieldset className={styles.group}>
+          <legend>Social profile icons</legend>
+          <p>Check the profiles you want visitors to see. Unchecked links stay hidden, even if a URL is saved.</p>
+          {([
+            {name:"Instagram",id:"socialInstagram",Icon:Instagram},
+            {name:"Facebook",id:"socialFacebook",Icon:Facebook},
+            {name:"X",id:"socialX",Icon:null},
+            {name:"TikTok",id:"socialTikTok",Icon:Music2},
+            {name:"LinkedIn",id:"socialLinkedin",Icon:Linkedin},
+          ] as const).map(network => {
+            const urlKey = (network.id + "Url") as keyof BlogHomepageContent;
+            const enabledKey = (network.id + "Enabled") as keyof BlogHomepageContent;
+            const Icon = network.Icon;
+            return <div className={styles.socialEditorRow} key={network.id}>
+              <label className={styles.socialToggle}>
+                <input type="checkbox" disabled={busy} checked={draft[enabledKey] === "true"}
+                  onChange={event => change(enabledKey,event.target.checked ? "true" : "false")}/>
+                <span className={styles.socialIcon}>{Icon ? <Icon size={16}/> : <span aria-hidden="true">𝕏</span>}</span>
+                <span>{network.name}</span>
+              </label>
+              <input aria-label={network.name + " social profile URL"}
+                type="url" placeholder={"https://"+network.name.toLowerCase()+".com/..."}
+                disabled={busy} maxLength={2048} value={draft[urlKey]}
+                onChange={event => change(urlKey,event.target.value)}/>
+            </div>;
+          })}
+          <div className={styles.socialPreview}><span>Visible icons preview</span><BlogSocialLinks copy={draft}/></div>
+        </fieldset>
       </form>}
     {message && <p role={failed ? "alert" : "status"} className={failed ? styles.error : styles.feedback}>{message}</p>}
     <div className={styles.actions}>
@@ -112,6 +144,6 @@ export function BlogHomepageEditor({ initial, onSave, onCancel }: {
     </div>
     <p className={styles.note}>Save stores a private draft in the staging D1 database, not GitHub. Changes aren't live
       until a separate, authorized publishing workflow completes. Privacy-consent wording and
-      actual link destinations aren't editable here.</p>
+      private visitor details aren't included in this editor.</p>
   </section>;
 }
