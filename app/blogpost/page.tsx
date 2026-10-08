@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ContributionButton, NewsletterBox } from "@/components/blog/visitor-forms";
 import styles from "./page.module.css";
+import { BlogSiteHeader, BlogSiteFooter } from "@/components/blog/blog-site-chrome";
 import { defaultBlogHomepageContent as copy } from "@/lib/blog-homepage-content";
 
 export const metadata: Metadata = {
@@ -14,13 +14,7 @@ export default function BlogHomePage() {
   // The forms fail closed until this is configured in the Cloudflare Worker.
   const siteKey = process.env.TURNSTILE_SITE_KEY || "";
   return <div className={styles.shell}>
-    <header className={styles.header}>
-      <Link href="/" className={styles.logo}>Fund<span>Lenz</span><small> / BLOG</small></Link>
-      <nav className={styles.adminNav} aria-label="Blog navigation">
-        <Link href="/blogpost/admin" className={styles.labLink}>Admin</Link>
-        <Link href="/" className={styles.labLink}>Lab →</Link>
-      </nav>
-    </header>
+    <BlogSiteHeader/>
     <main className={styles.main}>
       <p className={styles.eyebrow}>{copy.eyebrow}</p>
       <h1>{copy.heroHeading}</h1>
@@ -32,12 +26,10 @@ export default function BlogHomePage() {
       <NewsletterBox siteKey={siteKey} heading={copy.newsletterHeading} description={copy.newsletterDescription}
         placeholder={copy.newsletterPlaceholder} submitLabel={copy.newsletterSubmitLabel} />
     </main>
-    <footer className={styles.footer}>
-      <div><strong>FundLenz</strong> · {copy.footerDescription}</div>
-      <div className={styles.footerActions}>
-        <ContributionButton siteKey={siteKey} label={copy.contributionButtonLabel}/>
-        <span>{copy.instagramLead} <a href="https://www.instagram.com/fundlenz" target="_blank" rel="noopener noreferrer">FundLenz</a></span>
-      </div>
-    </footer>
+    <div className={styles.contributionFooter}>
+      <span>{copy.footerDescription}</span>
+      <ContributionButton siteKey={siteKey} label={copy.contributionButtonLabel}/>
+    </div>
+    <BlogSiteFooter copy={copy}/>
   </div>;
 }
