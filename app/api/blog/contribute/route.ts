@@ -1,6 +1,7 @@
 import { saveContribution } from "@/lib/blog-private-drive";
 import {
-  allowedEmail, boundedText, privateError, privateJSON, SubmissionError, validateHuman,
+  allowedEmail, boundedText, limitedBody, optionalSocialUrl,
+  privateError, privateJSON, requireAllowedOrigin, SubmissionError, validateHuman,
 } from "@/lib/blog-private-form-security";
 
 const MAX_FILE = 5 * 1024 * 1024;
@@ -22,22 +23,31 @@ function isAllowedFile(file: File, extension: string, bytes: Uint8Array): boolea
 
 export async function POST(request: Request) {
   try {
-    const length = Number(request.headers.get("content-length") || "0");
-    if (length > MAX_BODY) throw new SubmissionError(413, "File exceeds the 5 MB limit.");
-    if (!(request.headers.get("content-type") || "").includes("multipart/form-data"))
+    requireAllowedOrigin(request);
+    const contentType = request.headers.get("content-type") || "";
+    if (!contentType.toLowerCase().includes("multipart/form-data") || !contentType.includes("boundary="))
       throw new SubmissionError(415, "Expected a file upload.");
-    const form = await request.formData();
+    const bytes = await limitedBody(request, MAX_BODY);
+    // Parse only after enforcing the total incoming request limit.
+    const bounded = new Request("https://fundlenz.invalid/upload", {
+      method: "POST", headers: { "Content-Type": contentType }, body: bytes,
+    });
+    let form: FormData;
+    try { form = await bounded.formData(); }
+    catch { throw new SubmissionError(400, "Invalid form data."); }
     const name = boundedText(form.get("name"), 120, true);
     const email = allowedEmail(form.get("email"));
     const title = boundedText(form.get("title"), 240, false);
-    const social = boundedText(form.get("social"), 500, false);
+    const social = optionalSocialUrl(form.get("social"));
+    if (form.get("consent") !== "true") throw new SubmissionError(400, "Consent is required.");
     const file = form.get("document");
-    if (!(file instanceof File) || file.size > MAX_FILE) throw new SubmissionError(400, "Upload a PDF, DOC, or DOCX under 5 MB.");
+    if (!(file instanceof File) || file.size > MAX_FILE)
+      throw new SubmissionError(400, "Upload a PDF, DOC, or DOCX under 5 MB.");
     const ext = file.name.split(".").pop()?.toLowerCase() || "";
     const header = new Uint8Array(await file.slice(0, 8).arrayBuffer());
     if (!isAllowedFile(file, ext, header))
       throw new SubmissionError(400, "Upload a valid PDF, DOC, or DOCX under 5 MB.");
-    await validateHuman(request, form.get("turnstileToken"));
+    await validateHuman(request, form.get("turnstileToken"), "blog_contribute");
     const id = await saveContribution({
       name, email, title, social, document: file, documentType: TYPES[ext],
     });
