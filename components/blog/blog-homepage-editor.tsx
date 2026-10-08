@@ -44,7 +44,7 @@ export function BlogHomepageEditor({ initial, onSave, onCancel }: {
     try {
       const verified = validateBlogHomepageContent(draft);
       await onSave(verified);
-      setMessage("Saved as a private staging draft. No public changes have been published.");
+      setMessage("Saved to staging. Refresh the password-protected blog homepage to see these changes. The public FundLenz site is unchanged.");
     } catch (error) {
       setFailed(true);
       setMessage(error instanceof Error ? error.message : "Unable to save. Please try again.");
@@ -142,8 +142,8 @@ export function BlogHomepageEditor({ initial, onSave, onCancel }: {
       <button form="blog-homepage-copy-form" className={styles.save} type="submit"
         disabled={busy || !changed || preview}>{busy ? "Saving…" : "Save homepage wording"}</button>
     </div>
-    <p className={styles.note}>Save stores a private draft in the staging D1 database, not GitHub. Changes aren't live
-      until a separate, authorized publishing workflow completes. Privacy-consent wording and
-      private visitor details aren't included in this editor.</p>
+    <p className={styles.note}>Save stores a private draft in the staging D1 database, not GitHub. It becomes visible
+      on the password-protected staging blog when you refresh that page, but is not
+      published on the public FundLenz site. Privacy-consent wording and private visitor details aren't editable here.</p>
   </section>;
 }
