@@ -13,7 +13,7 @@ const configCandidates = [
   resolve("dist/fundlenz-blog-staging/wrangler.json"),
 ].filter(existsSync);
 if (configCandidates.length !== 1)
-  throw new Error("Run 'pnpm run build:blog-staging' first; expected exactly one generated staging config.");
+  throw new Error("Run 'node scripts/build-blog-staging.mjs' first; expected exactly one generated staging config.");
 const configPath = configCandidates[0];
 const configuration = JSON.parse(readFileSync(configPath, "utf8"));
 if (configuration.name !== "fundlenz-blog-staging" ||
