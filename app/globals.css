@@ -393,3 +393,21 @@ h1,h2,h3,p { margin: 0; } h1,h2,h3 { line-height: 1.25; letter-spacing: -.025em;
   .portfolio-lab .portfolio-actions [data-slot=button]:first-child { grid-column: 1 / -1; }
   .portfolio-lab .privacy-note { margin-top: 16px; padding-top: 12px; font-size: .75rem; line-height: 1.6; }
 }
+
+/* FundLenz legal pages and shared legal footer */
+.legal-footer { width: min(calc(100% - 36px), 1460px); margin: 0 auto; padding: 14px 0 22px; color: #7a8d9b; font-size: 11px; text-align: center; }
+.legal-footer nav { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; }
+.legal-footer a { color: #587888; text-decoration: underline; text-decoration-color: #c0cdd5; text-underline-offset: 3px; }
+.legal-footer a:hover, .legal-footer a:focus-visible { color: #075c70; }
+.legal-page { width: min(calc(100% - 36px), 780px); margin: 0 auto; padding: 52px 0 36px; min-height: calc(100svh - 70px); }
+.legal-page-card { background: #fff; border: 1px solid #dce7ee; border-radius: 12px; padding: clamp(22px, 4vw, 40px); }
+.legal-home-link { display: inline-block; margin-bottom: 28px; color: #087f8c; font-size: 13px; font-weight: 600; }
+.legal-page-kicker { color: #6d8695; font-size: 10px; letter-spacing: .12em; font-weight: 700; }
+.legal-page h1 { color: #193246; font-size: clamp(28px, 4vw, 36px); margin: 8px 0 6px; }
+.legal-page-date { color: #8395a1; font-size: 11px; margin-bottom: 24px!important; }
+.legal-page h2 { color: #28495a; font-size: 16px; font-weight: 650; margin: 23px 0 7px; }
+.legal-page-card > p:not(.legal-page-kicker) { line-height: 1.7; }
+.legal-page-card > p:not(.legal-page-kicker):not(.legal-page-date) { margin-top: 10px; font-size: 14px; color: #4d6373; }
+.legal-page-card a:not(.legal-home-link) { color: #087f8c; text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 580px) { .legal-page { padding: 22px 0 20px; } .legal-page-card { padding: 22px 18px; } .legal-home-link { margin-bottom: 20px; } }
+@media print { .legal-footer { display: none; } }
