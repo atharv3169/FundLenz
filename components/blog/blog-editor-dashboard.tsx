@@ -55,13 +55,13 @@ export function BlogEditorDashboard() {
 
   useEffect(() => { void refresh(); }, [refresh]);
 
-  async function openArticle(id: string) {
+  async function openArticle(id: string, keepPreview = false) {
     if (dirty && !window.confirm("Discard unsaved article edits?")) return;
     setBusy(true); setError(""); setNotice("");
     try {
       const data = await jsonRequest<{ draft: BlogArticleDraft }>(articleApi + "?id=" + encodeURIComponent(id));
       setArticle(data.draft); setRich(decodeRichDocument(data.draft.body_markdown, data.draft.category));
-      setDirty(false); setPreview(false); setTab("articles");
+      setDirty(false); setPreview(keepPreview); setTab("articles");
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Unable to open draft."); }
     finally { setBusy(false); }
   }
@@ -185,6 +185,7 @@ export function BlogEditorDashboard() {
           {preview && rich ? <BlogPaper title={article.title} summary={article.summary}
             category={article.category} blocks={rich.blocks}
             updatedAt={article.updated_at}
+            onSelectRelated={id => { void openArticle(id, true); }}
             related={articles.filter(item => item.id !== article.id).map(item => ({
               id: item.id, title: item.title, category: item.category,
             }))}/> : <form className={styles.form} onSubmit={saveArticle}>
