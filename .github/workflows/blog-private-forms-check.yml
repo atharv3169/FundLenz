@@ -13,6 +13,12 @@ on:
       - "db/blog-admin/**"
       - "scripts/verify-blog-admin-auth.mjs"
       - "scripts/verify-blog-admin-schema.py"
+      - "wrangler.blog-staging.jsonc"
+      - "vite.config.ts"
+      - "package.json"
+      - "scripts/build-blog-staging.mjs"
+      - "scripts/deploy-blog-staging.mjs"
+      - "scripts/verify-blog-staging-config.mjs"
       - "scripts/verify-blog-homepage-copy.mjs"
       - "lib/blog-private-**"
       - "scripts/verify-blog-forms.mjs"
@@ -52,3 +58,9 @@ jobs:
         run: pnpm run typecheck
       - name: Production build
         run: pnpm run build
+      - name: Verify isolated staging configuration
+        run: pnpm run verify:blog-staging
+      - name: Build isolated staging Worker (NO DEPLOY)
+        run: pnpm run build:blog-staging
+      - name: Verify generated staging Worker target and D1 bindings
+        run: node scripts/verify-blog-staging-config.mjs --built
