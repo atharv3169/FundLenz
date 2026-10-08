@@ -27,6 +27,7 @@ export function BlogSiteFooter({copy=defaultBlogHomepageContent}: {copy?: BlogHo
       <span className={styles.footerBrand}><ScanSearch size={16}/>FundLenz <span>·</span> Make the holdings visible.</span>
       <a className={styles.contact} href="mailto:info@fundlenz.com">info@fundlenz.com</a>
       <div className={styles.footerRight}>
+        {copy.socialInstagramEnabled === "true" && <span>{copy.instagramLead}</span>}
         <BlogSocialLinks copy={copy}/>
         <span>FundLenz is a free educational portfolio lab. It does not provide investment advice or recommend investments.</span>
       </div>
