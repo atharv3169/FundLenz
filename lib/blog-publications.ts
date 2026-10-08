@@ -36,8 +36,11 @@ export function searchPublishedArticles(articles: readonly PublishedArticle[], q
   const terms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
   if (!terms.length) return [...articles];
   return articles.filter(article => {
-    const searchable = [article.title, article.summary, article.category, article.author.name || ""]
-      .join(" ").toLocaleLowerCase();
+    const searchable = [article.title, article.summary, article.category, article.author.name || "",
+      ...article.blocks.flatMap(block => "runs" in block
+        ? [block.runs.map(run => run.text).join("")]
+        : [block.caption || "", block.alt || ""]),
+    ].join(" ").toLocaleLowerCase();
     return terms.every(term => searchable.includes(term));
   });
 }
