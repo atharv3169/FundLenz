@@ -106,7 +106,13 @@ try {
   console.log("PASS: Chromium React editor selected-text font change, bold, numeric sizing, no duplicated/dropped text");
 } finally {
   if (socket) socket.close();
-  chrome?.kill("SIGTERM");
+  if (chrome && chrome.exitCode === null) {
+    chrome.kill("SIGTERM");
+    await Promise.race([
+      new Promise(resolve => chrome.once("exit", resolve)),
+      sleep(2500),
+    ]);
+  }
   await server.close();
-  await rm(directory,{recursive:true,force:true});
+  await rm(directory,{recursive:true,force:true,maxRetries:12,retryDelay:150});
 }
