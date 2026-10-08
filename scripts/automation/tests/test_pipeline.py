@@ -386,6 +386,20 @@ class PipelineTests(unittest.TestCase):
         following = packets(acq, [], "reinvestigation", self.policy)
         self.assertEqual(following["issues"][0]["issue_id"], "fixture-08")
 
+    def test_investigation_rotation_does_not_starve_later_sources(self):
+        state = self.make_state()
+        sources = [dict(self.source, source_id=f"source-{i:02}", adapter="monitor",
+                        source_url=f"https://example.invalid/{i:02}") for i in range(20)]
+        state["issues"]["issues"] = [{"issue_id": f"issue-{i:02}", "source_url": s["source_url"],
+            "record_id": None, "scope": "monitor", "previous_candidate": None, "previous_verified": None}
+            for i, s in enumerate(sources)]
+        state["investigation_after"] = "issue-11"
+        acq = dict(self.acquisition(), previous_state=state, base_dataset_sha256="0" * 64,
+                   started_at=self.source["checked_at"], source_checks=sources)
+        packet = packets(acq, [], "reinvestigation", self.policy)
+        self.assertEqual([i["issue_id"] for i in packet["issues"]], [f"issue-{i:02}" for i in range(12, 20)])
+        self.assertEqual({s["source_id"] for s in packet["sources"]}, {f"source-{i:02}" for i in range(12, 20)})
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -55,7 +55,7 @@ These are acceptance cases for the future runner, not completed tests of a worki
 
 ## Implemented verification — 7 October 2026
 
-- `scripts/automation/tests/test_pipeline.py`: 37 adversarial tests cover strict dates/JSON, exact source and identity rules, full-portfolio rejection, independent partial NAV updates, invented evidence and rule overrides, issue persistence/escalation, skipped/idempotent attempts, source recovery, quotas/service retry caps, protected paths, base races, hash tampering and byte-exact rollback overlays.
+- `scripts/automation/tests/test_pipeline.py`: 38 adversarial tests cover strict dates/JSON, exact source and identity rules, full-portfolio rejection, independent partial NAV updates, invented evidence and rule overrides, issue persistence/escalation, skipped/idempotent attempts, source recovery, quotas/service retry caps, protected paths, base races, hash tampering and byte-exact rollback overlays.
 - Existing six finance/catalogue suites pass (620,894 counted checks plus directory checks), as do type checking and the 17 original contract checks.
 - Live trial 37672720902 completed with both Gemini tasks independently validated, 51 successful downloads, 8,578 accepted candidate units and a truthful PARTIAL report. Earlier failed runs preserved data and durable state. No financial data was published. See the operating guide for full counts and the run link.
 - Merge waiting tests cover pending checks, head races, failed checks and bounded timeouts; malformed inventory entries are quarantined before acquisition.

@@ -15,7 +15,19 @@ def packets(acquisition, units, task, policy, run=None):
     urls = {i["source_url"] for i in issues}
     sources = [s for s in acquisition["source_checks"] if s["checked_at"] and (task == "fresh_scan" or s["source_url"] in urls)]
     sources.sort(key=lambda s: (0 if s["adapter"] == "amfi_nav" else 1 if s["outcome"] == "unavailable" else 2, s["source_id"]))
-    sources = sources[:policy["max_model_source_packets"]]
+    selected_issues = []
+    if task == "reinvestigation":
+        # Rotate the full queue of attempted sources BEFORE bounding source
+        # packets. Cutting sources first can starve every issue on source 13+.
+        attempted_urls = {s["source_url"] for s in sources}
+        eligible = sorted([i for i in issues if i["source_url"] in attempted_urls], key=lambda i: i["issue_id"])
+        cursor = acquisition["previous_state"].get("investigation_after", "")
+        eligible = [i for i in eligible if i["issue_id"] > cursor] + [i for i in eligible if i["issue_id"] <= cursor]
+        selected_issues = copy.deepcopy(eligible[:min(8, policy["max_model_source_packets"])])
+        selected_urls = {i["source_url"] for i in selected_issues}
+        sources = [s for s in sources if s["source_url"] in selected_urls]
+    else:
+        sources = sources[:policy["max_model_source_packets"]]
     # The deterministic adapters inspect whole files; the model gets explicitly
     # labelled excerpts and at most eight sample units, never a fake full review.
     result = []
@@ -26,14 +38,6 @@ def packets(acquisition, units, task, policy, run=None):
         entry["excerpt"] = raw.decode("utf-8", errors="replace")[:700] if textual else "Binary disclosure: no text extraction adapter in this release."
         entry["excerpt_is_complete_source"] = textual and len(raw) <= 700
         result.append(entry)
-    eligible = sorted([i for i in issues if i["source_url"] in {s["source_url"] for s in sources}], key=lambda i: i["issue_id"])
-    cursor = acquisition["previous_state"].get("investigation_after", "")
-    eligible = [i for i in eligible if i["issue_id"] > cursor] + [i for i in eligible if i["issue_id"] <= cursor]
-    selected_issues = copy.deepcopy(eligible[:8]) if task == "reinvestigation" else []
-    if task == "reinvestigation":
-        selected_urls = {i["source_url"] for i in selected_issues}
-        sources = [s for s in sources if s["source_url"] in selected_urls]
-        result = [s for s in result if s["source_url"] in selected_urls]
     relevant = [u for u in units if u["decision"] not in {"unchanged", "older_snapshot", "retained_unsupported"}
                 and u["source_url"] in {s["source_url"] for s in sources}]
     if task == "reinvestigation":

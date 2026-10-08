@@ -222,11 +222,13 @@ metadata, mismatched investigation context and malformed legacy source URLs.
 The bounded retry, response parser, issue-scoped packet construction and source
 quarantine fixes were verified before this successful trial.
 
-The current automated unit suite has 37 tests. Additional merge tests cover
+The current automated unit suite has 38 tests. Additional merge tests cover
 transient pending checks, a head changing while waiting, failed checks and bounded
 timeout. The merger can wait up to three minutes for GitHub to finish its checks,
 rechecking identity, head, base and protection each time; it never merges on
-timeout. Both publication switches must be enabled.
+timeout. Investigation rotates across the full queue of attempted sources before
+applying packet limits, with a regression test preventing later sources from
+being permanently excluded. Both publication switches must be enabled.
 
 This proves the live acquisition/model/validation/audit path and failure recovery.
 It does not claim that protected publication or a real hosting rollback has been

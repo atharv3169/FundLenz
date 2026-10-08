@@ -42,7 +42,7 @@ pnpm run typecheck
 pnpm run verify
 ```
 
-The current automation suite has 37 adversarial tests. The existing six finance
+The current automation suite has 38 adversarial tests. The existing six finance
 and catalogue suites remain in place. Live run
 [37672720902](https://github.com/atharv3169/FundLenz/actions/runs/37672720902)
 verified the source/model/validator/audit path with a truthful PARTIAL result.
