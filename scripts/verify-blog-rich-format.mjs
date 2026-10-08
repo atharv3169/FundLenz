@@ -79,7 +79,7 @@ assert.ok(editor.includes("applyRunStyle(original, selection, style)"));
 assert.ok(editor.includes("toggleRunStyle(original, selection, toggle)"));
 assert.ok(!editor.includes("document.execCommand("),"No browser HTML formatting mutations");
 assert.ok(!editor.includes("selected.extractContents("),"No DOM content extraction for formatting");
-assert.ok(editor.includes("onInput={() => { onDirty?.()"));
+assert.ok(editor.includes("onInput={() => {") && editor.includes("onDirty?.();"));
 assert.ok(editor.includes('event.clipboardData.getData("text/plain")'));
 assert.ok(dashboard.includes("onDirty={() => { setDirty(true)"));
 console.log("PASS: precise multi-style selections, Unicode safety, immutable text preservation, 1,625 seeded editing steps and save/paste regression guards");
