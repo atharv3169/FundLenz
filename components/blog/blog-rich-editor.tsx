@@ -59,8 +59,9 @@ function safeInlineRuns(root: HTMLElement): RichRun[] {
     const px = /^([0-9]+)px$/.exec(size);
     if (px && Number(px[1]) >= 12 && Number(px[1]) <= 72) next.sizePx = Number(px[1]);
     else if (size === "6" || size === "7") next.size = "xlarge";
-    else if (size === "5") next.size = "large";
-    else if (size === "1" || size === "2") next.size = "small";
+    else if (size === "5" || size === "1.22em" || size === "1.23em") next.size = "large";
+    else if (size === "1.45em") next.size = "xlarge";
+    else if (size === "1" || size === "2" || size === "0.82em") next.size = "small";
     for (const child of Array.from(node.childNodes)) read(child, next, depth + 1);
     if ((tag === "div" || tag === "p") && node.nextSibling) push("\n", marks);
   }
@@ -82,9 +83,10 @@ function StyledRun({ run }: { run: RichRun }) {
   }}>{run.text}</span>;
   return run.href ? <a href={run.href} target="_blank" rel="noopener noreferrer">{text}</a> : text;
 }
-export function BlogRichEditor({ value, onChange, disabled }: {
+export function BlogRichEditor({ value, onChange, onDirty, disabled }: {
   value: RichDocument;
   onChange: (next: RichDocument) => void;
+  onDirty?: () => void;
   disabled?: boolean;
 }) {
   const [activeId, setActiveId] = useState(value.blocks[0]?.id || "");
@@ -301,6 +303,31 @@ export function BlogRichEditor({ value, onChange, disabled }: {
             ref={el => { if (el) nodeMap.current.set(block.id, el); else nodeMap.current.delete(block.id); }}
             onFocus={() => { setActiveId(block.id); selectionRef.current = null; }}
             onBlur={() => flushText(block.id)}
+            onInput={() => { onDirty?.(); rememberSelection(block.id); }}
+            onPaste={event => {
+              event.preventDefault();
+              const text = event.clipboardData.getData("text/plain");
+              const root = nodeMap.current.get(block.id);
+              const selection = window.getSelection();
+              if (!root || !selection || !selection.rangeCount) return;
+              const range = selection.getRangeAt(0);
+              if (!root.contains(range.commonAncestorContainer)) return;
+              if ((root.textContent || "").length + text.length > 12000) {
+                setMessage("Paragraph is too long. Add another text block before pasting.");
+                return;
+              }
+              // Plain-text paste prevents third-party HTML/style markup from
+              // corrupting the editable React tree and persisted article content.
+              range.deleteContents();
+              const node = document.createTextNode(text);
+              range.insertNode(node);
+              range.setStartAfter(node);
+              range.collapse(true);
+              selection.removeAllRanges();
+              selection.addRange(range);
+              rememberSelection(block.id);
+              onDirty?.();
+            }}
             onMouseUp={() => rememberSelection(block.id)}
             onKeyUp={() => rememberSelection(block.id)}
             onSelect={() => rememberSelection(block.id)}
