@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type DragEvent, type ReactNode } from "react";
+import { useLayoutEffect, useRef, useState, type DragEvent } from "react";
 import {
   type RichBlock, type RichTextBlock, type RichMediaBlock, type RichRun,
   type RichDocument, safeHttpUrl, BLOG_FONTS, blogFontFamily, mediaWidth,
@@ -70,18 +70,36 @@ function safeInlineRuns(root: HTMLElement): RichRun[] {
     throw new Error("Too much text or formatting in one paragraph. Split it into shorter blocks.");
   return runs.length ? runs : [{ text: "" }];
 }
-function StyledRun({ run }: { run: RichRun }) {
-  const text: ReactNode = <span style={{
-    fontWeight: run.bold ? 700 : undefined, fontStyle: run.italic ? "italic" : undefined,
-    textDecoration: run.underline ? "underline" : undefined,
-    color: run.color,
-    fontFamily: blogFontFamily(run.font),
-    fontSize: run.sizePx ? run.sizePx + "px" :
-      run.size === "xlarge" ? "1.45em" : run.size === "large" ? "1.22em" :
-      run.size === "small" ? "0.82em" : undefined,
-    whiteSpace: "pre-wrap",
-  }}>{run.text}</span>;
-  return run.href ? <a href={run.href} target="_blank" rel="noopener noreferrer">{text}</a> : text;
+/**
+ * contentEditable owns its own DOM: React must not reconcile individual span
+ * children while the browser is editing them. Build only validated text nodes.
+ */
+function paintRuns(root: HTMLDivElement, runs: RichRun[]) {
+  const fragment = document.createDocumentFragment();
+  for (const run of runs) {
+    const span = document.createElement("span");
+    span.textContent = run.text;
+    span.style.whiteSpace = "pre-wrap";
+    if (run.bold) span.style.fontWeight = "700";
+    if (run.italic) span.style.fontStyle = "italic";
+    if (run.underline) span.style.textDecoration = "underline";
+    if (run.color) span.style.color = run.color;
+    const font = blogFontFamily(run.font);
+    if (font) span.style.fontFamily = font;
+    if (run.sizePx) span.style.fontSize = run.sizePx + "px";
+    else if (run.size === "small") span.style.fontSize = "0.82em";
+    else if (run.size === "large") span.style.fontSize = "1.22em";
+    else if (run.size === "xlarge") span.style.fontSize = "1.45em";
+    if (run.href && safeHttpUrl(run.href)) {
+      const link = document.createElement("a");
+      link.href = run.href;
+      link.rel = "noopener noreferrer";
+      link.target = "_blank";
+      link.append(span);
+      fragment.append(link);
+    } else fragment.append(span);
+  }
+  root.replaceChildren(fragment);
 }
 export function BlogRichEditor({ value, onChange, onDirty, onValidityChange, disabled }: {
   value: RichDocument;
@@ -94,6 +112,28 @@ export function BlogRichEditor({ value, onChange, onDirty, onValidityChange, dis
   const [message, setMessage] = useState("");
   const [fontSizePx, setFontSizePx] = useState(18);
   const nodeMap = useRef(new Map<string, HTMLDivElement>());
+  const paintSignatures = useRef(new Map<string, string>());
+  const valueRef = useRef(value);
+  valueRef.current = value;
+  // Only real document model changes repaint the editable DOM.
+  // An onInput-induced parent render without changed runs must not touch its nodes.
+  useLayoutEffect(() => {
+    const active = new Set<string>();
+    for (const block of value.blocks) {
+      if (!isText(block)) continue;
+      active.add(block.id);
+      const node = nodeMap.current.get(block.id);
+      if (!node) continue;
+      const signature = JSON.stringify(block.runs);
+      if (paintSignatures.current.get(block.id) !== signature) {
+        paintRuns(node, block.runs);
+        paintSignatures.current.set(block.id, signature);
+      }
+    }
+    for (const id of [...paintSignatures.current.keys()]) {
+      if (!active.has(id)) paintSignatures.current.delete(id);
+    }
+  }, [value.blocks]);
 
   const selectionRef = useRef<{ blockId: string; start: number; end: number } | null>(null);
   const selectionSpansBlocks = useRef(false);
@@ -126,11 +166,13 @@ export function BlogRichEditor({ value, onChange, onDirty, onValidityChange, dis
     setActiveId(id);
   }
   function patch(blocks: RichBlock[]) {
-    onChange({ ...value, blocks });
+    const next = { ...valueRef.current, blocks };
+    valueRef.current = next;
+    onChange(next);
     setMessage("");
   }
   function replaceBlock(id: string, update: (block: RichBlock) => RichBlock) {
-    patch(value.blocks.map(block => block.id === id ? update(block) : block));
+    patch(valueRef.current.blocks.map(block => block.id === id ? update(block) : block));
   }
   function flushText(id: string) {
     const root = nodeMap.current.get(id);
@@ -138,7 +180,7 @@ export function BlogRichEditor({ value, onChange, onDirty, onValidityChange, dis
     try {
       const updated = safeInlineRuns(root);
       onValidityChange?.(true);
-      const current = value.blocks.find(block => block.id === id);
+      const current = valueRef.current.blocks.find(block => block.id === id);
       if (current && isText(current) && !sameRuns(current.runs, updated))
         replaceBlock(id, block => isText(block) ? { ...block, runs: updated } : block);
     } catch (error) {
@@ -316,7 +358,15 @@ export function BlogRichEditor({ value, onChange, onDirty, onValidityChange, dis
         {isText(block)
           ? <div className={styles.editable + " " + styles[block.type]}
             contentEditable={!disabled} suppressContentEditableWarning
-            ref={el => { if (el) nodeMap.current.set(block.id, el); else nodeMap.current.delete(block.id); }}
+            ref={el => {
+              if (el) {
+                if (nodeMap.current.get(block.id) !== el) {
+                  nodeMap.current.set(block.id, el);
+                  paintRuns(el, block.runs);
+                  paintSignatures.current.set(block.id, JSON.stringify(block.runs));
+                }
+              } else nodeMap.current.delete(block.id);
+            }}
             onFocus={() => { setActiveId(block.id); selectionRef.current = null; selectionSpansBlocks.current = false; }}
             onBlur={() => flushText(block.id)}
             onInput={() => {
@@ -363,9 +413,7 @@ export function BlogRichEditor({ value, onChange, onDirty, onValidityChange, dis
               if ((event.target as HTMLElement).closest("a")) event.preventDefault();
             }}
             role="textbox" aria-multiline="true" aria-label={block.type + " article text"}
-            data-placeholder={"Write " + block.type + " here…"}>
-            {block.runs.map((run, i) => <StyledRun key={i} run={run} />)}
-          </div>
+            data-placeholder={"Write " + block.type + " here…"} />
           : <div className={styles.mediaEditor}>
             <label>Media URL<input type="url" required value={block.src} disabled={disabled}
               onChange={event => replaceBlock(block.id, cur => ({ ...cur, src: event.target.value }))}/></label>
