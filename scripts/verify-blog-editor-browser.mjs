@@ -109,7 +109,9 @@ try {
     'while(walker.nextNode())text=walker.currentNode;'+
     'const range=document.createRange();range.setStart(text,text.textContent.length);'+
     'range.collapse(true);const s=window.getSelection();s.removeAllRanges();s.addRange(range);})()');
-  await command("Input.insertText",{text:" freshly typed"});
+  const typing = await js('(() => ({focused:document.activeElement?.getAttribute("role"),'+
+    'selection:window.getSelection()?.toString(), inserted:document.execCommand("insertText",false," freshly typed")}))()');
+  assert.equal(typing.inserted,true,"Chrome should insert text into focused editable field");
   await js('document.querySelector(\'select[aria-label="Font family"]\').focus()');
   await sleep(350);
   const afterTyping = (await state()).blocks[0].runs.map(run=>run.text).join("");
