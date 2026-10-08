@@ -22,10 +22,10 @@ The new `wrangler.blog-staging.jsonc` explicitly targets **`fundlenz-blog-stagin
 
 The guarded commands are:
 
-- `pnpm run verify:blog-staging` — inspect source configuration only.
-- `pnpm run build:blog-staging` — build staging output with the isolated Worker config.
+- `node scripts/verify-blog-staging-config.mjs` — inspect source configuration only.
+- `node scripts/build-blog-staging.mjs` — build staging output with the isolated Worker config.
 - `node scripts/verify-blog-staging-config.mjs --built` — inspect generated output; abort if it names the live Worker or a wrong database.
-- `pnpm run deploy:blog-staging` — explicit deploy, additionally requires `FUNDLENZ_ALLOW_STAGING_DEPLOY=yes`. Do not run until owner approval and appropriate Cloudflare token permissions.
+- `node scripts/deploy-blog-staging.mjs` — explicit deploy, additionally requires `FUNDLENZ_ALLOW_STAGING_DEPLOY=yes`. Do not run until owner approval and appropriate Cloudflare token permissions.
 
 **Do not run the existing `pnpm run deploy` or `pnpm run deploy:preview` to deploy staging.** Those refer to the live Worker.
 
@@ -48,6 +48,6 @@ Staging D1 database ID is an application resource identifier, not a secret. Pass
 
 ## Connected Cloudflare staging repository (8 Oct 2026)
 
-Owner connected existing `fundlenz-blog-staging` Worker to `atharv3169/FundLenz`, choosing production branch `feature/drive-private-submissions-20261008`, build command `pnpm run build:blog-staging`, and guarded deploy command `FUNDLENZ_ALLOW_STAGING_DEPLOY=yes pnpm run deploy:blog-staging`.
+Owner connected existing `fundlenz-blog-staging` Worker to `atharv3169/FundLenz`, choosing production branch `feature/drive-private-submissions-20261008`, build command `node scripts/build-blog-staging.mjs`, and guarded deploy command `FUNDLENZ_ALLOW_STAGING_DEPLOY=yes node scripts/deploy-blog-staging.mjs`.
 
 Cloudflare UI displays an orange warning suggesting changing **`wrangler.jsonc`** to name `fundlenz-blog-staging`. **Do NOT apply or merge this suggestion.** The normal `wrangler.jsonc` must remain named `fundlenz` for the original portfolio lab; the staging build selects **`wrangler.blog-staging.jsonc`** using `FUNDLENZ_BUILD_TARGET=blog-staging`. Check for any Cloudflare-generated PR and decline unwanted changes to the live Worker configuration. An ordinary commit to this existing branch should trigger the first Cloudflare staging build; verify it targets the independent staging Worker and retains its D1 binding before adding credentials.
