@@ -16,6 +16,10 @@
 .footerBrand{display:flex;align-items:center;gap:8px;white-space:nowrap}
 .footerBrand>span{padding:0 3px}
 .contact{color:#315c73;font-size:14px;line-height:1.75;text-decoration:underline;text-underline-offset:3px}
+.legalLinks{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+.legalLinks a{color:#315c73;font-size:12px;text-decoration:underline;text-underline-offset:3px}
+.legalLinks a:hover{color:#102c40}
+.legalLinks a:focus-visible{outline:2px solid #315c73;outline-offset:3px;border-radius:2px}
 .footerRight{display:flex;align-items:center;gap:14px;max-width:660px;justify-content:flex-end}
 .footerRight>span{max-width:475px;line-height:1.65}
 @media(max-width:1180px){.projectCredit{display:none}.header{padding:0 25px}}
