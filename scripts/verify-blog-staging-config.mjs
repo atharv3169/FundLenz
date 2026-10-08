@@ -38,12 +38,15 @@ if (process.argv.includes("--built")) {
   assert.equal(out.name, stage.name, "Build output points at the wrong Worker");
   assert.equal(out.main, "./blog-staging-gate-entry.mjs", "Generated Worker entry must be gated");
   assert.equal(out.assets?.run_worker_first, true, "Static assets must not bypass staging password");
+  assert.equal(out.assets?.binding, "ASSETS", "Protected static files need a runtime binding");
   const wrapperPath = resolve("dist/server/blog-staging-gate-entry.mjs");
   const gatePath = resolve("dist/server/blog-staging-gate-core.mjs");
   assert.ok(existsSync(wrapperPath) && existsSync(gatePath), "Gate modules missing from build artifact");
   const gateEntrypoint = readFileSync(wrapperPath, "utf8");
-  assert.ok(gateEntrypoint.includes("await stagingGate(request, env)"));
-  assert.ok(gateEntrypoint.includes("forwardWithoutBasicHeader(request)"));
+  assert.ok(gateEntrypoint.includes("await serveStagingRequest(request, env"));
+  const core = readFileSync(gatePath, "utf8");
+  assert.ok(core.includes("env.ASSETS.fetch(safeRequest)"), "Authenticated static assets must be fetched explicitly");
+  assert.ok(core.includes("forwardWithoutBasicHeader(request)"));
   assert.equal(Object.hasOwn(out.vars || {}, "FUNDLENZ_STAGING_GATE_PASSWORD"), false,
     "Do not store the staging password as a plain-text Wrangler variable");
   assert.equal(out.d1_databases?.[0]?.binding, "BLOG_ADMIN_DB");
