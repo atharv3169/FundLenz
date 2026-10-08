@@ -79,3 +79,13 @@ Implementation:
 4. Separately, configure private `FUNDLENZ_ADMIN_PASSWORD_HASH` and `FUNDLENZ_ADMIN_SESSION_SECRET` with the offline setup utility. Test authentication with D1 staging DB. Keep PR in draft until further development and validation.
 
 The live `fundlenz.com` website and original Worker must remain unrestricted and unchanged.
+
+## Staging admin page stuck on session check: authenticated static assets (8 Oct 2026)
+
+After saving `FUNDLENZ_STAGING_GATE_PASSWORD`, browser Basic authentication challenged correctly, but `/blogpost/admin` remained indefinitely on `Checking administrator session…`. The staging gate's `assets.run_worker_first=true` ensured access control but meant Cloudflare no longer automatically served JavaScript/CSS assets; the original wrapper passed these paths through the Vinext server rather than the static assets binding.
+
+**Fix:** The staging-only build now declares `generated.assets.binding = "ASSETS"`; after authentication, `serveStagingRequest` explicitly calls `env.ASSETS.fetch()` for static JavaScript/CSS/asset URLs, while application and API requests continue to Vinext. It strips the HTTP Basic Authorization header from both paths and never bypasses access control on static files. A missing ASSETS binding fails closed (503). Tests assert JS/CSS 200 with the correct content type, unauthenticated asset requests 401, no bypass, normal app requests, and the required generated Wrangler fields.
+
+This change affects generated staging Worker artifacts only. `wrangler.jsonc`, `package.json`, `vite.config.ts`, and the live FundLenz Worker remain unchanged. The owner must wait for Cloudflare staging deployment success and reload `/blogpost/admin` in a fresh Incognito session. The expected next screen is the explicit `Administrator authentication has not been configured` message; do not add real admin credentials until confirmed.
+
+If it still freezes, use Chrome DevTools → Network, filter `JS/CSS/Fetch/XHR`, and inspect failing `/_next/static/*` or `/api/blog/admin/session` responses. Do NOT share Basic Authorization headers or passwords.
