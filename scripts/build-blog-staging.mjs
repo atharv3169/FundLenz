@@ -71,18 +71,19 @@ if (!generated.assets || typeof generated.assets !== "object" || Array.isArray(g
 }
 const gateModule = resolve("dist/server/blog-staging-gate-core.mjs");
 copyFileSync(resolve("scripts/blog-staging-gate-core.mjs"), gateModule);
+if (generated.assets.binding && generated.assets.binding !== "ASSETS")
+  throw new Error("Unexpected generated assets binding; refusing to bypass protected static files.");
+generated.assets.binding = "ASSETS";
 const entry = "./" + workerEntry.replace(/^\.\//, "");
 const wrapper = resolve("dist/server/blog-staging-gate-entry.mjs");
 writeFileSync(wrapper, [
   "import application from " + JSON.stringify(entry) + ";",
-  'import { stagingGate, forwardWithoutBasicHeader } from "./blog-staging-gate-core.mjs";',
+  'import { serveStagingRequest } from "./blog-staging-gate-core.mjs";',
   "export default {",
   "  async fetch(request, env, ctx) {",
-  "    const denial = await stagingGate(request, env);",
-  "    if (denial) return denial;",
-  "    if (!application || typeof application.fetch !== 'function')",
-  '      return new Response("Staging handler unavailable.", { status: 503 });',
-  "    const nextResponse = await application.fetch(forwardWithoutBasicHeader(request), env, ctx);",
+  "    const nextResponse = await serveStagingRequest(request, env,",
+  "      application && typeof application.fetch === 'function'",
+  "        ? (safeRequest, safeEnv) => application.fetch(safeRequest, safeEnv, ctx) : null);",
   "    const headers = new Headers(nextResponse.headers);",
   '    headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");',
   '    headers.set("Cache-Control", "private, no-store");',
