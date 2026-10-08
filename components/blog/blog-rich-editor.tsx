@@ -96,6 +96,7 @@ export function BlogRichEditor({ value, onChange, onDirty, onValidityChange, dis
   const nodeMap = useRef(new Map<string, HTMLDivElement>());
 
   const selectionRef = useRef<{ blockId: string; start: number; end: number } | null>(null);
+  const selectionSpansBlocks = useRef(false);
   const dragging = useRef<string | null>(null);
 
   // Browser DOM is used only to read typed content and selection coordinates.
@@ -106,7 +107,15 @@ export function BlogRichEditor({ value, onChange, onDirty, onValidityChange, dis
     const selection = window.getSelection();
     if (!root || !selection || selection.rangeCount === 0) return;
     const range = selection.getRangeAt(0);
-    if (!root.contains(range.startContainer) || !root.contains(range.endContainer)) return;
+    if (!root.contains(range.startContainer) || !root.contains(range.endContainer)) {
+      if (root.contains(range.startContainer) || root.contains(range.endContainer)) {
+        selectionSpansBlocks.current = true;
+        selectionRef.current = null;
+        setMessage("Select text within one paragraph at a time; formatting multiple blocks together is not supported.");
+      }
+      return;
+    }
+    selectionSpansBlocks.current = false;
     const before = document.createRange();
     before.selectNodeContents(root);
     before.setEnd(range.startContainer, range.startOffset);
@@ -138,6 +147,10 @@ export function BlogRichEditor({ value, onChange, onDirty, onValidityChange, dis
     }
   }
   function applyTextStyle(style: RunStyle, toggle?: "bold" | "italic" | "underline") {
+    if (selectionSpansBlocks.current) {
+      setMessage("Highlight text within one paragraph before applying formatting.");
+      return;
+    }
     const id = selectionRef.current?.blockId || activeId;
     const root = nodeMap.current.get(id);
     const current = value.blocks.find(block => block.id === id);
@@ -304,7 +317,7 @@ export function BlogRichEditor({ value, onChange, onDirty, onValidityChange, dis
           ? <div className={styles.editable + " " + styles[block.type]}
             contentEditable={!disabled} suppressContentEditableWarning
             ref={el => { if (el) nodeMap.current.set(block.id, el); else nodeMap.current.delete(block.id); }}
-            onFocus={() => { setActiveId(block.id); selectionRef.current = null; }}
+            onFocus={() => { setActiveId(block.id); selectionRef.current = null; selectionSpansBlocks.current = false; }}
             onBlur={() => flushText(block.id)}
             onInput={() => {
               onDirty?.();
