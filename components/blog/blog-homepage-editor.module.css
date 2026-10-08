@@ -29,3 +29,11 @@
 .error { color: #a84045; }
 .note { color: #788e99; line-height: 1.6; font-size: 12px; margin-top: 14px; }
 @media(max-width:760px) { .editor { padding: 18px; } .form { grid-template-columns: 1fr; } .actions { align-items: stretch; flex-direction: column-reverse; } }
+
+.socialEditorRow{display:grid;grid-template-columns:minmax(125px,180px) minmax(0,1fr);align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #e5edf1}
+.socialToggle{display:flex;align-items:center;gap:11px;font-size:13px;font-weight:650;color:#345768;cursor:pointer}
+.socialToggle input[type=checkbox]{width:16px;height:16px;accent-color:#147a87;cursor:pointer}
+.socialIcon{width:23px;height:23px;color:#8c9ba7;display:inline-flex;align-items:center;justify-content:center}
+.socialEditorRow>input{font-size:13px;background:#fff;border:1px solid #c5dae1;padding:10px 11px;border-radius:7px;min-width:0;width:100%;color:#29495a}
+.socialPreview{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 0;color:#6f8592;font-size:12px}
+@media(max-width:650px){.socialEditorRow{grid-template-columns:1fr;gap:7px}}
