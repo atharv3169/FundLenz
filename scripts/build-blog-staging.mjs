@@ -7,7 +7,7 @@
  * Never deploy from this script.
  */
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const staging = JSON.parse(readFileSync(resolve("wrangler.blog-staging.jsonc"), "utf8"));
@@ -57,6 +57,44 @@ if (generated.name !== production.name || generated.routes || generated.route ||
   throw new Error("Unexpected production-generated deployment settings; refusing staging conversion.");
 }
 
+// Inject the staging-only access gate at the Worker's true entrypoint, so it runs
+// before ALL application routes or assets. Never modify the production source entrypoint.
+const workerEntry = generated.main;
+if (typeof workerEntry !== "string" ||
+    !/^(?:\\.\\/)?[a-zA-Z0-9_./-]+\\.js$/.test(workerEntry) ||
+    workerEntry.includes("..") ||
+    !existsSync(resolve("dist/server", workerEntry))) {
+  throw new Error("Unexpected generated Worker entrypoint; refusing to install staging gate.");
+}
+if (!generated.assets || typeof generated.assets !== "object" || Array.isArray(generated.assets)) {
+  throw new Error("Worker assets config is missing; cannot guarantee staging gate runs for static assets.");
+}
+const gateModule = resolve("dist/server/blog-staging-gate-core.mjs");
+copyFileSync(resolve("scripts/blog-staging-gate-core.mjs"), gateModule);
+const entry = "./" + workerEntry.replace(/^\\.\\//, "");
+const wrapper = resolve("dist/server/blog-staging-gate-entry.mjs");
+writeFileSync(wrapper, [
+  "import application from " + JSON.stringify(entry) + ";",
+  'import { stagingGate, forwardWithoutBasicHeader } from "./blog-staging-gate-core.mjs";',
+  "export default {",
+  "  async fetch(request, env, ctx) {",
+  "    const denial = await stagingGate(request, env);",
+  "    if (denial) return denial;",
+  "    if (!application || typeof application.fetch !== \\"function\\")",
+  '      return new Response("Staging handler unavailable.", { status: 503 });',
+  "    const nextResponse = await application.fetch(forwardWithoutBasicHeader(request), env, ctx);",
+  "    const headers = new Headers(nextResponse.headers);",
+  '    headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");',
+  '    headers.set("Cache-Control", "private, no-store");',
+  "    return new Response(nextResponse.body, { status: nextResponse.status, statusText: nextResponse.statusText, headers });",
+  "  },",
+  "};",
+  "",
+].join("\\n"), "utf8");
+generated.main = "./blog-staging-gate-entry.mjs";
+// Without this, Cloudflare serves /_next/static assets before the Worker sees auth.
+generated.assets.run_worker_first = true;
+
 // Rewrite only the generated, ignored build artifact. It is NOT a tracked repository file.
 generated.name = staging.name;
 generated.workers_dev = true;
@@ -70,4 +108,5 @@ delete generated.triggers;
 
 writeFileSync(outputPath, JSON.stringify(generated, null, 2) + "\n", "utf8");
 console.log("Staging artifact prepared for " + staging.name + " with D1 binding " + expectedDB);
+console.log("Staging Basic Auth gate applied at Worker entrypoint; all static assets run Worker first.");
 console.log("PASS: original source configuration left unchanged; NO deployment occurred.");
