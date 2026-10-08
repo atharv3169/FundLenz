@@ -41,9 +41,9 @@ function hiddenPassword(prompt) {
 
 try {
   console.log("FundLenz offline admin setup — password never leaves this computer.");
-  const password = await hiddenPassword("Choose a unique password (16–256 characters): ");
-  if (password.length < 16 || password.length > 256)
-    throw new Error("Password must contain 16–256 characters. Nothing was generated.");
+  const password = await hiddenPassword("Choose a unique password (12–256 characters): ");
+  if (password.length < 12 || password.length > 256)
+    throw new Error("Password must contain 12–256 characters. Nothing was generated.");
   const confirm = await hiddenPassword("Repeat the password: ");
   if (confirm !== password) throw new Error("Passwords did not match. Nothing was generated.");
   const salt = randomBytes(24);
