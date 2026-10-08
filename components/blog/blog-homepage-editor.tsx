@@ -128,7 +128,7 @@ export function BlogHomepageEditor({ initial, onSave, onCancel }: {
               </label>
               <input aria-label={network.name + " social profile URL"}
                 type="url" placeholder={"https://"+network.name.toLowerCase()+".com/..."}
-                disabled={busy} maxLength={2048} value={draft[urlKey]}
+                disabled={busy} maxLength={500} value={draft[urlKey]}
                 onChange={event => change(urlKey,event.target.value)}/>
             </div>;
           })}
