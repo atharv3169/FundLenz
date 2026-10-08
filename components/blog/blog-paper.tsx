@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { type RichBlock, type RichRun, safeEmbedUrl, safeHttpUrl } from "@/lib/blog-rich-document";
+import { type RichBlock, type RichRun, type RichMediaBlock, blogFontFamily, mediaWidth, safeEmbedUrl, safeHttpUrl } from "@/lib/blog-rich-document";
 import styles from "./blog-paper.module.css";
 
 export type ArticlePaperProps = {
@@ -10,15 +10,10 @@ export type ArticlePaperProps = {
 };
 
 function InlineRun({ run }: { run: RichRun }) {
-  const fontFamily = run.font === "serif" ? "Georgia, 'Times New Roman', serif" :
-    run.font === "times" ? "'Times New Roman', serif" :
-    run.font === "verdana" ? "Verdana, sans-serif" :
-    run.font === "trebuchet" ? "'Trebuchet MS', sans-serif" :
-    run.font === "mono" ? "ui-monospace, SFMono-Regular, Menlo, monospace" :
-    run.font === "sans" ? "Arial, Helvetica, sans-serif" : undefined;
+  const fontFamily = blogFontFamily(run.font);
   const style = {
     fontFamily, color: run.color,
-    fontSize: run.size === "small" ? "0.82em" :
+    fontSize: run.sizePx ? `${run.sizePx}px` : run.size === "small" ? "0.82em" :
       run.size === "large" ? "1.23em" :
       run.size === "xlarge" ? "1.45em" : undefined,
     fontWeight: run.bold ? 700 : undefined,
@@ -38,13 +33,18 @@ export function RenderRichBlock({ block }: { block: RichBlock }) {
     if (block.type === "quote") return <blockquote className={styles.quote}>{children}</blockquote>;
     return <p className={styles.paragraph}>{children}</p>;
   }
-  if (block.type === "image") return <figure className={styles.figure}>
+  const media = block as RichMediaBlock;
+  const width = mediaWidth(media.widthPct, media.type);
+  const mediaStyle = { width: width + "%", marginLeft: media.align === "right" ? "auto" :
+    media.align === "left" ? "0" : "auto", marginRight: media.align === "left" ? "auto" :
+    media.align === "right" ? "0" : "auto" };
+  if (block.type === "image") return <figure className={styles.figure} style={mediaStyle}>
     {/* External HTTPS images are URL-only in this staging iteration; no private file uploads. */}
     {/* eslint-disable-next-line @next/next/no-img-element */}
     <img src={block.src} alt={block.alt || block.caption || "Article image"} loading="lazy" />
     {block.caption && <figcaption>{block.caption}</figcaption>}
   </figure>;
-  if (block.type === "video-thumbnail") return <figure className={styles.figure}>
+  if (block.type === "video-thumbnail") return <figure className={styles.figure} style={mediaStyle}>
     <a href={block.src} className={styles.videoThumbnail} target="_blank" rel="noopener noreferrer"
       aria-label={"Open linked video: " + (block.caption || "external video")}>
       {block.thumbnail
@@ -56,7 +56,7 @@ export function RenderRichBlock({ block }: { block: RichBlock }) {
     {block.caption && <figcaption>{block.caption}</figcaption>}
   </figure>;
   const embed = safeEmbedUrl(block.src);
-  return <figure className={styles.figure}>
+  return <figure className={styles.figure} style={mediaStyle}>
     {embed ? <div className={styles.videoFrame}>
       <iframe src={embed} title={block.caption || "Embedded video"} loading="lazy"
         allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen"
@@ -84,7 +84,6 @@ export function BlogPaper({ title, summary, category, blocks, related = [], publ
         <header className={styles.articleHeader}>
           <p className={styles.category}>{category}</p>
           <h1>{title}</h1>
-          {summary && <p className={styles.deck}>{summary}</p>}
           <div className={styles.byline}>
             <span className={styles.avatar} aria-hidden="true">F</span>
             <div><strong>{author}</strong>
@@ -92,6 +91,7 @@ export function BlogPaper({ title, summary, category, blocks, related = [], publ
                 day: "numeric", month: "long", year: "numeric" }) : "Editorial preview"} · {Math.max(1,
                   Math.round(blocks.reduce((n, b) => n + ("runs" in b ? b.runs.map(r => r.text).join("").split(/\s+/).length : 0), 0) / 210))} min read</small></div>
           </div>
+          {summary && <p className={styles.deck}>{summary.replace(/\s+/g, " ").trim()}</p>}
         </header>
         <div className={styles.body}>{blocks.map(block => <RenderRichBlock key={block.id} block={block} />)}</div>
         <footer className={styles.articleFooter}>
