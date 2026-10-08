@@ -18,11 +18,18 @@ def ready_to_merge(api, number, policy, head, base, actor, checks_api=None):
     checks_api = checks_api or api
     require(checks_api.repo == api.repo, "Check reader repository mismatch")
     checks = checks_api.all("/commits/" + pr["head"]["sha"] + "/check-runs", "check_runs")
-    gate = [c for c in checks if c["name"] == policy["required_check"] and c.get("app", {}).get("slug") == "github-actions"]
-    latest = max(gate, key=lambda c: c["id"]) if gate else None
-    if latest and latest.get("status") == "completed":
-        require(latest["conclusion"] == "success", "Required exact-head check failed")
-    return bool(latest and latest.get("conclusion") == "success" and pr.get("mergeable_state") == "clean")
+    ready = True
+    for name in [policy["required_check"], "Verify FundLenz reviewed release"]:
+        matches = [c for c in checks if c["name"] == name and c.get("app", {}).get("slug") == "github-actions"]
+        latest = max(matches, key=lambda c: c["id"]) if matches else None
+        if latest and latest.get("status") == "completed":
+            require(latest["conclusion"] == "success", "Required exact-head check failed: " + name)
+        ready = ready and bool(latest and latest.get("status") == "completed" and latest.get("conclusion") == "success")
+    # Optional checks include this running merge job itself. Waiting for GitHub's
+    # aggregate 'clean' state creates a circular wait. Require both actual gates,
+    # a conflict-free PR and exact base/head; GitHub's merge endpoint additionally
+    # enforces all current protection rules without bypass credentials.
+    return ready and pr.get("mergeable") is True
 
 
 def wait_for_checks(api, number, policy, head, base, actor, attempts=13, wait=time.sleep, checks_api=None):
