@@ -89,11 +89,54 @@ export function BlogRichEditor({ value, onChange, disabled }: {
   const [fontSizePx, setFontSizePx] = useState(18);
   const nodeMap = useRef(new Map<string, HTMLDivElement>());
   const range = useRef<Range | null>(null);
+  const textSelection = useRef<{ blockId: string; start: number; end: number } | null>(null);
   const dragging = useRef<string | null>(null);
 
   function saveSelection() {
     const selection = window.getSelection();
-    if (selection && selection.rangeCount) range.current = selection.getRangeAt(0).cloneRange();
+    if (!selection || !selection.rangeCount) return;
+    const selected = selection.getRangeAt(0);
+    const root = nodeMap.current.get(activeId);
+    if (!root || !root.contains(selected.startContainer) || !root.contains(selected.endContainer)) return;
+    range.current = selected.cloneRange();
+    // Preserve offsets in case a preceding onBlur renders new React text nodes.
+    const before = document.createRange();
+    before.selectNodeContents(root);
+    before.setEnd(selected.startContainer, selected.startOffset);
+    const start = before.toString().length;
+    before.setEnd(selected.endContainer, selected.endOffset);
+    textSelection.current = { blockId: activeId, start, end: before.toString().length };
+  }
+
+  function selectedRange(root: HTMLElement): Range | null {
+    const saved = textSelection.current;
+    if (saved && saved.blockId === activeId) {
+      const textNodes: Text[] = [];
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      while (walker.nextNode()) textNodes.push(walker.currentNode as Text);
+      function point(offset: number): [Node, number] {
+        let remaining = offset;
+        for (const node of textNodes) {
+          const len = node.textContent?.length || 0;
+          if (remaining <= len) return [node, remaining];
+          remaining -= len;
+        }
+        const tail = textNodes[textNodes.length - 1];
+        return tail ? [tail, tail.textContent?.length || 0] : [root, 0];
+      }
+      const total = textNodes.reduce((count, item) => count + (item.textContent?.length || 0), 0);
+      if (saved.start <= saved.end && saved.end <= total) {
+        const next = document.createRange();
+        const [first, firstOffset] = point(saved.start);
+        const [last, lastOffset] = point(saved.end);
+        next.setStart(first, firstOffset);
+        next.setEnd(last, lastOffset);
+        return next;
+      }
+    }
+    if (range.current && root.contains(range.current.startContainer) &&
+        root.contains(range.current.endContainer)) return range.current.cloneRange();
+    return null;
   }
   function patch(blocks: RichBlock[]) { onChange({ ...value, blocks }); setMessage(""); }
   function replaceBlock(id: string, update: (block: RichBlock) => RichBlock) {
@@ -109,8 +152,11 @@ export function BlogRichEditor({ value, onChange, disabled }: {
   }
   function selectionRestore() {
     const selection = window.getSelection();
-    if (!selection || !range.current) return;
-    try { selection.removeAllRanges(); selection.addRange(range.current); } catch { /* stale selection */ }
+    const root = nodeMap.current.get(activeId);
+    if (!selection || !root) return;
+    const selected = selectedRange(root);
+    if (!selected) return;
+    try { selection.removeAllRanges(); selection.addRange(selected); } catch { /* stale selection */ }
   }
   function command(name: string, value?: string) {
     const node = nodeMap.current.get(activeId);
@@ -127,8 +173,7 @@ export function BlogRichEditor({ value, onChange, disabled }: {
   function applyInlineStyle(key: "fontFamily" | "fontSize", css: string) {
     const root = nodeMap.current.get(activeId);
     if (!root || disabled) { setMessage("Click inside an article text block first."); return; }
-    let selected = range.current?.cloneRange();
-    if (selected && !root.contains(selected.commonAncestorContainer)) selected = undefined;
+    let selected: Range | null = selectedRange(root);
     if (!selected || selected.collapsed) {
       selected = document.createRange();
       selected.selectNodeContents(root);
@@ -142,6 +187,7 @@ export function BlogRichEditor({ value, onChange, disabled }: {
       // is not sufficient to persist formatting when Save is clicked next.
       flushText(activeId);
       range.current = null;
+      textSelection.current = null;
     } catch { setMessage("Select text within one paragraph and try again."); }
   }
 
