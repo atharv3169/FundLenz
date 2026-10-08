@@ -26,10 +26,10 @@
   <p>This file works <strong>offline</strong> on your computer. Your password is processed only in this browser page. There are no external scripts, trackers, network requests, or saved files. The code is publicly inspectable in the FundLenz repository.</p>
   <p class="warning"><strong>Security:</strong> Download this file and open it locally, ideally with Wi-Fi disconnected. Do not enter the password in a public website or send the results to chat. The generated values must be pasted directly into Cloudflare's encrypted Secrets settings later.</p>
   <form id="setup">
-    <label for="password">Choose a unique administrator password (16–256 characters)</label>
-    <input id="password" type="password" required minlength="16" maxlength="256" autocomplete="new-password" spellcheck="false">
+    <label for="password">Choose a unique administrator password (12–256 characters)</label>
+    <input id="password" type="password" required minlength="12" maxlength="256" autocomplete="new-password" spellcheck="false">
     <label for="confirm">Repeat the password</label>
-    <input id="confirm" type="password" required minlength="16" maxlength="256" autocomplete="new-password" spellcheck="false">
+    <input id="confirm" type="password" required minlength="12" maxlength="256" autocomplete="new-password" spellcheck="false">
     <button id="generate" type="submit">Generate private credentials</button>
   </form>
   <p id="message" aria-live="polite" class="note"></p>
@@ -68,9 +68,9 @@ form.addEventListener("submit", async event => {
     return;
   }
   const password = passwordField.value;
-  if (password.length < 16 || password.length > 256 || password !== confirmationField.value) {
+  if (password.length < 12 || password.length > 256 || password !== confirmationField.value) {
     message.className = "error";
-    message.textContent = "Passwords must match and contain 16–256 characters.";
+    message.textContent = "Passwords must match and contain 12–256 characters.";
     return;
   }
   button.disabled = true;
