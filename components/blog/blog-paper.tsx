@@ -1,12 +1,14 @@
 import { type ReactNode } from "react";
-import { type RichBlock, type RichRun, type RichMediaBlock, blogFontFamily, mediaWidth, safeEmbedUrl, safeHttpUrl } from "@/lib/blog-rich-document";
+import { type RichBlock, type RichRun, type RichMediaBlock, type ArticleAuthor, safeAvatarDataUrl, blogFontFamily, mediaWidth, safeEmbedUrl, safeHttpUrl } from "@/lib/blog-rich-document";
 import styles from "./blog-paper.module.css";
+import { defaultBlogHomepageContent, type BlogHomepageContent } from "@/lib/blog-homepage-content";
 
 export type ArticlePaperProps = {
   title: string; summary: string; category: string; blocks: RichBlock[];
   related?: { id: string; title: string; category: string; url?: string }[];
   onSelectRelated?: (id: string) => void;
   publishedUrl?: string; author?: string; updatedAt?: number;
+  authorProfile?: ArticleAuthor; branding?: BlogHomepageContent;
 };
 
 function InlineRun({ run }: { run: RichRun }) {
@@ -70,25 +72,37 @@ export function RenderRichBlock({ block }: { block: RichBlock }) {
 }
 
 export function BlogPaper({ title, summary, category, blocks, related = [], publishedUrl, onSelectRelated,
-  author = "FundLenz Editorial", updatedAt }: ArticlePaperProps) {
+  author = "FundLenz Editorial", updatedAt, authorProfile, branding = defaultBlogHomepageContent }: ArticlePaperProps) {
   const hasShare = Boolean(publishedUrl);
   const link = publishedUrl || "";
   return <div className={styles.shell}>
     <div className={styles.masthead}>
-      <div><span className={styles.brand}>Fund<span>Lenz</span></span><small> JOURNAL</small></div>
-      <span className={styles.mastheadRight}>Ideas · Evidence · Markets</span>
+      <div><span className={styles.brand}>{branding.eyebrow}</span></div>
+      {branding.articleMastheadRight && <span className={styles.mastheadRight}>{branding.articleMastheadRight}</span>}
     </div>
     <div className={styles.layout}>
       <article className={styles.paper}>
-        <div className={styles.breadcrumb}>THE JOURNAL <span>/</span> {category.toUpperCase()}</div>
+        <div className={styles.breadcrumb}>{branding.eyebrow.toUpperCase()} <span>/</span> {category.toUpperCase()}</div>
         <header className={styles.articleHeader}>
           <p className={styles.category}>{category}</p>
           <h1>{title}</h1>
           <div className={styles.byline}>
-            <span className={styles.avatar} aria-hidden="true">F</span>
-            <div><strong>{author}</strong>
-              <small>{updatedAt ? new Date(updatedAt * 1000).toLocaleDateString("en-GB", {
-                day: "numeric", month: "long", year: "numeric" }) : "Editorial preview"} · {Math.max(1,
+            <span className={styles.avatar} aria-label="Author profile picture">
+              {authorProfile?.avatarDataUrl && safeAvatarDataUrl(authorProfile.avatarDataUrl)
+                // eslint-disable-next-line @next/next/no-img-element
+                ? <img src={authorProfile.avatarDataUrl} alt={authorProfile.name || author}/>
+                : (authorProfile?.name || author).charAt(0).toUpperCase()}
+            </span>
+            <div><strong>{authorProfile?.name || author}</strong>
+              {authorProfile?.socialUrl && safeHttpUrl(authorProfile.socialUrl) &&
+                <a className={styles.authorSocial} href={authorProfile.socialUrl}
+                  target="_blank" rel="noopener noreferrer">{authorProfile.socialLabel || "Author's social profile ↗"}</a>}
+              <small>{authorProfile?.displayDate
+                ? new Date(authorProfile.displayDate + "T12:00:00Z").toLocaleDateString("en-GB", { timeZone: "UTC",
+                    day: "numeric", month: "long", year: "numeric" })
+                : updatedAt ? new Date(updatedAt * 1000).toLocaleDateString("en-GB", {
+                    day: "numeric", month: "long", year: "numeric" }) : "Editorial preview"} ·
+                {" "}{authorProfile?.readingMinutes ?? Math.max(1,
                   Math.round(blocks.reduce((n, b) => n + ("runs" in b ? b.runs.map(r => r.text).join("").split(/\s+/).length : 0), 0) / 210))} min read</small></div>
           </div>
           {summary && <p className={styles.deck}>{summary.replace(/\s+/g, " ").trim()}</p>}
