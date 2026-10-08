@@ -62,7 +62,7 @@ export async function checkAdminPassword(request: Request, user: unknown, passwo
   const passwordString = typeof password === "string" && password.length <= 256 ? password : "";
   // Deliberately evaluate the password verifier even for incorrect usernames.
   const isCorrect = await verifyPassword(passwordString, verifier);
-  const authorized = user === BLOG_ADMIN_USERNAME && isCorrect && passwordString.length >= 16;
+  const authorized = user === BLOG_ADMIN_USERNAME && isCorrect && passwordString.length >= 12;
   if (!authorized) await recordLoginFailure(db, actorHash, windowId);
   return { authorized, db, secret };
 }
