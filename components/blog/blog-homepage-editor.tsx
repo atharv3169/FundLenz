@@ -7,7 +7,7 @@ import {
 } from "@/lib/blog-homepage-content";
 import styles from "./blog-homepage-editor.module.css";
 import { BlogSocialLinks } from "./social-links";
-import { Facebook, Instagram, Linkedin, Music2 } from "lucide-react";
+import { SocialIcon, type SocialNetwork } from "./social-icon";
 
 /**
  * This editor is intentionally only a component, NOT a public route or an API.
@@ -110,20 +110,19 @@ export function BlogHomepageEditor({ initial, onSave, onCancel }: {
           <legend>Social profile icons</legend>
           <p>Check the profiles you want visitors to see. Unchecked links stay hidden, even if a URL is saved.</p>
           {([
-            {name:"Instagram",id:"socialInstagram",Icon:Instagram},
-            {name:"Facebook",id:"socialFacebook",Icon:Facebook},
-            {name:"X",id:"socialX",Icon:null},
-            {name:"TikTok",id:"socialTikTok",Icon:Music2},
-            {name:"LinkedIn",id:"socialLinkedin",Icon:Linkedin},
+            {name:"Instagram",id:"socialInstagram"},
+            {name:"Facebook",id:"socialFacebook"},
+            {name:"X",id:"socialX"},
+            {name:"TikTok",id:"socialTikTok"},
+            {name:"LinkedIn",id:"socialLinkedin"},
           ] as const).map(network => {
             const urlKey = (network.id + "Url") as keyof BlogHomepageContent;
             const enabledKey = (network.id + "Enabled") as keyof BlogHomepageContent;
-            const Icon = network.Icon;
             return <div className={styles.socialEditorRow} key={network.id}>
               <label className={styles.socialToggle}>
                 <input type="checkbox" disabled={busy} checked={draft[enabledKey] === "true"}
                   onChange={event => change(enabledKey,event.target.checked ? "true" : "false")}/>
-                <span className={styles.socialIcon}>{Icon ? <Icon size={16}/> : <span aria-hidden="true">𝕏</span>}</span>
+                <span className={styles.socialIcon}><SocialIcon network={network.name as SocialNetwork}/></span>
                 <span>{network.name}</span>
               </label>
               <input aria-label={network.name + " social profile URL"}
