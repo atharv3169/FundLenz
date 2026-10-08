@@ -3,7 +3,10 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { BlogHomepageEditor } from "@/components/blog/blog-homepage-editor";
 import { type BlogHomepageContent } from "@/lib/blog-homepage-content";
-import { blogDraftCategories, type BlogArticleDraft, type BlogDraftSummary, type BlogDraftCategory } from "@/lib/blog-article-draft";
+import { type BlogArticleDraft, type BlogDraftSummary } from "@/lib/blog-article-draft";
+import { type RichDocument, decodeRichDocument, emptyRichDocument, encodeRichDocument } from "@/lib/blog-rich-document";
+import { BlogRichEditor } from "./blog-rich-editor";
+import { BlogPaper } from "./blog-paper";
 import styles from "./blog-editor-dashboard.module.css";
 
 type Tab = "articles" | "homepage";
@@ -27,6 +30,7 @@ export function BlogEditorDashboard() {
   const [tab, setTab] = useState<Tab>("articles");
   const [articles, setArticles] = useState<BlogDraftSummary[]>([]);
   const [article, setArticle] = useState<BlogArticleDraft | null>(null);
+  const [rich, setRich] = useState<RichDocument | null>(null);
   const [homepage, setHomepage] = useState<HomepageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -56,7 +60,8 @@ export function BlogEditorDashboard() {
     setBusy(true); setError(""); setNotice("");
     try {
       const data = await jsonRequest<{ draft: BlogArticleDraft }>(articleApi + "?id=" + encodeURIComponent(id));
-      setArticle(data.draft); setDirty(false); setPreview(false); setTab("articles");
+      setArticle(data.draft); setRich(decodeRichDocument(data.draft.body_markdown, data.draft.category));
+      setDirty(false); setPreview(false); setTab("articles");
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Unable to open draft."); }
     finally { setBusy(false); }
   }
@@ -67,7 +72,8 @@ export function BlogEditorDashboard() {
     try {
       const data = await jsonRequest<{ draft: BlogArticleDraft }>(articleApi,
         { method: "POST", body: "{}" });
-      setArticle(data.draft); setDirty(false); setPreview(false);
+      setArticle(data.draft); setRich(emptyRichDocument(data.draft.category));
+      setDirty(false); setPreview(false);
       setArticles(current => [{ id: data.draft.id, title: data.draft.title, summary: "",
         category: data.draft.category, version: data.draft.version, updated_at: data.draft.updated_at },
         ...current]);
@@ -76,22 +82,24 @@ export function BlogEditorDashboard() {
     finally { setBusy(false); }
   }
 
-  function changeArticle(key: "title" | "summary" | "body_markdown" | "category", value: string) {
+  function changeArticle(key: "title" | "summary" | "category", value: string) {
     setArticle(current => current ? { ...current, [key]: value } : null);
+    if (key === "category") setRich(current => current ? { ...current, category: value } : current);
     setDirty(true); setNotice("");
   }
 
   async function saveArticle(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!article || !dirty || busy) return;
+    if (!article || !rich || !dirty || busy) return;
     setBusy(true); setError(""); setNotice("");
     try {
+      const encodedBody = encodeRichDocument({ ...rich, category: article.category });
       const data = await jsonRequest<{ version: number; updated_at: number }>(articleApi,
         { method: "PUT", body: JSON.stringify({
           id: article.id, version: article.version, title: article.title,
-          summary: article.summary, body_markdown: article.body_markdown, category: article.category,
+          summary: article.summary, body_markdown: encodedBody, category: article.category,
         }) });
-      const saved = { ...article, version: data.version, updated_at: data.updated_at };
+      const saved = { ...article, body_markdown: encodedBody, version: data.version, updated_at: data.updated_at };
       setArticle(saved); setDirty(false);
       setArticles(current => current.map(item => item.id === saved.id ? {
         id: saved.id, title: saved.title, summary: saved.summary, category: saved.category,
@@ -108,7 +116,7 @@ export function BlogEditorDashboard() {
     try {
       await jsonRequest(articleApi, { method: "DELETE", body: JSON.stringify({ id: article.id, version: article.version }) });
       setArticles(current => current.filter(item => item.id !== article.id));
-      setArticle(null); setDirty(false); setNotice("Private draft deleted.");
+      setArticle(null); setRich(null); setDirty(false); setNotice("Private draft deleted.");
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Could not delete draft."); }
     finally { setBusy(false); }
   }
@@ -134,7 +142,7 @@ export function BlogEditorDashboard() {
         <button type="button" role="tab" aria-selected={tab === "homepage"}
           className={tab === "homepage" ? styles.active : ""} onClick={() => {
             if (dirty && !window.confirm("Discard unsaved article edits?")) return;
-            setArticle(null); setDirty(false); setPreview(false); setTab("homepage"); }}>Homepage wording</button>
+            setArticle(null); setRich(null); setDirty(false); setPreview(false); setTab("homepage"); }}>Homepage wording</button>
       </div>
       <button type="button" className={styles.secondary} disabled={busy || loading} onClick={() => {
         if (dirty && !window.confirm("Discard unsaved article edits?")) return;
@@ -147,8 +155,8 @@ export function BlogEditorDashboard() {
 
     {tab === "homepage" && homepage && <BlogHomepageEditor key={homepage.version}
       initial={homepage.content} onSave={saveHomepage} onCancel={() => setTab("articles")}/>}
-    {tab === "articles" && !loading && <section className={styles.split}>
-      <aside className={styles.articleList}>
+    {tab === "articles" && !loading && <section className={preview ? styles.previewLayout : styles.split}>
+      {!preview && <aside className={styles.articleList}>
         <h3>Private article drafts</h3>
         <p className={styles.hint}>Up to 100 recent drafts shown.</p>
         <button className={styles.primary} type="button" disabled={busy} onClick={() => { void newArticle(); }}>+ New article</button>
@@ -159,43 +167,53 @@ export function BlogEditorDashboard() {
           {item.title}
           <small>{item.category} · Private draft · {new Date(item.updated_at * 1000).toLocaleDateString()}</small>
         </button>)}
-      </aside>
-      <div className={styles.panel}>
+      </aside>}
+      <div className={preview ? styles.previewPanel : styles.panel}>
         {!article ? <><h3>Start writing</h3><p className={styles.hint}>Select a draft or create a new article. Publishing will be added only after the GitHub workflow and its safeguards are ready.</p></>
         : <>
-          <h3>Article draft</h3>
-          <p className={styles.hint}>Markdown source is stored privately. No live publishing or media uploads yet.</p>
-          <form className={styles.form} onSubmit={saveArticle}>
+          <div className={styles.editorTitleRow}>
+            <div><h3>{preview ? "Published-layout preview" : "Article editor"}</h3>
+              <p className={styles.hint}>{preview
+                ? "This is a private simulation of how the article page will look once it has been published."
+                : "Use the formatting toolbar and drag handles to build a complete article. Media use HTTPS URLs during staging."}</p>
+            </div>
+            <button type="button" className={styles.secondary}
+              onClick={() => setPreview(current => !current)}>
+              {preview ? "← Back to editor" : "Preview article →"}
+            </button>
+          </div>
+          {preview && rich ? <BlogPaper title={article.title} summary={article.summary}
+            category={article.category} blocks={rich.blocks}
+            updatedAt={article.updated_at}
+            related={articles.filter(item => item.id !== article.id).map(item => ({
+              id: item.id, title: item.title, category: item.category,
+            }))}/> : <form className={styles.form} onSubmit={saveArticle}>
             <label>Title
               <input value={article.title} maxLength={160} required disabled={busy}
                 onChange={event => changeArticle("title", event.target.value)}/>
             </label>
-            <label>Category
-              <select value={article.category} disabled={busy}
-                onChange={event => changeArticle("category", event.target.value as BlogDraftCategory)}>
-                {blogDraftCategories.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
+            <label>Category — choose any topic
+              <input type="text" list="fundlenz-categories" value={article.category}
+                required maxLength={80} disabled={busy}
+                onChange={event => changeArticle("category", event.target.value)}
+                placeholder="e.g. Geopolitics, Markets, AI, Opinion"/>
+              <datalist id="fundlenz-categories">
+                {["Research","Markets","Funds","Learning","Opinion","Technology","Economics","Policy","Geopolitics"].map(c =>
+                  <option key={c} value={c}/>)}
+              </datalist>
             </label>
             <label>Short description
               <textarea rows={3} maxLength={600} disabled={busy}
                 value={article.summary} onChange={event => changeArticle("summary", event.target.value)}/>
             </label>
-            <label>Article content (Markdown)
-              <textarea rows={16} maxLength={50000} disabled={busy}
-                value={article.body_markdown}
-                onChange={event => changeArticle("body_markdown", event.target.value)}/>
-            </label>
+            {rich && <BlogRichEditor value={rich} disabled={busy}
+              onChange={updated => { setRich(updated); setDirty(true); setNotice(""); }}/>}
             <div className={styles.buttons}>
               <button type="submit" className={styles.primary} disabled={!dirty || busy}>{busy ? "Saving…" : "Save private draft"}</button>
-              <button type="button" className={styles.secondary} onClick={() => setPreview(current => !current)}>
-                {preview ? "Hide text preview" : "Preview text"}</button>
               <button type="button" className={styles.danger} disabled={busy} onClick={() => { void deleteArticle(); }}>Delete draft</button>
             </div>
-          </form>
-          {dirty && <p className={styles.note}>Unsaved changes. This browser will not save automatically.</p>}
-          {preview && <div className={styles.preview} aria-label="Article plain-text preview">
-            <strong>{article.title}</strong>{"\n\n"}{article.summary}{"\n\n"}{article.body_markdown}
-          </div>}
+          </form>}
+          {dirty && <p className={styles.note}>Unsaved changes. Save your private draft before leaving.</p>}
         </>}
       </div>
     </section>}
