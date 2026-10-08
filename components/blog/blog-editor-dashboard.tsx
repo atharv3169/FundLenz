@@ -84,8 +84,10 @@ export function BlogEditorDashboard() {
   }
 
   function changeAuthor(key: keyof ArticleAuthor, value: string | number | undefined) {
+    // Empty strings mean "use the default" rather than invalid author metadata.
+    const normalized = typeof value === "string" && !value.trim() ? undefined : value;
     setRich(current => current ? {
-      ...current, author: { ...current.author, [key]: value },
+      ...current, author: { ...current.author, [key]: normalized },
     } : current);
     setDirty(true);
     setNotice("");
