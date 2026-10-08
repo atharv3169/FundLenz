@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ContributionButton, NewsletterBox } from "@/components/blog/visitor-forms";
 import styles from "./page.module.css";
+import { defaultBlogHomepageContent as copy } from "@/lib/blog-homepage-content";
 
 export const metadata: Metadata = {
   title: "FundLenz Blog | Independent financial research",
@@ -18,20 +19,21 @@ export default function BlogHomePage() {
       <Link href="/" className={styles.labLink}>Lab →</Link>
     </header>
     <main className={styles.main}>
-      <p className={styles.eyebrow}>FUNDLENZ JOURNAL</p>
-      <h1>Research worth reading.</h1>
-      <p className={styles.intro}>A home for clear, evidence-led writing about markets, funds and the decisions behind portfolios.</p>
+      <p className={styles.eyebrow}>{copy.eyebrow}</p>
+      <h1>{copy.heroHeading}</h1>
+      <p className={styles.intro}>{copy.heroDescription}</p>
       <section aria-label="Article archive" className={styles.archive}>
-        <div className={styles.archiveHeader}><h2>Articles</h2><span>Publication library in development</span></div>
-        <p className={styles.empty}>The article library is being prepared. Published articles will appear here once the editorial system is ready.</p>
+        <div className={styles.archiveHeader}><h2>{copy.articlesHeading}</h2><span>{copy.articlesStatus}</span></div>
+        <p className={styles.empty}>{copy.articlesEmpty}</p>
       </section>
-      <NewsletterBox siteKey={siteKey} />
+      <NewsletterBox siteKey={siteKey} heading={copy.newsletterHeading} description={copy.newsletterDescription}
+        placeholder={copy.newsletterPlaceholder} submitLabel={copy.newsletterSubmitLabel} />
     </main>
     <footer className={styles.footer}>
-      <div><strong>FundLenz</strong> · Independent education, not investment advice.</div>
+      <div><strong>FundLenz</strong> · {copy.footerDescription}</div>
       <div className={styles.footerActions}>
-        <ContributionButton siteKey={siteKey}/>
-        <span>Follow on Instagram - <a href="https://www.instagram.com/fundlenz" target="_blank" rel="noopener noreferrer">FundLenz</a></span>
+        <ContributionButton siteKey={siteKey} label={copy.contributionButtonLabel}/>
+        <span>{copy.instagramLead} <a href="https://www.instagram.com/fundlenz" target="_blank" rel="noopener noreferrer">FundLenz</a></span>
       </div>
     </footer>
   </div>;
