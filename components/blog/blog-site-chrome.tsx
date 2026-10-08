@@ -9,11 +9,9 @@ export function BlogSiteHeader() {
     <Link href="/" className={styles.brand} aria-label="FundLenz portfolio lab homepage">
       <span className={styles.logoIcon}><ScanSearch size={25} strokeWidth={1.7}/></span>
       Fund<span>Lenz</span><span className={styles.divider}/>
-      <small>BLOG &amp; RESEARCH</small>
+      <small>BLOG</small>
     </Link>
     <nav className={styles.nav} aria-label="FundLenz navigation">
-      <Link href="/catalogue-global">Catalogue</Link>
-      <Link href="/catalogue-securities">Stocks &amp; bonds</Link>
       <span className={styles.projectCredit}>A project by <strong>Atharva Sahu</strong></span>
       <Link href="/" className={styles.headerButton}><FileText size={16}/> Portfolio lab</Link>
       <Link href="/blogpost/admin" className={styles.adminLink}>Admin</Link>
