@@ -17,3 +17,5 @@
 .footerActions { display: flex; align-items: center; flex-wrap: wrap; gap: 20px; }
 .footerActions a { color: #0b7b93; text-decoration: underline; text-underline-offset: 3px; }
 @media(max-width:580px) { .header { padding: 16px; } .main { padding: 32px 16px 22px; } .footer { padding: 22px 16px; } .archive { margin-top: 30px; } .footerActions { gap: 14px; } }
+
+.adminNav { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; justify-content: flex-end; }
