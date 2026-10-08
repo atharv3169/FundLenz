@@ -129,3 +129,7 @@ for (const date of ["2026-02-30", "2025-02-29", "2026-13-01"])
   assert.throws(() => mod.validateArticleAuthor({displayDate: date}), /date/);
 assert.equal(mod.validateArticleAuthor({displayDate:"2024-02-29"}).displayDate,"2024-02-29");
 console.log("PASS: impossible calendar dates rejected; leap-day author metadata preserved");
+
+assert.equal(mod.storedDraftCategory("FLRICH1:broken", "Research"), "Research");
+assert.throws(() => mod.decodeRichDocument("FLRICH1:broken"), /damaged/);
+console.log("PASS: damaged draft does not break listing and still fails closed on open");

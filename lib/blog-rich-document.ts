@@ -192,7 +192,10 @@ export function encodeRichDocument(document: RichDocument): string {
 }
 export function storedDraftCategory(body: string, dbCategory: string): string {
   if (!body.startsWith(RICH_PREFIX)) return dbCategory;
-  return decodeRichDocument(body, dbCategory).category;
+  // One damaged legacy row must not take down the entire draft list. Its body
+  // still fails strict decoding when opened, preventing an accidental overwrite.
+  try { return decodeRichDocument(body, dbCategory).category; }
+  catch { return dbCategory; }
 }
 /** Some blocks can point at video hosts; transform only well-defined YouTube/Vimeo URLs. */
 export function safeEmbedUrl(raw: string): string | null {

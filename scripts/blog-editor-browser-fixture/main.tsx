@@ -56,7 +56,9 @@ if (mode === "dashboard") {
         draft = {...draft,...sent,version:++version};
         return Response.json({version,updated_at:1791453600});
       }
-      return Response.json(url.includes("?id=") ? {draft} : {drafts:[draft]});
+      const damaged = {...draft,id:"damaged-fixture",title:"Damaged draft fixture",body_markdown:"FLRICH1:broken"};
+      return Response.json(url.includes("?id=damaged-fixture") ? {draft:damaged} :
+        url.includes("?id=") ? {draft} : {drafts:[draft,damaged]});
     }
     throw new Error("Unexpected fixture request: " + url);
   };

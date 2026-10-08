@@ -97,7 +97,10 @@ export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (di
     setBusy(true); setError(""); setNotice("");
     try {
       const data = await jsonRequest<{ draft: BlogArticleDraft }>(articleApi + "?id=" + encodeURIComponent(id));
-      setArticle(data.draft); setRich(decodeRichDocument(data.draft.body_markdown, data.draft.category));
+      // Decode before updating either state: a damaged draft must never inherit
+      // the previously open article's body and become accidentally overwritable.
+      const decoded = decodeRichDocument(data.draft.body_markdown, data.draft.category);
+      setArticle(data.draft); setRich(decoded);
       setDirty(false); setEditorValid(true); setPreview(keepPreview); setTab("articles");
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Unable to open draft."); }
     finally { setBusy(false); }

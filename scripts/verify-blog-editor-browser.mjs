@@ -241,6 +241,11 @@ try {
     'Cancelling the discard prompt must preserve homepage edits');
   await js('window.confirm=()=>true');
   await clickText('Article drafts');
+  await js(`Array.from(document.querySelectorAll('button')).find(b=>b.textContent.startsWith('Damaged draft fixture')).click()`);
+  await until(() => js(`document.body.textContent.includes('Rich draft is damaged')`));
+  assert.equal(await js('document.querySelector("form input").value'),'Simulate conflict',
+    'Failed decoding must leave both the existing title and body intact');
+  assert.ok(await js(`document.querySelector('[role="textbox"]').textContent.includes('Start with the right question')`));
   await clickText('Preview article →');
   assert.ok(await js(`Boolean(document.querySelector('nav[aria-label="In this article"]'))`));
 
