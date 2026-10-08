@@ -91,20 +91,20 @@
     },
     {
       "path": "components/fund-catalog.tsx",
-      "bytes": 28017,
-      "sha256": "f782ca45804ef872654455b484bd64390a25912e374879058beddba1992c43f2",
+      "bytes": 28097,
+      "sha256": "cd2e151c567a0209347c351057ff38184a8d7e062366e4cfe6720bdfefc6316e",
       "scope": "application"
     },
     {
       "path": "components/fundlens.tsx",
-      "bytes": 53793,
-      "sha256": "c123a6449fcffaae08124165552448a19490776d693468102d72c99d1f889372",
+      "bytes": 53988,
+      "sha256": "2c7675be0b13f55dc652bb444a4396fbdce0c7b0b95bb472219c5cae94a5f335",
       "scope": "application"
     },
     {
       "path": "components/global-catalog.tsx",
-      "bytes": 31668,
-      "sha256": "dd8e7a3b1c03c475bc85828309ca545cc56759e044b35a2fdd504abaff5b04e5",
+      "bytes": 31748,
+      "sha256": "3e445d3e4ae155505c788c4d194755a0902105879a00612fa834e1bd8b3df666",
       "scope": "application"
     },
     {
