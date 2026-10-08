@@ -2,7 +2,7 @@ import { env } from "cloudflare:workers";
 import { BLOG_ADMIN_USERNAME, verifyPassword } from "@/lib/blog-admin-crypto";
 import {
   type BlogAdminDatabase, validSessionSecret,
-  authenticateSession, reserveLoginAttempt, recordLoginFailure,
+  authenticateSession, reserveLoginAttempt, recordLoginFailure, BlogAdminRateLimit,
 } from "@/lib/blog-admin-state";
 
 type RuntimeConfig = {
@@ -14,6 +14,12 @@ type RuntimeConfig = {
 export class AdminUnavailable extends Error {
   constructor(public readonly reason: "runtime" | "missing-client-ip" = "runtime") {
     super("Administrator login is not configured.");
+  }
+}
+/** Non-sensitive stage classification: never include raw DB/crypto errors or input. */
+export class AdminCredentialStageFailure extends Error {
+  constructor(public readonly stage: "d1-reserve" | "password-kdf" | "d1-failure-count") {
+    super("Administrator credential stage failed.");
   }
 }
 export class AdminForbidden extends Error {
@@ -60,11 +66,30 @@ export async function checkAdminPassword(request: Request, user: unknown, passwo
   requireAdminOrigin(request, hosts);
   const ip = request.headers.get("CF-Connecting-IP");
   if (!ip || ip.length > 64) throw new AdminUnavailable("missing-client-ip");
-  const { actorHash, windowId } = await reserveLoginAttempt(db, secret, ip);
+  let attempt: Awaited<ReturnType<typeof reserveLoginAttempt>>;
+  try {
+    attempt = await reserveLoginAttempt(db, secret, ip);
+  } catch (error) {
+    // Do not convert rate limits into 503s or hide the original 429 behavior.
+    if (error instanceof BlogAdminRateLimit) throw error;
+    throw new AdminCredentialStageFailure("d1-reserve");
+  }
+  const { actorHash, windowId } = attempt;
   const passwordString = typeof password === "string" && password.length <= 256 ? password : "";
-  // Deliberately evaluate the password verifier even for incorrect usernames.
-  const isCorrect = await verifyPassword(passwordString, verifier);
+  // Evaluate the verifier even when the username is wrong; don't leak whether it matched.
+  let isCorrect: boolean;
+  try {
+    isCorrect = await verifyPassword(passwordString, verifier);
+  } catch {
+    throw new AdminCredentialStageFailure("password-kdf");
+  }
   const authorized = user === BLOG_ADMIN_USERNAME && isCorrect && passwordString.length >= 12;
-  if (!authorized) await recordLoginFailure(db, actorHash, windowId);
+  if (!authorized) {
+    try {
+      await recordLoginFailure(db, actorHash, windowId);
+    } catch {
+      throw new AdminCredentialStageFailure("d1-failure-count");
+    }
+  }
   return { authorized, db, secret };
 }
