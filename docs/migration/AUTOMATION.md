@@ -143,7 +143,10 @@ existing site-wide date is not advanced for a partial scan.
    GitHub App is preferred. Current runner consumes a short-lived or rotated
    token in `FUNDLENZ_PUBLISH_TOKEN`, and its exact login in repository variable
    `FUNDLENZ_PUBLISHER_LOGIN`. Scope it only to this repository: contents and pull
-   requests read/write, administration read (to inspect protection), checks read.
+   requests read/write and administration read (to inspect protection). Metadata
+   read is automatically required. Do not look for a Checks permission on the
+   personal-token form: the merge job uses the separate built-in Actions token
+   with checks-read permission to read results; it cannot use that token to merge.
    It does not need Actions/workflow write, billing or account-wide permissions.
    An App installation token needs a reviewed minting/rotation integration before
    use; an expiring token pasted as a secret is not permanent App automation.
@@ -222,7 +225,7 @@ metadata, mismatched investigation context and malformed legacy source URLs.
 The bounded retry, response parser, issue-scoped packet construction and source
 quarantine fixes were verified before this successful trial.
 
-The current automated unit suite has 38 tests. Additional merge tests cover
+The current automated unit suite has 39 tests. Additional merge tests cover
 transient pending checks, a head changing while waiting, failed checks and bounded
 timeout. The merger can wait up to three minutes for GitHub to finish its checks,
 rechecking identity, head, base and protection each time; it never merges on

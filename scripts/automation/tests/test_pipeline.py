@@ -229,6 +229,17 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(waits, [15, 15])
         self.assertEqual(api.attempts, 3)
 
+    def test_check_reads_use_separate_read_only_credential(self):
+        publisher = self.merge_api(["clean"])
+        reader = self.merge_api(["clean"])
+        def forbidden(*args):
+            raise AssertionError("Publishing credential must not read Checks API")
+        publisher.all = forbidden
+        wait_for_checks(publisher, 1, self.policy, "head", "base", "publisher", checks_api=reader)
+        reader.repo = "wrong/repository"
+        with self.assertRaisesRegex(ValueError, "reader repository mismatch"):
+            wait_for_checks(publisher, 1, self.policy, "head", "base", "publisher", checks_api=reader)
+
     def test_merge_rechecks_identity_while_waiting(self):
         with self.assertRaisesRegex(ValueError, "head/base moved"):
             wait_for_checks(self.merge_api(["unknown", "clean"], move_head=True), 1, self.policy,

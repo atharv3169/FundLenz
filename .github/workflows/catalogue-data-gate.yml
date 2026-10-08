@@ -68,6 +68,9 @@ jobs:
 
   merge:
     name: Merge validated data
+    permissions:
+      contents: read
+      checks: read
     needs: gate
     if: needs.gate.outputs.run_id != ''
     runs-on: ubuntu-24.04
@@ -82,6 +85,7 @@ jobs:
           persist-credentials: false
       - name: Recheck current base/head and protected checks, then merge
         env:
+          GH_TOKEN: ${{ github.token }}
           FUNDLENZ_PUBLISH_TOKEN: ${{ secrets.FUNDLENZ_PUBLISH_TOKEN }}
           FUNDLENZ_PUBLISHER_LOGIN: ${{ vars.FUNDLENZ_PUBLISHER_LOGIN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
