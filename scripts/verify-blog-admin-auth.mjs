@@ -182,8 +182,8 @@ for (let i = 0; i < 8; i++) {
   await server.checkAdminPassword(request, "cookiemonster", "incorrect-password");
 }
 await assert.rejects(() => server.checkAdminPassword(request, "cookiemonster",
-  "incorrect-password"), error => error instanceof server.AdminCredentialStageFailure === false &&
-    error instanceof state.BlogAdminRateLimit,
+  "incorrect-password"), error => !(error instanceof server.AdminCredentialStageFailure) &&
+    error.message === "Too many login attempts. Please try again later.",
     "Exhausted D1 login attempts must remain rate-limited, not 503");
 
 console.log("PASS: admin verifier, D1 sessions and safe diagnostic stages, logout, attempt limits");
