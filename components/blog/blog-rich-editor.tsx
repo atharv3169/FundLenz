@@ -83,10 +83,11 @@ function StyledRun({ run }: { run: RichRun }) {
   }}>{run.text}</span>;
   return run.href ? <a href={run.href} target="_blank" rel="noopener noreferrer">{text}</a> : text;
 }
-export function BlogRichEditor({ value, onChange, onDirty, disabled }: {
+export function BlogRichEditor({ value, onChange, onDirty, onValidityChange, disabled }: {
   value: RichDocument;
   onChange: (next: RichDocument) => void;
   onDirty?: () => void;
+  onValidityChange?: (valid: boolean) => void;
   disabled?: boolean;
 }) {
   const [activeId, setActiveId] = useState(value.blocks[0]?.id || "");
@@ -127,10 +128,12 @@ export function BlogRichEditor({ value, onChange, onDirty, disabled }: {
     if (!root) return;
     try {
       const updated = safeInlineRuns(root);
+      onValidityChange?.(true);
       const current = value.blocks.find(block => block.id === id);
       if (current && isText(current) && !sameRuns(current.runs, updated))
         replaceBlock(id, block => isText(block) ? { ...block, runs: updated } : block);
     } catch (error) {
+      onValidityChange?.(false);
       setMessage(error instanceof Error ? error.message : "Cannot read this paragraph safely.");
     }
   }
@@ -303,7 +306,19 @@ export function BlogRichEditor({ value, onChange, onDirty, disabled }: {
             ref={el => { if (el) nodeMap.current.set(block.id, el); else nodeMap.current.delete(block.id); }}
             onFocus={() => { setActiveId(block.id); selectionRef.current = null; }}
             onBlur={() => flushText(block.id)}
-            onInput={() => { onDirty?.(); rememberSelection(block.id); }}
+            onInput={() => {
+              onDirty?.();
+              rememberSelection(block.id);
+              const root = nodeMap.current.get(block.id);
+              if (!root) return;
+              try {
+                safeInlineRuns(root);
+                onValidityChange?.(true);
+              } catch (error) {
+                onValidityChange?.(false);
+                setMessage(error instanceof Error ? error.message : "Text is too long to save safely.");
+              }
+            }}
             onPaste={event => {
               event.preventDefault();
               const text = event.clipboardData.getData("text/plain");
