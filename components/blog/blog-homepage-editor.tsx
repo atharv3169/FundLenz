@@ -42,7 +42,7 @@ export function BlogHomepageEditor({ initial, onSave, onCancel }: {
     try {
       const verified = validateBlogHomepageContent(draft);
       await onSave(verified);
-      setMessage("Saved successfully. Your publishing system will confirm when the updated website is live.");
+      setMessage("Saved as a private staging draft. No public changes have been published.");
     } catch (error) {
       setFailed(true);
       setMessage(error instanceof Error ? error.message : "Unable to save. Please try again.");
@@ -110,8 +110,8 @@ export function BlogHomepageEditor({ initial, onSave, onCancel }: {
       <button form="blog-homepage-copy-form" className={styles.save} type="submit"
         disabled={busy || !changed || preview}>{busy ? "Saving…" : "Save homepage wording"}</button>
     </div>
-    <p className={styles.note}>Save must use an authenticated server endpoint that updates only
-      the blog homepage content file in GitHub. Draft changes are not public until the
-      publishing workflow completes. Privacy-consent wording and actual link destinations are not editable here.</p>
+    <p className={styles.note}>Save stores a private draft in the staging D1 database, not GitHub. Changes aren't live
+      until a separate, authorized publishing workflow completes. Privacy-consent wording and
+      actual link destinations aren't editable here.</p>
   </section>;
 }
