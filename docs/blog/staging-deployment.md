@@ -45,3 +45,9 @@ The pull request workflow runs a regular production build, checks staging config
 8. Confirm the original portfolio lab Worker and `fundlenz.com` remain unchanged. Deploy to production only with owner approval.
 
 Staging D1 database ID is an application resource identifier, not a secret. Passwords, tokens, session secrets, and Google Drive credentials must never enter this public repository.
+
+## Connected Cloudflare staging repository (8 Oct 2026)
+
+Owner connected existing `fundlenz-blog-staging` Worker to `atharv3169/FundLenz`, choosing production branch `feature/drive-private-submissions-20261008`, build command `pnpm run build:blog-staging`, and guarded deploy command `FUNDLENZ_ALLOW_STAGING_DEPLOY=yes pnpm run deploy:blog-staging`.
+
+Cloudflare UI displays an orange warning suggesting changing **`wrangler.jsonc`** to name `fundlenz-blog-staging`. **Do NOT apply or merge this suggestion.** The normal `wrangler.jsonc` must remain named `fundlenz` for the original portfolio lab; the staging build selects **`wrangler.blog-staging.jsonc`** using `FUNDLENZ_BUILD_TARGET=blog-staging`. Check for any Cloudflare-generated PR and decline unwanted changes to the live Worker configuration. An ordinary commit to this existing branch should trigger the first Cloudflare staging build; verify it targets the independent staging Worker and retains its D1 binding before adding credentials.
