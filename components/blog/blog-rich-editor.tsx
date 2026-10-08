@@ -3,7 +3,7 @@
 import { useRef, useState, type DragEvent, type ReactNode } from "react";
 import {
   type RichBlock, type RichTextBlock, type RichMediaBlock, type RichRun,
-  type RichDocument, safeHttpUrl,
+  type RichDocument, safeHttpUrl, BLOG_FONTS, blogFontFamily, mediaWidth,
 } from "@/lib/blog-rich-document";
 import styles from "./blog-rich-editor.module.css";
 
@@ -45,17 +45,21 @@ function safeInlineRuns(root: HTMLElement): RichRun[] {
     if (tag === "a" && safeHttpUrl(node.getAttribute("href"))) next.href = node.getAttribute("href")!;
     const color = rgbToHex(node.style.color || (tag === "font" ? node.getAttribute("color") || "" : ""));
     if (color) next.color = color;
-    const family = (node.style.fontFamily || (tag === "font" ? node.getAttribute("face") || "" : "")).toLowerCase();
-    if (family.includes("times")) next.font = "times";
-    else if (family.includes("georgia")) next.font = "serif";
-    else if (family.includes("trebuchet")) next.font = "trebuchet";
-    else if (family.includes("verdana")) next.font = "verdana";
-    else if (family.includes("mono") || family.includes("courier")) next.font = "mono";
-    else if (family.includes("arial") || family.includes("helvetica")) next.font = "sans";
+    const family = (node.style.fontFamily ||
+      (tag === "font" ? node.getAttribute("face") || "" : "")).replace(/['"]/g, "").toLowerCase();
+    if (family) {
+      const matching = BLOG_FONTS.find(font => {
+        const name = font.family.split(",")[0].replace(/['"]/g, "").toLowerCase();
+        return family.split(",")[0].trim() === name;
+      });
+      if (matching) next.font = matching.id;
+    }
     const size = node.style.fontSize || (tag === "font" ? node.getAttribute("size") || "" : "");
-    if (size === "6" || size === "7" || /^(28|29|30|31|32|33|34|35|36)px$/.test(size)) next.size = "xlarge";
-    else if (size === "5" || /^(22|23|24|25|26|27)px$/.test(size)) next.size = "large";
-    else if (size === "1" || size === "2" || /^(10|11|12|13)px$/.test(size)) next.size = "small";
+    const px = /^([0-9]+)px$/.exec(size);
+    if (px && Number(px[1]) >= 12 && Number(px[1]) <= 72) next.sizePx = Number(px[1]);
+    else if (size === "6" || size === "7") next.size = "xlarge";
+    else if (size === "5") next.size = "large";
+    else if (size === "1" || size === "2") next.size = "small";
     for (const child of Array.from(node.childNodes)) read(child, next, depth + 1);
     if ((tag === "div" || tag === "p") && node.nextSibling) push("\n", marks);
   }
@@ -67,12 +71,10 @@ function StyledRun({ run }: { run: RichRun }) {
     fontWeight: run.bold ? 700 : undefined, fontStyle: run.italic ? "italic" : undefined,
     textDecoration: run.underline ? "underline" : undefined,
     color: run.color,
-    fontFamily: run.font === "serif" ? "Georgia,serif" :
-      run.font === "times" ? "'Times New Roman',serif" :
-      run.font === "verdana" ? "Verdana,sans-serif" :
-      run.font === "trebuchet" ? "'Trebuchet MS',sans-serif" :
-      run.font === "mono" ? "monospace" : run.font === "sans" ? "Arial,sans-serif" : undefined,
-    fontSize: run.size === "xlarge" ? "1.45em" : run.size === "large" ? "1.22em" : run.size === "small" ? "0.82em" : undefined,
+    fontFamily: blogFontFamily(run.font),
+    fontSize: run.sizePx ? run.sizePx + "px" :
+      run.size === "xlarge" ? "1.45em" : run.size === "large" ? "1.22em" :
+      run.size === "small" ? "0.82em" : undefined,
     whiteSpace: "pre-wrap",
   }}>{run.text}</span>;
   return run.href ? <a href={run.href} target="_blank" rel="noopener noreferrer">{text}</a> : text;
@@ -84,6 +86,7 @@ export function BlogRichEditor({ value, onChange, disabled }: {
 }) {
   const [activeId, setActiveId] = useState(value.blocks[0]?.id || "");
   const [message, setMessage] = useState("");
+  const [fontSizePx, setFontSizePx] = useState(18);
   const nodeMap = useRef(new Map<string, HTMLDivElement>());
   const range = useRef<Range | null>(null);
   const dragging = useRef<string | null>(null);
@@ -118,6 +121,30 @@ export function BlogRichEditor({ value, onChange, disabled }: {
     }
     saveSelection();
   }
+  // Font and size use a real styled span, not HTML <font size="3">.
+  // A collapsed selection formats the current text block; selecting characters
+  // formats only those characters. Both serialize to validated, numeric pixels.
+  function applyInlineStyle(key: "fontFamily" | "fontSize", css: string) {
+    const root = nodeMap.current.get(activeId);
+    if (!root || disabled) { setMessage("Click inside an article text block first."); return; }
+    let selected = range.current?.cloneRange();
+    if (selected && !root.contains(selected.commonAncestorContainer)) selected = undefined;
+    if (!selected || selected.collapsed) {
+      selected = document.createRange();
+      selected.selectNodeContents(root);
+    }
+    try {
+      const wrapper = document.createElement("span");
+      wrapper.style[key] = css;
+      wrapper.appendChild(selected.extractContents());
+      selected.insertNode(wrapper);
+      // Flush immediately: toolbar controls may retain focus, so blur alone
+      // is not sufficient to persist formatting when Save is clicked next.
+      flushText(activeId);
+      range.current = null;
+    } catch { setMessage("Select text within one paragraph and try again."); }
+  }
+
   function insert(block: RichBlock) {
     const index = value.blocks.findIndex(item => item.id === activeId);
     const out = [...value.blocks];
@@ -144,7 +171,8 @@ export function BlogRichEditor({ value, onChange, disabled }: {
         setMessage("Invalid thumbnail URL."); return;
       }
     }
-    insert({ id: blockId(), type, src: response, caption: caption.slice(0, 350),
+    insert({ id: blockId(), type, src: response, widthPct: mediaWidth(undefined, type),
+      align: "center", caption: caption.slice(0, 350),
       ...(alt ? { alt: alt.slice(0, 350) } : {}),
       ...(thumbnail ? { thumbnail } : {}) });
   }
@@ -180,50 +208,64 @@ export function BlogRichEditor({ value, onChange, disabled }: {
       onClick={() => command(cmd)} disabled={disabled}>{label}</button>;
   return <div className={styles.root}>
     <div className={styles.toolbar} aria-label="Article formatting toolbar">
-      <span className={styles.toolLabel}>FORMAT</span>
-      {toolbar("B", "bold", "Bold selected text")}
-      {toolbar("𝑰", "italic", "Italic selected text")}
-      {toolbar("U̲", "underline", "Underline selected text")}
-      <button className={styles.tool} type="button" disabled={disabled}
-        onMouseDown={event => event.preventDefault()}
-        onClick={() => {
-          const link = window.prompt("HTTPS link URL for selected text");
-          if (link && safeHttpUrl(link)) command("createLink", link);
-          else if (link) setMessage("Links must be valid HTTPS URLs.");
-        }}>🔗 Link</button>
-      <label className={styles.toolSelect}>Font
-        <select defaultValue="" disabled={disabled} onChange={event => {
-          const fonts: Record<string,string> = { serif: "Georgia", times: "Times New Roman", sans: "Arial", verdana: "Verdana", trebuchet: "Trebuchet MS", mono: "Courier New" };
-          if (fonts[event.target.value]) command("fontName", fonts[event.target.value]);
-        }}>
-          <option value="">Choose</option>
-          <option value="serif">Georgia</option><option value="times">Times New Roman</option>
-          <option value="sans">Arial</option><option value="verdana">Verdana</option>
-          <option value="trebuchet">Trebuchet</option><option value="mono">Monospace</option>
-        </select>
-      </label>
-      <label className={styles.toolSelect}>Size
-        <select defaultValue="" disabled={disabled} onChange={event => {
-          if (event.target.value) command("fontSize", event.target.value);
-        }}>
-          <option value="">Choose</option><option value="2">Small</option><option value="3">Normal</option>
-          <option value="5">Large</option><option value="6">Extra large</option>
-        </select>
-      </label>
-      <label className={styles.toolSelect}>Color
-        <input aria-label="Selected text color" type="color" disabled={disabled}
-          defaultValue="#223a4a" onChange={event => command("foreColor", event.target.value)} />
-      </label>
-      <span className={styles.toolLabel}>INSERT AFTER SELECTION</span>
-      {(["paragraph","heading","subheading","quote"] as const).map(type =>
-        <button key={type} className={styles.tool} disabled={disabled}
-          type="button" onClick={() => insertText(type)}>+ {type}</button>)}
-      <button className={styles.tool} type="button" disabled={disabled} onClick={() => insertMedia("image")}>+ Image URL</button>
-      <button className={styles.tool} type="button" disabled={disabled} onClick={() => insertMedia("video")}>+ Video</button>
-      <button className={styles.tool} type="button" disabled={disabled} onClick={() => insertMedia("video-thumbnail")}>+ Video thumbnail</button>
+      <div className={styles.toolSection}>
+        <span className={styles.toolLabel}>Text formatting</span>
+        <div className={styles.toolLine}>
+          {toolbar("B", "bold", "Bold selected text")}
+          {toolbar("𝑰", "italic", "Italic selected text")}
+          {toolbar("U̲", "underline", "Underline selected text")}
+          <button className={styles.tool} type="button" disabled={disabled}
+            onMouseDown={event => event.preventDefault()}
+            onClick={() => {
+              const link = window.prompt("HTTPS link URL for selected text");
+              if (link && safeHttpUrl(link)) command("createLink", link);
+              else if (link) setMessage("Links must be valid HTTPS URLs.");
+            }}>🔗 Link</button>
+          <label className={styles.toolSelect}>Font family
+            <select aria-label="Font family" defaultValue="" disabled={disabled}
+              onChange={event => {
+                const option = BLOG_FONTS.find(font => font.id === event.target.value);
+                if (option) applyInlineStyle("fontFamily", option.family);
+                event.target.value = "";
+              }}>
+              <option value="">Choose a font</option>
+              {BLOG_FONTS.map(font => <option key={font.id} value={font.id}>{font.label}</option>)}
+            </select>
+          </label>
+          <label className={styles.toolSelect}>Text size (px)
+            <div className={styles.sizeControl}>
+              <input type="number" aria-label="Text size in pixels" min={12} max={72} step={1}
+                value={fontSizePx} disabled={disabled}
+                onChange={event => setFontSizePx(Number(event.target.value))} />
+              <button className={styles.tool} type="button"
+                onMouseDown={event => event.preventDefault()}
+                disabled={disabled || !Number.isInteger(fontSizePx) || fontSizePx < 12 || fontSizePx > 72}
+                onClick={() => applyInlineStyle("fontSize", fontSizePx + "px")}>Apply</button>
+            </div>
+          </label>
+          <label className={styles.toolSelect}>Text color
+            <input aria-label="Selected text color" type="color" disabled={disabled}
+              defaultValue="#223a4a" onChange={event => command("foreColor", event.target.value)} />
+          </label>
+        </div>
+      </div>
+      <div className={styles.toolSection}>
+        <span className={styles.toolLabel}>Insert content blocks</span>
+        <div className={styles.toolLine}>
+          {(["paragraph","heading","subheading","quote"] as const).map(type =>
+            <button key={type} className={styles.tool} disabled={disabled}
+              type="button" onClick={() => insertText(type)}>+ {type}</button>)}
+          <span className={styles.toolDivider} aria-hidden="true"/>
+          <button className={styles.tool} type="button" disabled={disabled}
+            onClick={() => insertMedia("image")}>+ Image URL</button>
+          <button className={styles.tool} type="button" disabled={disabled}
+            onClick={() => insertMedia("video")}>+ YouTube / video</button>
+          <button className={styles.tool} type="button" disabled={disabled}
+            onClick={() => insertMedia("video-thumbnail")}>+ Clickable thumbnail</button>
+        </div>
+      </div>
     </div>
-    <p className={styles.help}>Select text to style it. Click a paragraph to choose where new blocks go.
-      Drag blocks by the six-dot handle to reorder them. All media currently use HTTPS URLs.</p>
+    <p className={styles.help}>Select words inside a paragraph to style only that text, or click within it to style the entire block. Enter a numeric size (12–72 px), then choose Apply. Media sizes and alignment are adjustable below each media URL. Drag the handle or use arrows to reorder blocks.</p>
     {message && <p className={styles.warning} role="status">{message}</p>}
     <div className={styles.blocks}>
       {value.blocks.map((block, index) => <section key={block.id}
@@ -266,6 +308,56 @@ export function BlogRichEditor({ value, onChange, disabled }: {
                 onChange={event => replaceBlock(block.id, cur => ({ ...cur, thumbnail: event.target.value }))}/></label> : null}
             <label>Caption<input value={block.caption || ""} maxLength={350} disabled={disabled}
               onChange={event => replaceBlock(block.id, cur => ({ ...cur, caption: event.target.value }))}/></label>
+            <div className={styles.mediaSizeEditor}>
+              <div className={styles.mediaSizeHead}>
+                <strong>Display size &amp; position</strong>
+                <span>{mediaWidth(block.widthPct, block.type)}% of article column</span>
+              </div>
+              <div className={styles.mediaSizeRow}>
+                <input type="range" min={20} max={100} step={5}
+                  aria-label={"Width for " + block.type} value={mediaWidth(block.widthPct, block.type)}
+                  disabled={disabled}
+                  onChange={event => replaceBlock(block.id, cur =>
+                    ({ ...cur, widthPct: Number(event.target.value) }))}/>
+                <label>Width %
+                  <input type="number" min={20} max={100} step={1} disabled={disabled}
+                    aria-label="Media width percentage" value={mediaWidth(block.widthPct, block.type)}
+                    onChange={event => {
+                      const next = Number(event.target.value);
+                      if (Number.isInteger(next) && next >= 20 && next <= 100)
+                        replaceBlock(block.id, cur => ({ ...cur, widthPct: next }));
+                    }}/>
+                </label>
+                <label>Position
+                  <select aria-label="Media alignment" value={block.align || "center"} disabled={disabled}
+                    onChange={event => replaceBlock(block.id, cur => ({
+                      ...cur, align: event.target.value as RichMediaBlock["align"],
+                    }))}>
+                    <option value="left">Left</option>
+                    <option value="center">Center</option>
+                    <option value="right">Right</option>
+                  </select>
+                </label>
+              </div>
+              <div className={styles.mediaPresets}>
+                {[35, 55, 75, 100].map(pct => <button type="button" key={pct}
+                  className={styles.tool} disabled={disabled}
+                  onClick={() => replaceBlock(block.id, cur => ({ ...cur, widthPct: pct }))}>
+                  {pct === 35 ? "Small" : pct === 55 ? "Medium" : pct === 75 ? "Large" : "Full"} ({pct}%)
+                </button>)}
+              </div>
+              <div className={styles.mediaGauge} aria-label="Media width preview">
+                <div className={styles.mediaGaugeInner}
+                  style={{
+                    width: mediaWidth(block.widthPct, block.type) + "%",
+                    marginLeft: block.align === "right" ? "auto" :
+                      block.align === "left" ? "0" : "auto",
+                    marginRight: block.align === "left" ? "auto" :
+                      block.align === "right" ? "0" : "auto",
+                  }}>{block.type === "image" ? "▣ Image" :
+                    block.type === "video" ? "▶ Video" : "▶ Linked thumbnail"}</div>
+              </div>
+            </div>
           </div>}
       </section>)}
     </div>
