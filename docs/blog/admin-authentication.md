@@ -49,3 +49,17 @@ The generator does not place secrets in repository files. A salt-specific verifi
 - Validate login/logout/session cookies and session revocation in a real browser on isolated staging; automated unit tests are not proof of production authentication.
 
 No paid plans should be activated without owner approval.
+
+## Temporary staging-only login troubleshooting
+
+Owner confirmed that the staging gate and /blogpost/admin page load and that both admin secrets are stored as encrypted Worker variables, but the first POST login showed "Administrator login is currently unavailable." The GET session request can succeed even if the D1 write path or trusted Cloudflare client-IP header is unavailable. A missing client IP is a fail-closed error; do not bypass D1 rate limiting.
+
+In `app/api/blog/admin/login/route.ts`, only on exact staging hostname, generic 503s now include a **safe, coarse reference code** and `console.error` writes only that code to Cloudflare logs. Neither code nor log contains user input, secrets, IP addresses, passwords, SQL, session tokens or cryptographic values:
+
+- `FL-AIP` — Cloudflare's trusted client IP header is missing. Investigate whether the staging access wrapper forwards the original trusted metadata without spoofing; do not fall back to arbitrary client-supplied IP headers.
+- `FL-CFG` — Required admin runtime configuration missing. Check staging bindings and encrypted keys.
+- `FL-VER` — Unexpected error during D1 login-attempt reservation or password verification. Examine Cloudflare D1 errors safely through the dashboard; the visitor should see no internals.
+- `FL-SES` — Error during D1 session creation after the password is accepted. Check D1 SQL schema and permissions.
+- `FL-REQ` — Unexpected request read/parse error (normally returned as HTTP 400 when expected).
+
+Only staging gets the diagnostic text. Production errors remain generic. After the new staging Worker deployment, perform one login attempt and note only the reference code; do not share the password, Network Authorization header or secret values.
