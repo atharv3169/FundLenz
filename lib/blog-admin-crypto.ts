@@ -1,4 +1,6 @@
 /** Portable, no-dependency security primitives for the FundLenz single-admin login. */
+import { pbkdf2Sync } from "node:crypto";
+
 const encoder = new TextEncoder();
 export const BLOG_ADMIN_USERNAME = "cookiemonster";
 export const BLOG_ADMIN_ITERATIONS = 600_000;
@@ -58,7 +60,13 @@ export async function verifyPassword(password: string, verifier: string): Promis
   } catch { return false; }
   if (salt.length !== 24 || expected.length !== 32) return false;
   if (password.length > 256) return false;
-  const actual = await derivePassword(password, salt);
+  // Cloudflare Workers caps Web Crypto PBKDF2 deriveBits at 100,000 rounds,
+  // while our offline browser generator uses 600,000 rounds.
+  // The Worker Node-compat crypto implementation uses native PBKDF2. Keep
+  // the existing verifier unchanged; never silently lower its work factor.
+  // If runtime CPU/algorithm limits reject this call, the login fails closed.
+  const actual = new Uint8Array(pbkdf2Sync(encoder.encode(password), salt,
+    BLOG_ADMIN_ITERATIONS, 32, "sha256"));
   return constantTimeSame(actual, expected);
 }
 
