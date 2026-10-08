@@ -1,4 +1,4 @@
-import { adminRuntime, requireAdminOrigin } from "@/lib/blog-admin-server";
+import { adminRuntime, requireAdminOrigin, AdminForbidden } from "@/lib/blog-admin-server";
 import { clearSessionCookie, privateAdminResponse } from "@/lib/blog-admin-crypto";
 import { revokeSession } from "@/lib/blog-admin-state";
 
@@ -9,7 +9,8 @@ export async function POST(request: Request): Promise<Response> {
     // Database revocation must complete before reporting logout success.
     await revokeSession(db, secret, request.headers.get("Cookie"));
     return privateAdminResponse({ authenticated: false }, 200, clearSessionCookie());
-  } catch {
+  } catch (error) {
+    if (error instanceof AdminForbidden) return privateAdminResponse({ error: "Invalid request origin." }, 403);
     return privateAdminResponse({ error: "Logout is unavailable. Please retry." }, 503);
   }
 }
