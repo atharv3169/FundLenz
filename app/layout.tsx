@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,7 +18,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        {children}
+        <footer className="legal-footer" aria-label="FundLenz legal information">
+          <nav aria-label="Legal links">
+            <Link href="/privacy">Privacy Policy</Link>
+            <span aria-hidden="true">·</span>
+            <Link href="/terms">Terms of Service</Link>
+          </nav>
+        </footer>
+      </body>
     </html>
   );
 }

@@ -55,20 +55,32 @@
     },
     {
       "path": "app/globals.css",
-      "bytes": 54398,
-      "sha256": "e6d9d9382cda57f864f0d72d0526a3e325fbf8ef2eb50bc508dd455c0d89436b",
+      "bytes": 56135,
+      "sha256": "249bf18757bbe55d7878312e6d54d1a05b298f397dd57d27643d7bd7e5edaa59",
       "scope": "application"
     },
     {
       "path": "app/layout.tsx",
-      "bytes": 609,
-      "sha256": "86e447d87491c49c58c8d1d820fc1ff64804360db7467a4f52a9e59d07b00026",
+      "bytes": 972,
+      "sha256": "5963115a9827deeb29da960baad58a5135d90fb1a17e5d3f5fc0517cd33a74ff",
       "scope": "application"
     },
     {
       "path": "app/page.tsx",
       "bytes": 102,
       "sha256": "1af341a9793e49e775f9f360b09f2945b46d4ff2628746e4ba0654b7641a92b2",
+      "scope": "application"
+    },
+    {
+      "path": "app/privacy/page.tsx",
+      "bytes": 1910,
+      "sha256": "664eadef7c41ca19ec800f0719b40cf75823aad79900c58d6e980a72c2e15c26",
+      "scope": "application"
+    },
+    {
+      "path": "app/terms/page.tsx",
+      "bytes": 1691,
+      "sha256": "751fcbb4cbf0f327511952c84c7f49ca4a31aecc8231708975a03f13ba26b5ab",
       "scope": "application"
     },
     {
@@ -534,6 +546,12 @@
       "scope": "retained_sources"
     },
     {
+      "path": "data/sources/global/holdings/downloads.json",
+      "bytes": 29953,
+      "sha256": "95e89ba96936355f39b3f1c1b204d663875c98146ab806d754b0107648c15f80",
+      "scope": "retained_sources"
+    },
+    {
       "path": "data/sources/global/holdings/DVY.csv",
       "bytes": 16977,
       "sha256": "a42e5338de5b4ef654e451a7dd8d38720993b6fac92e3f300dd24d3ea46628f3",
@@ -603,6 +621,12 @@
       "path": "data/sources/global/holdings/IEMG.csv",
       "bytes": 567567,
       "sha256": "945a8687021dc62c6ec480f7c40da6beb4534a456016a02220545b7a5cb46f32",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/ishares-us-products.html",
+      "bytes": 495682,
+      "sha256": "af0be408d6cc396029461dfb3b872ca3157004a0b6e11dbbfa3b3eaecab784dc",
       "scope": "retained_sources"
     },
     {
@@ -750,6 +774,12 @@
       "scope": "retained_sources"
     },
     {
+      "path": "data/sources/global/holdings/sources.json",
+      "bytes": 20780,
+      "sha256": "c3d34aff4423011bbd88ffb835a95bbb899a2a95683893a2361e8fbaaeefcab0",
+      "scope": "retained_sources"
+    },
+    {
       "path": "data/sources/global/holdings/SOXX.csv",
       "bytes": 6401,
       "sha256": "2a9d78e836d39a4c3c995aa18d0fee7e225498674862e201d78bda378728e5e5",
@@ -774,33 +804,15 @@
       "scope": "retained_sources"
     },
     {
-      "path": "data/sources/global/holdings/VLUE.csv",
-      "bytes": 24395,
-      "sha256": "e9acf28a066bed1eb93e107053c27edaa75f12af8b24b62c6d4ba19e3d6c70f1",
-      "scope": "retained_sources"
-    },
-    {
-      "path": "data/sources/global/holdings/downloads.json",
-      "bytes": 29953,
-      "sha256": "95e89ba96936355f39b3f1c1b204d663875c98146ab806d754b0107648c15f80",
-      "scope": "retained_sources"
-    },
-    {
-      "path": "data/sources/global/holdings/ishares-us-products.html",
-      "bytes": 495682,
-      "sha256": "af0be408d6cc396029461dfb3b872ca3157004a0b6e11dbbfa3b3eaecab784dc",
-      "scope": "retained_sources"
-    },
-    {
-      "path": "data/sources/global/holdings/sources.json",
-      "bytes": 20780,
-      "sha256": "c3d34aff4423011bbd88ffb835a95bbb899a2a95683893a2361e8fbaaeefcab0",
-      "scope": "retained_sources"
-    },
-    {
       "path": "data/sources/global/holdings/validation.json",
       "bytes": 10344,
       "sha256": "fc3df0cb30bd9cf9aec7133730ca2aa9459cc3831e3b33d27274da6620bd7bda",
+      "scope": "retained_sources"
+    },
+    {
+      "path": "data/sources/global/holdings/VLUE.csv",
+      "bytes": 24395,
+      "sha256": "e9acf28a066bed1eb93e107053c27edaa75f12af8b24b62c6d4ba19e3d6c70f1",
       "scope": "retained_sources"
     },
     {
@@ -912,12 +924,6 @@
       "scope": "source_data"
     },
     {
-      "path": "data/sources/securities/README.md",
-      "bytes": 5100,
-      "sha256": "9ac30bf82cbeaec66cdef7bdd477f06ae578597abfb93b8e9a853fad8e86e3ab",
-      "scope": "source_data"
-    },
-    {
       "path": "data/sources/securities/audit.json",
       "bytes": 5747,
       "sha256": "7b8f747c8d2a6c08393cdb8d34f89f3fc59a87b5bd0380a528301e5a8114f98d",
@@ -981,6 +987,12 @@
       "path": "data/sources/securities/raw/otherlisted.txt",
       "bytes": 542387,
       "sha256": "2f41bbc94a2b82fde19017080612ecb7fd220456193f9c2f905e618560f6f3c8",
+      "scope": "source_data"
+    },
+    {
+      "path": "data/sources/securities/README.md",
+      "bytes": 5100,
+      "sha256": "9ac30bf82cbeaec66cdef7bdd477f06ae578597abfb93b8e9a853fad8e86e3ab",
       "scope": "source_data"
     },
     {
@@ -8010,15 +8022,15 @@
       "scope": "application"
     },
     {
-      "path": "vendor/shadcn-tailwind-4.13.0.LICENSE.md",
-      "bytes": 1063,
-      "sha256": "1564074e13439397221ffd522e2e504d56561994a23d371aa5e3ad43e4f5423f",
-      "scope": "application"
-    },
-    {
       "path": "vendor/shadcn-tailwind-4.13.0.css",
       "bytes": 16041,
       "sha256": "bc7d83425702955b4cb67cb14ede9d603f9d912376d57a2d81d661094d2a782a",
+      "scope": "application"
+    },
+    {
+      "path": "vendor/shadcn-tailwind-4.13.0.LICENSE.md",
+      "bytes": 1063,
+      "sha256": "1564074e13439397221ffd522e2e504d56561994a23d371aa5e3ad43e4f5423f",
       "scope": "application"
     },
     {
