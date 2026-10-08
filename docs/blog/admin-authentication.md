@@ -63,3 +63,11 @@ In `app/api/blog/admin/login/route.ts`, only on exact staging hostname, generic 
 - `FL-REQ` — Unexpected request read/parse error (normally returned as HTTP 400 when expected).
 
 Only staging gets the diagnostic text. Production errors remain generic. After the new staging Worker deployment, perform one login attempt and note only the reference code; do not share the password, Network Authorization header or secret values.
+
+## Worker PBKDF2 platform cap (FL-KDF) — compatibility trial
+
+The owner successfully configured encrypted secrets and passed the staging Basic gate. The stage-specific login code `FL-KDF` identified a password-derivation exception even though the generated verifier uses the documented scheme `pbkdf2_sha256$600000$...`. Cloudflare Workers Web Crypto `subtle.deriveBits` enforces a hard ceiling of 100,000 PBKDF2 iterations on deployed Workers (independently documented at https://github.com/cloudflare/workerd/issues/1346), while locally executed Node and browser Web Crypto accept 600,000. This was missed by non-production tests.
+
+**Preserve existing secrets if possible:** `verifyPassword` now attempts `node:crypto.pbkdf2Sync` for the exact same 600,000-round, SHA-256, salted format and uses the existing constant-time comparison. Browser/offline generator and session secret are unchanged. The Worker already has `nodejs_compat`. **This is a compatibility experiment, not yet verified on the deployed Cloudflare free-plan Worker.** The native Node-compatible API may itself have limits or exhaust available Worker CPU; neither lowering the iteration count inside the verifier nor accepting partial hashing is safe. Do not assert login works until the owner's successful real-browser login and logout.
+
+If `FL-KDF` persists after the new staging deploy, investigate actual Cloudflare runtime error *without logging credentials*; instead use a new offline generator with `pbkdf2_sha256$100000$` or a suitable supported KDF, then rotate **only** `FUNDLENZ_ADMIN_PASSWORD_HASH`. This may require user approval; do not touch `FUNDLENZ_ADMIN_SESSION_SECRET`, `FUNDLENZ_STAGING_GATE_PASSWORD`, or the production Worker. Keep PR draft. 
