@@ -1,0 +1,66 @@
+.dashboard { max-width: 1530px; margin: 0 auto; color: #244658; }
+.header { background: #fff; border: 1px solid #dbe7eb; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; }
+.header h2 { font-size: 25px; font-weight: 740; margin-bottom: 4px; }
+.header p { color: #667f8e; font-size: 13px; line-height: 1.65; }
+.status { font-size: 11px; color: #176e78; font-weight: 750; letter-spacing: .08em; }
+.toolbar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:14px; margin-bottom: 18px; }
+.tabs { display:flex; gap: 9px; flex-wrap: wrap; }
+.tabs button { border-radius: 7px; border:1px solid #bcd5de; background: #fff; color: #30606d; padding: 10px 14px; cursor:pointer; font-size: 13px; font-weight:700; }
+.tabs .active { background: #0a6978; color: white; border-color: #0a6978; }
+.panel { border:1px solid #dbe7ee; background:white; border-radius: 12px; padding:clamp(20px,3vw,36px); min-width:0; }
+.previewLayout { display:block; }
+.previewPanel { background:transparent; min-width:0; padding:0; }
+.editorTitleRow {display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:18px;margin-bottom:19px;}
+.editorTitleRow h3 { font-size:24px; font-weight:750; color:#1c4053; }
+.editorTitleRow>div {max-width:720px;}
+.previewPanel .editorTitleRow {padding:10px 8px 18px;}
+.panel h3 { font-size:20px; margin-bottom:6px; font-weight:720; }
+.hint { color: #6b8492; font-size: 13px; line-height:1.6; margin-bottom: 16px; }
+.split { display:grid; grid-template-columns: minmax(210px, 260px) minmax(0,1fr); gap: 22px; align-items:start; }
+.articleList { border:1px solid #e0ebef; border-radius:9px; padding:14px; }
+.articleList h3 { font-size:16px; }
+.articleList button { display:block; width:100%; margin:8px 0; padding:11px; border:1px solid #d5e3e9; border-radius:7px; text-align:left; font-size:13px; font-weight:650; cursor:pointer; background:#f8fbfc; overflow-wrap:anywhere; }
+.articleList button.selected { border-color:#0a7788; background:#e5f3f4; }
+.articleList small { font-size:11px; display:block; color:#718895; margin-top:4px; font-weight:450; }
+.form { display:grid; gap:22px; }
+.articleMetaFields{display:grid;grid-template-columns:minmax(195px,280px) minmax(0,1fr);gap:20px;align-items:start;}
+.articleMetaFields textarea{min-height:94px;max-height:180px;}
+.form>label:first-child input{font-size:18px;font-weight:650;color:#1a394b;}
+.form label { display:grid; gap:6px; font-size:13px; font-weight:650; color:#476574; }
+.form input,.form select,.form textarea { width:100%; padding:13px 15px; font-size:15px; font-family:inherit; background:#fff; color:#204455; border:1px solid #c9dbe3; border-radius:7px; }
+.form textarea { resize:vertical; line-height:1.5; }
+.buttons {display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-start; }
+.primary { background:#0a6978; color:white; border:0; border-radius:7px; padding:11px 15px; cursor:pointer; font-weight:700; font-size:13px; }
+.secondary { background:white; color:#2b6375; border:1px solid #c6dce4; border-radius:7px; padding:10px 15px; cursor:pointer; font-weight:700; font-size:13px; }
+.danger { color:#a34046; border:1px solid #e3c2c2; background:white; border-radius:7px; padding:10px 15px; cursor:pointer; }
+.primary:disabled,.secondary:disabled,.danger:disabled {opacity:.5;cursor:not-allowed;}
+.note {font-size:12px; color:#607985; margin:15px 0; line-height:1.55;}
+.error {font-size:13px;color:#a53043; padding:12px; border:1px solid #e8c6ca; border-radius:7px; background:#fff9f9; margin:12px 0;}
+.success {font-size:13px;color:#207052;margin:12px 0;}
+.preview { border:1px solid #dae9ee; padding:14px; border-radius:8px; background:#f7fafb; white-space:pre-wrap; overflow-wrap:anywhere; font-size:13px; line-height:1.65; max-height:400px; overflow:auto;}
+@media(max-width:920px) {.split{grid-template-columns:1fr;}.panel{padding:20px;} .toolbar{align-items:flex-start;} .articleList{max-height:240px;overflow-y:auto;} }
+@media(max-width:650px){.articleMetaFields{grid-template-columns:1fr;}.panel{padding:16px;}}
+
+.authorEditor{border:1px solid #d4e4e9;background:#f7fafb;border-radius:10px;padding:20px 22px;margin:4px 0 20px;min-width:0}
+.authorEditor legend{padding:0 8px;font-size:14px;font-weight:750;color:#164e63}
+.authorEditor>p{font-size:12px;color:#708592;margin:0 0 18px}
+.authorGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 20px}
+.authorGrid label{display:grid;gap:7px;font-size:12px;font-weight:650;color:#36596b;min-width:0}
+.authorGrid input{background:#fff;border:1px solid #c7dbe5;border-radius:7px;padding:10px 12px;font-size:14px;min-width:0;width:100%;color:#294757}
+.authorGrid input[type=file]{font-size:12px}
+.avatarPreview{display:flex;gap:12px;align-items:center}
+.avatarPreview img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:1px solid #d2e5e9}
+.avatarPreview button{font-size:12px;color:#9c3b3b;border:1px solid #e4c4c4;background:#fff;padding:8px;border-radius:6px}
+@media(max-width:760px){.authorGrid{grid-template-columns:1fr}.authorEditor{padding:16px}}
+
+.header{border-top:3px solid #398d98;background:linear-gradient(115deg,#fff 65%,#f0f8f8);padding:25px 28px}
+.header h2{letter-spacing:-.6px;margin-top:6px}
+.header p{max-width:850px}
+.articleList{background:#f8fbfc;position:sticky;top:20px;max-height:80vh;overflow:auto}
+.articleList .primary{background:#0a6978;color:#fff;text-align:center;border-color:#0a6978}
+.draftSearch{display:grid;gap:7px;margin:18px 0 13px;font-size:11px;font-weight:700;color:#4e6c7c}
+.draftSearch input{width:100%;min-width:0;border:1px solid #cbdde5;border-radius:7px;padding:10px;background:#fff;color:#244658;font:inherit;font-size:13px}
+.dashboard :is(button,input,select,textarea):focus-visible{outline:3px solid #7bc3ce;outline-offset:3px}
+.buttons{padding-top:20px;border-top:1px solid #deeaee}
+@media(max-width:920px){.articleList{position:static;max-height:280px}}
+@media(max-width:650px){.header{padding:20px}.form input,.form textarea,.form select{font-size:16px}.toolbar{gap:10px}.tabs button{padding:11px}.authorEditor{padding:14px}.authorGrid input{font-size:16px}}

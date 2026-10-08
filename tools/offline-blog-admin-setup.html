@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <title>FundLenz — Offline administrator setup</title>
+  <style>
+    :root { color-scheme: light; font: 15px/1.6 system-ui,-apple-system,Segoe UI,sans-serif; background: #f1f6f8; color: #233c4b; }
+    body { max-width: 760px; margin: 34px auto; padding: 0 18px; }
+    main { background: white; border: 1px solid #d6e2e9; border-radius: 14px; padding: clamp(20px,4vw,40px); }
+    h1 { font-size: 26px; margin: 0 0 8px; } h2 { font-size: 18px; }
+    p { color: #536c79; } label { font-weight: 650; display: block; margin: 18px 0 5px; }
+    input, textarea { display: block; width: 100%; box-sizing: border-box; padding: 11px; border: 1px solid #b9cbd4; border-radius: 7px; font: inherit; background: #fff; }
+    textarea { resize: vertical; word-break: break-all; font-family: ui-monospace,SFMono-Regular,Consolas,monospace; font-size: 12px; }
+    button { color: white; background: #0a6978; border: 0; padding: 12px 18px; border-radius: 7px; font: inherit; font-weight: 700; cursor: pointer; margin-top: 20px; }
+    button:disabled { opacity: .6; } .note { font-size: 13px; }
+    .warning { padding: 12px 16px; border-radius: 8px; background: #f8f6e9; color: #67552e; }
+    .error { color: #a23137; font-weight: 700; } [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="note">FUNDLENZ · PRIVATE SETUP UTILITY</p>
+  <h1>Create your blog administrator credentials</h1>
+  <p>This file works <strong>offline</strong> on your computer. Your password is processed only in this browser page. There are no external scripts, trackers, network requests, or saved files. The code is publicly inspectable in the FundLenz repository.</p>
+  <p class="warning"><strong>Security:</strong> Download this file and open it locally, ideally with Wi-Fi disconnected. Do not enter the password in a public website or send the results to chat. The generated values must be pasted directly into Cloudflare's encrypted Secrets settings later.</p>
+  <form id="setup">
+    <label for="password">Choose a unique administrator password (12–256 characters)</label>
+    <input id="password" type="password" required minlength="12" maxlength="256" autocomplete="new-password" spellcheck="false">
+    <label for="confirm">Repeat the password</label>
+    <input id="confirm" type="password" required minlength="12" maxlength="256" autocomplete="new-password" spellcheck="false">
+    <button id="generate" type="submit">Generate private credentials</button>
+  </form>
+  <p id="message" aria-live="polite" class="note"></p>
+  <section id="results" hidden>
+    <h2>Save these two values in Cloudflare Secrets</h2>
+    <p>Copy each value separately. Don't share them here or add them to GitHub. Keep a secure backup of your chosen password.</p>
+    <label for="verifier">FUNDLENZ_ADMIN_PASSWORD_HASH</label>
+    <textarea id="verifier" rows="3" readonly spellcheck="false"></textarea>
+    <label for="session">FUNDLENZ_ADMIN_SESSION_SECRET</label>
+    <textarea id="session" rows="2" readonly spellcheck="false"></textarea>
+    <p class="note">These secrets are for the future FundLenz blog admin Worker only, not for Google Drive or Gemini. Close the browser tab after copying them to your password manager or Cloudflare.</p>
+  </section>
+</main>
+<script>
+"use strict";
+const form = document.getElementById("setup");
+const passwordField = document.getElementById("password");
+const confirmationField = document.getElementById("confirm");
+const button = document.getElementById("generate");
+const message = document.getElementById("message");
+const results = document.getElementById("results");
+
+function base64url(array) {
+  let binary = "";
+  for (const byte of array) binary += String.fromCharCode(byte);
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
+form.addEventListener("submit", async event => {
+  event.preventDefault();
+  message.textContent = "";
+  results.hidden = true;
+  if (!globalThis.crypto || !crypto.subtle || !crypto.getRandomValues || !globalThis.isSecureContext) {
+    message.className = "error";
+    message.textContent = "Secure browser cryptography is unavailable in this context. Open the downloaded file in a current Chrome or Edge browser, or use the documented local Node.js generator.";
+    return;
+  }
+  const password = passwordField.value;
+  if (password.length < 12 || password.length > 256 || password !== confirmationField.value) {
+    message.className = "error";
+    message.textContent = "Passwords must match and contain 12–256 characters.";
+    return;
+  }
+  button.disabled = true;
+  message.className = "note";
+  message.textContent = "Deriving a salted Cloudflare-compatible password verifier. Please wait…";
+  try {
+    const encoder = new TextEncoder();
+    const salt = crypto.getRandomValues(new Uint8Array(24));
+    const secret = crypto.getRandomValues(new Uint8Array(32));
+    const key = await crypto.subtle.importKey(
+      "raw", encoder.encode(password), { name: "PBKDF2" }, false, ["deriveBits"]
+    );
+    const digest = new Uint8Array(await crypto.subtle.deriveBits(
+      { name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" }, key, 256
+    ));
+    document.getElementById("verifier").value =
+      ["pbkdf2_sha256", "100000", base64url(salt), base64url(digest)].join("$");
+    document.getElementById("session").value = base64url(secret);
+    passwordField.value = "";
+    confirmationField.value = "";
+    results.hidden = false;
+    message.textContent = "Credentials generated locally. Copy them only to your secure destination.";
+  } catch {
+    message.className = "error";
+    message.textContent = "Unable to create the credentials. Nothing was saved.";
+  } finally { button.disabled = false; }
+});
+</script>
+</body>
+</html>
