@@ -1,6 +1,6 @@
 # FundLenz single administrator — implementation and owner setup
 
-**STATUS: DRAFT BRANCH ONLY. NOT CONFIGURED OR VERIFIED WITH CLOUDFLARE D1, NOT MERGED INTO `main`, NOT READY FOR PRODUCTION ADMINISTRATIVE USE.** This design never modifies financial data. It does **not** expose editing or GitHub write endpoints yet.
+**STATUS: DRAFT BRANCH ONLY. STAGING D1 DATABASE AND BINDING CREATED AND OWNER-VERIFIED; LOGIN CREDENTIALS NOT CONFIGURED AND WORKER APPLICATION NOT DEPLOYED TO STAGING. NOT MERGED INTO `main`, NOT READY FOR PRODUCTION ADMINISTRATIVE USE.** This design never modifies financial data. It does **not** expose editing or GitHub write endpoints yet.
 
 ## Design
 
@@ -24,8 +24,8 @@
 ## Owner setup — complete later, after staging has been isolated and tests pass
 
 1. **Preferred, no-command-line option:** download `tools/offline-blog-admin-setup.html` from this reviewed repository onto your own computer, then open the downloaded file locally in a current Chrome or Edge browser. The file has no external assets or network requests and includes a restrictive Content Security Policy. Enter your NEW 16–256 character password privately, confirm it, and click **Generate private credentials**. Copy `FUNDLENZ_ADMIN_PASSWORD_HASH` and `FUNDLENZ_ADMIN_SESSION_SECRET` directly to your password manager or Cloudflare encrypted Worker secrets. Do not paste them into chat, a bug report or GitHub. If secure cryptography is unavailable in file mode, use the offline terminal alternative below.\n\n   **Optional terminal alternative:** with Node.js 22+ and a local copy of this repository, run `node scripts/generate-blog-admin-secrets.mjs`. Its password prompt does not echo typed characters and does not send credentials to the network.
-2. In Cloudflare Workers, create a **separate D1 database**, e.g. `fundlenz-blog-admin`. Configure binding `BLOG_ADMIN_DB` in the **Wrangler source configuration**, with its actual database ID, for the intended dedicated staging Worker first. Do not reuse a financial DB.
-3. Execute `db/blog-admin/0001_auth.sql` against that D1 database using the Cloudflare D1 migration console or approved Wrangler migration workflow. Confirm three tables exist.
+2. **DONE (owner-verified):** Created separate staging D1 database `fundlenz-blog-admin-staging`, bound as `BLOG_ADMIN_DB` to the independent `fundlenz-blog-staging` Worker. The database ID and binding have been added only to `wrangler.blog-staging.jsonc`, not the production Wrangler config.
+3. **DONE (owner-verified):** Executed `db/blog-admin/0001_auth.sql` in Cloudflare's D1 SQL Console and confirmed the expected three admin tables using `/tables`.
 4. In the **staging** Worker, add:
     - `FUNDLENZ_ADMIN_PASSWORD_HASH` (Secret, generated verifier)
     - `FUNDLENZ_ADMIN_SESSION_SECRET` (Secret, generated random value)
@@ -39,7 +39,7 @@ The generator does not place secrets in repository files. A salt-specific verifi
 
 ## Security gap / future work
 
-- Actually configure a D1 database and perform integration tests against it.
+- The staging D1 database and binding exist, and migration tables were manually verified. **Still required:** Deploy staging application, configure admin secrets privately, and perform real integration tests against the existing D1 binding.
 - Wire a secure email delivery service (or owner-approved notification) for pending `blog_admin_security_events`, with deduplication and reliable delivery.
 - Add login Turnstile and Cloudflare WAF protections (protect login even against distributed guessing).
 - Periodic cleanup of expired sessions/old rate-limit buckets.
