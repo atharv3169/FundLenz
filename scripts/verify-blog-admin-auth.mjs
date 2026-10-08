@@ -67,7 +67,7 @@ function mockDatabase() {
             const row = sessions.get(args[0]);
             return row && row.expires_at > args[1] && !row.revoked_at ? { token_hash: args[0] } : null;
           }
-          if (sql.startsWith("SELECT attempt_count, failure_count")) {
+          if (sql.startsWith("SELECT attempt_count, failure_count") || sql.startsWith("SELECT failure_count")) {
             const row = attempts.get(args[0] + ":" + args[1]);
             return row ? { ...row } : null;
           }
