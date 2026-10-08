@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import styles from "./blog-admin-login.module.css";
+import { BlogEditorDashboard } from "./blog-editor-dashboard";
 
 type AdminStatus = "checking" | "unavailable" | "logged-out" | "logged-in";
 
@@ -40,7 +41,7 @@ export function BlogAdminLogin() {
         throw new Error(result.error || "Could not log in.");
       setPassword("");
       setStatus("logged-in");
-      setMessage("Authenticated. Editorial tools will appear here as they're securely connected.");
+      setMessage("Welcome to the private staging editorial workspace.");
     } catch (error) {
       setPassword("");
       setMessage(error instanceof Error ? error.message : "Login is unavailable.");
@@ -68,15 +69,17 @@ export function BlogAdminLogin() {
   if (status === "unavailable") return <p role="alert" className={styles.warning}>
     Administrator authentication has not been configured for this environment. No default login is enabled.
   </p>;
-  if (status === "logged-in") return <section className={styles.panel}>
-    <h2>Administrator session active</h2>
-    <p>The secured article editor, homepage text editor and publishing tools are being connected.
-      No unverified publishing endpoint is exposed.</p>
-    <button type="button" onClick={logout} disabled={busy} className={styles.button}>
-      {busy ? "Signing out…" : "Log out"}
-    </button>
+  if (status === "logged-in") return <>
+    <div style={{ maxWidth: 1080, margin: "0 auto 18px", display: "flex", justifyContent: "space-between",
+      flexWrap: "wrap", alignItems: "center", gap: 12 }}>
+      <p role="status" className={styles.note} style={{ margin: 0 }}>Administrator session active · Draft-only workspace</p>
+      <button type="button" onClick={logout} disabled={busy} className={styles.button}>
+        {busy ? "Signing out…" : "Log out"}
+      </button>
+    </div>
     {message && <p role="status" className={styles.note}>{message}</p>}
-  </section>;
+    <BlogEditorDashboard />
+  </>;
   return <section className={styles.panel}>
     <h1>Blog administration</h1>
     <p>Sign in to access FundLenz editorial tools.</p>
