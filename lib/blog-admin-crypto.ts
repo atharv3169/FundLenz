@@ -41,7 +41,7 @@ export async function derivePassword(password: string, salt: Uint8Array, iterati
 }
 
 export async function createPasswordVerifier(password: string): Promise<string> {
-  if (password.length < 16 || password.length > 256) throw new Error("Use a password between 16 and 256 characters.");
+  if (password.length < 12 || password.length > 256) throw new Error("Use a password between 12 and 256 characters.");
   const salt = secureRandom(24);
   const digest = await derivePassword(password, salt);
   return ["pbkdf2_sha256", String(BLOG_ADMIN_ITERATIONS), b64url(salt), b64url(digest)].join("$");
