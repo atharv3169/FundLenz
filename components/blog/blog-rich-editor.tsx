@@ -6,6 +6,7 @@ import {
   type RichDocument, safeHttpUrl, BLOG_FONTS, blogFontFamily, mediaWidth,
 } from "@/lib/blog-rich-document";
 import styles from "./blog-rich-editor.module.css";
+import { applyRunStyle, sameRuns, toggleRunStyle, type RunStyle } from "@/lib/blog-rich-format";
 
 function isText(block: RichBlock): block is RichTextBlock { return "runs" in block; }
 function blockId(): string { return "b-" + crypto.randomUUID(); }
@@ -31,7 +32,7 @@ function safeInlineRuns(root: HTMLElement): RichRun[] {
   function read(node: Node, marks: Omit<RichRun, "text">, depth = 0) {
     if (depth > 24 || runs.length > 280) return;
     if (node.nodeType === Node.TEXT_NODE) {
-      push((node.textContent || "").slice(0, 12000), marks); return;
+      push(node.textContent || "", marks); return;
     }
     if (!(node instanceof HTMLElement)) return;
     const tag = node.tagName.toLowerCase();
@@ -64,7 +65,9 @@ function safeInlineRuns(root: HTMLElement): RichRun[] {
     if ((tag === "div" || tag === "p") && node.nextSibling) push("\n", marks);
   }
   for (const node of Array.from(root.childNodes)) read(node, {}, 0);
-  return runs.length ? runs.slice(0, 280) : [{ text: "" }];
+  if (runs.length > 300 || runs.some(run => run.text.length > 12000))
+    throw new Error("Too much text or formatting in one paragraph. Split it into shorter blocks.");
+  return runs.length ? runs : [{ text: "" }];
 }
 function StyledRun({ run }: { run: RichRun }) {
   const text: ReactNode = <span style={{
@@ -88,109 +91,74 @@ export function BlogRichEditor({ value, onChange, disabled }: {
   const [message, setMessage] = useState("");
   const [fontSizePx, setFontSizePx] = useState(18);
   const nodeMap = useRef(new Map<string, HTMLDivElement>());
-  const range = useRef<Range | null>(null);
-  const textSelection = useRef<{ blockId: string; start: number; end: number } | null>(null);
+
+  const selectionRef = useRef<{ blockId: string; start: number; end: number } | null>(null);
   const dragging = useRef<string | null>(null);
 
-  function saveSelection() {
+  // Browser DOM is used only to read typed content and selection coordinates.
+  // Formatting is applied to immutable rich runs, NEVER through extractContents(),
+  // insertNode(), or deprecated execCommand() on the React-managed DOM.
+  function rememberSelection(id: string) {
+    const root = nodeMap.current.get(id);
     const selection = window.getSelection();
-    if (!selection || !selection.rangeCount) return;
-    const selected = selection.getRangeAt(0);
-    const root = nodeMap.current.get(activeId);
-    if (!root || !root.contains(selected.startContainer) || !root.contains(selected.endContainer)) return;
-    range.current = selected.cloneRange();
-    // Preserve offsets in case a preceding onBlur renders new React text nodes.
+    if (!root || !selection || selection.rangeCount === 0) return;
+    const range = selection.getRangeAt(0);
+    if (!root.contains(range.startContainer) || !root.contains(range.endContainer)) return;
     const before = document.createRange();
     before.selectNodeContents(root);
-    before.setEnd(selected.startContainer, selected.startOffset);
+    before.setEnd(range.startContainer, range.startOffset);
     const start = before.toString().length;
-    before.setEnd(selected.endContainer, selected.endOffset);
-    textSelection.current = { blockId: activeId, start, end: before.toString().length };
+    before.setEnd(range.endContainer, range.endOffset);
+    const end = before.toString().length;
+    selectionRef.current = { blockId: id, start: Math.min(start,end), end: Math.max(start,end) };
+    setActiveId(id);
   }
-
-  function selectedRange(root: HTMLElement): Range | null {
-    const saved = textSelection.current;
-    if (saved && saved.blockId === activeId) {
-      const textNodes: Text[] = [];
-      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-      while (walker.nextNode()) textNodes.push(walker.currentNode as Text);
-      function point(offset: number): [Node, number] {
-        let remaining = offset;
-        for (const node of textNodes) {
-          const len = node.textContent?.length || 0;
-          if (remaining <= len) return [node, remaining];
-          remaining -= len;
-        }
-        const tail = textNodes[textNodes.length - 1];
-        return tail ? [tail, tail.textContent?.length || 0] : [root, 0];
-      }
-      const total = textNodes.reduce((count, item) => count + (item.textContent?.length || 0), 0);
-      if (saved.start <= saved.end && saved.end <= total) {
-        const next = document.createRange();
-        const [first, firstOffset] = point(saved.start);
-        const [last, lastOffset] = point(saved.end);
-        next.setStart(first, firstOffset);
-        next.setEnd(last, lastOffset);
-        return next;
-      }
-    }
-    if (range.current && root.contains(range.current.startContainer) &&
-        root.contains(range.current.endContainer)) return range.current.cloneRange();
-    return null;
+  function patch(blocks: RichBlock[]) {
+    onChange({ ...value, blocks });
+    setMessage("");
   }
-  function patch(blocks: RichBlock[]) { onChange({ ...value, blocks }); setMessage(""); }
   function replaceBlock(id: string, update: (block: RichBlock) => RichBlock) {
     patch(value.blocks.map(block => block.id === id ? update(block) : block));
   }
   function flushText(id: string) {
     const root = nodeMap.current.get(id);
     if (!root) return;
-    const updated = safeInlineRuns(root);
-    const current = value.blocks.find(block => block.id === id);
-    if (current && isText(current) && JSON.stringify(current.runs) !== JSON.stringify(updated))
-      replaceBlock(id, block => isText(block) ? { ...block, runs: updated } : block);
-  }
-  function selectionRestore() {
-    const selection = window.getSelection();
-    const root = nodeMap.current.get(activeId);
-    if (!selection || !root) return;
-    const selected = selectedRange(root);
-    if (!selected) return;
-    try { selection.removeAllRanges(); selection.addRange(selected); } catch { /* stale selection */ }
-  }
-  function command(name: string, value?: string) {
-    const node = nodeMap.current.get(activeId);
-    if (!node || disabled) { setMessage("Click inside a text paragraph first."); return; }
-    node.focus(); selectionRestore();
-    if (!document.execCommand(name, false, value)) {
-      setMessage("This browser does not support that formatting command.");
+    try {
+      const updated = safeInlineRuns(root);
+      const current = value.blocks.find(block => block.id === id);
+      if (current && isText(current) && !sameRuns(current.runs, updated))
+        replaceBlock(id, block => isText(block) ? { ...block, runs: updated } : block);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Cannot read this paragraph safely.");
     }
-    saveSelection();
   }
-  // Font and size use a real styled span, not HTML <font size="3">.
-  // A collapsed selection formats the current text block; selecting characters
-  // formats only those characters. Both serialize to validated, numeric pixels.
-  function applyInlineStyle(key: "fontFamily" | "fontSize", css: string) {
-    const root = nodeMap.current.get(activeId);
-    if (!root || disabled) { setMessage("Click inside an article text block first."); return; }
-    let selected: Range | null = selectedRange(root);
-    if (!selected || selected.collapsed) {
-      selected = document.createRange();
-      selected.selectNodeContents(root);
+  function applyTextStyle(style: RunStyle, toggle?: "bold" | "italic" | "underline") {
+    const id = selectionRef.current?.blockId || activeId;
+    const root = nodeMap.current.get(id);
+    const current = value.blocks.find(block => block.id === id);
+    if (disabled || !root || !current || !isText(current)) {
+      setMessage("Click inside a text paragraph first."); return;
     }
     try {
-      const wrapper = document.createElement("span");
-      wrapper.style[key] = css;
-      wrapper.appendChild(selected.extractContents());
-      selected.insertNode(wrapper);
-      // Flush immediately: toolbar controls may retain focus, so blur alone
-      // is not sufficient to persist formatting when Save is clicked next.
-      flushText(activeId);
-      range.current = null;
-      textSelection.current = null;
-    } catch { setMessage("Select text within one paragraph and try again."); }
+      // Read any as-yet uncommitted typing before applying formatting.
+      const original = safeInlineRuns(root);
+      const selection = selectionRef.current?.blockId === id
+        ? { start: selectionRef.current.start, end: selectionRef.current.end } : null;
+      const next = toggle ? toggleRunStyle(original, selection, toggle)
+        : applyRunStyle(original, selection, style);
+      replaceBlock(id, block => isText(block) ? { ...block, runs: next } : block);
+      // The selected substring remains bookmarked for repeated formatting.
+      setActiveId(id);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Unable to format selected text.");
+    }
   }
-
+  function addLink() {
+    const href = window.prompt("HTTPS link URL for selected text");
+    if (href === null || href === "") return;
+    if (!safeHttpUrl(href)) { setMessage("Links must be valid HTTPS URLs."); return; }
+    applyTextStyle({ href });
+  }
   function insert(block: RichBlock) {
     const index = value.blocks.findIndex(item => item.id === activeId);
     const out = [...value.blocks];
@@ -248,10 +216,10 @@ export function BlogRichEditor({ value, onChange, disabled }: {
       insertMedia("image", url);
     }
   }
-  const toolbar = (label: string, cmd: string, title: string) =>
+  const toolbar = (label: string, mark: "bold" | "italic" | "underline", title: string) =>
     <button title={title} aria-label={title} type="button" className={styles.tool}
       onMouseDown={event => event.preventDefault()}
-      onClick={() => command(cmd)} disabled={disabled}>{label}</button>;
+      onClick={() => applyTextStyle({}, mark)} disabled={disabled}>{label}</button>;
   return <div className={styles.root}>
     <div className={styles.toolbar} aria-label="Article formatting toolbar">
       <div className={styles.toolSection}>
@@ -262,16 +230,12 @@ export function BlogRichEditor({ value, onChange, disabled }: {
           {toolbar("U̲", "underline", "Underline selected text")}
           <button className={styles.tool} type="button" disabled={disabled}
             onMouseDown={event => event.preventDefault()}
-            onClick={() => {
-              const link = window.prompt("HTTPS link URL for selected text");
-              if (link && safeHttpUrl(link)) command("createLink", link);
-              else if (link) setMessage("Links must be valid HTTPS URLs.");
-            }}>🔗 Link</button>
+            onClick={addLink}>🔗 Link</button>
           <label className={styles.toolSelect}>Font family
             <select aria-label="Font family" defaultValue="" disabled={disabled}
               onChange={event => {
                 const option = BLOG_FONTS.find(font => font.id === event.target.value);
-                if (option) applyInlineStyle("fontFamily", option.family);
+                if (option) applyTextStyle({ font: option.id });
                 event.target.value = "";
               }}>
               <option value="">Choose a font</option>
@@ -286,12 +250,12 @@ export function BlogRichEditor({ value, onChange, disabled }: {
               <button className={styles.tool} type="button"
                 onMouseDown={event => event.preventDefault()}
                 disabled={disabled || !Number.isInteger(fontSizePx) || fontSizePx < 12 || fontSizePx > 72}
-                onClick={() => applyInlineStyle("fontSize", fontSizePx + "px")}>Apply</button>
+                onClick={() => applyTextStyle({ sizePx: fontSizePx, size: undefined })}>Apply</button>
             </div>
           </label>
           <label className={styles.toolSelect}>Text color
             <input aria-label="Selected text color" type="color" disabled={disabled}
-              defaultValue="#223a4a" onChange={event => command("foreColor", event.target.value)} />
+              defaultValue="#223a4a" onChange={event => applyTextStyle({ color: event.target.value })} />
           </label>
         </div>
       </div>
@@ -335,9 +299,14 @@ export function BlogRichEditor({ value, onChange, disabled }: {
           ? <div className={styles.editable + " " + styles[block.type]}
             contentEditable={!disabled} suppressContentEditableWarning
             ref={el => { if (el) nodeMap.current.set(block.id, el); else nodeMap.current.delete(block.id); }}
-            onFocus={() => setActiveId(block.id)}
+            onFocus={() => { setActiveId(block.id); selectionRef.current = null; }}
             onBlur={() => flushText(block.id)}
-            onMouseUp={saveSelection} onKeyUp={saveSelection}
+            onMouseUp={() => rememberSelection(block.id)}
+            onKeyUp={() => rememberSelection(block.id)}
+            onSelect={() => rememberSelection(block.id)}
+            onClick={event => {
+              if ((event.target as HTMLElement).closest("a")) event.preventDefault();
+            }}
             role="textbox" aria-multiline="true" aria-label={block.type + " article text"}
             data-placeholder={"Write " + block.type + " here…"}>
             {block.runs.map((run, i) => <StyledRun key={i} run={run} />)}
