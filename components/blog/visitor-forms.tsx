@@ -79,8 +79,10 @@ function requestError(value: unknown): string {
 }
 
 export function NewsletterBox({ siteKey, heading = "Interested in FundLenz updates?",
-  description = "Leave your email for possible future updates. We are not currently sending newsletters." }: {
+  description = "Leave your email for possible future updates. We are not currently sending newsletters.",
+  placeholder = "Your email address", submitLabel = "Submit" }: {
   siteKey: string; heading?: string; description?: string;
+  placeholder?: string; submitLabel?: string;
 }) {
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
@@ -118,9 +120,9 @@ export function NewsletterBox({ siteKey, heading = "Interested in FundLenz updat
       <div className={styles.inputRow}>
         <label className={styles.srOnly} htmlFor="fundlenz-newsletter-email">Email address</label>
         <input id="fundlenz-newsletter-email" type="email" autoComplete="email" required
-          placeholder="Your email address" maxLength={254} value={email} onChange={e => setEmail(e.target.value)} />
+          placeholder={placeholder} maxLength={254} value={email} onChange={e => setEmail(e.target.value)} />
         <button type="submit" disabled={busy || !token || !consent || !siteKey}>
-          {busy ? "Saving…" : "Submit"}
+          {busy ? "Saving…" : submitLabel}
         </button>
       </div>
       <label className={styles.consent}>
@@ -133,11 +135,11 @@ export function NewsletterBox({ siteKey, heading = "Interested in FundLenz updat
   </section>;
 }
 
-export function ContributionButton({ siteKey }: { siteKey: string }) {
+export function ContributionButton({ siteKey, label = "Add your own article" }: { siteKey: string; label?: string }) {
   const [open, setOpen] = useState(false);
   return <>
     <button type="button" className={styles.outlineButton} onClick={() => setOpen(true)}>
-      Add your own article
+      {label}
     </button>
     {open && <ContributionDialog siteKey={siteKey} onDismiss={() => setOpen(false)} />}
   </>;
