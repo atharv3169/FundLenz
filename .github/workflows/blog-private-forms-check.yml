@@ -27,6 +27,8 @@ on:
       - "lib/blog-rich-document.ts"
       - "lib/blog-rich-format.ts"
       - "scripts/verify-blog-rich-format.mjs"
+      - "scripts/verify-blog-editor-browser.mjs"
+      - "scripts/blog-editor-browser-fixture/**"
       - "components/blog/blog-rich-editor.tsx"
       - "components/blog/blog-paper.tsx"
       - "lib/blog-editor-auth.ts"
@@ -68,6 +70,8 @@ jobs:
         run: node scripts/verify-blog-staging-gate.mjs
       - name: Selected-text editing regression tests
         run: node scripts/verify-blog-rich-format.mjs
+      - name: Chromium selected-text interaction smoke test
+        run: node scripts/verify-blog-editor-browser.mjs
       - name: Rich article content validation
         run: node scripts/verify-blog-rich-document.mjs
       - name: Blog private editorial draft checks
