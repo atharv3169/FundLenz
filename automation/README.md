@@ -1,14 +1,14 @@
 # FundLenz catalogue automation
 
-The daily source-and-model workflow is active in **dry-run mode**. Start with
+The daily source-and-model workflow is active with **protected automatic publication**. Start with
 [the operating guide](../docs/migration/AUTOMATION.md) for current coverage,
 schedule, budgets, live trial results and publication setup. The interface,
-calculations and live financial data are unchanged.
+calculations are unchanged; supported financial data updates require independent validation.
 
 ## Runtime and trust boundaries
 
 - `runtime.json`: daily cadence, acquisition/model budgets, deployment target
-  and disabled publication switch.
+  and enabled publication switch.
 - `source-registry.json`: 476 approved exact URLs, including 39 supported
   source adapters and 437 monitoring-only entries.
 - `source-quarantine.json`: two malformed legacy inventory entries excluded

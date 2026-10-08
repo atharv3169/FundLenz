@@ -1,3 +1,19 @@
+# FundLenz migration status
+
+## Current status — 8 October 2026
+
+Automatic publication is enabled on protected `main`. Run [37731471235](https://github.com/atharv3169/FundLenz/actions/runs/37731471235) completed acquisition and both bounded Gemini tasks. Independent source replay and finance/catalogue regression checks passed; [data PR #7](https://github.com/atharv3169/FundLenz/pull/7) merged automatically as `0680837876d2c3fe8899e2c1bf7684bcd8798eb8`.
+
+The run reported PARTIAL coverage: 8,582 accepted units, 5,486 unchanged, 192 blocked and 133 retained unsupported; 285 issues remain tracked. Supported refreshes cover existing AMFI NAV tuples and 38 complete iShares portfolios. Other directories, Indian holdings and securities reference records remain monitoring-only. Invalid or unsupported updates retain earlier values.
+
+Cloudflare reported a successful build, but the live release-marker request returned HTTP 403 Forbidden; deployment is therefore unconfirmed. Evidence is tracked separately in [run 37731794240](https://github.com/atharv3169/FundLenz/actions/runs/37731794240): require a successful Cloudflare build and the exact live release marker. The pre-merge audit's completion flags describe its creation time, not subsequent deployment status. A real hosting rollback trial remains outstanding because Cloudflare dashboard sign-in is unavailable in this session. The custom domain has not been moved.
+
+Daily scheduling is 03:47 UTC (09:17 India), subject to GitHub scheduling delays. The repository is public; the dedicated publisher credential and required main-branch checks are configured. Forty automation tests pass. The interface and financial formulas are unchanged by this activation.
+
+## Historical preparation notes
+
+The dated notes below describe earlier stages; this current-status section supersedes their statements that hosting, Gemini calls or publication are inactive.
+
 # Migration status — 6 October 2026
 
 ## Prepared
