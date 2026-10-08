@@ -16,7 +16,10 @@ export default function BlogHomePage() {
   return <div className={styles.shell}>
     <header className={styles.header}>
       <Link href="/" className={styles.logo}>Fund<span>Lenz</span><small> / BLOG</small></Link>
-      <Link href="/" className={styles.labLink}>Lab →</Link>
+      <nav className={styles.adminNav} aria-label="Blog navigation">
+        <Link href="/blogpost/admin" className={styles.labLink}>Admin</Link>
+        <Link href="/" className={styles.labLink}>Lab →</Link>
+      </nav>
     </header>
     <main className={styles.main}>
       <p className={styles.eyebrow}>{copy.eyebrow}</p>
