@@ -11,6 +11,7 @@ const initial: RichDocument = {
       text: "Alpha beta gamma delta", bold: false,
     }] },
     { id: "second-test", type: "paragraph", runs: [{ text: "Second paragraph remains separate" }] },
+    { id: "long-test", type: "paragraph", runs: [{ text: Array.from({length:56}, (_, i) => "d".repeat(100) + (i % 7 === 0 ? "wefvhf" : "")).join(" ") }] },
   ],
 };
 function Fixture() {
