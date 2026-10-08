@@ -1,0 +1,4 @@
+.socials{display:inline-flex;gap:12px;align-items:center;justify-content:flex-start;flex-wrap:wrap}
+.link{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:5px;color:#8d9ca8;text-decoration:none!important;transition:color .14s,background .14s}
+.link:hover,.link:focus-visible{color:#0c7887;background:#e6f0f2;outline-offset:2px}
+.link span{font-size:17px;font-weight:650;line-height:1}

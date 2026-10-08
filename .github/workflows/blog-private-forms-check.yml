@@ -1,0 +1,111 @@
+name: FundLenz blog visitor forms checks
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "app/api/blog/**"
+      - "app/blogpost/**"
+      - "components/blog/**"
+      - "components/fundlens.tsx"
+      - "components/fund-catalog.tsx"
+      - "components/global-catalog.tsx"
+      - "app/globals.css"
+      - "content/blog-homepage.json"
+      - "lib/blog-publications.ts"
+      - "lib/blog-homepage-content.ts"
+      - "lib/blog-staging-homepage.ts"
+      - "lib/blog-admin-**"
+      - "db/blog-admin/**"
+      - "scripts/verify-blog-admin-auth.mjs"
+      - "scripts/blog-staging-gate-core.mjs"
+      - "scripts/verify-blog-staging-gate.mjs"
+      - "scripts/verify-blog-admin-schema.py"
+      - "wrangler.blog-staging.jsonc"
+      - "vite.config.ts"
+      - "package.json"
+      - "scripts/build-blog-staging.mjs"
+      - "scripts/deploy-blog-staging.mjs"
+      - "scripts/verify-blog-staging-config.mjs"
+      - "scripts/verify-blog-homepage-copy.mjs"
+      - "scripts/verify-blog-editor-drafts.mjs"
+      - "scripts/verify-blog-rich-document.mjs"
+      - "lib/blog-rich-document.ts"
+      - "lib/blog-rich-format.ts"
+      - "scripts/verify-blog-rich-format.mjs"
+      - "scripts/verify-blog-editor-browser.mjs"
+      - "scripts/blog-editor-browser-fixture/**"
+      - "components/blog/blog-rich-editor.tsx"
+      - "components/blog/blog-paper.tsx"
+      - "lib/blog-editor-auth.ts"
+      - "lib/blog-article-draft.ts"
+      - "db/blog-admin/0002_editor_drafts.sql"
+      - "lib/blog-private-**"
+      - "scripts/verify-blog-forms.mjs"
+      - "scripts/verify-blog-publications.mjs"
+      - ".github/workflows/blog-private-forms-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Typecheck, test and build blog changes
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.16.0"
+      - name: Install pinned pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.25.0 --activate
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Blog code lint
+        run: pnpm exec eslint components/blog lib/blog-*.ts app/blogpost app/api/blog
+      - name: Security unit checks
+        run: node scripts/verify-blog-forms.mjs
+      - name: Editable homepage validation checks
+        run: node scripts/verify-blog-homepage-copy.mjs
+      - name: Public article search and route validation
+        run: node scripts/verify-blog-publications.mjs
+      - name: Single-admin authentication security checks
+        run: node scripts/verify-blog-admin-auth.mjs
+      - name: Staging access gate security tests
+        run: node scripts/verify-blog-staging-gate.mjs
+      - name: Selected-text editing regression tests
+        run: node scripts/verify-blog-rich-format.mjs
+      - name: Chromium editor and responsive layout regressions
+        env:
+          BLOG_QA_SCREENSHOTS: ${{ runner.temp }}/blog-qa-screenshots
+        run: node scripts/verify-blog-editor-browser.mjs
+      - name: Upload fixture screenshots for visual review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blog-qa-screenshots
+          path: ${{ runner.temp }}/blog-qa-screenshots
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Rich article content validation
+        run: node scripts/verify-blog-rich-document.mjs
+      - name: Blog private editorial draft checks
+        run: node scripts/verify-blog-editor-drafts.mjs
+      - name: Blog admin database schema validation
+        run: python3 scripts/verify-blog-admin-schema.py
+      - name: TypeScript validation
+        run: pnpm run typecheck
+      - name: Production build
+        run: pnpm run build
+      - name: Verify isolated staging configuration
+        run: node scripts/verify-blog-staging-config.mjs
+      - name: Build isolated staging Worker (NO DEPLOY)
+        run: node scripts/build-blog-staging.mjs
+      - name: Verify generated staging Worker target and D1 bindings
+        run: node scripts/verify-blog-staging-config.mjs --built

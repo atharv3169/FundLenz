@@ -1,0 +1,23 @@
+@media (max-width: 580px) {
+  .labShell :global(.masthead) {
+    height: auto;
+    min-height: 65px;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .labShell :global(.masthead-right) {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 7px;
+  }
+
+  .labShell :global(.catalog-nav-link) {
+    font-size: 12px;
+    padding: 6px 9px;
+  }
+}
