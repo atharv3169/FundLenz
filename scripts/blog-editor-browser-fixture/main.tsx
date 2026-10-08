@@ -6,9 +6,12 @@ import type { RichDocument } from "../../lib/blog-rich-document";
 const initial: RichDocument = {
   format: "fundlenz-rich-1",
   category: "Research",
-  blocks: [{ id: "browser-test", type: "paragraph", runs: [{
-    text: "Alpha beta gamma delta", bold: false,
-  }] }],
+  blocks: [
+    { id: "browser-test", type: "paragraph", runs: [{
+      text: "Alpha beta gamma delta", bold: false,
+    }] },
+    { id: "second-test", type: "paragraph", runs: [{ text: "Second paragraph remains separate" }] },
+  ],
 };
 function Fixture() {
   const [value, setValue] = useState<RichDocument>(initial);
