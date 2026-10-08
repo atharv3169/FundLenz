@@ -40,3 +40,15 @@
 .preview { border:1px solid #dae9ee; padding:14px; border-radius:8px; background:#f7fafb; white-space:pre-wrap; overflow-wrap:anywhere; font-size:13px; line-height:1.65; max-height:400px; overflow:auto;}
 @media(max-width:920px) {.split{grid-template-columns:1fr;}.panel{padding:20px;} .toolbar{align-items:flex-start;} .articleList{max-height:240px;overflow-y:auto;} }
 @media(max-width:650px){.articleMetaFields{grid-template-columns:1fr;}.panel{padding:16px;}}
+
+.authorEditor{border:1px solid #d4e4e9;background:#f7fafb;border-radius:10px;padding:20px 22px;margin:4px 0 20px;min-width:0}
+.authorEditor legend{padding:0 8px;font-size:14px;font-weight:750;color:#164e63}
+.authorEditor>p{font-size:12px;color:#708592;margin:0 0 18px}
+.authorGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 20px}
+.authorGrid label{display:grid;gap:7px;font-size:12px;font-weight:650;color:#36596b;min-width:0}
+.authorGrid input{background:#fff;border:1px solid #c7dbe5;border-radius:7px;padding:10px 12px;font-size:14px;min-width:0;width:100%;color:#294757}
+.authorGrid input[type=file]{font-size:12px}
+.avatarPreview{display:flex;gap:12px;align-items:center}
+.avatarPreview img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:1px solid #d2e5e9}
+.avatarPreview button{font-size:12px;color:#9c3b3b;border:1px solid #e4c4c4;background:#fff;padding:8px;border-radius:6px}
+@media(max-width:760px){.authorGrid{grid-template-columns:1fr}.authorEditor{padding:16px}}
