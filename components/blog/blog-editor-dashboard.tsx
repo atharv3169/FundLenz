@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { BlogHomepageEditor } from "@/components/blog/blog-homepage-editor";
 import { type BlogHomepageContent } from "@/lib/blog-homepage-content";
 import { type BlogArticleDraft, type BlogDraftSummary } from "@/lib/blog-article-draft";
-import { type RichDocument, decodeRichDocument, emptyRichDocument, encodeRichDocument } from "@/lib/blog-rich-document";
+import { type RichDocument, type ArticleAuthor, safeAvatarDataUrl, decodeRichDocument, emptyRichDocument, encodeRichDocument } from "@/lib/blog-rich-document";
 import { BlogRichEditor } from "./blog-rich-editor";
 import { BlogPaper } from "./blog-paper";
 import styles from "./blog-editor-dashboard.module.css";
@@ -81,6 +81,43 @@ export function BlogEditorDashboard() {
       setNotice("New private draft created. It is not published.");
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Could not create draft."); }
     finally { setBusy(false); }
+  }
+
+  function changeAuthor(key: keyof ArticleAuthor, value: string | number | undefined) {
+    setRich(current => current ? {
+      ...current, author: { ...current.author, [key]: value },
+    } : current);
+    setDirty(true);
+    setNotice("");
+  }
+
+  async function uploadAuthorAvatar(file: File | undefined) {
+    if (!file) return;
+    if (!["image/jpeg","image/png","image/webp"].includes(file.type) || file.size > 2_000_000) {
+      setError("Select a JPG, PNG or WebP profile photo under 2 MB."); return;
+    }
+    try {
+      const bitmap = await createImageBitmap(file);
+      const canvas = document.createElement("canvas");
+      const size = 96;
+      canvas.width = size; canvas.height = size;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw Error("Your browser cannot process this image.");
+      const edge = Math.min(bitmap.width, bitmap.height);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0,0,size,size);
+      ctx.drawImage(bitmap, (bitmap.width-edge)/2, (bitmap.height-edge)/2, edge,edge,0,0,size,size);
+      bitmap.close();
+      let output = "";
+      for (const quality of [0.7,0.52,0.36]) {
+        output = canvas.toDataURL("image/jpeg", quality);
+        if (safeAvatarDataUrl(output)) break;
+      }
+      if (!safeAvatarDataUrl(output))
+        throw Error("Image is too complex for an embedded profile photo. Try a simpler or smaller photo.");
+      changeAuthor("avatarDataUrl", output);
+      setError("");
+    } catch (e) { setError(e instanceof Error ? e.message : "Unable to process this profile picture."); }
   }
 
   function changeArticle(key: "title" | "summary" | "category", value: string) {
@@ -184,7 +221,8 @@ export function BlogEditorDashboard() {
             </button>
           </div>
           {preview && rich ? <BlogPaper title={article.title} summary={article.summary}
-            category={article.category} blocks={rich.blocks}
+            category={article.category} blocks={rich.blocks} authorProfile={rich.author}
+            branding={homepage?.content}
             updatedAt={article.updated_at}
             onSelectRelated={id => { void openArticle(id, true); }}
             related={articles.filter(item => item.id !== article.id).map(item => ({
@@ -210,7 +248,49 @@ export function BlogEditorDashboard() {
                 value={article.summary} onChange={event => changeArticle("summary", event.target.value)}/>
             </label>
             </div>
-            {rich && <BlogRichEditor value={rich} disabled={busy}
+            {rich && <fieldset className={styles.authorEditor}>
+              <legend>Article author &amp; publication details</legend>
+              <p>Different author for every article. These details are saved privately with the draft.</p>
+              <div className={styles.authorGrid}>
+                <label>Author name
+                  <input type="text" maxLength={120} placeholder="FundLenz Editorial"
+                    value={rich.author?.name || ""} disabled={busy}
+                    onChange={event => changeAuthor("name", event.target.value)}/>
+                </label>
+                <label>Author social profile (HTTPS link)
+                  <input type="url" placeholder="https://linkedin.com/in/..."
+                    value={rich.author?.socialUrl || ""} disabled={busy}
+                    onChange={event => changeAuthor("socialUrl", event.target.value)}/>
+                </label>
+                <label>Social link label
+                  <input type="text" maxLength={60} placeholder="LinkedIn · Author profile"
+                    value={rich.author?.socialLabel || ""} disabled={busy}
+                    onChange={event => changeAuthor("socialLabel", event.target.value)}/>
+                </label>
+                <label>Article display date
+                  <input type="date" disabled={busy}
+                    value={rich.author?.displayDate || ""} onChange={event =>
+                      changeAuthor("displayDate", event.target.value || undefined)}/>
+                </label>
+                <label>Reading time (minutes; blank for automatic)
+                  <input type="number" min={1} max={90} disabled={busy}
+                    value={rich.author?.readingMinutes ?? ""} onChange={event =>
+                      changeAuthor("readingMinutes", event.target.value ? Number(event.target.value) : undefined)}/>
+                </label>
+                <label className={styles.authorImage}>Profile picture (JPG, PNG or WebP, 2 MB max)
+                  <input type="file" accept="image/jpeg,image/png,image/webp"
+                    disabled={busy} onChange={event => { void uploadAuthorAvatar(event.target.files?.[0]); event.target.value = ""; }}/>
+                  {rich.author?.avatarDataUrl && safeAvatarDataUrl(rich.author.avatarDataUrl) &&
+                    <span className={styles.avatarPreview}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={rich.author.avatarDataUrl} alt="Current author avatar"/>
+                      <button type="button" disabled={busy}
+                        onClick={() => changeAuthor("avatarDataUrl", undefined)}>Remove photo</button>
+                    </span>}
+                </label>
+              </div>
+            </fieldset>}
+            {rich && <BlogRichEditor key={article.id} value={rich} disabled={busy}
               onDirty={() => { setDirty(true); setNotice(""); }}
               onValidityChange={setEditorValid}
               onChange={updated => { setRich(updated); setDirty(true); setNotice(""); }}/>}
