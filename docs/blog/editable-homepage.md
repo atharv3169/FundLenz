@@ -1,38 +1,31 @@
-# FundLenz homepage copy editor — integration plan
+# FundLenz staging editorial drafts — owner instructions
 
-**Status: component and content model implemented, NOT yet exposed as a usable admin feature.** This work lives in draft PR #4. There is **no admin authentication or article publishing implementation** in the current branch; do not add an insecure public content-editing endpoint.
+**Current state:** The administrator login, session persistence, and logout have been verified by the owner in the isolated staging Worker. Draft editor code lives in draft PR #4. It is **not merged to main** and must not publish to `fundlenz.com` without a separate review. The UI and endpoints are subject to the next Cloudflare deployment and real integration tests.
 
-## Current implementation
+## Safe staging scope
 
-- `content/blog-homepage.json` contains the public copy displayed by `app/blogpost/page.tsx`.
-- `lib/blog-homepage-content.ts` exports a typed schema, allowed editable fields, character-length rules and server-side validation.
-- `components/blog/blog-homepage-editor.tsx` contains a reusable admin text-editing panel with grouping, live draft state, preview, unsaved-change detection, Reset/Discard and Save controls.
-- `components/blog/visitor-forms.tsx` accepts editable newsletter heading/description/placeholder/button wording and article contribution button wording.
-- `scripts/verify-blog-homepage-copy.mjs` exercises the schema and its invalid-input protections.
-- Future search placeholder is included in the copy model but no article search exists yet.
+- Private dashboard appears at `/blogpost/admin` only when the existing admin session endpoint confirms a valid signed-in session.
+- `GET/PUT /api/blog/admin/homepage-draft` reads and stores a strictly validated homepage **draft** with optimistic version checking; it does **not** change `content/blog-homepage.json`, static public blog output, or GitHub.
+- `GET/POST/PUT/DELETE /api/blog/admin/article-drafts` lists/creates/updates/deletes private article drafts only. Stored fields: title, summary, plain Markdown, fixed category, monotonically increasing version, timestamps. No publish action or untrusted HTML rendering.
+- All endpoints independently check session authentication, exact staging hostname and HTTPS; PUT/POST/DELETE also enforce the exact origin. Draft APIs are deliberately unavailable on the production host even after a hypothetical merge.
+- SQL guards enforce `status='draft'`; version checks reject stale concurrent writes instead of silently overwriting.
+- All draft writes are stored only in the **existing isolated staging D1** database, never in visitor Google Drive, financial data, or GitHub. No new paid service.
+- Existing admin session cookie and password, private staging gate, GitHub branch protection and financial release gates remain unchanged.
 
-## Editable content fields
+## One-time manual staging database migration (after CI and staging deploy)
 
-| Section | Properties |
-|---|---|
-| Introduction | eyebrow, heroHeading, heroDescription |
-| Article list | articlesHeading, articlesStatus, articlesEmpty, articleSearchPlaceholder |
-| Newsletter | newsletterHeading, newsletterDescription, newsletterPlaceholder, newsletterSubmitLabel |
-| Footer | contributionButtonLabel, footerDescription, instagramLead |
+1. Open Cloudflare → Storage & databases → D1 → `fundlenz-blog-admin-staging` → Console.
+2. In the FundLenz GitHub development branch, open `db/blog-admin/0002_editor_drafts.sql` and copy its SQL (not your secret keys).
+3. Paste the script into the D1 Console and execute it. It uses `CREATE TABLE IF NOT EXISTS` and is safe to rerun. It **adds** two tables and one index; it does not alter your three verified login/security tables.
+4. Run `/tables` and confirm `blog_homepage_draft` and `blog_article_drafts` appear alongside `blog_admin_sessions`, `blog_admin_attempts`, and `blog_admin_security_events`.
+5. Sign in at staging `/blogpost/admin`, create one sample private draft, edit and save it, reload and confirm persistence. Repeat for homepage text. Verify the public `fundlenz.com` page did NOT change.
+6. Test conflict behavior by opening the same draft in two separate tabs, saving a change in one, then trying to save stale content in the other; it should be rejected with 409.
+7. Test logout and try the admin draft API without a valid session: it must return 401.
 
-The Instagram URL, email-consent statements, privacy/terms links, and actual submission targets remain controlled by application code so an admin copy edit cannot replace a legal disclosure or redirect form data. The footer disclaimer validator preserves "not investment advice".
+**Important:** If the migration hasn't run, dashboard requests fail closed with "Draft storage is temporarily unavailable. Verify the staging database migration." This should not affect administrator login/logout.
 
-## Connection to the future secure administrator
+## Publication is a separate later milestone
 
-**Never render this editor to an unauthenticated user and never grant API write access based on frontend state alone.**
+Public articles must be versioned in the public `atharv3169/FundLenz` GitHub repo and reviewed through a controlled publishing workflow. Homepage `content/blog-homepage.json` also remains in GitHub. Do not create a direct unreviewed production publisher, expose GitHub API credentials to the browser, or claim that D1 draft saves publish content. The current dashboard explicitly labels every save **private staging draft, not published**.
 
-1. Complete the single-admin password-hash verification and secure session cookies described in the master project requirements.
-2. In the authenticated blog admin menu add **Edit homepage text**; mount `BlogHomepageEditor` with the current content and a protected `onSave` callback.
-3. Implement `GET/PUT /api/blog/admin/homepage` with independent server-side authentication and CSRF/origin checks, strict JSON and body limits.
-4. The server must call `validateBlogHomepageContent` before GitHub writes. The only approved content path for these updates is `content/blog-homepage.json`. Do not expose the GitHub access token to the browser.
-5. Use a least-privilege GitHub publishing workflow with protection compatible with the existing financial release integrity controls. Handle stale SHAs and concurrent changes, require content validation, and avoid unrelated edits.
-6. Mark the Save operation successful only when the GitHub write is confirmed. Clearly show a pending deployment state until Cloudflare publishes and verifies the new content. Do **not** falsely promise immediate public visibility.
-7. During final staging validation: change the hero and newsletter wording, save, verify a GitHub update, verify the public preview after deployment, reload to confirm persistence, reject unauthorized writes, then restore defaults.
-8. Preserve this component on the draft branch until the secure backend and staging environment are available.
-
-The admin can later change the visible homepage wording without editing source code, but actual persistence must be delivered by the secure admin publisher. No visitor submissions or Google Drive secrets are involved in the copy-editor storage.
+Future work: GitHub publish integration with approved paths, revisions and preview, article archive/search, image/media upload handling, editor typography, contribution-review workflow, and eventual release from staging after integration and authorization tests.
