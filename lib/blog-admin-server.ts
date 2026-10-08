@@ -12,7 +12,9 @@ type RuntimeConfig = {
   BLOG_ADMIN_ALLOWED_HOSTNAMES?: string;
 };
 export class AdminUnavailable extends Error {
-  constructor() { super("Administrator login is not configured."); }
+  constructor(public readonly reason: "runtime" | "missing-client-ip" = "runtime") {
+    super("Administrator login is not configured.");
+  }
 }
 export class AdminForbidden extends Error {
   constructor() { super("Cross-origin admin requests are forbidden."); }
@@ -57,7 +59,7 @@ export async function checkAdminPassword(request: Request, user: unknown, passwo
   const { db, secret, verifier, hosts } = adminRuntime();
   requireAdminOrigin(request, hosts);
   const ip = request.headers.get("CF-Connecting-IP");
-  if (!ip || ip.length > 64) throw new AdminUnavailable();
+  if (!ip || ip.length > 64) throw new AdminUnavailable("missing-client-ip");
   const { actorHash, windowId } = await reserveLoginAttempt(db, secret, ip);
   const passwordString = typeof password === "string" && password.length <= 256 ? password : "";
   // Deliberately evaluate the password verifier even for incorrect usernames.
