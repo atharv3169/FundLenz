@@ -32,17 +32,25 @@ if (result.status !== 0) process.exit(result.status || 1);
 const outputPath = resolve("dist/server/wrangler.json");
 if (!existsSync(outputPath)) throw new Error("The normal Vinext build did not generate a Wrangler deploy config.");
 const generated = JSON.parse(readFileSync(outputPath, "utf8"));
+const generatedTriggers = generated.triggers;
+const noActiveTriggers = generatedTriggers == null || (
+  typeof generatedTriggers === "object" && !Array.isArray(generatedTriggers) &&
+  Object.keys(generatedTriggers).every(key => key === "crons") &&
+  (generatedTriggers.crons == null ||
+   (Array.isArray(generatedTriggers.crons) && generatedTriggers.crons.length === 0))
+);
 console.log("Safe staging build diagnostics:", JSON.stringify({
   generatedName: generated.name,
   hasRoute: Boolean(generated.route),
   routesCount: Array.isArray(generated.routes) ? generated.routes.length : -1,
-  hasTriggers: Boolean(generated.triggers),
+  triggerKeys: generatedTriggers && typeof generatedTriggers === "object" ? Object.keys(generatedTriggers) : [],
+  noActiveTriggers,
   d1Count: Array.isArray(generated.d1_databases) ? generated.d1_databases.length : -1,
   environmentsCount: generated.env && typeof generated.env === "object" ? Object.keys(generated.env).length : -1,
   hasAdminHostnameVar: Boolean(generated.vars?.BLOG_ADMIN_ALLOWED_HOSTNAMES),
   // Do not print any environment variables, tokens or confidential values.
 }));
-if (generated.name !== production.name || generated.routes || generated.route || generated.triggers ||
+if (generated.name !== production.name || generated.routes || generated.route || !noActiveTriggers ||
     (generated.d1_databases && generated.d1_databases.length) ||
     (generated.env && Object.keys(generated.env).length) ||
     (generated.vars && Object.keys(generated.vars).some(key => key === "BLOG_ADMIN_ALLOWED_HOSTNAMES"))) {
@@ -57,6 +65,8 @@ generated.keep_vars = true;
 generated.d1_databases = staging.d1_databases;
 generated.vars = { ...(generated.vars || {}), ...staging.vars };
 generated.observability = staging.observability;
+// Vinext adds an empty triggers object in generated configs; do not register a cron.
+delete generated.triggers;
 
 writeFileSync(outputPath, JSON.stringify(generated, null, 2) + "\n", "utf8");
 console.log("Staging artifact prepared for " + staging.name + " with D1 binding " + expectedDB);
