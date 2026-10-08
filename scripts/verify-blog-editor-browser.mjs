@@ -111,8 +111,14 @@ try {
     'range.collapse(true);const s=window.getSelection();s.removeAllRanges();s.addRange(range);})()');
   await command("Input.insertText",{text:" freshly typed"});
   await js('document.querySelector(\'select[aria-label="Font family"]\').focus()');
-  await until(async () => (await state()).blocks[0].runs.map(run=>run.text).join("")
-    .endsWith(" delta freshly typed"));
+  await sleep(350);
+  const afterTyping = (await state()).blocks[0].runs.map(run=>run.text).join("");
+  assert.ok(afterTyping.endsWith(" delta freshly typed"),
+    "New typing did not persist on blur: " + JSON.stringify({
+      text: afterTyping,
+      dom: await js('document.querySelector(\'[role="textbox"]\')?.textContent'),
+      html: await js('document.querySelector(\'[role="textbox"]\')?.innerHTML'),
+    }));
   assert.equal((await state()).blocks[0].runs.map(run=>run.text).join(""),
     "Alpha beta gamma delta freshly typed");
   assert.equal((await state()).blocks[0].runs.find(run=>run.text==="beta")?.sizePx,30);
