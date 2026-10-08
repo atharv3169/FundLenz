@@ -24,6 +24,10 @@ export function BlogSiteFooter({copy=defaultBlogHomepageContent}: {copy?: BlogHo
     <div className={styles.footerInner}>
       <span className={styles.footerBrand}><ScanSearch size={16}/>FundLenz <span>·</span> Make the holdings visible.</span>
       <a className={styles.contact} href="mailto:info@fundlenz.com">info@fundlenz.com</a>
+      <nav className={styles.legalLinks} aria-label="Legal information">
+        <Link href="/privacy">Privacy</Link>
+        <Link href="/terms">Terms</Link>
+      </nav>
       <div className={styles.footerRight}>
         {copy.socialInstagramEnabled === "true" && <span>{copy.instagramLead}</span>}
         <BlogSocialLinks copy={copy}/>
