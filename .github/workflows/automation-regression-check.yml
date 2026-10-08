@@ -25,6 +25,15 @@ jobs:
         run: python3 -m pip install --disable-pip-version-check -r scripts/automation/requirements.txt
       - name: Run adversarial validator tests
         run: python3 -m unittest discover -s scripts/automation/tests -v
+      - name: Install pinned Node runtime
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: "22.16.0"
+      - name: Install pinned pnpm dependencies
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.25.0 --activate
+          pnpm install --frozen-lockfile
       - name: Validate retained baseline and audit contracts
         run: |
           python3 scripts/automation/verify-bootstrap.py
