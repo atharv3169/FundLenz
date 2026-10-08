@@ -103,7 +103,21 @@ try {
     run.text==="beta" && run.sizePx===30));
   assert.equal((await state()).blocks[0].runs.map(run=>run.text).join(""),"Alpha beta gamma delta");
   assert.equal(await js('document.getElementById("status").dataset.valid'),"true");
-  console.log("PASS: Chromium React editor selected-text font change, bold, numeric sizing, no duplicated/dropped text");
+  // Reproduce the user's real sequence: type into formatted content, then blur.
+  await js('(() => {const editor=document.querySelector(\'[role="textbox"]\');editor.focus();'+
+    'const walker=document.createTreeWalker(editor,NodeFilter.SHOW_TEXT);let text;'+
+    'while(walker.nextNode())text=walker.currentNode;'+
+    'const range=document.createRange();range.setStart(text,text.textContent.length);'+
+    'range.collapse(true);const s=window.getSelection();s.removeAllRanges();s.addRange(range);})()');
+  await command("Input.insertText",{text:" freshly typed"});
+  await js('document.querySelector(\'select[aria-label="Font family"]\').focus()');
+  await until(async () => (await state()).blocks[0].runs.map(run=>run.text).join("")
+    .endsWith(" delta freshly typed"));
+  assert.equal((await state()).blocks[0].runs.map(run=>run.text).join(""),
+    "Alpha beta gamma delta freshly typed");
+  assert.equal((await state()).blocks[0].runs.find(run=>run.text==="beta")?.sizePx,30);
+  assert.equal(await js('document.getElementById("status").dataset.valid'),"true");
+  console.log("PASS: Chromium React editor selected font/bold/size, subsequent typing, blur, and exact text preservation");
 } finally {
   if (socket) socket.close();
   if (chrome && chrome.exitCode === null) {
