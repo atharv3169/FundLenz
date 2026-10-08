@@ -26,6 +26,8 @@ assert.ok(!vite.includes("wrangler.blog-staging.jsonc"), "Protected Vite config 
 const builder = readFileSync("scripts/build-blog-staging.mjs", "utf8");
 assert.ok(builder.includes("dist/server/wrangler.json"), "Staging must rewrite only generated build artifacts.");
 assert.ok(builder.includes("generated.name = staging.name"));
+assert.ok(builder.includes("generated.assets.run_worker_first = true"), "All staging static assets must pass through authentication.");
+assert.ok(builder.includes('generated.main = "./blog-staging-gate-entry.mjs"'), "Staging must use gated entrypoint.");
 if (process.argv.includes("--built")) {
   const variants = [
     resolve("dist/server/wrangler.json"),
@@ -34,6 +36,16 @@ if (process.argv.includes("--built")) {
   assert.ok(variants.length === 1, "Missing or ambiguous staging Wrangler build output.");
   const out = JSON.parse(readFileSync(variants[0], "utf8"));
   assert.equal(out.name, stage.name, "Build output points at the wrong Worker");
+  assert.equal(out.main, "./blog-staging-gate-entry.mjs", "Generated Worker entry must be gated");
+  assert.equal(out.assets?.run_worker_first, true, "Static assets must not bypass staging password");
+  const wrapperPath = resolve("dist/server/blog-staging-gate-entry.mjs");
+  const gatePath = resolve("dist/server/blog-staging-gate-core.mjs");
+  assert.ok(existsSync(wrapperPath) && existsSync(gatePath), "Gate modules missing from build artifact");
+  const gateEntrypoint = readFileSync(wrapperPath, "utf8");
+  assert.ok(gateEntrypoint.includes("await stagingGate(request, env)"));
+  assert.ok(gateEntrypoint.includes("forwardWithoutBasicHeader(request)"));
+  assert.equal(Object.hasOwn(out.vars || {}, "FUNDLENZ_STAGING_GATE_PASSWORD"), false,
+    "Do not store the staging password as a plain-text Wrangler variable");
   assert.equal(out.d1_databases?.[0]?.binding, "BLOG_ADMIN_DB");
   assert.equal(out.d1_databases?.[0]?.database_id, stage.d1_databases[0].database_id);
   assert.equal(out.vars?.BLOG_ADMIN_ALLOWED_HOSTNAMES, stage.vars.BLOG_ADMIN_ALLOWED_HOSTNAMES);
