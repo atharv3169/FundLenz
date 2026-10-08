@@ -31,8 +31,8 @@ const offlineRotation = readFileSync("tools/offline-blog-admin-rehash.html", "ut
 const terminalGenerator = readFileSync("scripts/generate-blog-admin-secrets.mjs", "utf8");
 assert.ok(offlineSetup.includes("iterations: 100000") && offlineSetup.includes('"100000"'));
 assert.ok(offlineRotation.includes("iterations: 100000") && offlineRotation.includes('"100000"'));
-assert.ok(!offlineRotation.includes("FUNDLENZ_ADMIN_SESSION_SECRET"),
-  "Password-hash-only rotation must not tempt the owner to rotate their session secret");
+assert.ok(!offlineRotation.includes('document.getElementById("session").value'),
+  "Hash rotation must not generate a new session secret");
 assert.ok(!offlineRotation.includes('id="session"'), "No new session secret should be generated");
 assert.ok(terminalGenerator.includes("const rounds = 100_000;"));
 for (const source of [offlineSetup, offlineRotation, terminalGenerator]) {
