@@ -4,14 +4,15 @@ Implementation date: 7 October 2026. Last verification: 8 October 2026. Owner: A
 
 ## Current operating mode
 
-The daily runner is **scheduled dry-run**. It collects official source bytes, runs
+The daily runner is configured for **automatic publication**, pending completion of the first protected publication/deployment trial. It collects official source bytes, runs
 two bounded Gemini tasks, validates supported data, saves a complete audit and
-carries unresolved issues into the next run. It does **not** publish financial
-changes while `publication_enabled` is false. The current domain is unchanged.
+carries unresolved issues into the next run. Publication switches are enabled; every release still must pass the protection,
+credential, source-replay and exact-commit review gates before merging. The current domain is unchanged.
 
-The separate data-only publisher, trusted PR gate, automatic merger and
-Cloudflare confirmation workflow are implemented but require the activation
-steps below. Having a Gemini key alone does not activate publication.
+The repository owner has made the repository public and configured the publisher
+secret, username variable and required branch checks. The activation steps below
+remain the setup reference. A successful end-to-end release and hosting rollback
+will be recorded separately; enabling the switch alone does not prove either.
 
 ## What is covered
 

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "stage": "scheduled_dry_run",
+  "stage": "automatic_publication",
   "automation_enabled": true,
   "timezone": "Asia/Kolkata",
   "gemini_tasks": [
@@ -17,8 +17,8 @@
   ],
   "gemini_repository_write_access": false,
   "gemini_may_change_rules": false,
-  "publication_enabled": false,
-  "public_audit_enabled": false,
+  "publication_enabled": true,
+  "public_audit_enabled": true,
   "failure_behavior": "retain_complete_last_verified_unit",
   "same_snapshot_conflict_behavior": "block_and_investigate",
   "older_snapshot_behavior": "audit_only_never_replace_newer_production",
@@ -64,5 +64,5 @@
     "public/automation-audit/latest.json",
     "public/automation-audit/release.json"
   ],
-  "note": "Daily source checks and two Gemini tasks run in dry-run mode. Publication requires runtime activation, protected main, dedicated publisher identity and exact-head trusted validation. The executable per-adapter allowlist is scripts/automation/adapters.py:allowed_paths; this broader specification never grants extra write authority."
+  "note": "Source checks and two Gemini tasks run daily. Validated data-only publication requires protected main, the dedicated publishing identity and exact-head trusted validation. The executable per-adapter allowlist is scripts/automation/adapters.py:allowed_paths; the broader specification never grants extra write authority."
 }

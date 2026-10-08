@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "mode": "scheduled_dry_run",
+  "mode": "automatic_publication",
   "schedule_utc": "47 3 * * *",
   "schedule_local": "09:17 Asia/Kolkata, best effort",
-  "publication_enabled": false,
+  "publication_enabled": true,
   "max_sources_per_run": 64,
   "max_source_bytes": 12582912,
   "max_run_source_bytes": 33554432,
@@ -18,7 +18,12 @@
   "model_timeout_seconds": 60,
   "model_retries": 1,
   "model_retry_delay_seconds": 15,
-  "model_retry_http_statuses": [500, 502, 503, 504],
+  "model_retry_http_statuses": [
+    500,
+    502,
+    503,
+    504
+  ],
   "max_model_proposals": 24,
   "max_model_source_packets": 12,
   "nav_max_relative_change": 0.5,
