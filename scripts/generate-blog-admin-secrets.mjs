@@ -5,7 +5,7 @@
  * Prints a salted PBKDF2-SHA256 verifier and a separate random session secret.
  */
 import { pbkdf2Sync, randomBytes } from "node:crypto";
-const rounds = 600_000;
+const rounds = 100_000;
 const b64url = value => Buffer.from(value).toString("base64url");
 
 function hiddenPassword(prompt) {
