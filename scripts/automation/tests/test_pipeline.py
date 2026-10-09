@@ -18,7 +18,7 @@ from issues import issue_id, reconcile_issues
 from publish import protection_gate, verify_release
 from pr_gate import prepare
 from validate import run_status, validate_model, stage_catalogue_update_date
-from model_tasks import bounded_call, response_text, packets, ModelContractError, verify_candidate_envelope
+from model_tasks import bounded_call, response_text, packets, ModelContractError, verify_candidate_envelope, is_no_work_packet, trusted_no_work_candidate
 from merge import wait_for_checks, assert_release_date_current
 from deployment import verify_live_catalogue, approved_production_origins
 
@@ -496,9 +496,13 @@ class PipelineTests(unittest.TestCase):
     def test_empty_model_task_and_false_source_claim(self):
         doc = read(ROOT / "automation/fixtures/empty-candidate.json")
         acq = {"run_id": doc["run_id"], "base_dataset_sha256": doc["base_dataset_sha256"]}
-        self.assertEqual(validate_model(doc, "reinvestigation", acq, [], {"sources": [], "issues": []}), [])
+        packet = {"sources": [], "issues": [], "sample_adapter_decisions": [],
+                  "run_id": doc["run_id"], "base_dataset_sha256": doc["base_dataset_sha256"],
+                  "task_type": "reinvestigation", "started_at": doc["started_at"],
+                  "completed_at": doc["completed_at"]}
+        self.assertEqual(validate_model(doc, "reinvestigation", acq, [], packet), [])
         forged = copy.deepcopy(doc); forged["source_checks"] = [dict(self.source)]
-        with self.assertRaises(Exception): validate_model(forged, "reinvestigation", acq, [], {"sources": [], "issues": []})
+        with self.assertRaises(Exception): validate_model(forged, "reinvestigation", acq, [], packet)
 
     def model_fixture(self):
         u = self.nav_decision(nav="13.6", date="06-Oct-2026")
@@ -514,7 +518,11 @@ class PipelineTests(unittest.TestCase):
              "publish_recommendation": "candidate_for_validation"}
         doc["source_checks"][0] = dict(self.source, source_sha256=u["source_sha256"])
         doc["proposals"] = [p]
-        return doc, u, {"sources": doc["source_checks"], "issues": []}
+        return doc, u, {"sources": doc["source_checks"], "issues": [],
+                        "run_id": doc["run_id"],
+                        "base_dataset_sha256": doc["base_dataset_sha256"],
+                        "task_type": "fresh_scan", "started_at": doc["started_at"],
+                        "completed_at": doc["completed_at"]}
 
     def test_model_envelope_requires_exact_trusted_source_ledger(self):
         doc, unit, packet = self.model_fixture()
@@ -535,6 +543,67 @@ class PipelineTests(unittest.TestCase):
         misleading["source_checks"][0]["reason"] = "Model claims this was freshly reviewed."
         with self.assertRaisesRegex(ValueError, "trusted source-check"):
             verify_candidate_envelope(misleading, envelope, "fresh_scan", self.policy)
+
+    def test_empty_model_tasks_are_deterministic_and_cost_zero_calls(self):
+        doc = read(ROOT / "automation/fixtures/empty-candidate.json")
+        packet = {"sources": [], "issues": [], "sample_adapter_decisions": [],
+                  "run_id": doc["run_id"], "base_dataset_sha256": doc["base_dataset_sha256"],
+                  "task_type": "reinvestigation", "started_at": doc["started_at"],
+                  "completed_at": doc["completed_at"]}
+        self.assertTrue(is_no_work_packet(packet))
+        candidate = trusted_no_work_candidate(packet)
+        self.assertEqual(validate_model(candidate, "reinvestigation", packet, [], packet), [])
+        self.assertEqual(candidate["source_checks"], [])
+        self.assertEqual(candidate["proposals"], [])
+        for category, payload in [
+            ("sources", [dict(self.source)]),
+            ("issues", [{"issue_id": "unresolved"}]),
+            ("sample_adapter_decisions", [{"unit": "nav:test"}]),
+        ]:
+            active = dict(packet, **{category: payload})
+            self.assertFalse(is_no_work_packet(active))
+            with self.assertRaises(ValueError):
+                trusted_no_work_candidate(active)
+
+    def test_independent_validator_catches_all_envelope_tampering(self):
+        doc, unit, packet = self.model_fixture()
+        for key, corrupt in [
+            ("source_id", "forged"), ("source_url", "https://invalid.example"),
+            ("checked_at", "2026-10-08T09:00:00Z"),
+            ("outcome", "unavailable"), ("source_sha256", "0" * 64),
+            ("reason", "Claimed successful inspection"), ("scope", "unapproved"),
+        ]:
+            tampered = copy.deepcopy(doc)
+            tampered["source_checks"][0][key] = corrupt
+            with self.subTest(ledger_field=key), self.assertRaises(ValueError):
+                validate_model(tampered, "fresh_scan", doc, [copy.deepcopy(unit)], packet)
+        for key, corrupt in [
+            ("started_at", "2026-10-02T00:00:00Z"),
+            ("completed_at", "2026-10-02T01:00:00Z"),
+            ("run_id", "another"),
+            ("base_dataset_sha256", "0" * 64),
+            ("task_type", "reinvestigation"),
+        ]:
+            tampered = copy.deepcopy(doc)
+            tampered[key] = corrupt
+            with self.subTest(envelope_field=key), self.assertRaises(ValueError):
+                validate_model(tampered, "fresh_scan", doc, [copy.deepcopy(unit)], packet)
+        allowed = copy.deepcopy(doc)
+        validate_model(allowed, "fresh_scan", doc, [copy.deepcopy(unit)], packet)
+
+    def test_model_source_ledger_fuzz_mutations_never_publish(self):
+        doc, unit, packet = self.model_fixture()
+        variants = 0
+        for field in ["reason", "scope", "source_sha256", "source_url", "outcome",
+                      "checked_at", "source_id"]:
+            for character in range(9):
+                tampered = copy.deepcopy(doc)
+                original = str(tampered["source_checks"][0][field])
+                tampered["source_checks"][0][field] = original + chr(65 + character)
+                with self.assertRaises(Exception):
+                    validate_model(tampered, "fresh_scan", doc, [copy.deepcopy(unit)], packet)
+                variants += 1
+        self.assertEqual(variants, 63)
 
     def test_incomplete_gemini_output_gets_one_bounded_corrective_retry(self):
         packet = {"output_instructions": "Copy the trusted source ledger."}
