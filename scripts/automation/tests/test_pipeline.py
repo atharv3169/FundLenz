@@ -325,6 +325,11 @@ class PipelineTests(unittest.TestCase):
             marker["dataset_sha256"] = candidate_hash
             files["public/automation-audit/release.json"] = encoded(marker)
             def save(payload):
+                # Each synthetic release has its own exact allowlisted file set.
+                # Do not let files from a prior tamper case survive this test.
+                for stale in (p / "sanitized").rglob("*"):
+                    if stale.is_file():
+                        stale.unlink()
                 for name, value in payload.items():
                     target = p / "sanitized" / name
                     target.parent.mkdir(parents=True, exist_ok=True)
