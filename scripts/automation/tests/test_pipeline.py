@@ -656,7 +656,7 @@ class PipelineTests(unittest.TestCase):
             with self.subTest(candidate=candidate), self.assertRaisesRegex(ValueError, "Audit-only release"):
                 require_publishable_release(candidate or {})
 
-    def test_manual_workflow_reports_audit_only_and_publisher_replay_same_gate(self):
+    def test_simple_three_stage_pipeline_preserves_independent_validation(self):
         workflow = (ROOT / ".github/workflows/catalogue-daily.yml").read_text()
         self.assertIn("FUNDLENZ_RELEASE_ALLOWED: ${{ github.event_name == 'schedule' || inputs.publish_validated_data == true }}", workflow)
         self.assertIn("FUNDLENZ_RELEASE_ALLOWED: 'true'", workflow)
@@ -664,14 +664,31 @@ class PipelineTests(unittest.TestCase):
         source = (ROOT / "scripts/automation/validate.py").read_text()
         self.assertIn('"publication_enabled": publication_allowed', source)
         self.assertIn('and publication_allowed', source)
+        # Stage 1: real daily source and Gemini validation remains mandatory.
+        self.assertIn("run: python3 scripts/automation/validate.py", workflow)
+        self.assertNotIn("Run adversarial validator tests", workflow)
+        regression = (ROOT / ".github/workflows/automation-regression-check.yml").read_text()
+        self.assertIn("python3 -m unittest discover -s scripts/automation/tests -v", regression)
+        # Stage 2: publisher validates exactly approved files without running
+        # the same financial validation twice. A separately trusted PR gate
+        # replays validation and checks the exact bytes before the merge.
         publisher = (ROOT / "scripts/automation/publish.py").read_text()
+        self.assertIn("release, files = verify_release(ROOT / \"work/result\")", publisher)
         self.assertIn("require_publishable_release(release)", publisher)
-        # The third trusted replay must agree with the original scheduled
-        # publishable release, or exact-byte/data-head checks will fail.
+        self.assertIn("protection_gate(api.call(\"/branches/main\"), policy, expected)", publisher)
+        self.assertNotIn("from validate import validate", publisher)
+        self.assertNotIn('ROOT / "work/replayed"', publisher)
         data_review = (ROOT / ".github/workflows/catalogue-data-gate.yml").read_text()
         self.assertIn("FUNDLENZ_RELEASE_ALLOWED: 'true'", data_review)
         self.assertIn("if: steps.prepare.outputs.run_id != ''", data_review)
         self.assertIn("run: python3 scripts/automation/pr_gate.py check", data_review)
+        gate = (ROOT / "scripts/automation/pr_gate.py").read_text()
+        self.assertIn('validate(ROOT, ROOT / "work/run", ROOT / "work/pr-replay")', gate)
+        self.assertIn('require(release == supplied', gate)
+        self.assertIn('base64.b64decode(blob["content"]) == expected[f["filename"]]', gate)
+        # Stage 3: deployed date and exact public financial marker are verified.
+        deployment = (ROOT / ".github/workflows/catalogue-deployment.yml").read_text()
+        self.assertIn("run: python3 scripts/automation/deployment.py", deployment)
 
     def test_failed_collector_never_starts_publisher(self):
         workflow = (ROOT / ".github/workflows/catalogue-daily.yml").read_text()
