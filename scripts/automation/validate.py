@@ -38,14 +38,15 @@ def verify_acquisition(root, run, acquisition):
 
 
 def validate_model(document, task, acquisition, units, input_packet):
-    schema(document, "candidate")
-    require(document["run_id"] == acquisition["run_id"] and document["base_dataset_sha256"] == acquisition["base_dataset_sha256"]
-            and document["task_type"] == task, "Candidate is for a different run/base/task")
+    # The independent validator must enforce exactly the same seven-field
+    # metadata, timestamp and proposal limits as the model transport, on
+    # trusted reconstructed packets (not untrusted saved input artifacts).
+    from model_tasks import verify_candidate_envelope
+    verify_candidate_envelope(document, input_packet, task, read(ROOT / "automation/runtime.json"))
+    require(document["run_id"] == acquisition["run_id"] and
+            document["base_dataset_sha256"] == acquisition["base_dataset_sha256"],
+            "Candidate is for a different acquisition/base")
     supplied = {s["source_id"]: s for s in input_packet["sources"]}
-    require(len(document["source_checks"]) == len(supplied), "Model source coverage incomplete")
-    require({s["source_id"] for s in document["source_checks"]} == set(supplied), "Unknown/duplicate model source")
-    for s in document["source_checks"]:
-        require(all(s[k] == supplied[s["source_id"]][k] for k in ["source_url", "checked_at", "source_sha256", "outcome"]), "Model changed retrieval facts")
     by_url = {s["source_url"]: s for s in supplied.values()}
     actual = {u["unit"]: u for u in units}
     issue_ids = {i["issue_id"] for i in input_packet["issues"]}
@@ -139,12 +140,19 @@ def validate(root, run, output):
         if status.get("completed_at"):
             completed_at = max(completed_at, status["completed_at"], key=timestamp)
         try:
-            require(status["status"] == "completed", "Model task failed/unavailable")
             # Reconstruct model input from trusted bytes, not an artifact's proposed context.
-            from model_tasks import packets
+            from model_tasks import packets, is_no_work_packet, trusted_no_work_candidate
             packet = packets(acquisition, units, task, policy, run)
+            if status["status"] == "not_required":
+                require(is_no_work_packet(packet) and status.get("attempts") == 0,
+                        "Fake empty-work bypass of required Gemini investigation")
+                require(read(run / (task + ".json")) == trusted_no_work_candidate(packet),
+                        "No-work envelope differs from trusted deterministic construction")
+            else:
+                require(status["status"] == "completed", "Model task failed/unavailable")
             findings.extend(validate_model(read(run / (task + ".json")), task, acquisition, units, packet))
-            model_results.append({"task": task, "status": "validated", "usage": status.get("usage", {}), "attempts": status.get("attempts", 1)})
+            model_results.append({"task": task, "status": "not_required" if status["status"] == "not_required" else "validated",
+                                  "usage": status.get("usage", {}), "attempts": status.get("attempts", 1)})
             if task == "reinvestigation" and packet["issues"]:
                 investigation_after = packet["issues"][-1]["issue_id"]
         except Exception as error:
