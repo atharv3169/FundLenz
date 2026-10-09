@@ -82,6 +82,10 @@ function requestError(value: unknown): string {
   return typeof error === "string" ? error : "Please try again.";
 }
 
+// Stores only a success-view flag, never the submitted email or Turnstile token.
+// Returning to the form requires the explicit arrow; reloading does not reset the view.
+const NEWSLETTER_COMPLETE_KEY = "fundlenz-newsletter-complete-v1";
+
 export function NewsletterBox({ siteKey, heading = "Interested in FundLenz updates?",
   description = "Leave your email for possible future updates. We are not currently sending newsletters.",
   placeholder = "Your email address", submitLabel = "Submit" }: {
@@ -89,13 +93,40 @@ export function NewsletterBox({ siteKey, heading = "Interested in FundLenz updat
   placeholder?: string; submitLabel?: string;
 }) {
   const [email, setEmail] = useState("");
+  const [view, setView] = useState<"loading" | "form" | "thanks">("loading");
   const [token, setToken] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [resetSignal, setResetSignal] = useState(0);
+
+  useEffect(() => {
+    function restoreView() {
+      try {
+        setView(window.localStorage.getItem(NEWSLETTER_COMPLETE_KEY) === "1" ? "thanks" : "form");
+      } catch {
+        // Storage can be disabled; the in-memory success screen still works.
+        setView("form");
+      }
+    }
+    restoreView();
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === NEWSLETTER_COMPLETE_KEY || event.key === null) restoreView();
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  function returnToForm() {
+    try { window.localStorage.removeItem(NEWSLETTER_COMPLETE_KEY); } catch { /* Storage disabled. */ }
+    setEmail("");
+    setToken("");
+    setMessage("");
+    setView("form");
+  }
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!token || busy || !siteKey) return;
+    if (view !== "form" || !token || busy || !siteKey) return;
     setBusy(true);
     setMessage("");
     try {
@@ -106,7 +137,10 @@ export function NewsletterBox({ siteKey, heading = "Interested in FundLenz updat
       });
       const data: unknown = await response.json();
       if (!response.ok) throw new Error(requestError(data));
-      setMessage("Thank you. Your email has been recorded.");
+      // Only a successful HTTP response switches to the confirmation screen.
+      // Do not store the email or verification token in browser storage.
+      try { window.localStorage.setItem(NEWSLETTER_COMPLETE_KEY, "1"); } catch { /* Storage disabled. */ }
+      setView("thanks");
       setEmail("");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Could not save your email. Please retry.");
@@ -115,6 +149,21 @@ export function NewsletterBox({ siteKey, heading = "Interested in FundLenz updat
       setToken("");
       setResetSignal(value => value + 1);
     }
+  }
+  if (view === "loading") {
+    return <section className={styles.panel + " " + styles.newsletterPending}
+      aria-label="Loading newsletter form" aria-busy="true" />;
+  }
+  if (view === "thanks") {
+    return <section className={styles.panel + " " + styles.newsletterThanks}
+      aria-label="Newsletter signup confirmation">
+      <button type="button" className={styles.newsletterBack}
+        aria-label="Back to newsletter form" title="Back to newsletter form"
+        onClick={returnToForm}>
+        <span aria-hidden="true">←</span>
+      </button>
+      <h2 className={styles.newsletterThanksHeading} role="status">Thank you for joining!</h2>
+    </section>;
   }
   return <section className={styles.panel} aria-label="Email collection">
     <h2>{heading}</h2>

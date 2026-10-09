@@ -1,4 +1,10 @@
 .panel { border: 1px solid #dce7ed; background: #fff; border-radius: 12px; padding: 26px; max-width: 720px; }
+.newsletterPending, .newsletterThanks { min-height: 235px; box-sizing: border-box; }
+.newsletterThanks { position: relative; display: grid; place-items: center; text-align: center; }
+.panel .newsletterThanksHeading { margin: 0; padding: 0 30px; color: #183b4d; font-family: Georgia, serif; font-size: clamp(23px, 4vw, 30px); font-weight: 500; line-height: 1.3; }
+.newsletterBack { position: absolute; left: 15px; top: 15px; width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: 8px; background: transparent; color: #20677a; cursor: pointer; font-size: 25px; line-height: 1; }
+.newsletterBack:hover { background: #eef7f8; border-color: #d2e6e8; }
+.newsletterBack:focus-visible { outline: 3px solid #65b3c0; outline-offset: 2px; }
 .panel h2, .dialog h2 { color: #183b4d; font-size: 21px; font-weight: 650; margin-bottom: 8px; }
 .panel p { font-size: 14px; color: #657e8d; margin-bottom: 16px; line-height: 1.65; }
 .inputRow { display: flex; gap: 9px; }

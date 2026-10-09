@@ -78,6 +78,30 @@ try {
   assert.match(newsletter, /href="\/privacy"/);
   assert.match(newsletter, /aria-describedby="fundlenz-newsletter-privacy"/);
   assert.match(newsletter, /disabled=\{busy \|\| !token \|\| !siteKey\}/);
+
+  // A successful signup replaces the entire form with a centered thank-you
+  // screen; the back arrow alone reopens the form. Failed requests stay editable.
+  assert.match(newsletter, /setView\("thanks"\)/, "Success transitions into confirmation.");
+  assert.match(newsletter, /setView\("form"\)/, "Back arrow restores the form.");
+  assert.match(newsletter, /if \(view === "thanks"\)/, "Show confirmation instead of a second form.");
+  assert.match(newsletter, /if \(view === "loading"\)/, "No flash of the form on reload.");
+  assert.match(newsletter, /aria-label="Back to newsletter form"/);
+  assert.match(newsletter, /onClick=\{returnToForm\}/, "Only arrow should reopen form.");
+  assert.match(newsletter, /Thank you for joining!/);
+  assert.match(newsletter, /localStorage\.setItem\(NEWSLETTER_COMPLETE_KEY, "1"\)/,
+    "Confirmation state persists across refreshes.");
+  assert.match(newsletter, /localStorage\.removeItem\(NEWSLETTER_COMPLETE_KEY\)/,
+    "The back arrow explicitly resets the saved view.");
+  assert.match(newsletter, /if \(view !== "form" \|\| !token \|\| busy \|\| !siteKey\) return;/,
+    "Only active form may submit.");
+  assert.match(newsletter, /if \(!response\.ok\) throw new Error\(requestError\(data\)\)/,
+    "Failed requests cannot show the success screen.");
+  assert.match(newsletter, /setMessage\(error instanceof Error/, "Failures remain visible.");
+
+  const css = readFileSync("components/blog/visitor-forms.module.css", "utf8");
+  assert.match(css, /\.newsletterThanks\s*\{[^}]*place-items:\s*center/);
+  assert.match(css, /\.newsletterBack:focus-visible/, "Back arrow needs visible keyboard focus.");
+  assert.match(css, /\.newsletterBack:hover/, "Back arrow needs hover feedback.");
   assert.match(contribution, /type="checkbox"/);
   const endpoint = readFileSync("app/api/blog/subscribe/route.ts", "utf8");
   assert.match(endpoint, /data\.consent !== true/);
