@@ -24,9 +24,12 @@ If the queue is empty, return an empty proposals array and an honest task summar
   queue can be much larger. Review only `inputs.issues`; don't invent
   results for unselected issues or imply the entire backlog is resolved.
 - Echo **every** source in `inputs.sources` as exact seven-field metadata
-  in `source_checks`, including unavailable checked sources. This ledger
-  must have exactly the same set of source IDs as the packet even if no
-  correction can be proposed.
+  in `source_checks`. This ledger must have exactly the same set of source
+  IDs as the packet even if no correction can be proposed. The trusted runner
+  intentionally excludes failed/unavailable downloads from Gemini's source
+  packet; those failures and associated issues remain in persistent audit
+  state for retrieval on a later day. Do not reintroduce them, invent source
+  hashes, or claim to have investigated omitted sources.
 - Use only the supplied official source rows/excerpts. If a referenced
   issue has no checked, corroborating source or only a shortened excerpt,
   emit no speculative correction. The independent queue retains it.
@@ -41,3 +44,10 @@ If the queue is empty, return an empty proposals array and an honest task summar
   checks, not just the sources mentioned by proposals. Never omit a source
   ledger entry in order to shorten an answer.
 
+
+- **No verified source bytes means no verified source hash.** An unavailable
+  source may have `source_sha256: null` in acquisition state. Never fabricate
+  a digest (especially `0000...`) to populate `evidence`. The evidence
+  schema requires a real SHA-256 from downloaded bytes. If a future packet
+  includes such a failure, report the uncertainty with `new_candidate: null`
+  and `evidence: []`, or make no proposal. The existing issue persists.
