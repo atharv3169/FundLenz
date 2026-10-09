@@ -8,7 +8,8 @@
 .nav a{color:#eef7fb;font-size:12px;font-weight:650;text-decoration:none;border:1px solid #537080;border-radius:7px;padding:9px 13px;white-space:nowrap}
 .nav a:hover{background:#264659}
 .nav .headerButton{display:flex;align-items:center;gap:8px}
-.nav .adminLink{font-size:11px;color:#a3c8d0}
+.nav .adminLink{font-size:12px;color:#a3c8d0;display:inline-flex;align-items:center;justify-content:center}
+.nav .adminLink:focus-visible{outline:2px solid #8adacc;outline-offset:3px}
 .projectCredit{font-size:12px;color:#a8bfcc;white-space:nowrap}
 .projectCredit strong{color:#dce7ec;font-weight:550}
 .footer{width:100%;background:#f6f9fb}
