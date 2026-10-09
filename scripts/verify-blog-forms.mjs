@@ -103,6 +103,26 @@ try {
   assert.match(css, /\.newsletterBack:focus-visible/, "Back arrow needs visible keyboard focus.");
   assert.match(css, /\.newsletterBack:hover/, "Back arrow needs hover feedback.");
   assert.match(contribution, /type="checkbox"/);
+  // A single custom picker label shows "Choose file" before selection and only
+  // the selected basename afterward. Native file input stays in FormData.
+  assert.match(contribution, /selectedFileName/);
+  assert.match(contribution, /selectedFileName \|\| "Choose file"/);
+  assert.match(contribution, /setSelectedFileName\(file\?\.name \?\? ""\)/);
+  assert.match(contribution, /name="document" type="file" className=\{styles\.fileInput\}/);
+  assert.match(contribution, /required name="document"/);
+  assert.match(contribution, /className=\{styles\.filePicker\}/);
+  assert.match(contribution, /className=\{styles\.filePickerText\}/);
+  assert.match(contribution, /file\.size > 5 \* 1024 \* 1024/,
+    "Existing 5 MB upload rejection stays enforced.");
+  assert.match(contribution, /new FormData\(event\.currentTarget\)/,
+    "Real file input remains part of native multipart submission.");
+  const pickerStyles = readFileSync("components/blog/visitor-forms.module.css", "utf8");
+  assert.match(pickerStyles, /\.form \.filePicker:focus-within/,
+    "Keyboard users must see a focus indication.");
+  assert.match(pickerStyles, /input\.fileInput \{[^}]*opacity: 0/,
+    "Hide only native file input chrome, not its focusability.");
+  assert.match(pickerStyles, /\.filePickerText \{[^}]*text-overflow: ellipsis/,
+    "Long document names must not overflow the popup.");
   const endpoint = readFileSync("app/api/blog/subscribe/route.ts", "utf8");
   assert.match(endpoint, /data\.consent !== true/);
   assert.match(endpoint, /validateHuman\(request, data\.turnstileToken/);

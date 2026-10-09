@@ -206,6 +206,7 @@ function ContributionDialog({ siteKey, onDismiss }: { siteKey: string; onDismiss
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [fileProblem, setFileProblem] = useState("");
+  const [selectedFileName, setSelectedFileName] = useState("");
   const [consent, setConsent] = useState(false);
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -262,11 +263,20 @@ function ContributionDialog({ siteKey, onDismiss }: { siteKey: string; onDismiss
         <input name="title" maxLength={240} placeholder="A working title" />
       </label>
       <label>Upload document <strong>*</strong>
-        <input required name="document" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-          onChange={event => {
-            const file = event.currentTarget.files?.[0];
-            setFileProblem(file && file.size > 5 * 1024 * 1024 ? "The maximum file size is 5 MB." : "");
-          }} />
+        <span className={styles.filePicker}>
+          <span className={styles.filePickerText} aria-live="polite"
+            title={selectedFileName || "Choose file"}>
+            {selectedFileName || "Choose file"}
+          </span>
+          <input required name="document" type="file" className={styles.fileInput}
+            accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            disabled={busy}
+            onChange={event => {
+              const file = event.currentTarget.files?.[0];
+              setSelectedFileName(file?.name ?? "");
+              setFileProblem(file && file.size > 5 * 1024 * 1024 ? "The maximum file size is 5 MB." : "");
+            }} />
+        </span>
         <small>PDF, DOC or DOCX · Maximum 5 MB</small>
       </label>
       {fileProblem && <p role="alert" className={styles.error}>{fileProblem}</p>}
