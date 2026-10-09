@@ -6,7 +6,7 @@ import styles from "./page.module.css";
 import { BlogSiteHeader, BlogSiteFooter } from "@/components/blog/blog-site-chrome";
 import { BlogArticleArchive } from "@/components/blog/blog-article-archive";
 import { BLOG_STAGING_HOST, readStagingHomepageCopy } from "@/lib/blog-staging-homepage";
-import { publishedArticles } from "@/lib/blog-publications";
+import { readPublished } from "@/lib/blog-publication-store";
 import type { BlogAdminDatabase } from "@/lib/blog-admin-state";
 
 export const metadata: Metadata = {
@@ -22,6 +22,7 @@ export default async function BlogHomePage() {
   const host = (await headers()).get("host")?.toLowerCase() || null;
   const db = (env as unknown as { BLOG_ADMIN_DB?: BlogAdminDatabase }).BLOG_ADMIN_DB;
   const copy = await readStagingHomepageCopy(host, db);
+  const publicArticles = await readPublished(db);
   // This public key is intentionally non-sensitive. The Turnstile secret stays server-side.
   // The forms fail closed until this is configured in the Cloudflare Worker.
   const siteKey = process.env.TURNSTILE_SITE_KEY || "";
@@ -31,7 +32,7 @@ export default async function BlogHomePage() {
       <p className={styles.eyebrow}>{copy.eyebrow}</p>
       <h1>{copy.heroHeading}</h1>
       <p className={styles.intro}>{copy.heroDescription}</p>
-      <BlogArticleArchive articles={publishedArticles} heading={copy.articlesHeading}
+      <BlogArticleArchive articles={publicArticles} heading={copy.articlesHeading}
         status={copy.articlesStatus} empty={copy.articlesEmpty}/>
       <NewsletterBox siteKey={siteKey} heading={copy.newsletterHeading} description={copy.newsletterDescription}
         placeholder={copy.newsletterPlaceholder} submitLabel={copy.newsletterSubmitLabel} />

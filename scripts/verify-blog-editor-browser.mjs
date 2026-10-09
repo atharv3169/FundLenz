@@ -225,7 +225,7 @@ try {
   await clickText('Article drafts');
   assert.equal(await js('document.querySelector("form input").value'),'Edited title survives tabs');
   await js(`document.dispatchEvent(new KeyboardEvent('keydown',{key:'s',ctrlKey:true,bubbles:true}))`);
-  await until(() => js(`document.body.textContent.includes('Saved privately in staging D1')`));
+  await until(() => js(`document.body.textContent.includes('Private draft saved. Public article remains unchanged')`));
   await inputValue('form input','Simulate conflict');
   await clickText('Save private draft');
   await until(() => js(`Boolean(document.querySelector('[role="alert"]'))`));

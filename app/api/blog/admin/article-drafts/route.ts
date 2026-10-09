@@ -1,6 +1,8 @@
 import { privateAdminResponse } from "@/lib/blog-admin-crypto";
 import { validateArticleDraft, legacyDbCategory, type BlogArticleDraft, type BlogDraftSummary } from "@/lib/blog-article-draft";
 import { storedDraftCategory } from "@/lib/blog-rich-document";
+import { getPublicationForDraft } from "@/lib/blog-publication-store";
+import { env } from "cloudflare:workers";
 import { BlogEditorError, assertDraftVersion, isDraftId, readEditorJson, requireBlogEditor, safeEditorError } from "@/lib/blog-editor-auth";
 
 export async function GET(request: Request): Promise<Response> {
@@ -75,6 +77,12 @@ export async function DELETE(request: Request): Promise<Response> {
     const version = assertDraftVersion(data.version);
     if (Object.keys(data).some(key => !["id","version"].includes(key)))
       throw new BlogEditorError(400, "Invalid delete request.");
+    // Once publication is active, a public article retains its editable source draft.
+    if ((env as unknown as { BLOG_ADMIN_PUBLICATION_ENABLED?: string }).BLOG_ADMIN_PUBLICATION_ENABLED === "true") {
+      const publication = await getPublicationForDraft(db, data.id);
+      if (publication) throw new BlogEditorError(409,
+        "This draft has a publication history. Unpublish if needed, but retain its source draft.");
+    }
     const deleted = await db.prepare(
       "DELETE FROM blog_article_drafts WHERE id=? AND version=? AND status='draft'"
     ).bind(data.id, version).run();

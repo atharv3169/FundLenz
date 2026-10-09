@@ -12,6 +12,7 @@ import styles from "./blog-editor-dashboard.module.css";
 type Tab = "articles" | "homepage";
 type HomepageData = { content: BlogHomepageContent; version: number };
 type ApiError = { error?: string };
+type PublicationState = { slug: string; draftId: string; revision: number; published: boolean; updatedAt: number };
 
 async function jsonRequest<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
@@ -25,6 +26,7 @@ async function jsonRequest<T>(path: string, init?: RequestInit): Promise<T> {
 
 const articleApi = "/api/blog/admin/article-drafts";
 const homepageApi = "/api/blog/admin/homepage-draft";
+const publicationApi = "/api/blog/admin/publications";
 
 export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (dirty: boolean) => void }) {
   const [tab, setTab] = useState<Tab>("articles");
@@ -41,6 +43,8 @@ export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (di
   const [preview, setPreview] = useState(false);
   const [homepageDirty, setHomepageDirty] = useState(false);
   const [query, setQuery] = useState("");
+  const [publication, setPublication] = useState<PublicationState | null>(null);
+  const [publicationSlug, setPublicationSlug] = useState("");
   const articleForm = useRef<HTMLFormElement>(null);
   const unsaved = dirty || homepageDirty;
   useEffect(() => { onUnsavedChange?.(unsaved); }, [unsaved, onUnsavedChange]);
@@ -67,7 +71,7 @@ export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (di
     if (busy || (unsaved && !window.confirm("Discard unsaved edits and reload drafts?"))) return;
     setBusy(true);
     if (await refresh()) {
-      setArticle(null); setRich(null); setDirty(false); setHomepageDirty(false);
+      setArticle(null); setRich(null); setPublication(null); setPublicationSlug(""); setDirty(false); setHomepageDirty(false);
       setEditorValid(true); setPreview(false); setTab("articles"); setNotice("Draft list reloaded.");
     }
     setBusy(false);
@@ -84,7 +88,7 @@ export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (di
       setError("");
       return true;
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Cannot load staging drafts.");
+      setError(cause instanceof Error ? cause.message : "Cannot load private drafts.");
       return false;
     } finally { setLoading(false); }
   }, []);
@@ -101,6 +105,11 @@ export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (di
       // the previously open article's body and become accidentally overwritable.
       const decoded = decodeRichDocument(data.draft.body_markdown, data.draft.category);
       setArticle(data.draft); setRich(decoded);
+      const status = await jsonRequest<{ publication: PublicationState | null }>(
+        publicationApi + "?draftId=" + encodeURIComponent(id)).catch(() => ({ publication: null }));
+      setPublication(status.publication);
+      setPublicationSlug(status.publication?.slug || data.draft.title.toLowerCase().normalize("NFKD")
+        .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 100));
       setDirty(false); setEditorValid(true); setPreview(keepPreview); setTab("articles");
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Unable to open draft."); }
     finally { setBusy(false); }
@@ -114,6 +123,7 @@ export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (di
       const data = await jsonRequest<{ draft: BlogArticleDraft }>(articleApi,
         { method: "POST", body: "{}" });
       setArticle(data.draft); setRich(emptyRichDocument(data.draft.category));
+      setPublication(null); setPublicationSlug("");
       setDirty(false); setEditorValid(true); setPreview(false);
       setArticles(current => [{ id: data.draft.id, title: data.draft.title, summary: "",
         category: data.draft.category, version: data.draft.version, updated_at: data.draft.updated_at },
@@ -187,18 +197,76 @@ export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (di
         id: saved.id, title: saved.title, summary: saved.summary, category: saved.category,
         version: saved.version, updated_at: saved.updated_at,
       } : item));
-      setNotice("Saved privately in staging D1. Not published.");
+      setNotice("Private draft saved. Public article remains unchanged until you explicitly publish.");
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Could not save draft."); }
     finally { setBusy(false); }
   }
 
+
+  async function publishArticle() {
+    if (!article || !rich || busy || dirty || !editorValid) return;
+    const slug = publicationSlug.trim();
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length > 100) {
+      setError("Publication URL must use lowercase letters, numbers and hyphens."); return;
+    }
+    const verb = publication?.published ? "Update the live public article" : "Publish this article publicly";
+    if (!window.confirm(verb + " at /blogpost/" + slug + "? This changes the public Worker website.")) return;
+    setBusy(true); setError(""); setNotice("");
+    try {
+      const res = await jsonRequest<{ publication: PublicationState; url: string }>(
+        publicationApi, { method: "POST", body: JSON.stringify({
+          draftId: article.id, draftVersion: article.version,
+          slug, expectedRevision: publication?.revision || 0,
+        }) });
+      setPublication(res.publication);
+      setNotice("Publication saved and visible on this Worker's public article URL: " + res.url);
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Could not publish."); }
+    finally { setBusy(false); }
+  }
+
+  async function unpublishArticle() {
+    if (!publication?.published || busy) return;
+    if (!window.confirm("Unpublish this article? Its public URL will return 404 until restored.")) return;
+    setBusy(true); setError(""); setNotice("");
+    try {
+      const res = await jsonRequest<{ publication: PublicationState }>(
+        publicationApi, { method: "DELETE", body: JSON.stringify({
+          slug: publication.slug, expectedRevision: publication.revision,
+        }) });
+      setPublication(res.publication);
+      setNotice("Article unpublished; historical revisions retained.");
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Could not unpublish."); }
+    finally { setBusy(false); }
+  }
+
+  async function restoreArticle() {
+    if (!publication || busy) return;
+    const value = window.prompt("Previous published revision to restore (from 1 through " + (publication.revision - 1) + "):");
+    if (value === null) return;
+    const revision = Number(value);
+    if (!Number.isSafeInteger(revision) || revision < 1 || revision >= publication.revision) {
+      setError("Choose a valid earlier revision number."); return;
+    }
+    if (!window.confirm("Restore published revision " + revision + "?")) return;
+    setBusy(true); setError(""); setNotice("");
+    try {
+      const res = await jsonRequest<{ publication: PublicationState }>(
+        publicationApi, { method: "PUT", body: JSON.stringify({
+          slug: publication.slug, expectedRevision: publication.revision, restoreRevision: revision,
+        }) });
+      setPublication(res.publication);
+      setNotice("Earlier revision restored and published as a new revision.");
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Could not restore."); }
+    finally { setBusy(false); }
+  }
+
   async function deleteArticle() {
-    if (!article || busy || !window.confirm("Permanently delete this private staging draft?")) return;
+    if (!article || busy || !window.confirm("Permanently delete this private draft?")) return;
     setBusy(true); setError(""); setNotice("");
     try {
       await jsonRequest(articleApi, { method: "DELETE", body: JSON.stringify({ id: article.id, version: article.version }) });
       setArticles(current => current.filter(item => item.id !== article.id));
-      setArticle(null); setRich(null); setDirty(false); setEditorValid(true); setNotice("Private draft deleted.");
+      setArticle(null); setRich(null); setPublication(null); setPublicationSlug(""); setDirty(false); setEditorValid(true); setNotice("Private draft deleted.");
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Could not delete draft."); }
     finally { setBusy(false); }
   }
@@ -210,15 +278,15 @@ export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (di
     const data = await jsonRequest<{ version: number }>(homepageApi,
       { method: "PUT", body: JSON.stringify({ content, version: homepage.version }) });
     setHomepage({ content, version: data.version }); setHomepageDirty(false);
-    setNotice("Homepage settings saved. Refresh the staging blog homepage to see them; the public FundLenz site is unchanged.");
+    setNotice("Homepage draft saved privately. The production homepage remains unchanged.");
     } finally { setBusy(false); }
   }
 
   return <div className={styles.dashboard}>
     <div className={styles.header}>
-      <span className={styles.status}>FUNDLENZ · PRIVATE STAGING</span>
+      <span className={styles.status}>FUNDLENZ · PRIVATE EDITOR</span>
       <h2>Editorial workspace</h2>
-      <p>Write articles and refine the homepage before publication. Draft saves stay in the isolated staging database; nothing here changes your public FundLenz website.</p>
+      <p>Drafts stay private. Use the separate publication controls to make a reviewed article public.</p>
     </div>
     <div className={styles.toolbar}>
       <div role="tablist" aria-label="Editorial tools" className={styles.tabs}>
@@ -231,7 +299,7 @@ export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (di
       <button type="button" className={styles.secondary} disabled={busy || loading}
         onClick={() => { void reloadDrafts(); }}>Reload drafts</button>
     </div>
-    {loading && <p role="status" className={styles.note}>Loading protected staging drafts…</p>}
+    {loading && <p role="status" className={styles.note}>Loading private drafts…</p>}
     {error && <p role="alert" className={styles.error}>{error}</p>}
     {notice && <p role="status" className={styles.success}>{notice}</p>}
 
@@ -257,13 +325,13 @@ export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (di
         </button>)}
       </aside>}
       <div className={preview ? styles.previewPanel : styles.panel}>
-        {!article ? <><h3>Start writing</h3><p className={styles.hint}>Select a draft or create a new article. Publishing will be added only after the GitHub workflow and its safeguards are ready.</p></>
+        {!article ? <><h3>Start writing</h3><p className={styles.hint}>Select a draft or create an article. Publishing is separate from saving and requires a confirmation.</p></>
         : <>
           <div className={styles.editorTitleRow}>
             <div><h3>{preview ? "Published-layout preview" : "Article editor"}</h3>
               <p className={styles.hint}>{preview
                 ? "This is a private simulation of how the article page will look once it has been published."
-                : "Use the formatting toolbar and drag handles to build a complete article. Media use HTTPS URLs during staging."}</p>
+                : "Use the formatting toolbar and drag handles to build your article. Media use validated HTTPS URLs."}</p>
             </div>
             <button type="button" className={styles.secondary}
               disabled={busy || !editorValid} onClick={() => setPreview(current => !current)}>
@@ -344,6 +412,31 @@ export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (di
               onDirty={() => { setDirty(true); setNotice(""); }}
               onValidityChange={setEditorValid}
               onChange={updated => { setRich(updated); setDirty(true); setNotice(""); }}/>}
+
+            <fieldset className={styles.authorEditor}>
+              <legend>Publication control — separate from private draft saving</legend>
+              <p>{publication ? (publication.published ? "PUBLIC" : "UNPUBLISHED") + " · Revision " + publication.revision
+                : "Not published"} · Publishing is an explicit action and requires a saved draft.</p>
+              <label>Permanent article URL slug
+                <input value={publicationSlug} maxLength={100} disabled={busy || Boolean(publication)}
+                  onChange={event => setPublicationSlug(event.target.value.toLowerCase())}
+                  placeholder="article-title"/>
+              </label>
+              {publication && <p><a href={"/blogpost/" + publication.slug} target="_blank"
+                rel="noopener noreferrer">View public URL ↗</a></p>}
+              <div className={styles.buttons}>
+                <button type="button" className={styles.primary}
+                  disabled={busy || dirty || !editorValid || !publicationSlug}
+                  onClick={() => { void publishArticle(); }}>
+                  {publication ? (publication.published ? "Update published article" : "Republish article") : "Publish article"}
+                </button>
+                {publication?.published && <button type="button" className={styles.danger}
+                  disabled={busy} onClick={() => { void unpublishArticle(); }}>Unpublish</button>}
+                {publication && publication.revision > 1 && <button type="button" className={styles.secondary}
+                  disabled={busy} onClick={() => { void restoreArticle(); }}>Restore previous revision</button>}
+              </div>
+              {dirty && <p>Save your private draft before publishing.</p>}
+            </fieldset>
             <div className={styles.buttons}>
               <button type="submit" className={styles.primary} disabled={!dirty || busy || !editorValid}>{busy ? "Saving…" : "Save private draft"}</button>
               <button type="button" className={styles.danger} disabled={busy} onClick={() => { void deleteArticle(); }}>Delete draft</button>
