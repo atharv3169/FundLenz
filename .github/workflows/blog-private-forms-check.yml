@@ -22,6 +22,9 @@ on:
       - "scripts/verify-blog-staging-gate.mjs"
       - "scripts/verify-blog-admin-schema.py"
       - "wrangler.blog-staging.jsonc"
+      - "wrangler.jsonc"
+      - "scripts/verify-blog-production-config.mjs"
+      - "scripts/build-blog-staging.mjs"
       - "vite.config.ts"
       - "package.json"
       - "scripts/build-blog-staging.mjs"
@@ -101,8 +104,12 @@ jobs:
         run: python3 scripts/verify-blog-admin-schema.py
       - name: TypeScript validation
         run: pnpm run typecheck
+      - name: Verify production D1 separation, preserve configured variables
+        run: node scripts/verify-blog-production-config.mjs
       - name: Production build
         run: pnpm run build
+      - name: Verify generated production Worker keeps exact D1 binding
+        run: node scripts/verify-blog-production-config.mjs --built
       - name: Verify isolated staging configuration
         run: node scripts/verify-blog-staging-config.mjs
       - name: Build isolated staging Worker (NO DEPLOY)
