@@ -14,7 +14,7 @@ const moduleUrl = "data:text/javascript;base64," +
   Buffer.from(transformed.outputFiles[0].text, "utf8").toString("base64");
 const {
   allowedEmail, boundedText, optionalSocialUrl, requireAllowedOrigin,
-  limitedBody, validateHuman, SubmissionError, privateError,
+  limitedBody, validateHuman, requireFormRateLimit, SubmissionError, privateError,
 } = await import(moduleUrl);
 
 function rejects(fn, status) {
@@ -126,6 +126,44 @@ try {
   const endpoint = readFileSync("app/api/blog/subscribe/route.ts", "utf8");
   assert.match(endpoint, /data\.consent !== true/);
   assert.match(endpoint, /validateHuman\(request, data\.turnstileToken/);
+  // Runtime limiter must reject unbound/missing IP and avoid attacker-supplied proxy headers.
+  // It runs before body parsing, Turnstile and any private Google Drive calls.
+  const formRequest = (ip, headers = {}) => new Request("https://fundlenz.com/api/blog/subscribe", {
+    method: "POST", headers: { Origin: "https://fundlenz.com", ...(ip ? { "CF-Connecting-IP": ip } : {}), ...headers },
+    body: "{}",
+  });
+  const actors = [];
+  const limiter = { async limit({key}) { actors.push(key); return {success: actors.length < 3}; } };
+  await assert.rejects(() => requireFormRateLimit(formRequest("203.0.113.7"), null),
+    error => error.status === 503);
+  await assert.rejects(() => requireFormRateLimit(formRequest(null, {"X-Forwarded-For": "203.0.113.7"}), limiter),
+    error => error.status === 503);
+  await assert.rejects(() => requireFormRateLimit(formRequest("not an ip"), limiter),
+    error => error.status === 503);
+  await requireFormRateLimit(formRequest("203.0.113.7"), limiter);
+  await requireFormRateLimit(formRequest("203.0.113.7"), limiter);
+  assert.match(actors[0], /^form-ip-v1:[a-f0-9]{64}$/);
+  assert.equal(actors[0], actors[1], "Same actor must use stable key");
+  assert.ok(!actors[0].includes("203.0.113.7"), "Never expose raw IP in limiter key");
+  await assert.rejects(() => requireFormRateLimit(formRequest("203.0.113.7"), limiter),
+    error => error.status === 429);
+  const rejectedResponse = privateError(new SubmissionError(429, "Too many requests."));
+  assert.equal(rejectedResponse.status, 429);
+  assert.equal(rejectedResponse.headers.get("retry-after"), "60");
+  assert.equal(rejectedResponse.headers.get("cache-control"), "no-store");
+  await assert.rejects(() => requireFormRateLimit(formRequest("203.0.113.7"),
+    { async limit() { throw Error("don't print secret"); } }), error => error.status === 503);
+  const sourceSubscribe = readFileSync("app/api/blog/subscribe/route.ts", "utf8");
+  const sourceContribute = readFileSync("app/api/blog/contribute/route.ts", "utf8");
+  for (const [source, bindingName] of [
+    [sourceSubscribe, "BLOG_NEWSLETTER_RATE_LIMIT"], [sourceContribute, "BLOG_CONTRIBUTION_RATE_LIMIT"],
+  ]) {
+    assert.match(source, new RegExp(bindingName));
+    assert.match(source, /requireFormRateLimit\(request,/);
+    assert.ok(source.indexOf("requireAllowedOrigin(request);") < source.indexOf("await requireFormRateLimit(request,"));
+    assert.ok(source.indexOf("await requireFormRateLimit(request,") < source.indexOf("await limitedBody(request,"));
+    assert.ok(source.indexOf("await requireFormRateLimit(request,") < source.indexOf("await validateHuman(request,"));
+  }
   const privacy = await privateError(new Error("confidential refresh_token=SECRET")).json();
   assert.equal(JSON.stringify(privacy).includes("SECRET"), false);
   console.log("PASS: blog form security unit checks (origin, validation, size, Turnstile, privacy)");

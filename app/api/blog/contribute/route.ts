@@ -1,7 +1,8 @@
+import { env } from "cloudflare:workers";
 import { saveContribution } from "@/lib/blog-private-drive";
 import {
   allowedEmail, boundedText, limitedBody, optionalSocialUrl,
-  privateError, privateJSON, requireAllowedOrigin, SubmissionError, validateHuman,
+  privateError, privateJSON, requireAllowedOrigin, requireFormRateLimit, SubmissionError, validateHuman,
 } from "@/lib/blog-private-form-security";
 
 const MAX_FILE = 5 * 1024 * 1024;
@@ -24,6 +25,8 @@ function isAllowedFile(file: File, extension: string, bytes: Uint8Array): boolea
 export async function POST(request: Request) {
   try {
     requireAllowedOrigin(request);
+    // Guard costly multipart parsing/Turnstile and private Drive writes.
+    await requireFormRateLimit(request, (env as unknown as { BLOG_CONTRIBUTION_RATE_LIMIT?: unknown }).BLOG_CONTRIBUTION_RATE_LIMIT);
     const contentType = request.headers.get("content-type") || "";
     if (!contentType.toLowerCase().includes("multipart/form-data") || !contentType.includes("boundary="))
       throw new SubmissionError(415, "Expected a file upload.");

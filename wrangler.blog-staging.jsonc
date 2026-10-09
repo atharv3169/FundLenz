@@ -24,5 +24,23 @@
   },
   "observability": {
     "enabled": true
-  }
+  },
+  "ratelimits": [
+    {
+      "name": "BLOG_NEWSLETTER_RATE_LIMIT",
+      "namespace_id": "202610093",
+      "simple": {
+        "limit": 12,
+        "period": 60
+      }
+    },
+    {
+      "name": "BLOG_CONTRIBUTION_RATE_LIMIT",
+      "namespace_id": "202610094",
+      "simple": {
+        "limit": 4,
+        "period": 60
+      }
+    }
+  ]
 }
