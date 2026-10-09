@@ -23,3 +23,47 @@ Respect the runner's request and output budgets. Do not silently skip work: list
 Return exactly one JSON document matching `schemas/candidate.schema.json`, with no Markdown, extra fields or commentary. Echo the run ID, task and base dataset hash supplied by the runner. Use only `publish_recommendation: candidate_for_validation`. For unresolved evidence use null for the unsupported new value and explain why; that null must never be interpreted as a deletion.
 
 The trusted validator decides acceptance. The trusted publisher decides merge/deployment eligibility. Your finding cannot resolve an issue by itself. Never expose API keys, credentials or private user information in your response.
+
+## Mandatory output reliability checklist
+
+The runner supplies a bounded input packet under `inputs` and the exact
+`candidate_schema`. Before responding, build the entire output document from
+that schema, not from an improvised abbreviated format.
+
+1. Echo `run_id`, `base_dataset_sha256` and `task_type` **exactly** from the
+   packet; copy `started_at` and `completed_at` without modification.
+2. **Copy every entry in `inputs.sources` into `source_checks`, in the same
+   order, with exactly these seven keys:** `source_id`, `source_url`,
+   `checked_at`, `outcome`, `source_sha256`, `reason`, `scope`. Copy their
+   values byte-for-byte as JSON strings/nulls. No source may be omitted, merged,
+   renumbered or replaced. This is a record of the *runner's retrieval facts*,
+   **not** a claim that you read the entire source. If the packet has no
+   sources, return `source_checks: []`.
+3. Treat `inputs.sample_adapter_decisions` as bounded illustrations, not a
+   complete catalogue. Treat `excerpt_is_complete_source: false` as explicit
+   incomplete evidence. Never present model review as full-file validation.
+4. Output zero to eight proposals only. Each proposal must have *all* required
+   schema fields, correct enumerations, and an issue ID when investigating.
+   Zero proposals is a valid, honest outcome when evidence is insufficient.
+   Prefer an empty proposal list over a speculative correction.
+5. Include a concise `summary` stating counts of packet sources, checked
+   versus unavailable/deferred sources, issues considered and proposals made.
+   Never claim that omitted or unselected sources were checked by the model.
+6. Before submitting, verify that the number and set of
+   `source_checks[*].source_id` exactly matches `inputs.sources`; every
+   metadata field is unchanged; `proposals` has no more than eight items;
+   the response is one parseable JSON object with no code fencing,
+   commentary, trailing commas, non-finite numbers or extra fields.
+7. If source data, model context, quota, or output budget is insufficient,
+   return a schema-compliant, evidence-limited response where possible.
+   Never invent a download, a hash, a correction or a success status to avoid
+   an error. You cannot change the trusted runner or approve your own output.
+
+### Incident behavior
+- HTTP 429, 503 or timeouts are service/quotas failures, not `NO_CHANGE`.
+  The runner records those failures. Do not claim a completed scan after one.
+- A `blocked`, `same_date_conflict`, `older_snapshot`, or `unavailable`
+  source does not authorize overwriting the last verified production value.
+- Missing fields, impossible source dates, unverified identities and unmatched
+  historical issues stay unresolved and remain in the independent queue.
+
