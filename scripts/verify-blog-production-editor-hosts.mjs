@@ -149,6 +149,19 @@ await expects(503, () => editor.requireBlogEditor(request(worker)));
 stagingEnv.BLOG_ADMIN_EDITOR_PRODUCTION_ENABLED = "true";
 assert.equal(await editor.requireBlogEditor(request(worker)), prodDb);
 
+// A public navigation link must be visible on the exact reviewed Worker and
+// future domain hostnames; linking does not grant unauthenticated admin access.
+const blogHome = readFileSync("app/blogpost/page.tsx", "utf8");
+const blogHeader = readFileSync("components/blog/blog-site-chrome.tsx", "utf8");
+assert.match(blogHome, /showAdmin=\{host !== null && isReviewedEditorHost\(host\)\}/,
+  "Homepage must render Admin link on both production and staging Worker URLs.");
+assert.match(blogHeader, /href="\/blogpost\/admin"/,
+  "Admin navigation must open the existing protected editor login.");
+assert.match(blogHeader, /\{showAdmin && <Link/,
+  "Only reviewed blog hosts should render the Admin navigation.");
+assert.equal(policy.isReviewedEditorHost("fundlenz.com"), true);
+assert.equal(policy.isReviewedEditorHost("evil.fundlenz.com"), false);
+
 // Production homepage content must never reveal staging draft copy.
 const copy = readFileSync("lib/blog-staging-homepage.ts", "utf8");
 assert.ok(copy.includes('if (host !== BLOG_STAGING_HOST) return defaultBlogHomepageContent'));

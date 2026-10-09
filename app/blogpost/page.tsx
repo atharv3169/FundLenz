@@ -5,7 +5,7 @@ import { ContributionButton, NewsletterBox } from "@/components/blog/visitor-for
 import styles from "./page.module.css";
 import { BlogSiteHeader, BlogSiteFooter } from "@/components/blog/blog-site-chrome";
 import { BlogArticleArchive } from "@/components/blog/blog-article-archive";
-import { BLOG_STAGING_HOST } from "@/lib/blog-staging-homepage";
+import { isReviewedEditorHost } from "@/lib/blog-editor-hosts";
 import { readPublicHomepageCopy } from "@/lib/blog-public-homepage";
 import { readPublished } from "@/lib/blog-publication-store";
 import type { BlogAdminDatabase } from "@/lib/blog-admin-state";
@@ -32,7 +32,7 @@ export default async function BlogHomePage() {
   // The forms fail closed until this is configured in the Cloudflare Worker.
   const siteKey = process.env.TURNSTILE_SITE_KEY || "";
   return <div className={styles.shell}>
-    <BlogSiteHeader showAdmin={host === BLOG_STAGING_HOST}/>
+    <BlogSiteHeader showAdmin={host !== null && isReviewedEditorHost(host)}/>
     <main className={styles.main + (leftCards.length || rightCards.length ? " " + styles.mainWithCards : "")}>
       <div className={[styles.homeLayout, leftCards.length && styles.withLeft, rightCards.length && styles.withRight,
         leftCards.length && rightCards.length && styles.withBoth].filter(Boolean).join(" ")}>
