@@ -15,9 +15,9 @@ from common import ROOT, dataset_hash, encoded, loads, read, require, safe_path,
 from acquire import due_sources, validate_url, validate_registry
 from adapters import chronology, nav_candidates, parse_nav, holdings_candidate, allowed_paths, build_files
 from issues import issue_id, reconcile_issues
-from publish import protection_gate, verify_release
+from publish import protection_gate, verify_release, require_publishable_release
 from pr_gate import prepare
-from validate import run_status, validate_model, stage_catalogue_update_date
+from validate import run_status, validate_model, stage_catalogue_update_date, effective_publication_enabled
 from model_tasks import bounded_call, response_text, packets, ModelContractError, verify_candidate_envelope, is_no_work_packet, trusted_no_work_candidate
 from merge import wait_for_checks, assert_release_date_current
 from deployment import verify_live_catalogue, approved_production_origins
@@ -626,6 +626,37 @@ class PipelineTests(unittest.TestCase):
             bounded_call(packet, "fresh_scan", self.policy,
                          caller=always_invalid, wait=lambda _: None)
         self.assertEqual(failure.exception.fundlenz_attempts, 2)
+
+    def test_manual_audit_only_release_is_not_publishable_even_if_policy_enabled(self):
+        enabled = dict(self.policy, publication_enabled=True)
+        disabled = dict(self.policy, publication_enabled=False)
+        # No flag defaults to audit-only, even with automatic cron policy.
+        self.assertFalse(effective_publication_enabled(enabled, {}))
+        for flag in ["false", "true"]:
+            allowed = effective_publication_enabled(enabled, {"FUNDLENZ_RELEASE_ALLOWED": flag})
+            self.assertEqual(allowed, flag == "true")
+            self.assertFalse(effective_publication_enabled(disabled, {"FUNDLENZ_RELEASE_ALLOWED": flag}))
+        for invalid in ["1", "True", "yes", "false ", "", "undefined"]:
+            with self.subTest(invalid=invalid), self.assertRaisesRegex(ValueError, "Invalid publication permission"):
+                effective_publication_enabled(enabled, {"FUNDLENZ_RELEASE_ALLOWED": invalid})
+        # The privileged publisher independently requires opt-in from the
+        # exact-byte validated artifact, not merely the workflow job condition.
+        require_publishable_release({"publication_enabled": True})
+        for candidate in [None, {}, {"publication_enabled": False},
+                          {"publication_enabled": "true"}, {"publication_enabled": 1}]:
+            with self.subTest(candidate=candidate), self.assertRaisesRegex(ValueError, "Audit-only release"):
+                require_publishable_release(candidate or {})
+
+    def test_manual_workflow_reports_audit_only_and_publisher_replay_same_gate(self):
+        workflow = (ROOT / ".github/workflows/catalogue-daily.yml").read_text()
+        self.assertIn("FUNDLENZ_RELEASE_ALLOWED: ${{ github.event_name == 'schedule' || inputs.publish_validated_data == true }}", workflow)
+        self.assertIn("FUNDLENZ_RELEASE_ALLOWED: 'true'", workflow)
+        self.assertIn("inputs.publish_validated_data == true", workflow)
+        source = (ROOT / "scripts/automation/validate.py").read_text()
+        self.assertIn('"publication_enabled": publication_allowed', source)
+        self.assertIn('and publication_allowed', source)
+        publisher = (ROOT / "scripts/automation/publish.py").read_text()
+        self.assertIn("require_publishable_release(release)", publisher)
 
     def test_failed_collector_never_starts_publisher(self):
         workflow = (ROOT / ".github/workflows/catalogue-daily.yml").read_text()
