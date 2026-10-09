@@ -6,6 +6,17 @@ from common import ROOT, loads, read, require, write
 from github_api import GitHub, NoRedirect
 
 
+
+def verify_live_catalogue(release, observed, published_metadata=None):
+    """Verify deployed release plus the site-visible date of a financial change."""
+    require(observed == release, "Deployed release marker does not match this data release")
+    if release.get("financial_data_changed"):
+        require(isinstance(published_metadata, dict) and
+                published_metadata.get("lastCatalogueUpdateDate") == release.get("lastCatalogueUpdateDate") and
+                published_metadata.get("lastCatalogueUpdateRunId") == release.get("run_id"),
+                "Deployed catalogue date does not match the verified financial release")
+
+
 def main():
     api = GitHub()
     commit = os.environ["GITHUB_SHA"]
@@ -24,10 +35,17 @@ def main():
             latest = max(builds, key=lambda c: c["id"]) if builds else None
             if latest and latest["status"] == "completed":
                 require(latest["conclusion"] == "success", "Cloudflare deployment check failed")
-                url = policy["production_url"] + "/automation-audit/release.json?commit=" + commit
-                with urllib.request.build_opener(NoRedirect()).open(url, timeout=20) as response:
+                origin = policy["production_url"].rstrip("/")
+                opener = urllib.request.build_opener(NoRedirect())
+                url = origin + "/automation-audit/release.json?commit=" + commit
+                with opener.open(urllib.request.Request(url, headers={"Cache-Control": "no-cache"}), timeout=20) as response:
                     observed = loads(response.read(16385))
-                require(observed == release, "Deployed release marker does not match this data release")
+                published_metadata = None
+                if release.get("financial_data_changed"):
+                    url = origin + "/data/site-metadata.json?commit=" + commit
+                    with opener.open(urllib.request.Request(url, headers={"Cache-Control": "no-cache"}), timeout=20) as response:
+                        published_metadata = loads(response.read(16385))
+                verify_live_catalogue(release, observed, published_metadata)
                 report.update(status="confirmed", deployment_complete=True, dataset_sha256=release["dataset_sha256"], check_url=latest["html_url"])
                 break
             time.sleep(15)
