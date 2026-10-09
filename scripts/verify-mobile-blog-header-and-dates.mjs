@@ -13,7 +13,7 @@ const mobile = nav.slice(nav.indexOf("/* Mobile only:"));
 assert.match(mobile, /@media\s*\(max-width:\s*800px\)/);
 assert.match(mobile, /grid-template-areas:\s*"brand report" "catalogue securities" "blog blog"/,
   "Blog should live on its own mobile row");
-assert.match(mobile, /\.labShell :global\(\.masthead \.lab-blog-link\)[\s\S]*?grid-area:\s*blog/);
+assert.match(mobile, /\.labShell:global\(\.portfolio-lab\) :global\(\.masthead \.catalog-nav-link\.lab-blog-link\)[\s\S]*?grid-area:\s*blog/);
 assert.doesNotMatch(nav.split("/* Mobile only:")[0], /grid-template-areas:/,
   "No changes to the pre-existing desktop/tablet header layout");
 assert.match(portfolio, /className="catalog-nav-link lab-blog-link" href="\/blogpost"/);

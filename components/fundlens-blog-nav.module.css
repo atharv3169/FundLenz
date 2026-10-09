@@ -28,7 +28,7 @@
   .labShell:global(.portfolio-lab) > :global(.masthead) {
     grid-template-areas: "brand report" "catalogue securities" "blog blog";
   }
-  .labShell :global(.masthead .lab-blog-link) {
+  .labShell:global(.portfolio-lab) :global(.masthead .catalog-nav-link.lab-blog-link) {
     grid-area: blog;
     width: 100%;
     justify-self: stretch;
