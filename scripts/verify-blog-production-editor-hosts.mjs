@@ -26,8 +26,6 @@ async function importTS(path, workerEnv = false) {
     Buffer.from(built.outputFiles[0].text).toString("base64"));
 }
 const policy = await importTS("lib/blog-editor-hosts.ts");
-const editor = await importTS("lib/blog-editor-auth.ts", true);
-const admin = await importTS("lib/blog-admin-server.ts", true);
 const cryptoUtils = await importTS("lib/blog-admin-crypto.ts");
 const staging = policy.BLOG_EDITOR_STAGING_HOST;
 const worker = policy.BLOG_EDITOR_PRODUCTION_HOST;
@@ -62,6 +60,8 @@ const productionEnv = {
   FUNDLENZ_ADMIN_SESSION_SECRET: secret, BLOG_ADMIN_ALLOWED_HOSTNAMES: worker,
 };
 globalThis.__fundlenzAdminTestEnvironment = stagingEnv;
+const editor = await importTS("lib/blog-editor-auth.ts", true);
+const admin = await importTS("lib/blog-admin-server.ts", true);
 function request(host, opts = {}) {
   const origin = opts.origin === undefined ? "https://" + host : opts.origin;
   const headers = { Cookie: opts.cookie === undefined ? validCookie : opts.cookie };
