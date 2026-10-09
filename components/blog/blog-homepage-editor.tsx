@@ -50,6 +50,16 @@ export function BlogHomepageEditor({ initial, onSave, onCancel, onDirtyChange,
     setMessage("");
   }
 
+  function changeCards(side: "sideCardsLeft" | "sideCardsRight", cards: Parameters<typeof encodeHomepageInsightCards>[0]) {
+    try {
+      change(side, encodeHomepageInsightCards(cards));
+      setFailed(false);
+    } catch (cause) {
+      setFailed(true);
+      setMessage(cause instanceof Error ? cause.message : "Cards exceed the homepage storage limit.");
+    }
+  }
+
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (busy || !changed) return;
@@ -132,9 +142,9 @@ export function BlogHomepageEditor({ initial, onSave, onCancel, onDirtyChange,
             On mobile they stack below the article list and newsletter form. Save privately, then publish homepage separately.</p>
           <div className={styles.cardColumns}>
             <BlogInsightCardsEditor label="Left sidebar" cards={leftCards} maxCards={5} disabled={busy}
-              onChange={cards => change("sideCardsLeft", encodeHomepageInsightCards(cards))}/>
+              onChange={cards => changeCards("sideCardsLeft", cards)}/>
             <BlogInsightCardsEditor label="Right sidebar" cards={rightCards} maxCards={5} disabled={busy}
-              onChange={cards => change("sideCardsRight", encodeHomepageInsightCards(cards))}/>
+              onChange={cards => changeCards("sideCardsRight", cards)}/>
           </div>
         </fieldset>
         <fieldset className={styles.group}>
