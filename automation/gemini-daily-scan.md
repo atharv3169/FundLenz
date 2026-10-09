@@ -18,8 +18,11 @@ The runner, not this response, reconciles your output with Task B and computes f
 
 - First enumerate **only** the actual sources in `inputs.sources` and echo
   their seven provided metadata fields into `source_checks`. This includes
-  sources with outcome `unavailable`, `deferred` or `budget_exhausted`
-  if they are present; an unsuccessful fetch never becomes `checked_unchanged`.
+  each source actually present. The trusted task builder excludes missing
+  downloads rather than asking you to research data it could not retrieve.
+  Missing, deferred and budget-exhausted sources remain explicitly recorded
+  by the independent acquisition audit; never imply you read them or turn
+  their failure into `checked_unchanged`.
 - Next review `inputs.sample_adapter_decisions` and any corresponding
   `actual_source_rows`. A 700-character excerpt is not full-source evidence.
   Only propose a value when the supplied record supports the exact identity,
@@ -35,3 +38,7 @@ The runner, not this response, reconciles your output with Task B and computes f
   the source ledger to save response tokens; reduce the number of proposals
   instead (zero is acceptable).
 
+
+- Do not emit an `evidence` entry when the packet's source hash is null or
+  its bytes were not verified. Never substitute zeros, a previous hash or a
+  plausible-looking digest for a failed retrieval.
