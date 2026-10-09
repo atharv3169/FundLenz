@@ -376,6 +376,9 @@ class PipelineTests(unittest.TestCase):
         workflow = (ROOT / ".github/workflows/catalogue-daily.yml").read_text()
         self.assertIn("    if: needs.collect.result == 'success'", workflow)
         self.assertNotIn("if: always() && needs.collect.result != 'cancelled'", workflow)
+        self.assertNotIn("  push:\n    branches: [main]", workflow)
+        self.assertIn("  schedule:\n", workflow)
+        self.assertIn("  workflow_dispatch:\n", workflow)
 
     def test_model_false_positive_does_not_override_rule(self):
         doc, u, packet = self.model_fixture()
