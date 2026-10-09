@@ -5,7 +5,8 @@ import { ContributionButton, NewsletterBox } from "@/components/blog/visitor-for
 import styles from "./page.module.css";
 import { BlogSiteHeader, BlogSiteFooter } from "@/components/blog/blog-site-chrome";
 import { BlogArticleArchive } from "@/components/blog/blog-article-archive";
-import { BLOG_STAGING_HOST, readStagingHomepageCopy } from "@/lib/blog-staging-homepage";
+import { BLOG_STAGING_HOST } from "@/lib/blog-staging-homepage";
+import { readPublicHomepageCopy } from "@/lib/blog-public-homepage";
 import { readPublished } from "@/lib/blog-publication-store";
 import type { BlogAdminDatabase } from "@/lib/blog-admin-state";
 
@@ -21,7 +22,7 @@ export default async function BlogHomePage() {
   // On every other host, use the reviewed, version-controlled public defaults.
   const host = (await headers()).get("host")?.toLowerCase() || null;
   const db = (env as unknown as { BLOG_ADMIN_DB?: BlogAdminDatabase }).BLOG_ADMIN_DB;
-  const copy = await readStagingHomepageCopy(host, db);
+  const copy = await readPublicHomepageCopy(host, db);
   const publicArticles = await readPublished(db);
   // This public key is intentionally non-sensitive. The Turnstile secret stays server-side.
   // The forms fail closed until this is configured in the Cloudflare Worker.

@@ -78,9 +78,9 @@ await assert.rejects(stageMod.readStagingHomepageCopy(stageMod.BLOG_STAGING_HOST
 }), /HTTPS/);
 const blogSource = (await import("node:fs")).readFileSync("app/blogpost/page.tsx", "utf8");
 const chromeSource = (await import("node:fs")).readFileSync("components/blog/blog-site-chrome.tsx", "utf8");
-assert.ok(blogSource.includes("await readStagingHomepageCopy(host, db)") && blogSource.includes('dynamic = "force-dynamic"'));
+assert.ok(blogSource.includes("await readPublicHomepageCopy(host, db)") && blogSource.includes('dynamic = "force-dynamic"'));
 assert.ok(blogSource.includes("<BlogSiteFooter copy={copy}/>"));
 assert.ok(chromeSource.includes("<small>BLOG</small>"));
 assert.ok(!chromeSource.includes("Catalogue</Link>") && !chromeSource.includes("Stocks &amp; bonds</Link>"));
-console.log("PASS: saved D1 homepage text/social icons surface on staging only, and simplified blog navigation");
+console.log("PASS: saved homepage drafts remain staged; public copy requires explicit promotion and navigation stays intact");
 
