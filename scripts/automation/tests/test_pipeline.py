@@ -729,6 +729,81 @@ class PipelineTests(unittest.TestCase):
         following = packets(acq, [], "reinvestigation", self.policy)
         self.assertEqual(following["issues"][0]["issue_id"], "fixture-08")
 
+    def test_live_failure_reproduction_excludes_null_hash_issue_from_gemini(self):
+        """Reproduces the Oct 9 real run: official NAV verified, Tata URL unavailable.
+
+        The download failure stays in the acquisition/issue ledger; no zero or
+        fabricated SHA-256 can reach model evidence because the source is not
+        in either task packet.
+        """
+        confirmed = dict(self.source, adapter="amfi_nav")
+        unavailable = dict(self.source, source_id="tata-unavailable",
+                           source_url="https://www.tatamutualfund.com/schemes-related",
+                           adapter="monitor", outcome="unavailable",
+                           source_sha256=None, reason="Source not verified: ValueError")
+        state = self.make_state()
+        state["issues"]["issues"] = [
+            {"issue_id": "case-valid", "source_url": confirmed["source_url"],
+             "record_id": "nav:fixture", "scope": "nav:fixture",
+             "previous_candidate": None, "previous_verified": None},
+            {"issue_id": "case-unavailable", "source_url": unavailable["source_url"],
+             "record_id": "source:tata-unavailable", "scope": "source:tata-unavailable",
+             "previous_candidate": None, "previous_verified": None},
+        ]
+        acquisition = dict(self.acquisition(), previous_state=state,
+                           started_at=self.source["checked_at"],
+                           source_checks=[confirmed, unavailable])
+        fresh = packets(acquisition, [], "fresh_scan", self.policy)
+        investigation = packets(acquisition, [], "reinvestigation", self.policy)
+        self.assertEqual([r["source_id"] for r in fresh["sources"]], [confirmed["source_id"]])
+        self.assertEqual([r["source_id"] for r in investigation["sources"]], [confirmed["source_id"]])
+        self.assertEqual([i["issue_id"] for i in investigation["issues"]], ["case-valid"])
+        self.assertEqual(investigation["scope"]["unavailable_sources_excluded_from_model"], 1)
+        self.assertEqual(len(acquisition["previous_state"]["issues"]["issues"]), 2)
+        self.assertIsNone(unavailable["source_sha256"])
+
+    def test_outage_only_packets_make_no_unverifiable_model_requests(self):
+        unavailable = dict(self.source, source_id="tata-unavailable",
+                           source_url="https://www.tatamutualfund.com/schemes-related",
+                           adapter="monitor", outcome="unavailable",
+                           source_sha256=None, reason="Source not verified: HTTPError")
+        state = self.make_state()
+        state["issues"]["issues"] = [
+            {"issue_id": "case-unavailable", "source_url": unavailable["source_url"],
+             "record_id": "source:tata-unavailable", "scope": "source:tata-unavailable",
+             "previous_candidate": None, "previous_verified": None}]
+        acquisition = dict(self.acquisition(), previous_state=state,
+                           started_at=self.source["checked_at"], source_checks=[unavailable])
+        for task in ("fresh_scan", "reinvestigation"):
+            packet = packets(acquisition, [], task, self.policy)
+            self.assertEqual(packet["sources"], [])
+            self.assertEqual(packet["issues"], [])
+            self.assertTrue(is_no_work_packet(packet))
+            candidate = trusted_no_work_candidate(packet)
+            verify_candidate_envelope(candidate, packet, task, self.policy)
+            self.assertEqual(candidate["proposals"], [])
+        self.assertEqual(len(state["issues"]["issues"]), 1)
+
+    def test_verified_source_packets_prioritize_actionable_adapters(self):
+        source = dict(self.source, adapter="amfi_nav")
+        holdings = dict(self.source, source_id="holdings-verified",
+                        source_url="https://example.invalid/verified-holdings",
+                        adapter="ishares_holdings")
+        monitors = [dict(self.source, source_id=f"monitor-{i:02}",
+                         source_url=f"https://example.invalid/monitor-{i:02}",
+                         adapter="monitor") for i in range(20)]
+        unavailable = dict(self.source, source_id="monitor-outage",
+                           source_url="https://example.invalid/outage", adapter="monitor",
+                           outcome="unavailable", source_sha256=None)
+        acquisition = dict(self.acquisition(),
+                           started_at=self.source["checked_at"],
+                           source_checks=[*monitors, unavailable, holdings, source])
+        packet = packets(acquisition, [], "fresh_scan", self.policy)
+        self.assertEqual(len(packet["sources"]), self.policy["max_model_source_packets"])
+        self.assertEqual([s["source_id"] for s in packet["sources"][:2]],
+                         [source["source_id"], holdings["source_id"]])
+        self.assertNotIn("monitor-outage", {s["source_id"] for s in packet["sources"]})
+
     def test_investigation_rotation_does_not_starve_later_sources(self):
         state = self.make_state()
         sources = [dict(self.source, source_id=f"source-{i:02}", adapter="monitor",
