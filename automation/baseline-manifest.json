@@ -109,8 +109,8 @@
     },
     {
       "path": "components/fundlens.tsx",
-      "bytes": 54080,
-      "sha256": "2d87c97c109bcdcd9bb74378f37386146b9dfba5a079b2ab95af9e72bb3236b5",
+      "bytes": 57284,
+      "sha256": "2833ba7d46f7827787b5ef0439da9b0306dfb234f131a40b481b6696f32fde21",
       "scope": "application"
     },
     {
