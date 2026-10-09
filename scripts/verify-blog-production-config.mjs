@@ -33,7 +33,7 @@ for (const table of ["blog_admin_sessions", "blog_admin_attempts",
   assert.ok(migrations.some(s => s.includes("CREATE TABLE IF NOT EXISTS " + table)),
     "Missing non-destructive blog table: " + table);
 for (const sql of migrations) {
-  assert.ok(!/\\bDROP\\s+(?:TABLE|DATABASE)|\\bTRUNCATE\\s+TABLE|\\bDELETE\\s+FROM\\b/i.test(sql),
+  assert.ok(!/\bDROP\s+(?:TABLE|DATABASE)|\bTRUNCATE\s+TABLE|\bDELETE\s+FROM\b/i.test(sql),
     "Schema setup must not remove existing production data");
 }
 if (process.argv.includes("--built")) {
