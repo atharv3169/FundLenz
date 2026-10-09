@@ -108,11 +108,10 @@ def main():
     expected = release["base_commit"]
     protection_gate(api.call("/branches/main"), policy, expected)
     strict_protection(api)
-    # Replay trusted validation in this clean job, then compare every output hash.
-    from validate import validate
-    validate(ROOT, ROOT / "work/run", ROOT / "work/replayed")
-    replay, _ = verify_release(ROOT / "work/replayed")
-    require(replay == release, "Publisher replay differs from validation artifact")
+    # Keep this privileged job lightweight: verify the approved artifact's
+    # exact bytes, dataset hash, authorized paths, source base and publication
+    # permission above. The independent source/Gemini validation replay happens
+    # once in the protected PR data gate before any merge (pr_gate.py).
     base = api.call("/git/commits/" + expected)
     elements = []
     for path, raw in sorted(files.items()):

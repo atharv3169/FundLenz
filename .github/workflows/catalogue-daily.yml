@@ -35,8 +35,9 @@ jobs:
           persist-credentials: false
       - name: Install pinned validator dependencies
         run: python3 -m pip install --disable-pip-version-check -r scripts/automation/requirements.txt
-      - name: Run adversarial validator tests
-        run: python3 -m unittest discover -s scripts/automation/tests -v
+      # Full adversarial regression tests run on automation-code PRs and by
+      # explicit workflow dispatch, not on every daily source-refresh attempt.
+      # The actual source/Gemini financial validator below still runs daily.
       - name: Locate previous durable state
         id: state
         env:
