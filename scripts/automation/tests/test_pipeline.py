@@ -581,7 +581,7 @@ class PipelineTests(unittest.TestCase):
             ("started_at", "2026-10-02T00:00:00Z"),
             ("completed_at", "2026-10-02T01:00:00Z"),
             ("run_id", "another"),
-            ("base_dataset_sha256", "0" * 64),
+            ("base_dataset_sha256", "f" * 64),
             ("task_type", "reinvestigation"),
         ]:
             tampered = copy.deepcopy(doc)
