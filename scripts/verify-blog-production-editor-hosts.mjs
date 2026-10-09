@@ -96,7 +96,8 @@ await expects(403, () => editor.requireBlogEditor(request(staging, { write: true
 await expects(403, () => editor.requireBlogEditor(request(staging, { write: true, origin: "https://evil.invalid" })));
 
 // Explicit production configuration grants access to that exact Worker only.
-globalThis.__fundlenzAdminTestEnvironment = productionEnv;
+// Worker modules hold the same live environment object across the test.
+Object.assign(stagingEnv, productionEnv);
 assert.equal(await editor.requireBlogEditor(request(worker)), prodDb);
 assert.equal(await editor.requireBlogEditor(request(worker, { write: true })), prodDb);
 assert.equal(await admin.isAuthenticatedAdmin(request(worker)), true);
@@ -116,17 +117,17 @@ await expects(401, () => editor.requireBlogEditor(request(worker)));
 prodDb.hashes.add(currentHash);
 
 // Future domain is NOT active until the operator separately opts in at cutover.
-productionEnv.BLOG_ADMIN_ALLOWED_HOSTNAMES = worker + "," + future;
+stagingEnv.BLOG_ADMIN_ALLOWED_HOSTNAMES = worker + "," + future;
 assert.equal(await editor.requireBlogEditor(request(future)), prodDb);
 assert.equal(await editor.requireBlogEditor(request(future, { write: true })), prodDb);
 await expects(403, () => editor.requireBlogEditor(request(future, {
   write: true, origin: "https://" + worker,
 }));
-productionEnv.BLOG_ADMIN_ALLOWED_HOSTNAMES = worker;
-productionEnv.BLOG_ADMIN_DB = undefined;
+stagingEnv.BLOG_ADMIN_ALLOWED_HOSTNAMES = worker;
+stagingEnv.BLOG_ADMIN_DB = undefined;
 await assert.rejects(() => editor.requireBlogEditor(request(worker)),
   e => e instanceof admin.AdminUnavailable || /not configured/.test(String(e)));
-productionEnv.BLOG_ADMIN_DB = prodDb;
+stagingEnv.BLOG_ADMIN_DB = prodDb;
 
 // Production homepage content must never reveal staging draft copy.
 const copy = readFileSync("lib/blog-staging-homepage.ts", "utf8");
