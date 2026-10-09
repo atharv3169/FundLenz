@@ -1,5 +1,6 @@
 import { env } from "cloudflare:workers";
 import { BLOG_ADMIN_USERNAME, verifyPassword } from "@/lib/blog-admin-crypto";
+import { isReviewedEditorUrl } from "@/lib/blog-editor-hosts";
 import {
   type BlogAdminDatabase, validSessionSecret,
   authenticateSession, reserveLoginAttempt, recordLoginFailure, BlogAdminRateLimit,
@@ -48,14 +49,18 @@ export function requireAdminOrigin(request: Request, allowedHosts: string[]): vo
   try { url = new URL(origin); }
   catch { throw new AdminForbidden(); }
   const requestURL = new URL(request.url);
-  if (url.protocol !== "https:" || url.origin !== requestURL.origin ||
+  if (!isReviewedEditorUrl(request.url) ||
+      url.protocol !== "https:" || url.origin !== requestURL.origin ||
       !allowedHosts.includes(url.hostname.toLowerCase()) || url.username || url.password) {
     throw new AdminForbidden();
   }
 }
 
 export async function isAuthenticatedAdmin(request: Request): Promise<boolean> {
-  const { db, secret } = adminRuntime();
+  // Even a valid cookie may not authorize an unexpected proxy/custom host.
+  if (!isReviewedEditorUrl(request.url)) return false;
+  const { db, secret, hosts } = adminRuntime();
+  if (!hosts.includes(new URL(request.url).hostname.toLowerCase())) return false;
   return authenticateSession(db, secret, request.headers.get("Cookie"));
 }
 
