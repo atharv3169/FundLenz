@@ -103,7 +103,9 @@ jobs:
   publish:
     name: Publish only when activated
     needs: collect
-    if: always() && needs.collect.result != 'cancelled'
+    # The publisher needs a complete validated release artifact. A failed
+    # collector cannot create one; do not create a second cascading failure.
+    if: needs.collect.result == 'success'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
