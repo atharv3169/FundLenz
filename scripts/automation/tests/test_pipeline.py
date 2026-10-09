@@ -16,7 +16,7 @@ from adapters import chronology, nav_candidates, parse_nav, holdings_candidate, 
 from issues import issue_id, reconcile_issues
 from publish import protection_gate, verify_release
 from validate import run_status, validate_model
-from model_tasks import bounded_call, response_text, packets
+from model_tasks import bounded_call, response_text, packets, ModelContractError, verify_candidate_envelope
 from merge import wait_for_checks
 
 
@@ -329,6 +329,53 @@ class PipelineTests(unittest.TestCase):
         doc["source_checks"][0] = dict(self.source, source_sha256=u["source_sha256"])
         doc["proposals"] = [p]
         return doc, u, {"sources": doc["source_checks"], "issues": []}
+
+    def test_model_envelope_requires_exact_trusted_source_ledger(self):
+        doc, unit, packet = self.model_fixture()
+        envelope = dict(packet, run_id=doc["run_id"],
+                        base_dataset_sha256=doc["base_dataset_sha256"],
+                        started_at=doc["started_at"], completed_at=doc["completed_at"],
+                        output_instructions="Return strict schema.")
+        verify_candidate_envelope(doc, envelope, "fresh_scan", self.policy)
+        missing = copy.deepcopy(doc)
+        missing["source_checks"] = []
+        with self.assertRaisesRegex(ValueError, "coverage"):
+            verify_candidate_envelope(missing, envelope, "fresh_scan", self.policy)
+        changed = copy.deepcopy(doc)
+        changed["source_checks"][0]["source_sha256"] = "0" * 64
+        with self.assertRaisesRegex(ValueError, "trusted source-check"):
+            verify_candidate_envelope(changed, envelope, "fresh_scan", self.policy)
+        misleading = copy.deepcopy(doc)
+        misleading["source_checks"][0]["reason"] = "Model claims this was freshly reviewed."
+        with self.assertRaisesRegex(ValueError, "trusted source-check"):
+            verify_candidate_envelope(misleading, envelope, "fresh_scan", self.policy)
+
+    def test_incomplete_gemini_output_gets_one_bounded_corrective_retry(self):
+        packet = {"output_instructions": "Copy the trusted source ledger."}
+        calls = []
+        def fix_on_retry(current, task, policy):
+            calls.append(current)
+            if len(calls) == 1:
+                raise ModelContractError("Model source coverage incomplete")
+            self.assertIn("CORRECTIVE RETRY", current["output_instructions"])
+            self.assertIn("EVERY inputs.sources", current["output_instructions"])
+            return {"repaired": True}, {"totalTokenCount": 8}
+        output, usage, attempts = bounded_call(packet, "fresh_scan", self.policy,
+                                               caller=fix_on_retry, wait=lambda _: None)
+        self.assertEqual((output, usage, attempts),
+                         ({"repaired": True}, {"totalTokenCount": 8}, 2))
+        self.assertEqual(packet["output_instructions"], "Copy the trusted source ledger.")
+        def always_invalid(current, task, policy):
+            raise ModelContractError("Malformed model response")
+        with self.assertRaises(ModelContractError) as failure:
+            bounded_call(packet, "fresh_scan", self.policy,
+                         caller=always_invalid, wait=lambda _: None)
+        self.assertEqual(failure.exception.fundlenz_attempts, 2)
+
+    def test_failed_collector_never_starts_publisher(self):
+        workflow = (ROOT / ".github/workflows/catalogue-daily.yml").read_text()
+        self.assertIn("    if: needs.collect.result == 'success'", workflow)
+        self.assertNotIn("if: always() && needs.collect.result != 'cancelled'", workflow)
 
     def test_model_false_positive_does_not_override_rule(self):
         doc, u, packet = self.model_fixture()
