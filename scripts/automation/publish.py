@@ -46,8 +46,14 @@ def verify_release(result, root=ROOT):
                 "Release baseline dataset differs from the protected base")
         require(release["candidate_dataset_sha256"] == dataset_hash(root, files),
                 "Financial dataset hash differs from the exact sanitized overlay")
-        financial_change = any(p.startswith("public/data/") and
-                               p != "public/data/site-metadata.json" for p in files)
+        # A metadata/date-only rewrite must never masquerade as a real
+        # financial change. An actual trusted adapter must produce at least
+        # one changed non-metadata production data file.
+        financial_change = any(
+            path.startswith("public/data/") and path != "public/data/site-metadata.json" and
+            (not (root / path).exists() or (root / path).read_bytes() != raw)
+            for path, raw in files.items()
+        )
         require(release["data_changes"] is financial_change,
                 "Release incorrectly declares financial data changes")
         update_marker = loads(files["public/automation-audit/release.json"])
