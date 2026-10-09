@@ -21,5 +21,23 @@
       "database_name": "fundlenz-blog-admin-production",
       "database_id": "cfdfc32d-5833-4102-889a-37889bbbb7b1"
     }
+  ],
+  "ratelimits": [
+    {
+      "name": "BLOG_NEWSLETTER_RATE_LIMIT",
+      "namespace_id": "202610091",
+      "simple": {
+        "limit": 12,
+        "period": 60
+      }
+    },
+    {
+      "name": "BLOG_CONTRIBUTION_RATE_LIMIT",
+      "namespace_id": "202610092",
+      "simple": {
+        "limit": 4,
+        "period": 60
+      }
+    }
   ]
 }

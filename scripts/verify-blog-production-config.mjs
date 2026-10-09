@@ -19,6 +19,18 @@ assert.deepEqual(prod.d1_databases[0], {
 assert.equal(stage.name, "fundlenz-blog-staging");
 assert.equal(stage.d1_databases?.length, 1);
 assert.notEqual(stage.d1_databases[0].database_id, id, "Staging and production cannot share a database");
+const expectedRateLimits = [
+  { name: "BLOG_NEWSLETTER_RATE_LIMIT", namespace_id: "202610091", simple: { limit: 12, period: 60 } },
+  { name: "BLOG_CONTRIBUTION_RATE_LIMIT", namespace_id: "202610092", simple: { limit: 4, period: 60 } },
+];
+assert.deepEqual(prod.ratelimits, expectedRateLimits, "Protect each live form with reviewed Worker rate limit");
+assert.equal(new Set(prod.ratelimits.map(x => x.namespace_id)).size, 2);
+assert.equal(stage.ratelimits?.length, 2);
+for (const [i, binding] of stage.ratelimits.entries()) {
+  assert.equal(binding.name, expectedRateLimits[i].name);
+  assert.deepEqual(binding.simple, expectedRateLimits[i].simple);
+  assert.notEqual(binding.namespace_id, expectedRateLimits[i].namespace_id, "No shared staging counters");
+}
 assert.equal(prod.routes, undefined, "Domain cutover is not authorized in this PR");
 assert.equal(prod.route, undefined, "Domain cutover is not authorized in this PR");
 assert.equal(prod.triggers, undefined);
@@ -44,6 +56,8 @@ if (process.argv.includes("--built")) {
   assert.equal(generated.keep_vars, true, "Generated deployment must preserve dashboard variables");
   assert.deepEqual(generated.d1_databases, prod.d1_databases,
     "Build dropped or altered production D1 binding");
+  assert.deepEqual(generated.ratelimits, expectedRateLimits,
+    "Generated Worker must carry production form rate-limit bindings");
   assert.equal(generated.routes, undefined, "Build changed custom domains");
   assert.equal(generated.route, undefined, "Build changed custom domains");
 }

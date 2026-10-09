@@ -25,6 +25,14 @@ assert.equal(prod.d1_databases?.length, 1, "Production must have one reviewed bl
 assert.equal(prod.d1_databases[0].binding, "BLOG_ADMIN_DB");
 assert.equal(prod.d1_databases[0].database_name, "fundlenz-blog-admin-production");
 assert.equal(prod.d1_databases[0].database_id, "cfdfc32d-5833-4102-889a-37889bbbb7b1");
+assert.equal(stage.ratelimits?.length, 2, "Isolated staging must have two form limiters");
+assert.equal(prod.ratelimits?.length, 2, "Live Worker must have two form limiters");
+for (const [i, limiter] of stage.ratelimits.entries()) {
+  assert.equal(limiter.name, prod.ratelimits[i].name);
+  assert.deepEqual(limiter.simple, prod.ratelimits[i].simple);
+  assert.notEqual(limiter.namespace_id, prod.ratelimits[i].namespace_id,
+    "Staging form limits must not consume production counters");
+}
 assert.notEqual(prod.d1_databases[0].database_id, stage.d1_databases[0].database_id,
   "Production and staging must never share a D1 database");
 const vite = readFileSync("vite.config.ts", "utf8");
@@ -58,5 +66,7 @@ if (process.argv.includes("--built")) {
   assert.equal(out.d1_databases?.[0]?.binding, "BLOG_ADMIN_DB");
   assert.equal(out.d1_databases?.[0]?.database_id, stage.d1_databases[0].database_id);
   assert.equal(out.vars?.BLOG_ADMIN_ALLOWED_HOSTNAMES, stage.vars.BLOG_ADMIN_ALLOWED_HOSTNAMES);
+  assert.deepEqual(out.ratelimits, stage.ratelimits,
+    "Staging must carry independent rate-limiting bindings");
   console.log("PASS: generated staging build deploys only to fundlenz-blog-staging");
 } else console.log("PASS: isolated staging Wrangler config and production guardrails");

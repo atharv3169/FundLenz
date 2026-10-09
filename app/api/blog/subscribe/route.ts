@@ -1,13 +1,16 @@
+import { env } from "cloudflare:workers";
 import { saveSubscriber } from "@/lib/blog-private-drive";
 import {
   allowedEmail, limitedBody, privateError, privateJSON,
-  requireAllowedOrigin, SubmissionError, validateHuman,
+  requireAllowedOrigin, requireFormRateLimit, SubmissionError, validateHuman,
 } from "@/lib/blog-private-form-security";
 
 const MAX_BODY = 16_384;
 export async function POST(request: Request) {
   try {
     requireAllowedOrigin(request);
+    // Reject excess traffic BEFORE parsing inputs, calling Turnstile or accessing Drive.
+    await requireFormRateLimit(request, (env as unknown as { BLOG_NEWSLETTER_RATE_LIMIT?: unknown }).BLOG_NEWSLETTER_RATE_LIMIT);
     if (!(request.headers.get("content-type") || "").toLowerCase().includes("application/json"))
       throw new SubmissionError(415, "Expected JSON.");
     const bytes = await limitedBody(request, MAX_BODY);

@@ -62,6 +62,7 @@ if (generated.name !== production.name || generated.routes || generated.route ||
     !Array.isArray(generated.d1_databases) || generated.d1_databases.length !== 1 ||
     generated.d1_databases[0].binding !== "BLOG_ADMIN_DB" ||
     generated.d1_databases[0].database_id !== expectedProductionDB ||
+    JSON.stringify(generated.ratelimits) !== JSON.stringify(production.ratelimits) ||
     (generated.env && Object.keys(generated.env).length) ||
     (generated.vars && Object.keys(generated.vars).some(key => key === "BLOG_ADMIN_ALLOWED_HOSTNAMES"))) {
   throw new Error("Unexpected production-generated deployment settings; refusing staging conversion.");
@@ -114,6 +115,7 @@ generated.workers_dev = true;
 generated.preview_urls = false;
 generated.keep_vars = true;
 generated.d1_databases = staging.d1_databases;
+generated.ratelimits = staging.ratelimits;
 generated.vars = { ...(generated.vars || {}), ...staging.vars };
 generated.observability = staging.observability;
 // Vinext adds an empty triggers object in generated configs; do not register a cron.

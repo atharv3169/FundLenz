@@ -58,6 +58,33 @@ export function optionalSocialUrl(value: unknown): string {
   return url.toString();
 }
 
+/** Cost-control safeguard on the two public submission routes.
+ * Cloudflare's binding is per-colo and eventually consistent, not a global
+ * accounting limit. Only Cloudflare's CF-Connecting-IP is accepted; we never
+ * trust user-supplied X-Forwarded-For nor log/store the raw IP.
+ * Missing binding / client identity fails closed rather than bypassing checks.
+ */
+export type FormRateLimitBinding = {
+  limit(options: { key: string }): Promise<{ success: boolean }>;
+};
+export async function requireFormRateLimit(request: Request, binding: unknown): Promise<void> {
+  if (!binding || typeof (binding as FormRateLimitBinding).limit !== "function")
+    throw new SubmissionError(503, "Form submissions are temporarily unavailable.");
+  const ip = request.headers.get("CF-Connecting-IP");
+  if (!ip || ip.length > 64 || !/^[0-9a-fA-F:.]+$/.test(ip))
+    throw new SubmissionError(503, "Form submissions are temporarily unavailable.");
+  const hashedIP = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ip)));
+  const actorKey = "form-ip-v1:" + Array.from(hashedIP, byte => byte.toString(16).padStart(2, "0")).join("");
+  let result: { success: boolean };
+  try {
+    result = await (binding as FormRateLimitBinding).limit({ key: actorKey });
+  } catch {
+    throw new SubmissionError(503, "Form submissions are temporarily unavailable.");
+  }
+  if (!result || result.success !== true)
+    throw new SubmissionError(429, "Too many requests. Please wait a minute and retry.");
+}
+
 /** Limit request bodies before parsing multipart files (including chunked uploads). */
 export async function limitedBody(request: Request, maxBytes: number): Promise<Uint8Array> {
   const advertised = Number(request.headers.get("content-length") || "0");
@@ -114,7 +141,11 @@ export function privateJSON(data: object, status = 200): Response {
 }
 
 export function privateError(error: unknown): Response {
-  if (error instanceof SubmissionError) return privateJSON({ error: error.message }, error.status);
+  if (error instanceof SubmissionError) {
+    if (error.status === 429) return Response.json({ error: error.message },
+      { status: 429, headers: { "Cache-Control": "no-store", "Retry-After": "60" } });
+    return privateJSON({ error: error.message }, error.status);
+  }
   // Never reflect Google API errors, secrets, or submitted data to visitors.
   return privateJSON({ error: "Submission storage is temporarily unavailable. Please retry." }, 503);
 }
