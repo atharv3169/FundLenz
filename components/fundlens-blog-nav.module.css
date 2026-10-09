@@ -23,13 +23,17 @@
   }
 }
 
-/* On phones/tablets: logo alone, Report + Blog beside each other,
-   then Catalogue across the full width. The separate securities catalogue
-   remains reachable under Catalogue rather than duplicating header nav. */
+/* Compact mobile header: FundLenz logo + small Blog button in the first
+   row; View report + Catalogue are equal-width buttons directly beneath.
+   Desktop layout is intentionally untouched. Securities remains available
+   inside Catalogue rather than consuming a third header button. */
 @media (max-width: 800px) {
   .labShell:global(.portfolio-lab) > :global(.masthead) {
-    grid-template-areas: "brand brand" "report blog" "catalogue catalogue";
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas: "brand blog" "report catalogue";
     gap: 9px 10px;
+    padding-top: 11px;
+    padding-bottom: 11px;
   }
   .labShell:global(.portfolio-lab) :global(.masthead .header-button) {
     grid-area: report;
@@ -38,8 +42,12 @@
   }
   .labShell:global(.portfolio-lab) :global(.masthead .catalog-nav-link.lab-blog-link) {
     grid-area: blog;
-    width: 100%;
-    justify-self: stretch;
+    width: auto;
+    max-width: 100%;
+    min-width: 94px;
+    padding: 9px 14px;
+    justify-self: end;
+    font-size: .8125rem;
   }
   .labShell:global(.portfolio-lab) :global(.masthead .catalog-nav-link:not(.lab-blog-link)) {
     grid-area: catalogue;

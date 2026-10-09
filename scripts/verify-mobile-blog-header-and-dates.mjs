@@ -9,15 +9,21 @@ const updater = readFileSync("scripts/automation/validate.py","utf8");
 
 assert.match(css, /grid-template-areas:\s*"brand report" "catalogue securities"/,
   "Legacy base grid remains intact; only the mobile module overrides it");
-const mobile = nav.slice(nav.indexOf("/* On phones/tablets:"));
+const mobile = nav.slice(nav.indexOf("/* Compact mobile header:"));
 assert.match(mobile, /@media\s*\(max-width:\s*800px\)/,
   "Only mobile/tablet breakpoints should change");
-assert.match(mobile, /grid-template-areas:\s*"brand brand" "report blog" "catalogue catalogue"/,
-  "Logo gets full width; Report and Blog share a row; Catalogue uses the bottom row");
+assert.match(mobile, /grid-template-areas:\s*"brand blog" "report catalogue"/,
+  "FundLenz and Blog share the first row; Report and Catalogue share the second");
+assert.match(mobile, /grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/,
+  "Both second-row buttons share the available width");
+assert.match(mobile, /\.labShell:global\(\.portfolio-lab\) :global\(\.masthead \.catalog-nav-link\.lab-blog-link\)[\s\S]*?width:\s*auto;[\s\S]*?justify-self:\s*end/,
+  "Blog should be a compact top-right shortcut rather than a full-size card");
+assert.match(mobile, /padding-top:\s*11px;[\s\S]*?padding-bottom:\s*11px/,
+  "Compact header vertical padding");
 assert.match(mobile, /\.labShell:global\(\.portfolio-lab\) :global\(\.masthead \.header-button\)[\s\S]*?grid-area:\s*report/);
 assert.match(mobile, /\.labShell:global\(\.portfolio-lab\) :global\(\.masthead \.catalog-nav-link\.lab-blog-link\)[\s\S]*?grid-area:\s*blog/);
 assert.match(mobile, /\.labShell:global\(\.portfolio-lab\) :global\(\.masthead \.catalog-nav-link:not\(\.lab-blog-link\)\)[\s\S]*?grid-area:\s*catalogue/);
-assert.doesNotMatch(nav.split("/* On phones/tablets:")[0], /grid-template-areas:/,
+assert.doesNotMatch(nav.split("/* Compact mobile header:")[0], /grid-template-areas:/,
   "Desktop header is not changed");
 const header = portfolio.slice(portfolio.indexOf('<header className="masthead">'),
   portfolio.indexOf('</header>') + '</header>'.length);
@@ -49,4 +55,4 @@ assert.match(updater, /if catalogue_update_date:[\s\S]*?lastCatalogueUpdateDate=
   "Updater must save the verified date atomically with data");
 assert.doesNotMatch(portfolio, /Snapshot · \{catalogueUpdateLabel\}/,
   "Publication date cannot replace a stale source snapshot date");
-console.log("PASS: logo / Report+Blog / Catalogue mobile rows, no duplicate securities header; verified-date labels preserved");
+console.log("PASS: compact logo+Blog / Report+Catalogue mobile header, securities navigation and verified dates preserved");
