@@ -53,7 +53,8 @@ assert.match(portfolio, /Last catalogue update · \{catalogueUpdateLabel \?\? "N
 assert.match(securities, /Last catalogue update \{catalogueUpdateLabel \?\? "not yet recorded"\}/,
   "Securities catalogue must share the same verified release marker");
 for (const file of ["components/fund-catalog.tsx","components/global-catalog.tsx"]) {
-  assert.match(readFileSync(file,"utf8"), /Last catalogue update \{catalogueUpdateLabel \?\? "not yet recorded"\}/,\n    "Global and Indian catalogues must display truthful missing-update status");
+  assert.match(readFileSync(file,"utf8"), /Last catalogue update \{catalogueUpdateLabel \?\? "not yet recorded"\}/,
+    "Global and Indian catalogues must display truthful missing-update status");
 }
 assert.match(metadata, /lastCatalogueUpdateDate/);
 assert.match(updater, /stage_catalogue_update_date\(root, files, acquisition\)/);
