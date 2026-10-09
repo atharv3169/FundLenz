@@ -75,7 +75,7 @@ def assert_release_date_current(api, head, today=None):
     else:
         # Audit-only publication cannot masquerade as a new financial update.
         require(release.get("lastCatalogueUpdateDate") is None or
-                re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", release["lastCatalogueUpdateDate"]),
+                re.fullmatch(r"\d{4}-\d{2}-\d{2}", release["lastCatalogueUpdateDate"]),
                 "Malformed historical catalogue update date")
 
 def main():
