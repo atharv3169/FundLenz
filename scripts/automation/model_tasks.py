@@ -9,6 +9,30 @@ from common import ROOT, clean_error, encoded, loads, now, read, require, schema
 from adapters import reconcile
 
 
+class ModelContractError(ValueError):
+    """One bounded retry is allowed for an incomplete Gemini JSON response."""
+
+
+def verify_candidate_envelope(candidate, packet, task, policy):
+    """Fail closed before accepting model output; trusted validator rechecks later."""
+    schema(candidate, "candidate")
+    require(candidate["run_id"] == packet["run_id"] and
+            candidate["base_dataset_sha256"] == packet["base_dataset_sha256"] and
+            candidate["task_type"] == task, "Model run/base mismatch")
+    require(candidate["started_at"] == packet["started_at"] and
+            candidate["completed_at"] == packet["completed_at"], "Model changed task timestamps")
+    require(len(candidate["proposals"]) <= min(8, policy["max_model_proposals"]), "Proposal budget exceeded")
+    expected = {source["source_id"]: source for source in packet["sources"]}
+    actual = candidate["source_checks"]
+    require(len(actual) == len(expected) and
+            {row["source_id"] for row in actual} == set(expected), "Model source coverage incomplete or duplicated")
+    keys = ("source_id", "source_url", "checked_at", "outcome", "source_sha256", "reason", "scope")
+    for row in actual:
+        require(all(row[key] == expected[row["source_id"]][key] for key in keys),
+                "Model altered the trusted source-check ledger")
+
+
+
 def packets(acquisition, units, task, policy, run=None):
     run = run or ROOT / "work/run"
     issues = acquisition["previous_state"]["issues"]["issues"]
@@ -108,11 +132,13 @@ def call_model(packet, task, policy):
     final_text = "".join(p.get("text", "") for c in candidates for p in c.get("content", {}).get("parts", [])
                          if isinstance(p.get("text"), str) and not p.get("thought", False))
     (ROOT / "work/run" / (task + "-raw-text.txt")).write_text(final_text.replace(key, "[REDACTED]"))
-    candidate = loads(response_text(body))
-    schema(candidate, "candidate")
-    require(candidate["run_id"] == packet["run_id"] and candidate["base_dataset_sha256"] == packet["base_dataset_sha256"]
-            and candidate["task_type"] == task, "Model run/base mismatch")
-    require(len(candidate["proposals"]) <= policy["max_model_proposals"], "Proposal budget exceeded")
+    try:
+        candidate = loads(response_text(body))
+        verify_candidate_envelope(candidate, packet, task, policy)
+    except ValueError as error:
+        # Bad JSON, truncated answers and incomplete ledgers get one corrective
+        # retry. Never treat them as valid observations or silently fill gaps.
+        raise ModelContractError(str(error)[:240]) from None
     return candidate, body.get("usageMetadata", {})
 
 
@@ -161,15 +187,27 @@ def main():
 
 
 def bounded_call(packet, task, policy, caller=call_model, wait=time.sleep):
+    current_packet = packet
     for attempt in range(1, policy["model_retries"] + 2):
         try:
-            candidate, usage = caller(packet, task, policy)
+            candidate, usage = caller(current_packet, task, policy)
             return candidate, usage, attempt
         except urllib.error.HTTPError as error:
             error.fundlenz_attempts = attempt
             if attempt > policy["model_retries"] or error.code not in policy["model_retry_http_statuses"]:
                 raise
             wait(policy["model_retry_delay_seconds"])
+        except ModelContractError as error:
+            error.fundlenz_attempts = attempt
+            if attempt > policy["model_retries"]:
+                raise
+            # Correct the same bounded task; do not introduce new sources,
+            # change trusted metadata or bypass independent validation.
+            current_packet = dict(packet)
+            current_packet["output_instructions"] = packet["output_instructions"] + (
+                " CORRECTIVE RETRY: Your previous response was rejected: " + str(error)[:120] +
+                ". Return fewer or zero proposals and exactly one source_checks row for EVERY inputs.sources entry. "
+                "Copy all seven metadata fields unchanged. Return complete valid JSON and never invent evidence.")
     raise ValueError("Model attempt budget exhausted")
 
 
