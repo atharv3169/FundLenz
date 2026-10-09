@@ -72,3 +72,7 @@
 .contents a:hover{text-decoration:underline;text-underline-offset:3px;color:#00768a}
 .byline>div{min-width:0}.byline strong,.masthead{overflow-wrap:anywhere}
 @media(max-width:470px){.layout{padding:24px 18px 32px}.articleHeader h1{font-size:clamp(29px,8vw,35px)}.deck{padding-left:15px;margin-top:20px}.body{line-height:1.75}.quote{padding-left:18px}.articleFooter{margin-top:36px}}
+
+/* Preserve the existing share and related-reading sidebar. Custom insight cards live below it.
+   On small screens the whole sidebar already follows the article, including all cards. */
+@media(max-width:720px){.sidebar{grid-template-columns:1fr}.sideFoot{grid-column:auto}}

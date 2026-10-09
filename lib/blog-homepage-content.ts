@@ -1,5 +1,6 @@
 import initialContent from "@/content/blog-homepage.json";
 import { safeHttpUrl } from "@/lib/blog-rich-document";
+import { parseHomepageInsightCards } from "@/lib/blog-insight-cards";
 
 /** Public, editable marketing copy only. This must never include admin secrets or visitor records. */
 export const blogHomepageFields = [
@@ -17,6 +18,8 @@ export const blogHomepageFields = [
   { key: "contributionButtonLabel", label: "Contributor popup button", group: "Footer", max: 100, multiline: false },
   { key: "footerDescription", label: "Footer education disclaimer", group: "Footer", max: 220, multiline: true },
   { key: "instagramLead", label: "Instagram text before the link", group: "Footer", max: 120, multiline: false },
+  { key: "sideCardsLeft", label: "Left homepage insight cards (managed in Cards tool)", group: "Sidebar cards", max: 3900, multiline: true, optional: true },
+  { key: "sideCardsRight", label: "Right homepage insight cards (managed in Cards tool)", group: "Sidebar cards", max: 3900, multiline: true, optional: true },
   { key: "articleMastheadRight", label: "Article header tagline (leave blank to hide)", group: "Article appearance", max: 120, multiline: false, optional: true },
   { key: "socialInstagramUrl", label: "Instagram URL", group: "Social links", max: 500, multiline: false, optional: true, url: true },
   { key: "socialInstagramEnabled", label: "Show Instagram icon", group: "Social links", max: 5, multiline: false, toggle: true },
@@ -56,6 +59,12 @@ export function validateBlogHomepageContent(value: unknown): BlogHomepageContent
       throw new Error("Social profile URL must be HTTPS.");
     result[field.key] = text.trim();
   }
+  // This data is JSON but stored as a validated string in the existing D1 homepage row.
+  // Never allow direct HTML/CSS or unexpected card fields from a browser request.
+  parseHomepageInsightCards(result.sideCardsLeft);
+  parseHomepageInsightCards(result.sideCardsRight);
+  if (JSON.stringify(result).length > 9800)
+    throw new Error("Homepage content exceeds the existing D1 row limit. Shorten the cards.");
   for (const network of ["Instagram", "Facebook", "X", "TikTok", "Linkedin"] as const) {
     if (result[`social${network}Enabled`] === "true" &&
         !safeHttpUrl(result[`social${network}Url`]))

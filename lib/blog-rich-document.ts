@@ -1,3 +1,5 @@
+import { validateInsightCards, type InsightCard } from "@/lib/blog-insight-cards";
+
 /** FundLenz draft-only rich document, embedded in the existing D1 body field.
  * No untrusted HTML. All rendering uses React's escaped text nodes.
  */
@@ -53,7 +55,7 @@ export type ArticleAuthor = {
 };
 export type RichDocument = {
   format: "fundlenz-rich-1"; category: string; blocks: RichBlock[];
-  author?: ArticleAuthor;
+  author?: ArticleAuthor; sideCards?: InsightCard[];
 };
 export function safeAvatarDataUrl(input: unknown): input is string {
   return typeof input === "string" && input.length <= 20000 &&
@@ -107,7 +109,7 @@ export function isCategory(input: unknown): input is string {
     input.trim().length <= 80 && !controls.test(input) && !/[<>]/.test(input);
 }
 export function validateRichDocument(input: unknown): RichDocument {
-  if (!record(input) || !exactKeys(input, ["format", "category", "blocks", "author"]) ||
+  if (!record(input) || !exactKeys(input, ["format", "category", "blocks", "author", "sideCards"]) ||
       input.format !== "fundlenz-rich-1" || !isCategory(input.category) ||
       !Array.isArray(input.blocks) || input.blocks.length > 120) {
     throw new Error("Invalid rich article format.");
@@ -159,10 +161,12 @@ export function validateRichDocument(input: unknown): RichDocument {
     }
   }
   const author = input.author === undefined ? undefined : validateArticleAuthor(input.author);
-  if (JSON.stringify({ format: "fundlenz-rich-1", category: input.category, blocks, author }).length > 48000)
+  const sideCards = input.sideCards === undefined ? undefined : validateInsightCards(input.sideCards);
+  if (JSON.stringify({ format: "fundlenz-rich-1", category: input.category, blocks, author, sideCards }).length > 48000)
     throw new Error("Article content exceeds private draft storage capacity.");
   return { format: "fundlenz-rich-1", category: input.category.trim(), blocks,
-    ...(author === undefined ? {} : { author }) };
+    ...(author === undefined ? {} : { author }),
+    ...(sideCards === undefined ? {} : { sideCards }) };
 }
 export function emptyRichDocument(category = "Research"): RichDocument {
   return { format: "fundlenz-rich-1", category, blocks: [

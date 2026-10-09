@@ -2,6 +2,8 @@ import { type ReactNode } from "react";
 import { type RichBlock, type RichRun, type RichMediaBlock, type ArticleAuthor, safeAvatarDataUrl, blogFontFamily, mediaWidth, safeEmbedUrl, safeHttpUrl } from "@/lib/blog-rich-document";
 import styles from "./blog-paper.module.css";
 import { defaultBlogHomepageContent, type BlogHomepageContent } from "@/lib/blog-homepage-content";
+import { defaultArticleInsightCards, type InsightCard } from "@/lib/blog-insight-cards";
+import { BlogInsightCard } from "./blog-insight-card";
 
 export type ArticlePaperProps = {
   title: string; summary: string; category: string; blocks: RichBlock[];
@@ -9,6 +11,7 @@ export type ArticlePaperProps = {
   onSelectRelated?: (id: string) => void;
   publishedUrl?: string; author?: string; updatedAt?: number;
   authorProfile?: ArticleAuthor; branding?: BlogHomepageContent;
+  sideCards?: readonly InsightCard[];
 };
 
 function InlineRun({ run }: { run: RichRun }) {
@@ -74,7 +77,8 @@ export function RenderRichBlock({ block }: { block: RichBlock }) {
 }
 
 export function BlogPaper({ title, summary, category, blocks, related = [], publishedUrl, onSelectRelated,
-  author = "FundLenz Editorial", updatedAt, authorProfile, branding = defaultBlogHomepageContent }: ArticlePaperProps) {
+  author = "FundLenz Editorial", updatedAt, authorProfile, branding = defaultBlogHomepageContent,
+  sideCards }: ArticlePaperProps) {
   const hasShare = safeHttpUrl(publishedUrl);
   const link = publishedUrl || "";
   const headings = blocks.filter(block => "runs" in block && ["heading", "subheading"].includes(block.type));
@@ -147,12 +151,8 @@ export function BlogPaper({ title, summary, category, blocks, related = [], publ
               <small>{item.category}{onSelectRelated ? " · Private preview" : ""}</small></div>
           </div>) : <p className={styles.sideNote}>Explore more FundLenz analysis as new articles are published.</p>}
         </section>
-        <section className={styles.featureCard}>
-          <span className={styles.sideHeading}>FUNDLENZ INSIGHTS</span>
-          <h3>Understand the market. Not just the headlines.</h3>
-          <p>Research, explainers, and data-led perspectives on investing.</p>
-          <span>Independent education · No investment recommendations</span>
-        </section>
+        {(sideCards ?? defaultArticleInsightCards).map(card =>
+          <BlogInsightCard key={card.id} card={card}/>)}
         <div className={styles.sideFoot}>© FundLenz · Educational content only</div>
       </aside>
     </div>

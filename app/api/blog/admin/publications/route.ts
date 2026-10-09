@@ -47,6 +47,7 @@ function fromDraft(draft: BlogArticleDraft, slug: string, originalDate?: string)
     slug, title: draft.title, summary: draft.summary, category,
     author: doc.author || { name: "FundLenz Editorial" },
     blocks: doc.blocks, publishedAt: originalDate || dateToday(),
+    ...(doc.sideCards === undefined ? {} : { sideCards: doc.sideCards }),
   };
   parsePublication(JSON.stringify(article));
   return article;
