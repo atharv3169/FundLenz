@@ -37,8 +37,16 @@ def packets(acquisition, units, task, policy, run=None):
     run = run or ROOT / "work/run"
     issues = acquisition["previous_state"]["issues"]["issues"]
     urls = {i["source_url"] for i in issues}
-    sources = [s for s in acquisition["source_checks"] if s["checked_at"] and (task == "fresh_scan" or s["source_url"] in urls)]
-    sources.sort(key=lambda s: (0 if s["adapter"] == "amfi_nav" else 1 if s["outcome"] == "unavailable" else 2, s["source_id"]))
+    # Gemini can investigate only independently downloaded, SHA-256 verified
+    # source bytes. A failed fetch (including a 403 or blocked redirect) has
+    # source_sha256=None: giving it to the model invites fabricated evidence.
+    # The downloader and persistent issue queue still record the failure.
+    sources = [s for s in acquisition["source_checks"]
+               if s["checked_at"] and s["outcome"] in {"checked_changed", "checked_unchanged"}
+               and s.get("source_sha256") and s.get("path")
+               and (task == "fresh_scan" or s["source_url"] in urls)]
+    sources.sort(key=lambda s: (0 if s["adapter"] == "amfi_nav" else
+                                1 if s["adapter"] == "ishares_holdings" else 2, s["source_id"]))
     selected_issues = []
     if task == "reinvestigation":
         # Rotate the full queue of attempted sources BEFORE bounding source
@@ -94,7 +102,10 @@ def packets(acquisition, units, task, policy, run=None):
               "task_type": task, "started_at": acquisition["started_at"], "completed_at": acquisition["completed_at"],
               "sources": result, "sample_adapter_decisions": samples, "issues": selected_issues,
               "scope": {"total_adapter_units": len(units), "sample_units": len(samples), "open_issues": len(issues),
-                        "issues_in_this_task": len(selected_issues), "unselected_issues_remain_open": True},
+                        "issues_in_this_task": len(selected_issues), "unselected_issues_remain_open": True,
+                        "unavailable_sources_excluded_from_model": sum(
+                            s["outcome"] == "unavailable" and bool(s["checked_at"])
+                            for s in acquisition["source_checks"])},
               "output_instructions": "Return the exact candidate schema. Copy supplied source-check metadata, not inferred values. "
                 "Review only supplied excerpts; do not claim full-file model verification. Do not invent values when a sample hash replaces a value. "
                 "At most 8 proposals. For unresolved issues return null new_candidate, finding unresolved, and their exact issue_id. "
