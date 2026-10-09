@@ -2,7 +2,10 @@ name: FundLenz data deployment confirmation
 on:
   push:
     branches: [main]
-    paths: ['public/automation-audit/release.json']
+    paths:
+      - 'public/automation-audit/release.json'
+      - 'scripts/automation/deployment.py'
+      - '.github/workflows/catalogue-deployment.yml'
   workflow_dispatch:
 permissions:
   contents: read
