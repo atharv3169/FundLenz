@@ -36,10 +36,12 @@ export default async function BlogHomePage() {
     <main className={styles.main + (leftCards.length || rightCards.length ? " " + styles.mainWithCards : "")}>
       <div className={[styles.homeLayout, leftCards.length && styles.withLeft, rightCards.length && styles.withRight,
         leftCards.length && rightCards.length && styles.withBoth].filter(Boolean).join(" ")}>
+      <header className={styles.homeHero}>
+        <p className={styles.eyebrow}>{copy.eyebrow}</p>
+        <h1>{copy.heroHeading}</h1>
+        <p className={styles.intro}>{copy.heroDescription}</p>
+      </header>
       <div className={styles.homeCenter}>
-      <p className={styles.eyebrow}>{copy.eyebrow}</p>
-      <h1>{copy.heroHeading}</h1>
-      <p className={styles.intro}>{copy.heroDescription}</p>
       <BlogArticleArchive articles={publicArticles} heading={copy.articlesHeading}
         status={copy.articlesStatus} empty={copy.articlesEmpty}/>
       <NewsletterBox siteKey={siteKey} heading={copy.newsletterHeading} description={copy.newsletterDescription}

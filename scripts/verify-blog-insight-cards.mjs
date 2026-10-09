@@ -67,9 +67,19 @@ for(const src of [homepageEditor,articleEditor]) {
 assert.match(page,/leftCards\.map\(card/);
 assert.match(page,/rightCards\.map\(card/);
 assert.match(homeCss,/@media\(max-width:1100px\)/);
-assert.match(homeCss,/\.homeCenter\{order:0/);
-assert.match(homeCss,/\.homeLeftRail\{order:1/);
-assert.match(homeCss,/\.homeRightRail\{order:2/);
+assert.match(page, /<header className=\{styles\.homeHero\}>/);
+assert.match(page, /<div className=\{styles\.homeCenter\}>/);
+assert.ok(page.indexOf('<header className={styles.homeHero}>') < page.indexOf('<div className={styles.homeCenter}>'),
+  "Hero must precede the articles grid");
+assert.match(homeCss,/\.homeLayout\.withRight\{grid-template-areas:"hero hero" "content right"/);
+assert.match(homeCss,/\.homeLayout\.withLeft\{grid-template-areas:"hero hero" "left content"/);
+assert.match(homeCss,/\.homeLayout\.withBoth\{grid-template-areas:"hero hero hero" "left content right"/);
+assert.match(homeCss,/\.homeHero\{grid-area:hero/);
+assert.match(homeCss,/\.homeCenter \.archive\{margin-top:0\}/);
+assert.match(homeCss,/\.homeHero\{order:0/);
+assert.match(homeCss,/\.homeCenter\{order:1/);
+assert.match(homeCss,/\.homeLeftRail\{order:2/);
+assert.match(homeCss,/\.homeRightRail\{order:3/);
 assert.match(paper,/sideCards \?\? defaultArticleInsightCards/);
 assert.match(paperCss,/@media\(max-width:720px\)/);
 assert.match(articlePage,/sideCards=\{article\.sideCards\}/);
