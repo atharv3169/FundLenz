@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { pathToFileURL } from "node:url";
 
@@ -63,6 +64,24 @@ try {
   }), { headers: { "content-type": "application/json" } });
   await assert.rejects(() => validateHuman(goodRequest, "test-token", "blog_subscribe"),
     error => error.status === 400);
+  // Consent checkbox removed only from newsletter; Submit is an affirmative action.
+  // Server consent and anti-bot enforcement are unchanged.
+  const src = readFileSync("components/blog/visitor-forms.tsx", "utf8");
+  const newsletter = src.split("export function NewsletterBox(")[1]?.split("export function ContributionButton(")[0];
+  const contribution = src.split("function ContributionDialog(")[1];
+  assert.ok(newsletter && contribution);
+  assert.doesNotMatch(newsletter, /type="checkbox"/);
+  assert.doesNotMatch(newsletter, /setConsent\(/);
+  assert.match(newsletter, /By clicking/);
+  assert.match(newsletter, /newsletterPrivacy/);
+  assert.match(newsletter, /consent: true/);
+  assert.match(newsletter, /href="\/privacy"/);
+  assert.match(newsletter, /aria-describedby="fundlenz-newsletter-privacy"/);
+  assert.match(newsletter, /disabled=\{busy \|\| !token \|\| !siteKey\}/);
+  assert.match(contribution, /type="checkbox"/);
+  const endpoint = readFileSync("app/api/blog/subscribe/route.ts", "utf8");
+  assert.match(endpoint, /data\.consent !== true/);
+  assert.match(endpoint, /validateHuman\(request, data\.turnstileToken/);
   const privacy = await privateError(new Error("confidential refresh_token=SECRET")).json();
   assert.equal(JSON.stringify(privacy).includes("SECRET"), false);
   console.log("PASS: blog form security unit checks (origin, validation, size, Turnstile, privacy)");

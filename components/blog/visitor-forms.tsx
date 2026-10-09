@@ -89,26 +89,25 @@ export function NewsletterBox({ siteKey, heading = "Interested in FundLenz updat
   placeholder?: string; submitLabel?: string;
 }) {
   const [email, setEmail] = useState("");
-  const [consent, setConsent] = useState(false);
   const [token, setToken] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [resetSignal, setResetSignal] = useState(0);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!token || !consent || busy || !siteKey) return;
+    if (!token || busy || !siteKey) return;
     setBusy(true);
     setMessage("");
     try {
       const response = await fetch("/api/blog/subscribe", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, consent, turnstileToken: token }),
+        // Explicit Submit action is the opt-in described in the linked privacy notice.
+        body: JSON.stringify({ email, consent: true, turnstileToken: token }),
       });
       const data: unknown = await response.json();
       if (!response.ok) throw new Error(requestError(data));
       setMessage("Thank you. Your email has been recorded.");
       setEmail("");
-      setConsent(false);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Could not save your email. Please retry.");
     } finally {
@@ -123,16 +122,17 @@ export function NewsletterBox({ siteKey, heading = "Interested in FundLenz updat
     <form onSubmit={submit}>
       <div className={styles.inputRow}>
         <label className={styles.srOnly} htmlFor="fundlenz-newsletter-email">Email address</label>
-        <input id="fundlenz-newsletter-email" type="email" autoComplete="email" required
+        <input id="fundlenz-newsletter-email" type="email" autoComplete="email" aria-describedby="fundlenz-newsletter-privacy" required
           placeholder={placeholder} maxLength={254} value={email} onChange={e => setEmail(e.target.value)} />
-        <button type="submit" disabled={busy || !token || !consent || !siteKey}>
+        <button type="submit" disabled={busy || !token || !siteKey}>
           {busy ? "Saving…" : submitLabel}
         </button>
       </div>
-      <label className={styles.consent}>
-        <input type="checkbox" checked={consent} onChange={e => setConsent(e.target.checked)} required />
-        <span>I agree to FundLenz storing my email for future contact, as explained in the <a href="/privacy">Privacy Policy</a>.</span>
-      </label>
+      <p className={styles.newsletterPrivacy} id="fundlenz-newsletter-privacy">
+        By clicking <strong>{submitLabel}</strong>, you consent to FundLenz storing your email
+        for possible future updates. You can request deletion at any time.
+        <a href="/privacy"> Privacy Policy</a>.
+      </p>
       <HumanCheck siteKey={siteKey} action="blog_subscribe" onToken={setToken} resetSignal={resetSignal} />
       {message && <p className={styles.feedback} role="status">{message}</p>}
     </form>
