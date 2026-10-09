@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
 import { env } from "cloudflare:workers";
@@ -42,6 +43,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   return <div className={styles.shell}>
     <BlogSiteHeader/>
     <main className={styles.articlePage}>
+      <Link href="/blogpost" className={styles.backToBlog} aria-label="Back to FundLenz blog">
+        <span aria-hidden="true">←</span> Back to blog
+      </Link>
       <BlogPaper title={article.title} summary={article.summary} category={article.category}
         blocks={article.blocks} authorProfile={article.author} branding={publishedCopy}
         updatedAt={Date.parse(article.publishedAt) / 1000}

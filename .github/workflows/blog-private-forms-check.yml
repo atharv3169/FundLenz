@@ -53,6 +53,8 @@ on:
       - "lib/blog-private-**"
       - "scripts/verify-blog-forms.mjs"
       - "scripts/verify-blog-publications.mjs"
+      - "scripts/verify-blog-archive-layout.mjs"
+      - "app/blogpost/page.module.css"
       - ".github/workflows/blog-private-forms-check.yml"
   workflow_dispatch:
 
@@ -89,6 +91,8 @@ jobs:
         run: node scripts/verify-blog-publication-store.mjs
       - name: Public homepage promotion safety tests
         run: node scripts/verify-blog-public-homepage.mjs
+      - name: Full-width article archive and return navigation checks
+        run: node scripts/verify-blog-archive-layout.mjs
       - name: Single-admin authentication security checks
         run: node scripts/verify-blog-admin-auth.mjs
       - name: Production editor host, origin and session isolation
