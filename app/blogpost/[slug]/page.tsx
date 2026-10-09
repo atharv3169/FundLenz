@@ -18,11 +18,13 @@ async function fetchArticle(slug: string) {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const article = await fetchArticle(slug);
+  const requestHost = (await headers()).get("host")?.toLowerCase();
+  const onPublicDomain = requestHost === "fundlenz.com";
   return article ? {
     title: article.title + " | FundLenz",
     description: article.summary,
-    alternates: { canonical: "https://fundlenz.com/blogpost/" + article.slug },
-    robots: { index: true, follow: true },
+    alternates: onPublicDomain ? { canonical: "https://fundlenz.com/blogpost/" + article.slug } : undefined,
+    robots: { index: onPublicDomain, follow: onPublicDomain },
   } : { robots: { index: false } };
 }
 
