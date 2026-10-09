@@ -99,6 +99,19 @@ def run_status(accepted, blocked, checked, incomplete, critical):
 
 
 
+
+def effective_publication_enabled(policy, env=None):
+    """A manual audit is not publishable merely because the policy permits cron.
+
+    The dedicated GitHub Actions job supplies this flag from trusted event
+    inputs. When absent, assume audit-only (fail closed).
+    """
+    environment = os.environ if env is None else env
+    permission = environment.get("FUNDLENZ_RELEASE_ALLOWED", "false")
+    require(permission in {"true", "false"}, "Invalid publication permission from workflow")
+    return bool(policy["publication_enabled"] and permission == "true")
+
+
 def stage_catalogue_update_date(root, files, acquisition):
     """Advance visible catalogue date only for a real source-backed data change.
 
@@ -129,6 +142,7 @@ def stage_catalogue_update_date(root, files, acquisition):
 def validate(root, run, output):
     acquisition = read(run / "acquisition.json")
     policy = read(ROOT / "automation/runtime.json")
+    publication_allowed = effective_publication_enabled(policy)
     raws = verify_acquisition(root, run, acquisition)
     units, extras = reconcile(root, acquisition, policy, raws)
     findings, model_results, critical = [], [], []
@@ -176,7 +190,7 @@ def validate(root, run, output):
     catalogue_update_date = stage_catalogue_update_date(root, files, acquisition)
     if catalogue_update_date:
         build_info = read(root / "public/build-info.json")
-        build_info.update(datasetSha256=dataset_hash(root, files), automaticDataUpdates=policy["publication_enabled"],
+        build_info.update(datasetSha256=dataset_hash(root, files), automaticDataUpdates=publication_allowed,
                           lastCatalogueUpdateDate=catalogue_update_date,
                           release="catalogue-" + acquisition["run_id"])
         files["public/build-info.json"] = encoded(build_info)
@@ -189,8 +203,8 @@ def validate(root, run, output):
               "base_commit": acquisition["base_commit"], "base_dataset_sha256": acquisition["base_dataset_sha256"],
               "candidate_dataset_sha256": dataset_hash(root, files), "mode": policy["mode"],
               "status": run_status(len(files), blockers, checks["checked_changed"] + checks["checked_unchanged"], incomplete, critical),
-              "validation_passed": not critical, "publication_eligible": bool(files) and not critical,
-              "publication_enabled": policy["publication_enabled"], "merge_complete": False, "deployment_complete": False,
+              "validation_passed": not critical, "publication_eligible": bool(files) and not critical and publication_allowed,
+              "publication_enabled": publication_allowed, "merge_complete": False, "deployment_complete": False,
               "source_counts": dict(checks), "unit_counts": dict(counts), "source_checks": acquisition["source_checks"],
               "model_tasks": model_results, "model_findings": findings, "changes": units, "resolutions": resolutions,
               "open_issue_count": len(state["issues"]["issues"]), "critical_errors": critical,
@@ -222,10 +236,10 @@ def validate(root, run, output):
     release = {"schema_version": 1, "run_id": acquisition["run_id"], "base_commit": acquisition["base_commit"],
                "base_dataset_sha256": acquisition["base_dataset_sha256"], "candidate_dataset_sha256": report["candidate_dataset_sha256"],
                "files": manifest(files), "data_changes": catalogue_update_date is not None,
-               "publication_enabled": policy["publication_enabled"]}
+               "publication_enabled": publication_allowed}
     write(output / "release.json", release)
     summary_text = (f"### FundLenz daily check: {report['status']}\n\n"
-                    f"Mode: **{policy['mode']}**. Financial production files have not been published by this job.\n\n"
+                    f"Mode: **{policy['mode']}**. Publication permitted for this run: **{publication_allowed}**. Financial production files have not been published by this job.\n\n"
                     f"Source checks: `{dict(checks)}`. Unit decisions: `{dict(counts)}`. Open issues: {report['open_issue_count']}.\n\n"
                     f"Model tasks: `{model_results}`.\n\nDownload **fundlenz-audit** for full source, candidate, decision and issue records. "
                     "Unsupported sources are monitoring-only; no claim of a full-catalogue financial refresh.\n")
