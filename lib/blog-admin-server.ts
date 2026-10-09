@@ -1,6 +1,6 @@
 import { env } from "cloudflare:workers";
 import { BLOG_ADMIN_USERNAME, verifyPassword } from "@/lib/blog-admin-crypto";
-import { isReviewedEditorUrl } from "@/lib/blog-editor-hosts";
+import { isReviewedEditorUrl, BLOG_EDITOR_STAGING_HOST } from "@/lib/blog-editor-hosts";
 import {
   type BlogAdminDatabase, validSessionSecret,
   authenticateSession, reserveLoginAttempt, recordLoginFailure, BlogAdminRateLimit,
@@ -11,6 +11,7 @@ type RuntimeConfig = {
   FUNDLENZ_ADMIN_PASSWORD_HASH?: string;
   FUNDLENZ_ADMIN_SESSION_SECRET?: string;
   BLOG_ADMIN_ALLOWED_HOSTNAMES?: string;
+  BLOG_ADMIN_EDITOR_PRODUCTION_ENABLED?: string;
 };
 export class AdminUnavailable extends Error {
   constructor(public readonly reason: "runtime" | "missing-client-ip" = "runtime") {
@@ -42,6 +43,16 @@ export function adminRuntime(): {
   return { db, verifier, secret, hosts };
 }
 
+/** A separate explicit operator switch protects the public Worker until an
+ * independent outer access policy is tested. Staging retains its own gate.
+ * Production and future custom-domain routes fail closed until enabled.
+ */
+export function isActiveEditorHost(request: Request): boolean {
+  if (!isActiveEditorHost(request)) return false;
+  if (new URL(request.url).hostname.toLowerCase() === BLOG_EDITOR_STAGING_HOST) return true;
+  return (env as unknown as RuntimeConfig).BLOG_ADMIN_EDITOR_PRODUCTION_ENABLED === "true";
+}
+
 export function requireAdminOrigin(request: Request, allowedHosts: string[]): void {
   const origin = request.headers.get("Origin");
   if (!origin) throw new AdminForbidden();
@@ -54,6 +65,7 @@ export function requireAdminOrigin(request: Request, allowedHosts: string[]): vo
       !allowedHosts.includes(url.hostname.toLowerCase()) || url.username || url.password) {
     throw new AdminForbidden();
   }
+  if (!isActiveEditorHost(request)) throw new AdminUnavailable();
 }
 
 export async function isAuthenticatedAdmin(request: Request): Promise<boolean> {
