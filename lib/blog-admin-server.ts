@@ -43,9 +43,10 @@ export function adminRuntime(): {
   return { db, verifier, secret, hosts };
 }
 
-/** A separate explicit operator switch protects the public Worker until an
- * independent outer access policy is tested. Staging retains its own gate.
- * Production and future custom-domain routes fail closed until enabled.
+/** An independent operator switch keeps production editing unavailable
+ * until the existing native single-admin security checks pass in real browsers.
+ * No Cloudflare Access, Zero Trust, or billing-required service is assumed.
+ * Staging retains its existing separate password gate.
  */
 export function isActiveEditorHost(request: Request): boolean {
   if (!isReviewedEditorUrl(request.url)) return false;
