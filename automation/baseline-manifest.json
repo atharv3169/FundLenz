@@ -8041,8 +8041,8 @@
     },
     {
       "path": "wrangler.jsonc",
-      "bytes": 561,
-      "sha256": "c6de6854055948be5419eff55b9bfbc00af8fa2c22a66cad87bfe88269a2866c",
+      "bytes": 904,
+      "sha256": "df88043207bb925e5cfb0e641dcd02e16e580b088eb427fdd29b2ed5f03a408f",
       "scope": "hosting_configuration"
     }
   ],
