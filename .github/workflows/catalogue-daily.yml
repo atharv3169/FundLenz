@@ -9,15 +9,6 @@ on:
         description: 'Re-fetch supported daily feeds for an integration test, even if checked recently'
         type: boolean
         default: false
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/catalogue-daily.yml'
-      - 'scripts/automation/**'
-      - 'automation/runtime.json'
-      - 'automation/source-registry.json'
-      - 'automation/gemini-*.md'
-      - 'automation/schemas/**'
 
 permissions:
   contents: read
@@ -57,7 +48,7 @@ jobs:
           path: work/state
       - name: Acquire approved official sources
         env:
-          FUNDLENZ_FORCE_SUPPORTED: ${{ github.event_name == 'push' || inputs.force_supported_sources }}
+          FUNDLENZ_FORCE_SUPPORTED: ${{ inputs.force_supported_sources || false }}
         run: python3 scripts/automation/acquire.py
       - name: Run the two bounded Gemini tasks
         env:
