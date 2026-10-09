@@ -109,6 +109,7 @@
 - **Layer 6:** `pr_gate.py` permits publication only from a **successful** known scheduled/manual trusted collection run and replays validation on main.
 - **Layer 7:** `merge.py` rechecks publisher identity, branch protection, exact main/head, required checks and the release date.
 - **Layer 8:** Cloudflare deployment observer independently reads real live assets. Storage/D1 changes are not rolled back with Worker code.
+  When the approved workers.dev hostname is blocked, the observer may attempt the exact approved `https://fundlenz.com` origin. Both routes must satisfy the same marker/data-date checks; neither is trusted merely for returning HTTP 200.
 
 ## Before shipping this maintenance PR
 
