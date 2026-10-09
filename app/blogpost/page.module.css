@@ -60,18 +60,22 @@
 
 /* Optional Insights rails: preserve the original centered homepage when empty. */
 .mainWithCards{max-width:1600px}
-.homeLayout{display:grid;grid-template-areas:"content";grid-template-columns:minmax(0,1fr);gap:22px;align-items:start}
-.homeLayout.withLeft{grid-template-areas:"left content";grid-template-columns:minmax(185px,275px) minmax(0,1fr)}
-.homeLayout.withRight{grid-template-areas:"content right";grid-template-columns:minmax(0,1fr) minmax(185px,275px)}
-.homeLayout.withBoth{grid-template-areas:"left content right";grid-template-columns:minmax(185px,260px) minmax(0,1fr) minmax(185px,260px)}
+/* Heading/intro span the full top row. Card rails begin on the Articles row, not beside the headline. */
+.homeLayout{display:grid;grid-template-areas:"hero" "content";grid-template-columns:minmax(0,1fr);column-gap:22px;row-gap:44px;align-items:start}
+.homeLayout.withLeft{grid-template-areas:"hero hero" "left content";grid-template-columns:minmax(185px,275px) minmax(0,1fr)}
+.homeLayout.withRight{grid-template-areas:"hero hero" "content right";grid-template-columns:minmax(0,1fr) minmax(185px,275px)}
+.homeLayout.withBoth{grid-template-areas:"hero hero hero" "left content right";grid-template-columns:minmax(185px,260px) minmax(0,1fr) minmax(185px,260px)}
+.homeHero{grid-area:hero;min-width:0}
 .homeCenter{grid-area:content;min-width:0}
+.homeCenter .archive{margin-top:0}
 .homeLeftRail{grid-area:left;min-width:0}
 .homeRightRail{grid-area:right;min-width:0}
 @media(max-width:1100px){
-  .homeLayout,.homeLayout.withLeft,.homeLayout.withRight,.homeLayout.withBoth{display:flex;flex-direction:column;gap:24px}
-  .homeCenter{order:0;width:100%;min-width:0}
-  .homeLeftRail{order:1;width:100%}
-  .homeRightRail{order:2;width:100%}
+  .homeLayout,.homeLayout.withLeft,.homeLayout.withRight,.homeLayout.withBoth{display:flex;flex-direction:column;gap:30px}
+  .homeHero{order:0;width:100%;min-width:0}
+  .homeCenter{order:1;width:100%;min-width:0}
+  .homeLeftRail{order:2;width:100%}
+  .homeRightRail{order:3;width:100%}
   .homeLeftRail,.homeRightRail{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
 }
 @media(max-width:630px){.homeLeftRail,.homeRightRail{grid-template-columns:1fr;gap:0}}
