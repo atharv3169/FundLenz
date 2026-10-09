@@ -20,7 +20,7 @@ from pr_gate import prepare
 from validate import run_status, validate_model, stage_catalogue_update_date
 from model_tasks import bounded_call, response_text, packets, ModelContractError, verify_candidate_envelope
 from merge import wait_for_checks, assert_release_date_current
-from deployment import verify_live_catalogue
+from deployment import verify_live_catalogue, approved_production_origins
 
 
 class PipelineTests(unittest.TestCase):
@@ -283,6 +283,16 @@ class PipelineTests(unittest.TestCase):
             wait_for_checks(self.merge_api(["blocked"]), 1, self.policy,
                             "head", "base", "publisher", attempts=2, wait=waits.append)
         self.assertEqual(waits, [15])
+
+    def test_deployment_fallback_is_only_to_verified_owner_domain(self):
+        worker = "https://fundlenz.atharvsahu711.workers.dev"
+        domain = "https://fundlenz.com"
+        self.assertEqual(approved_production_origins(worker), [worker, domain])
+        self.assertEqual(approved_production_origins(domain), [domain, worker])
+        for bad in ["http://fundlenz.com", "https://malicious.example",
+                    "https://fundlenz.com.attacker.invalid", domain + "/other"]:
+            with self.assertRaisesRegex(ValueError, "Unreviewed production origin"):
+                approved_production_origins(bad)
 
     def test_live_deployment_needs_exact_marker_and_visible_catalogue_date(self):
         release = {"run_id": "fixture-1", "financial_data_changed": True,
