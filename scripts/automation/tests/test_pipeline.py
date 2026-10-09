@@ -629,7 +629,9 @@ class PipelineTests(unittest.TestCase):
 
     def test_failed_collector_never_starts_publisher(self):
         workflow = (ROOT / ".github/workflows/catalogue-daily.yml").read_text()
-        self.assertIn("    if: needs.collect.result == 'success'", workflow)
+        self.assertIn("needs.collect.result == 'success' && (github.event_name == 'schedule' || inputs.publish_validated_data == true)", workflow)
+        self.assertIn("      publish_validated_data:", workflow)
+        self.assertIn("        default: false", workflow)
         self.assertNotIn("if: always() && needs.collect.result != 'cancelled'", workflow)
         self.assertNotIn("  push:\n    branches: [main]", workflow)
         self.assertIn("  schedule:\n", workflow)
