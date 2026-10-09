@@ -17,3 +17,27 @@ For each supplied issue:
 Example principle: a flagged 67.20% and previous 6.72% do not justify proposing 6.72%. Return to the source; it might say 6.82%, or it might genuinely support 67.20%. Those are explanations, not values to reuse.
 
 If the queue is empty, return an empty proposals array and an honest task summary. Do not create fictitious corrections. If quota or a source blocks investigation, preserve the unresolved issue for later rather than pretending it was fixed.
+
+## Practical response sequence (Task B)
+
+- The packet may contain up to eight selected issues, but the persistent
+  queue can be much larger. Review only `inputs.issues`; don't invent
+  results for unselected issues or imply the entire backlog is resolved.
+- Echo **every** source in `inputs.sources` as exact seven-field metadata
+  in `source_checks`, including unavailable checked sources. This ledger
+  must have exactly the same set of source IDs as the packet even if no
+  correction can be proposed.
+- Use only the supplied official source rows/excerpts. If a referenced
+  issue has no checked, corroborating source or only a shortened excerpt,
+  emit no speculative correction. The independent queue retains it.
+- For a supported proposal, retain `issue_id` exactly as provided, use
+  the source period and original numeric units, and distinguish
+  `extraction_error` from `validator_false_positive`. A possible false
+  positive means a **manual rule review**, never permission to force a merge.
+- When zero issues are selected, return `proposals: []` and an accurate
+  empty-investigation summary. When one issue cannot be resolved, keep it
+  unresolved; do not repeat earlier values merely to satisfy the schema.
+- Self-check that the JSON includes **all required fields** and all source
+  checks, not just the sources mentioned by proposals. Never omit a source
+  ledger entry in order to shorten an answer.
+
