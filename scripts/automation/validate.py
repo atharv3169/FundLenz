@@ -5,6 +5,7 @@ import copy
 import os
 import urllib.parse
 from pathlib import Path
+from zoneinfo import ZoneInfo
 from common import ROOT, dataset_hash, encoded, loads, manifest, read, require, safe_path, schema, sha, timestamp, write
 from adapters import allowed_paths, build_files, reconcile
 from issues import reconcile_issues
@@ -96,6 +97,34 @@ def run_status(accepted, blocked, checked, incomplete, critical):
     return "PASS" if accepted else "NO_CHANGE"
 
 
+
+def stage_catalogue_update_date(root, files, acquisition):
+    """Advance visible catalogue date only for a real source-backed data change.
+
+    The date refers to a verified catalogue data revision, not the age of an
+    individual source snapshot, the date Gemini was called, or an audit-only PR.
+    Return None on audit-only runs; never overwrite source-check baseline dates.
+    """
+    data_paths = [path for path in files if path.startswith("public/data/")
+                  and path != "public/data/site-metadata.json"]
+    if not data_paths:
+        return None
+    require(all(path.startswith("public/data/") for path in data_paths),
+            "Unexpected financial update path")
+    date = timestamp(acquisition["completed_at"]).astimezone(ZoneInfo("Asia/Kolkata")).date().isoformat()
+    metadata = read(root / "public/data/site-metadata.json")
+    require(metadata["schemaVersion"] == 1 and
+            isinstance(metadata["catalogueSourceCheckDate"], str),
+            "Unexpected site metadata schema")
+    old = metadata.get("lastCatalogueUpdateDate")
+    require(old is None or (isinstance(old, str) and old <= date),
+            "Catalogue update date cannot move backwards")
+    metadata["lastCatalogueUpdateDate"] = date
+    metadata["lastCatalogueUpdateRunId"] = acquisition["run_id"]
+    files["public/data/site-metadata.json"] = encoded(metadata)
+    return date
+
+
 def validate(root, run, output):
     acquisition = read(run / "acquisition.json")
     policy = read(ROOT / "automation/runtime.json")
@@ -134,9 +163,13 @@ def validate(root, run, output):
     # No partial file emission if either required task is malformed/unavailable.
     # All source-derived decisions remain in the report for diagnosis.
     files = build_files(root, units, extras, raws, acquisition) if not critical else {}
-    if any(p.startswith("public/data/") for p in files):
+    # The catalogue update label advances atomically with real verified data,
+    # never on audit-only changes, skipped sources or failed Gemini tasks.
+    catalogue_update_date = stage_catalogue_update_date(root, files, acquisition)
+    if catalogue_update_date:
         build_info = read(root / "public/build-info.json")
         build_info.update(datasetSha256=dataset_hash(root, files), automaticDataUpdates=policy["publication_enabled"],
+                          lastCatalogueUpdateDate=catalogue_update_date,
                           release="catalogue-" + acquisition["run_id"])
         files["public/build-info.json"] = encoded(build_info)
     counts = collections.Counter(u["decision"] for u in units)
@@ -169,7 +202,10 @@ def validate(root, run, output):
     files.update({"audit/latest.json": encoded(report), "audit/open-issues.json": encoded(state["issues"]),
                   "audit/automation-state.json": encoded(state), "public/automation-audit/latest.json": encoded(summary),
                   "public/automation-audit/release.json": encoded({"schema_version": 1, "run_id": acquisition["run_id"],
-                      "base_commit": acquisition["base_commit"], "dataset_sha256": report["candidate_dataset_sha256"]})})
+                      "base_commit": acquisition["base_commit"], "dataset_sha256": report["candidate_dataset_sha256"],
+                      "lastCatalogueUpdateDate": (catalogue_update_date or
+                           read(root / "public/data/site-metadata.json").get("lastCatalogueUpdateDate")),
+                      "financial_data_changed": catalogue_update_date is not None})})
     for relative, raw in files.items():
         require(relative in allowed_paths(root), "Protected/unapproved publication path")
         path = safe_path(output / "sanitized", relative)
@@ -177,7 +213,7 @@ def validate(root, run, output):
         path.write_bytes(raw)
     release = {"schema_version": 1, "run_id": acquisition["run_id"], "base_commit": acquisition["base_commit"],
                "base_dataset_sha256": acquisition["base_dataset_sha256"], "candidate_dataset_sha256": report["candidate_dataset_sha256"],
-               "files": manifest(files), "data_changes": any(p.startswith("public/data/") for p in files),
+               "files": manifest(files), "data_changes": catalogue_update_date is not None,
                "publication_enabled": policy["publication_enabled"]}
     write(output / "release.json", release)
     summary_text = (f"### FundLenz daily check: {report['status']}\n\n"
