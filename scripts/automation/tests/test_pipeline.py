@@ -20,6 +20,7 @@ from pr_gate import prepare
 from validate import run_status, validate_model, stage_catalogue_update_date
 from model_tasks import bounded_call, response_text, packets, ModelContractError, verify_candidate_envelope
 from merge import wait_for_checks, assert_release_date_current
+from deployment import verify_live_catalogue
 
 
 class PipelineTests(unittest.TestCase):
@@ -282,6 +283,24 @@ class PipelineTests(unittest.TestCase):
             wait_for_checks(self.merge_api(["blocked"]), 1, self.policy,
                             "head", "base", "publisher", attempts=2, wait=waits.append)
         self.assertEqual(waits, [15])
+
+    def test_live_deployment_needs_exact_marker_and_visible_catalogue_date(self):
+        release = {"run_id": "fixture-1", "financial_data_changed": True,
+                   "lastCatalogueUpdateDate": "2026-10-09", "dataset_sha256": "a" * 64}
+        metadata = {"lastCatalogueUpdateDate": "2026-10-09",
+                    "lastCatalogueUpdateRunId": "fixture-1",
+                    "catalogueSourceCheckDate": "2026-10-05"}
+        verify_live_catalogue(release, copy.deepcopy(release), metadata)
+        with self.assertRaisesRegex(ValueError, "Deployed catalogue date"):
+            verify_live_catalogue(release, release, dict(metadata, lastCatalogueUpdateDate="2026-10-08"))
+        with self.assertRaisesRegex(ValueError, "Deployed catalogue date"):
+            verify_live_catalogue(release, release, dict(metadata, lastCatalogueUpdateRunId="incorrect"))
+        with self.assertRaisesRegex(ValueError, "Deployed catalogue date"):
+            verify_live_catalogue(release, release, None)
+        with self.assertRaisesRegex(ValueError, "release marker"):
+            verify_live_catalogue(release, dict(release, dataset_sha256="0" * 64), metadata)
+        audit_only = dict(release, financial_data_changed=False)
+        verify_live_catalogue(audit_only, audit_only, None)
 
     def test_merger_rejects_stale_future_and_mismatched_daily_release_dates(self):
         head = "1" * 40
