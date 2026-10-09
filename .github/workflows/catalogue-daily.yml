@@ -9,6 +9,10 @@ on:
         description: 'Re-fetch supported daily feeds for an integration test, even if checked recently'
         type: boolean
         default: false
+      publish_validated_data:
+        description: 'EXPLICIT OPT-IN on manual runs: publish a protected PR if validated; default is safe audit-only'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -96,7 +100,10 @@ jobs:
     needs: collect
     # The publisher needs a complete validated release artifact. A failed
     # collector cannot create one; do not create a second cascading failure.
-    if: needs.collect.result == 'success'
+    # Schedule follows reviewed automatic-publication policy. Every manual
+    # workflow_dispatch run defaults to audit-only, unless the operator explicitly
+    # opts in to publication. The independent GitHub protections still apply.
+    if: needs.collect.result == 'success' && (github.event_name == 'schedule' || inputs.publish_validated_data == true)
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
