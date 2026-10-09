@@ -46,6 +46,10 @@ jobs:
       - name: Replay validation and compare every PR byte
         if: steps.prepare.outputs.run_id != ''
         env:
+          # Only authenticated producer runs reach this step. Replay the
+          # exact publish-eligible artifact with the trusted permission on;
+          # audit-only output remains rejected by byte-for-byte comparison.
+          FUNDLENZ_RELEASE_ALLOWED: 'true'
           GH_TOKEN: ${{ github.token }}
         run: python3 scripts/automation/pr_gate.py check
       - if: steps.prepare.outputs.run_id != ''
