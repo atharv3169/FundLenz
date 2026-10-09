@@ -1,5 +1,6 @@
 import { env } from "cloudflare:workers";
 import { BLOG_ADMIN_USERNAME, verifyPassword } from "@/lib/blog-admin-crypto";
+import { isReviewedEditorUrl, BLOG_EDITOR_STAGING_HOST } from "@/lib/blog-editor-hosts";
 import {
   type BlogAdminDatabase, validSessionSecret,
   authenticateSession, reserveLoginAttempt, recordLoginFailure, BlogAdminRateLimit,
@@ -10,6 +11,7 @@ type RuntimeConfig = {
   FUNDLENZ_ADMIN_PASSWORD_HASH?: string;
   FUNDLENZ_ADMIN_SESSION_SECRET?: string;
   BLOG_ADMIN_ALLOWED_HOSTNAMES?: string;
+  BLOG_ADMIN_EDITOR_PRODUCTION_ENABLED?: string;
 };
 export class AdminUnavailable extends Error {
   constructor(public readonly reason: "runtime" | "missing-client-ip" = "runtime") {
@@ -41,6 +43,17 @@ export function adminRuntime(): {
   return { db, verifier, secret, hosts };
 }
 
+/** An independent operator switch keeps production editing unavailable
+ * until the existing native single-admin security checks pass in real browsers.
+ * No Cloudflare Access, Zero Trust, or billing-required service is assumed.
+ * Staging retains its existing separate password gate.
+ */
+export function isActiveEditorHost(request: Request): boolean {
+  if (!isReviewedEditorUrl(request.url)) return false;
+  if (new URL(request.url).hostname.toLowerCase() === BLOG_EDITOR_STAGING_HOST) return true;
+  return (env as unknown as RuntimeConfig).BLOG_ADMIN_EDITOR_PRODUCTION_ENABLED === "true";
+}
+
 export function requireAdminOrigin(request: Request, allowedHosts: string[]): void {
   const origin = request.headers.get("Origin");
   if (!origin) throw new AdminForbidden();
@@ -48,14 +61,20 @@ export function requireAdminOrigin(request: Request, allowedHosts: string[]): vo
   try { url = new URL(origin); }
   catch { throw new AdminForbidden(); }
   const requestURL = new URL(request.url);
-  if (url.protocol !== "https:" || url.origin !== requestURL.origin ||
+  if (!isReviewedEditorUrl(request.url) ||
+      url.protocol !== "https:" || url.origin !== requestURL.origin ||
       !allowedHosts.includes(url.hostname.toLowerCase()) || url.username || url.password) {
     throw new AdminForbidden();
   }
+  if (!isActiveEditorHost(request)) throw new AdminUnavailable();
 }
 
 export async function isAuthenticatedAdmin(request: Request): Promise<boolean> {
-  const { db, secret } = adminRuntime();
+  // Even a valid cookie may not authorize an unexpected proxy/custom host or
+  // a public Worker that the operator has not deliberately activated.
+  if (!isActiveEditorHost(request)) return false;
+  const { db, secret, hosts } = adminRuntime();
+  if (!hosts.includes(new URL(request.url).hostname.toLowerCase())) return false;
   return authenticateSession(db, secret, request.headers.get("Cookie"));
 }
 

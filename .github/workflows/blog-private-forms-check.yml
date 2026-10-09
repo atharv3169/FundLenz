@@ -16,6 +16,9 @@ on:
       - "lib/blog-homepage-content.ts"
       - "lib/blog-staging-homepage.ts"
       - "lib/blog-admin-**"
+      - "lib/blog-editor-auth.ts"
+      - "lib/blog-editor-hosts.ts"
+      - "scripts/verify-blog-production-editor-hosts.mjs"
       - "db/blog-admin/**"
       - "scripts/verify-blog-admin-auth.mjs"
       - "scripts/blog-staging-gate-core.mjs"
@@ -80,6 +83,8 @@ jobs:
         run: node scripts/verify-blog-publications.mjs
       - name: Single-admin authentication security checks
         run: node scripts/verify-blog-admin-auth.mjs
+      - name: Production editor host, origin and session isolation
+        run: node scripts/verify-blog-production-editor-hosts.mjs
       - name: Staging access gate security tests
         run: node scripts/verify-blog-staging-gate.mjs
       - name: Selected-text editing regression tests

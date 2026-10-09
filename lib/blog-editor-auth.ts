@@ -1,10 +1,8 @@
-import { adminRuntime, isAuthenticatedAdmin, requireAdminOrigin, AdminForbidden, AdminUnavailable } from "@/lib/blog-admin-server";
+import { adminRuntime, isAuthenticatedAdmin, isActiveEditorHost, requireAdminOrigin, AdminForbidden, AdminUnavailable } from "@/lib/blog-admin-server";
 import type { BlogAdminDatabase } from "@/lib/blog-admin-state";
 import { privateAdminResponse } from "@/lib/blog-admin-crypto";
 
-// Editorial drafts are intentionally restricted to a separately configured,
-// password-gated staging Worker until the publishing workflow is reviewed.
-export const BLOG_EDITOR_STAGING_HOST = "fundlenz-blog-staging.atharvsahu711.workers.dev";
+import { isReviewedEditorUrl } from "@/lib/blog-editor-hosts";
 
 export class BlogEditorError extends Error {
   constructor(public readonly status: number, message: string) { super(message); }
@@ -12,12 +10,16 @@ export class BlogEditorError extends Error {
 
 export async function requireBlogEditor(request: Request, writing = false): Promise<BlogAdminDatabase> {
   const url = new URL(request.url);
-  if (url.protocol !== "https:" || url.hostname !== BLOG_EDITOR_STAGING_HOST ||
-      (url.port && url.port !== "443")) {
+  const host = url.hostname.toLowerCase();
+  if (!isReviewedEditorUrl(request.url)) {
     throw new BlogEditorError(404, "Editorial drafts are not available on this host.");
   }
+  // The exact runtime allowlist is an independent, operator-controlled switch.
+  // Enabling a hostname in code alone never grants editor access.
+  if (!isActiveEditorHost(request))
+    throw new BlogEditorError(503, "Editorial access has not been enabled on this host.");
   const { db, hosts } = adminRuntime();
-  if (!hosts.includes(BLOG_EDITOR_STAGING_HOST))
+  if (!hosts.includes(host))
     throw new BlogEditorError(503, "Editorial access is not configured.");
   if (writing) requireAdminOrigin(request, hosts);
   if (!(await isAuthenticatedAdmin(request)))
@@ -66,7 +68,7 @@ export function safeEditorError(error: unknown): Response {
   if (error instanceof AdminUnavailable)
     return privateAdminResponse({ error: "Editorial authentication is unavailable." }, 503);
   // Do not leak D1 statements, session data, secrets, or SQL errors.
-  return privateAdminResponse({ error: "Draft storage is temporarily unavailable. Verify the staging database migration." }, 503);
+  return privateAdminResponse({ error: "Draft storage is temporarily unavailable. Verify the private editor database schema." }, 503);
 }
 
 export function assertDraftVersion(value: unknown): number {
