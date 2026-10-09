@@ -43,7 +43,7 @@ def packets(acquisition, units, task, policy, run=None):
     # The downloader and persistent issue queue still record the failure.
     sources = [s for s in acquisition["source_checks"]
                if s["checked_at"] and s["outcome"] in {"checked_changed", "checked_unchanged"}
-               and s.get("source_sha256") and s.get("path")
+               and s.get("source_sha256")
                and (task == "fresh_scan" or s["source_url"] in urls)]
     sources.sort(key=lambda s: (0 if s["adapter"] == "amfi_nav" else
                                 1 if s["adapter"] == "ishares_holdings" else 2, s["source_id"]))
