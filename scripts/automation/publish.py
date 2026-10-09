@@ -88,6 +88,13 @@ def verify_release(result, root=ROOT):
     return release, files
 
 
+
+def require_publishable_release(release):
+    """Block audit-only artifacts even if a future job is misconfigured."""
+    require(release.get("publication_enabled") is True,
+            "Audit-only release cannot create a catalogue data PR")
+
+
 def main():
     policy = read(ROOT / "automation/runtime.json")
     if not (policy["publication_enabled"] and read(ROOT / "automation/policy.json")["publication_enabled"]):
@@ -97,6 +104,7 @@ def main():
     require(os.environ.get("FUNDLENZ_PUBLISH_TOKEN"), "Dedicated publisher token not configured")
     api = GitHub(os.environ["FUNDLENZ_PUBLISH_TOKEN"])
     release, files = verify_release(ROOT / "work/result")
+    require_publishable_release(release)
     expected = release["base_commit"]
     protection_gate(api.call("/branches/main"), policy, expected)
     strict_protection(api)
