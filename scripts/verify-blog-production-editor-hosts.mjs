@@ -90,11 +90,11 @@ for (const forbiddenUrl of ["http://" + worker, "https://" + worker + ":8443",
 
 // Staging permissions remain unchanged, with an independent protected DB.
 assert.equal(await editor.requireBlogEditor(request(staging)), stageDb);
-assert.equal(await editor.requireBlogEditor(request(staging, { write: true })), stageDb);
+assert.equal(await editor.requireBlogEditor(request(staging, { write: true }), true), stageDb);
 await expects(503, () => editor.requireBlogEditor(request(worker)));
 await expects(401, () => editor.requireBlogEditor(request(staging, { cookie: "" })));
-await expects(403, () => editor.requireBlogEditor(request(staging, { write: true, origin: null })));
-await expects(403, () => editor.requireBlogEditor(request(staging, { write: true, origin: "https://evil.invalid" })));
+await expects(403, () => editor.requireBlogEditor(request(staging, { write: true, origin: null }), true));
+await expects(403, () => editor.requireBlogEditor(request(staging, { write: true, origin: "https://evil.invalid" }), true));
 
 // Host and configured credentials are not enough: the owner must explicitly
 // activate production editing after the Cloudflare outer gate is in place.
@@ -110,14 +110,14 @@ const activeSession = await sessionApi.GET(request(worker));
 assert.equal(activeSession.status, 200);
 assert.equal((await activeSession.json()).authenticated, true);
 assert.equal(await editor.requireBlogEditor(request(worker)), prodDb);
-assert.equal(await editor.requireBlogEditor(request(worker, { write: true })), prodDb);
+assert.equal(await editor.requireBlogEditor(request(worker, { write: true }), true), prodDb);
 assert.equal(await admin.isAuthenticatedAdmin(request(worker)), true);
 await expects(503, () => editor.requireBlogEditor(request(staging)));
 await expects(503, () => editor.requireBlogEditor(request(future)));
 await expects(404, () => editor.requireBlogEditor(request("fundlenz.com.attacker.invalid")));
 await expects(404, () => editor.requireBlogEditor(request(worker, { scheme: "http" })));
 await expects(404, () => editor.requireBlogEditor(request(worker, { port: "8443" })));
-await expects(403, () => editor.requireBlogEditor(request(worker, { write: true, origin: "https://" + staging })));
+await expects(403, () => editor.requireBlogEditor(request(worker, { write: true, origin: "https://" + staging }), true));
 await expects(401, () => editor.requireBlogEditor(request(worker, { cookie: "" })));
 assert.equal(await admin.isAuthenticatedAdmin(request("evil.invalid")), false);
 assert.throws(() => admin.requireAdminOrigin(request("evil.invalid", { write: true }),
@@ -130,10 +130,10 @@ prodDb.hashes.add(currentHash);
 // Future domain is NOT active until the operator separately opts in at cutover.
 stagingEnv.BLOG_ADMIN_ALLOWED_HOSTNAMES = worker + "," + future;
 assert.equal(await editor.requireBlogEditor(request(future)), prodDb);
-assert.equal(await editor.requireBlogEditor(request(future, { write: true })), prodDb);
+assert.equal(await editor.requireBlogEditor(request(future, { write: true }), true), prodDb);
 await expects(403, () => editor.requireBlogEditor(request(future, {
   write: true, origin: "https://" + worker,
-})));
+}), true));
 stagingEnv.BLOG_ADMIN_ALLOWED_HOSTNAMES = worker;
 stagingEnv.BLOG_ADMIN_DB = undefined;
 await assert.rejects(() => editor.requireBlogEditor(request(worker)),
