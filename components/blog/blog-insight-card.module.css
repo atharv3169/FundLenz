@@ -1,0 +1,14 @@
+.card{background:#123a50;color:#fff;box-sizing:border-box;padding:23px;max-width:100%;margin-bottom:15px;border-radius:3px;min-width:0;overflow-wrap:anywhere;}
+.card .eyebrow{display:block;color:#9ed6d9;font-size:11px;letter-spacing:.15em;font-family:Arial,sans-serif;font-weight:800;margin-bottom:16px;border-bottom:1px solid #466478;padding-bottom:12px;}
+.card h3{color:#fff;font-family:Georgia,serif;font-weight:500;font-size:23px;line-height:1.35;margin:0 0 14px;}
+.card p{font-family:Arial,sans-serif;color:#c6dde5;font-size:13px;line-height:1.7;margin:0;}
+.card .footer{display:block;color:#86aebc;font-family:Arial,sans-serif;font-size:11px;line-height:1.6;border-top:1px solid #416577;padding-top:17px;margin-top:20px;}
+.compact{width:78%;padding:16px;}
+.compact h3{font-size:19px;}
+.compact p{font-size:12px;}
+.standard{width:90%;}
+.large{width:100%;padding:27px;}
+.large h3{font-size:27px;}
+.large p{font-size:14px;}
+@media(max-width:1050px){.card{width:100%;}.compact{padding:17px;}.standard{padding:23px;}.large{padding:27px;}}
+@media(max-width:580px){.card{width:100%;padding:21px;}.card h3{font-size:clamp(20px,5vw,25px)}}

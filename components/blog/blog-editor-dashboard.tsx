@@ -7,6 +7,8 @@ import { type BlogArticleDraft, type BlogDraftSummary } from "@/lib/blog-article
 import { type RichDocument, type ArticleAuthor, safeAvatarDataUrl, decodeRichDocument, emptyRichDocument, encodeRichDocument } from "@/lib/blog-rich-document";
 import { BlogRichEditor } from "./blog-rich-editor";
 import { BlogPaper } from "./blog-paper";
+import { BlogInsightCardsEditor } from "./blog-insight-cards-editor";
+import { defaultArticleInsightCards } from "@/lib/blog-insight-cards";
 import styles from "./blog-editor-dashboard.module.css";
 
 type Tab = "articles" | "homepage";
@@ -398,6 +400,7 @@ export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (di
           </div>
           {preview && rich ? <BlogPaper title={article.title} summary={article.summary}
             category={article.category} blocks={rich.blocks} authorProfile={rich.author}
+            sideCards={rich.sideCards}
             branding={homepage?.content}
             updatedAt={article.updated_at}
             onSelectRelated={id => { void openArticle(id, true); }}
@@ -465,6 +468,15 @@ export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (di
                     </span>}
                 </label>
               </div>
+            </fieldset>}
+            {rich && <fieldset className={styles.authorEditor}>
+              <legend>Right sidebar insight cards</legend>
+              <p>Manage dark FundLenz Insights cards for this article. Use Up/Down to reorder and the size
+                selector to adjust their width. They move below the article on mobile.</p>
+              <BlogInsightCardsEditor label="Article right sidebar" maxCards={8} disabled={busy}
+                cards={rich.sideCards ?? defaultArticleInsightCards}
+                onChange={cards => { setRich(current => current ? { ...current, sideCards: cards } : null);
+                  setDirty(true); setNotice(""); }}/>
             </fieldset>}
             {rich && <BlogRichEditor key={article.id} value={rich} disabled={busy}
               onDirty={() => { setDirty(true); setNotice(""); }}

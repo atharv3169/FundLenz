@@ -53,6 +53,10 @@ on:
       - "lib/blog-private-**"
       - "scripts/verify-blog-forms.mjs"
       - "scripts/verify-blog-publications.mjs"
+      - "scripts/verify-blog-insight-cards.mjs"
+      - "lib/blog-insight-cards.ts"
+      - "components/blog/blog-insight-card.*"
+      - "components/blog/blog-insight-cards-editor.*"
       - "scripts/verify-blog-archive-layout.mjs"
       - "app/blogpost/page.module.css"
       - ".github/workflows/blog-private-forms-check.yml"
@@ -93,6 +97,8 @@ jobs:
         run: node scripts/verify-blog-public-homepage.mjs
       - name: Full-width article archive and return navigation checks
         run: node scripts/verify-blog-archive-layout.mjs
+      - name: Configurable insights cards and mobile fallback checks
+        run: node scripts/verify-blog-insight-cards.mjs
       - name: Single-admin authentication security checks
         run: node scripts/verify-blog-admin-auth.mjs
       - name: Production editor host, origin and session isolation

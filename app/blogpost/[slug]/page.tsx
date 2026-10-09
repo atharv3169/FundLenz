@@ -48,6 +48,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       </Link>
       <BlogPaper title={article.title} summary={article.summary} category={article.category}
         blocks={article.blocks} authorProfile={article.author} branding={publishedCopy}
+        sideCards={article.sideCards}
         updatedAt={Date.parse(article.publishedAt) / 1000}
         publishedUrl={publishedUrl}
         related={related.map(item => ({

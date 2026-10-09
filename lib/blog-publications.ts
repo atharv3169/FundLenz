@@ -1,3 +1,4 @@
+import { type InsightCard } from "@/lib/blog-insight-cards";
 import { isCategory, validateRichDocument, type ArticleAuthor, type RichBlock } from "@/lib/blog-rich-document";
 
 /** Reviewed public articles live in version control. Private D1 drafts are never read here. */
@@ -9,6 +10,7 @@ export type PublishedArticle = {
   publishedAt: string;
   author: ArticleAuthor;
   blocks: RichBlock[];
+  sideCards?: InsightCard[];
 };
 
 export const publishedArticles: readonly PublishedArticle[] = [];
@@ -26,7 +28,7 @@ export function validatePublishedArticles(articles: readonly PublishedArticle[])
     }
     slugs.add(article.slug);
     validateRichDocument({ format: "fundlenz-rich-1", category: article.category,
-      blocks: article.blocks, author: article.author });
+      blocks: article.blocks, author: article.author, sideCards: article.sideCards });
   }
 }
 

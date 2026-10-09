@@ -8,6 +8,9 @@ import {
 import styles from "./blog-homepage-editor.module.css";
 import { BlogSocialLinks } from "./social-links";
 import { SocialIcon, type SocialNetwork } from "./social-icon";
+import { BlogInsightCardsEditor } from "./blog-insight-cards-editor";
+import { BlogInsightCard } from "./blog-insight-card";
+import { parseHomepageInsightCards, encodeHomepageInsightCards } from "@/lib/blog-insight-cards";
 
 /**
  * This editor is intentionally only a component, NOT a public route or an API.
@@ -33,16 +36,28 @@ export function BlogHomepageEditor({ initial, onSave, onCancel, onDirtyChange,
   const [message, setMessage] = useState("");
   const [failed, setFailed] = useState(false);
   const groups = useMemo(
-    () => [...new Set(blogHomepageFields.map(item => item.group))].filter(group => group !== "Social links"),
+    () => [...new Set(blogHomepageFields.map(item => item.group))].filter(group => group !== "Social links" && group !== "Sidebar cards"),
     [],
   );
   const changed = blogHomepageFields.some(field => draft[field.key] !== initial[field.key]);
+  const leftCards = parseHomepageInsightCards(draft.sideCardsLeft);
+  const rightCards = parseHomepageInsightCards(draft.sideCardsRight);
 
   useEffect(() => { onDirtyChange?.(changed); }, [changed, onDirtyChange]);
 
   function change(key: keyof BlogHomepageContent, value: string) {
     setDraft(current => ({ ...current, [key]: value }));
     setMessage("");
+  }
+
+  function changeCards(side: "sideCardsLeft" | "sideCardsRight", cards: Parameters<typeof encodeHomepageInsightCards>[0]) {
+    try {
+      change(side, encodeHomepageInsightCards(cards));
+      setFailed(false);
+    } catch (cause) {
+      setFailed(true);
+      setMessage(cause instanceof Error ? cause.message : "Cards exceed the homepage storage limit.");
+    }
   }
 
   async function save(event: FormEvent<HTMLFormElement>) {
@@ -95,6 +110,10 @@ export function BlogHomepageEditor({ initial, onSave, onCancel, onDirtyChange,
           <p>{draft.newsletterDescription}</p>
           <small>{draft.newsletterPlaceholder} · {draft.newsletterSubmitLabel}</small>
         </div>
+        <div className={styles.cardPreviewColumns}>
+          <div><strong>Left sidebar cards</strong>{leftCards.map(card => <BlogInsightCard key={card.id} card={card}/>)}</div>
+          <div><strong>Right sidebar cards</strong>{rightCards.map(card => <BlogInsightCard key={card.id} card={card}/>)}</div>
+        </div>
         <div className={styles.previewSection}>
           <p>{draft.footerDescription}</p>
           <small>{draft.contributionButtonLabel}</small>
@@ -117,6 +136,17 @@ export function BlogHomepageEditor({ initial, onSave, onCancel, onDirtyChange,
             </label>
           ))}
         </fieldset>)}
+        <fieldset className={styles.group + " " + styles.cardsGroup}>
+          <legend>Homepage insight cards</legend>
+          <p className={styles.cardHelp}>These cards appear beside the main homepage column on large screens.
+            On mobile they stack below the article list and newsletter form. Save privately, then publish homepage separately.</p>
+          <div className={styles.cardColumns}>
+            <BlogInsightCardsEditor label="Left sidebar" cards={leftCards} maxCards={5} disabled={busy}
+              onChange={cards => changeCards("sideCardsLeft", cards)}/>
+            <BlogInsightCardsEditor label="Right sidebar" cards={rightCards} maxCards={5} disabled={busy}
+              onChange={cards => changeCards("sideCardsRight", cards)}/>
+          </div>
+        </fieldset>
         <fieldset className={styles.group}>
           <legend>Social profile icons</legend>
           <p>Check the profiles you want visitors to see. Unchecked links stay hidden, even if a URL is saved.</p>

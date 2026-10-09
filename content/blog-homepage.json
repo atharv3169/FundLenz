@@ -23,5 +23,7 @@
   "socialTikTokUrl": "",
   "socialTikTokEnabled": "false",
   "socialLinkedinUrl": "",
-  "socialLinkedinEnabled": "false"
+  "socialLinkedinEnabled": "false",
+  "sideCardsLeft": "[]",
+  "sideCardsRight": "[]"
 }
