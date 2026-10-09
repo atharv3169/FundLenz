@@ -1,7 +1,11 @@
 """Merge only the exact head of an independently checked automated data PR."""
 import os
 import time
-from common import ROOT, read, require, write
+import base64
+import datetime as dt
+import re
+from zoneinfo import ZoneInfo
+from common import ROOT, loads, read, require, write
 from github_api import GitHub
 from publish import protection_gate, strict_protection
 
@@ -43,6 +47,37 @@ def wait_for_checks(api, number, policy, head, base, actor, attempts=13, wait=ti
     raise ValueError("Required checks are still pending/blocked; PR retained without merging")
 
 
+
+def assert_release_date_current(api, head, today=None):
+    """No stale/future update date may be merged as today's catalogue release.
+
+    Read metadata from the exact checked head, not a moving branch. Audit-only
+    changes retain the last verified catalogue date without forcing a refresh.
+    """
+    require(re.fullmatch(r"[0-9a-f]{40}", head), "Invalid checked head for date verification")
+
+    def from_checked_commit(path):
+        item = api.call("/contents/" + path + "?ref=" + head)
+        require(item.get("type") == "file" and item.get("encoding") == "base64",
+                "Cannot verify dated publication file")
+        return loads(base64.b64decode(item["content"], validate=False))
+
+    release = from_checked_commit("public/automation-audit/release.json")
+    require(type(release.get("financial_data_changed")) is bool,
+            "Financial publication marker is missing")
+    if release["financial_data_changed"]:
+        metadata = from_checked_commit("public/data/site-metadata.json")
+        expected = today or dt.datetime.now(ZoneInfo("Asia/Kolkata")).date().isoformat()
+        require(metadata.get("lastCatalogueUpdateDate") == expected and
+                release.get("lastCatalogueUpdateDate") == expected and
+                metadata.get("lastCatalogueUpdateRunId") == release.get("run_id"),
+                "Financial release date is stale, future or inconsistent; rerun on a fresh source base")
+    else:
+        # Audit-only publication cannot masquerade as a new financial update.
+        require(release.get("lastCatalogueUpdateDate") is None or
+                re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", release["lastCatalogueUpdateDate"]),
+                "Malformed historical catalogue update date")
+
 def main():
     policy = read(ROOT / "automation/runtime.json")
     require(policy["publication_enabled"] and read(ROOT / "automation/policy.json")["publication_enabled"], "Publication remains disabled")
@@ -51,6 +86,7 @@ def main():
     checks_api = GitHub(os.environ["GH_TOKEN"])
     number, head, base = int(os.environ["PR_NUMBER"]), os.environ["VALIDATED_HEAD"], os.environ["VALIDATED_BASE"]
     wait_for_checks(api, number, policy, head, base, os.environ.get("FUNDLENZ_PUBLISHER_LOGIN"), checks_api=checks_api)
+    assert_release_date_current(api, head)
     result = api.call(f"/pulls/{number}/merge", "PUT", {"sha": head, "merge_method": "squash"})
     require(result.get("merged"), "GitHub declined merge")
     write(ROOT / "work/merge.json", {"pr_number": number, "merge_complete": True, "commit": result["sha"], "deployment_complete": False})
