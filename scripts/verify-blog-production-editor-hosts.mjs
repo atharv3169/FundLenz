@@ -133,7 +133,7 @@ assert.equal(await editor.requireBlogEditor(request(future)), prodDb);
 assert.equal(await editor.requireBlogEditor(request(future, { write: true })), prodDb);
 await expects(403, () => editor.requireBlogEditor(request(future, {
   write: true, origin: "https://" + worker,
-}));
+})));
 stagingEnv.BLOG_ADMIN_ALLOWED_HOSTNAMES = worker;
 stagingEnv.BLOG_ADMIN_DB = undefined;
 await assert.rejects(() => editor.requireBlogEditor(request(worker)),
