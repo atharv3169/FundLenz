@@ -16,6 +16,7 @@ from acquire import due_sources, validate_url, validate_registry
 from adapters import chronology, nav_candidates, parse_nav, holdings_candidate, allowed_paths, build_files
 from issues import issue_id, reconcile_issues
 from publish import protection_gate, verify_release
+from pr_gate import prepare
 from validate import run_status, validate_model, stage_catalogue_update_date
 from model_tasks import bounded_call, response_text, packets, ModelContractError, verify_candidate_envelope
 from merge import wait_for_checks, assert_release_date_current
@@ -421,6 +422,40 @@ class PipelineTests(unittest.TestCase):
             self.assertIn("Last catalogue update {catalogueUpdateLabel}", text)
             self.assertIn("Original source-check baseline {catalogueSourceCheckLabel}", text)
         self.assertIn("lastCatalogueUpdateDate", metadata_source)
+
+    def test_untrusted_or_failed_collector_cannot_authorize_data_pr(self):
+        base = "a" * 40
+        class FakeProducerAPI:
+            repo = "fixture/repo"
+            def __init__(self, result="failure", event="schedule"):
+                self.result, self.event = result, event
+            def call(self, path):
+                if path == "/pulls/7":
+                    return {"head": {"ref": "automation/catalogue-fixture",
+                                     "repo": {"full_name": self.repo}, "sha": "b" * 40},
+                            "base": {"sha": base, "ref": "main"},
+                            "user": {"login": "publisher"},
+                            "body": "FundLenz-Run: 12345\\nFundLenz-Base: " + base}
+                if path == "/actions/runs/12345":
+                    return {"path": ".github/workflows/catalogue-daily.yml",
+                            "head_branch": "main", "head_repository": {"full_name": self.repo},
+                            "head_sha": base, "event": self.event}
+                raise AssertionError(path)
+            def all(self, path, key):
+                return [{"name": "Collect and validate", "conclusion": self.result}]
+        saved = {k: os.environ.get(k) for k in ["FUNDLENZ_PUBLISHER_LOGIN", "TRUSTED_BASE"]}
+        try:
+            os.environ["FUNDLENZ_PUBLISHER_LOGIN"] = "publisher"
+            os.environ["TRUSTED_BASE"] = base
+            for conclusion in ["failure", "cancelled", "skipped", None]:
+                with self.assertRaisesRegex(ValueError, "successful collection"):
+                    prepare(FakeProducerAPI(result=conclusion), 7)
+            with self.assertRaisesRegex(ValueError, "Untrusted artifact producer"):
+                prepare(FakeProducerAPI(result="success", event="push"), 7)
+        finally:
+            for key, value in saved.items():
+                if value is None: os.environ.pop(key, None)
+                else: os.environ[key] = value
 
     def test_rollback_restores_byte_exact_dataset(self):
         # Reversible overlay trial, never touches production.
