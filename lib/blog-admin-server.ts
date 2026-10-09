@@ -48,7 +48,7 @@ export function adminRuntime(): {
  * Production and future custom-domain routes fail closed until enabled.
  */
 export function isActiveEditorHost(request: Request): boolean {
-  if (!isActiveEditorHost(request)) return false;
+  if (!isReviewedEditorUrl(request.url)) return false;
   if (new URL(request.url).hostname.toLowerCase() === BLOG_EDITOR_STAGING_HOST) return true;
   return (env as unknown as RuntimeConfig).BLOG_ADMIN_EDITOR_PRODUCTION_ENABLED === "true";
 }
@@ -69,8 +69,9 @@ export function requireAdminOrigin(request: Request, allowedHosts: string[]): vo
 }
 
 export async function isAuthenticatedAdmin(request: Request): Promise<boolean> {
-  // Even a valid cookie may not authorize an unexpected proxy/custom host.
-  if (!isReviewedEditorUrl(request.url)) return false;
+  // Even a valid cookie may not authorize an unexpected proxy/custom host or
+  // a public Worker that the operator has not deliberately activated.
+  if (!isActiveEditorHost(request)) return false;
   const { db, secret, hosts } = adminRuntime();
   if (!hosts.includes(new URL(request.url).hostname.toLowerCase())) return false;
   return authenticateSession(db, secret, request.headers.get("Cookie"));
