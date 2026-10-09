@@ -13,3 +13,25 @@ Inputs supplied by the runner: run ID, base dataset hash, approved source regist
 7. Return the strict candidate document. Keep false-positive/extraction investigation for the recovery task when there is a previous issue, while allowing newly discovered warnings to be reported here.
 
 The runner, not this response, reconciles your output with Task B and computes final reports, production files, counts and issue states. A run finding no changes still requires evidence of what was actually checked.
+
+## Practical response sequence (Task A)
+
+- First enumerate **only** the actual sources in `inputs.sources` and echo
+  their seven provided metadata fields into `source_checks`. This includes
+  sources with outcome `unavailable`, `deferred` or `budget_exhausted`
+  if they are present; an unsuccessful fetch never becomes `checked_unchanged`.
+- Next review `inputs.sample_adapter_decisions` and any corresponding
+  `actual_source_rows`. A 700-character excerpt is not full-source evidence.
+  Only propose a value when the supplied record supports the exact identity,
+  atomic unit, source date, source hash and field units.
+- Every proposed `evidence[].source_url`, `source_sha256` and
+  `retrieved_at` must match one of the supplied checked source packets.
+  Distinguish `source_period` from retrieval time. Never construct a hash.
+- A blocked proposal requires escalation, not manufactured correction. For
+  an unchanged source or a source you cannot establish, use no proposal and
+  summarize the limitation; do not list guessed unchanged values as discoveries.
+- Count `source_checks` against `inputs.sources` *before* finalizing,
+  then return a single exact candidate-schema JSON document. Never shrink
+  the source ledger to save response tokens; reduce the number of proposals
+  instead (zero is acceptable).
+
