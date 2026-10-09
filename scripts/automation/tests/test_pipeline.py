@@ -1,5 +1,6 @@
 """Adversarial tests use retained official bytes and explicitly fictional mutations."""
 import copy
+import base64
 import json
 import os
 from pathlib import Path
@@ -10,14 +11,16 @@ import unittest
 import urllib.error
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from common import ROOT, dataset_hash, encoded, loads, read, require, safe_path, schema, sha
+from common import ROOT, dataset_hash, encoded, loads, read, require, safe_path, schema, sha, manifest
 from acquire import due_sources, validate_url, validate_registry
 from adapters import chronology, nav_candidates, parse_nav, holdings_candidate, allowed_paths, build_files
 from issues import issue_id, reconcile_issues
 from publish import protection_gate, verify_release
-from validate import run_status, validate_model
-from model_tasks import bounded_call, response_text, packets
-from merge import wait_for_checks
+from pr_gate import prepare
+from validate import run_status, validate_model, stage_catalogue_update_date
+from model_tasks import bounded_call, response_text, packets, ModelContractError, verify_candidate_envelope, is_no_work_packet, trusted_no_work_candidate
+from merge import wait_for_checks, assert_release_date_current
+from deployment import verify_live_catalogue, approved_production_origins
 
 
 class PipelineTests(unittest.TestCase):
@@ -25,6 +28,10 @@ class PipelineTests(unittest.TestCase):
     def setUpClass(cls):
         cls.policy = read(ROOT / "automation/runtime.json")
         cls.india = read(ROOT / "public/data/catalog.json")
+        # Mutations are tested against a fixed fictional tuple. The actual
+        # catalogue is an evolving published dataset, not an immutable fixture.
+        cls.nav_fixture = copy.deepcopy(cls.india)
+        cls.nav_fixture["funds"][0]["plans"][0].update(nav=13.5, navDate="2026-10-05")
         cls.raw_nav = (ROOT / "data/sources/navall.txt").read_bytes()
         cls.registry = read(ROOT / "automation/source-registry.json")["sources"]
         cls.source = {"source_id": "fixture-source", "source_url": "https://portal.amfiindia.com/spages/NAVAll.txt",
@@ -74,7 +81,11 @@ class PipelineTests(unittest.TestCase):
         with self.assertRaises(ValueError): validate_registry([source])
 
     def test_bounded_schedule_checks_adapters_and_old_discovery_issues(self):
-        queue = read(ROOT / "audit/open-issues.json")
+        # Build a bounded fictional queue. The committed audit's number of
+        # real unresolved issues can grow independently of this test's budget.
+        issue_sources = [s for s in self.registry if s["adapter"] == "monitor"][:5]
+        queue = {"issues": [{"source_url": s["url"], "origin": "bootstrap_existing_source_check"}
+                            for s in issue_sources]}
         selected, budget, later = due_sources(self.registry, {}, queue, "2026-10-07T08:00:00Z", 64)
         self.assertEqual(len(selected), 64)
         self.assertEqual(sum(s["adapter"] != "monitor" for s in selected), 39)
@@ -104,7 +115,7 @@ class PipelineTests(unittest.TestCase):
 
     def nav_decision(self, **changes):
         code, raw = self.mutate_nav(**changes)
-        return next(u for u in nav_candidates(self.india, raw, dict(self.source, source_sha256=sha(raw)), self.policy) if u["unit"] == "nav:" + code)
+        return next(u for u in nav_candidates(self.nav_fixture, raw, dict(self.source, source_sha256=sha(raw)), self.policy) if u["unit"] == "nav:" + code)
 
     def test_new_nav_is_complete_atomic_tuple(self):
         unit = self.nav_decision(nav="13.6", date="06-Oct-2026")
@@ -120,7 +131,7 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(self.nav_decision(identity="INF000000000", date="06-Oct-2026")["decision"], "blocked")
 
     def test_same_date_disagreement_and_older_correction(self):
-        self.assertEqual(self.nav_decision(nav="13.6")["decision"], "same_date_conflict")
+        self.assertEqual(self.nav_decision(nav="13.6", date="05-Oct-2026")["decision"], "same_date_conflict")
         self.assertEqual(self.nav_decision(nav="13.6", date="01-Sep-2026")["decision"], "older_snapshot")
         self.assertEqual(chronology("2026-10-06", "2026-10-05", 3, 4), "older_snapshot")
 
@@ -144,7 +155,14 @@ class PipelineTests(unittest.TestCase):
         with self.assertRaises((ValueError, AssertionError, StopIteration)): self.holding_candidate(raw)
 
     def test_wrong_currency_and_identity_and_future_date(self):
-        for old, new in [(b'"USD"', b'"EUR"'), (b"iShares Core S&P 500 ETF", b"Other Fund"), (b"Oct 02, 2026", b"Oct 09, 2026")]:
+        date_header = next(line for line in self.raw_holdings.splitlines()
+                           if line.startswith(b"Fund Holdings as of,"))
+        mutations = [
+            (b'"USD"', b'"EUR"'),
+            (b"iShares Core S&P 500 ETF", b"Other Fund"),
+            (date_header, b'Fund Holdings as of,"Dec 31, 2099"'),
+        ]
+        for old, new in mutations:
             raw = self.raw_holdings.replace(old, new)
             self.assertNotEqual(raw, self.raw_holdings)
             with self.assertRaises((ValueError, AssertionError)): self.holding_candidate(raw)
@@ -266,6 +284,116 @@ class PipelineTests(unittest.TestCase):
                             "head", "base", "publisher", attempts=2, wait=waits.append)
         self.assertEqual(waits, [15])
 
+    def test_deployment_fallback_is_only_to_verified_owner_domain(self):
+        worker = "https://fundlenz.atharvsahu711.workers.dev"
+        domain = "https://fundlenz.com"
+        self.assertEqual(approved_production_origins(worker), [worker, domain])
+        self.assertEqual(approved_production_origins(domain), [domain, worker])
+        for bad in ["http://fundlenz.com", "https://malicious.example",
+                    "https://fundlenz.com.attacker.invalid", domain + "/other"]:
+            with self.assertRaisesRegex(ValueError, "Unreviewed production origin"):
+                approved_production_origins(bad)
+
+    def test_live_deployment_needs_exact_marker_and_visible_catalogue_date(self):
+        release = {"run_id": "fixture-1", "financial_data_changed": True,
+                   "lastCatalogueUpdateDate": "2026-10-09", "dataset_sha256": "a" * 64}
+        metadata = {"lastCatalogueUpdateDate": "2026-10-09",
+                    "lastCatalogueUpdateRunId": "fixture-1",
+                    "catalogueSourceCheckDate": "2026-10-05"}
+        verify_live_catalogue(release, copy.deepcopy(release), metadata)
+        with self.assertRaisesRegex(ValueError, "Deployed catalogue date"):
+            verify_live_catalogue(release, release, dict(metadata, lastCatalogueUpdateDate="2026-10-08"))
+        with self.assertRaisesRegex(ValueError, "Deployed catalogue date"):
+            verify_live_catalogue(release, release, dict(metadata, lastCatalogueUpdateRunId="incorrect"))
+        with self.assertRaisesRegex(ValueError, "Deployed catalogue date"):
+            verify_live_catalogue(release, release, None)
+        with self.assertRaisesRegex(ValueError, "release marker"):
+            verify_live_catalogue(release, dict(release, dataset_sha256="0" * 64), metadata)
+        audit_only = dict(release, financial_data_changed=False)
+        verify_live_catalogue(audit_only, audit_only, None)
+
+    def test_merger_rejects_stale_future_and_mismatched_daily_release_dates(self):
+        head = "1" * 40
+        class FakeReleaseAPI:
+            def __init__(self, date="2026-10-09", marker="2026-10-09", financial=True):
+                self.meta = {"lastCatalogueUpdateDate": date, "lastCatalogueUpdateRunId": "r1"}
+                self.marker = {"run_id": "r1", "lastCatalogueUpdateDate": marker,
+                               "financial_data_changed": financial}
+            def call(self, path):
+                self_path = path.split("?ref=")[0]
+                value = self.marker if self_path.endswith("/release.json") else self.meta
+                return {"type": "file", "encoding": "base64",
+                        "content": base64.b64encode(encoded(value)).decode()}
+        assert_release_date_current(FakeReleaseAPI(), head, today="2026-10-09")
+        assert_release_date_current(FakeReleaseAPI(financial=False), head, today="2026-10-10")
+        for data in [
+            {"date": "2026-10-08"},
+            {"date": "2026-10-10"},
+            {"marker": "2026-10-08"},
+            {"date": "2026-10-09", "marker": "2026-10-10"},
+        ]:
+            with self.assertRaisesRegex(ValueError, "stale, future or inconsistent"):
+                assert_release_date_current(FakeReleaseAPI(**data), head, today="2026-10-09")
+        with self.assertRaisesRegex(ValueError, "Invalid checked head"):
+            assert_release_date_current(FakeReleaseAPI(), "not-a-sha", today="2026-10-09")
+
+    def test_publisher_binds_financial_bytes_and_update_date_into_release(self):
+        with tempfile.TemporaryDirectory() as temp:
+            p = Path(temp)
+            metadata = read(ROOT / "public/data/site-metadata.json")
+            metadata.update(lastCatalogueUpdateDate="2026-10-09", lastCatalogueUpdateRunId="fictional-run")
+            marker = {"run_id": "fictional-run", "dataset_sha256": "",
+                      "lastCatalogueUpdateDate": "2026-10-09", "financial_data_changed": True}
+            info = read(ROOT / "public/build-info.json")
+            info["lastCatalogueUpdateDate"] = "2026-10-09"
+            files = {
+                "public/data/catalog.json": b'{"fictional":true}\\n',
+                "public/data/site-metadata.json": encoded(metadata),
+                "public/build-info.json": encoded(info),
+            }
+            candidate_hash = dataset_hash(ROOT, files)
+            marker["dataset_sha256"] = candidate_hash
+            files["public/automation-audit/release.json"] = encoded(marker)
+            def save(payload):
+                # Each synthetic release has its own exact allowlisted file set.
+                # Do not let files from a prior tamper case survive this test.
+                for stale in (p / "sanitized").rglob("*"):
+                    if stale.is_file():
+                        stale.unlink()
+                for name, value in payload.items():
+                    target = p / "sanitized" / name
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_bytes(value)
+                release = {"run_id": "fictional-run", "base_dataset_sha256": dataset_hash(ROOT),
+                           "candidate_dataset_sha256": dataset_hash(ROOT) if len(payload) == 1 else candidate_hash,
+                           "files": manifest(payload),
+                           "data_changes": True}
+                (p / "release.json").write_bytes(encoded(release))
+            save(files)
+            verify_release(p)
+            # Tampering with the webpage label is detected even if the
+            # attacker recalculates the public-content hash and manifest.
+            altered = copy.deepcopy(files)
+            altered_meta = loads(altered["public/data/site-metadata.json"])
+            altered_meta["catalogueSourceCheckDate"] = "2026-10-09"
+            altered["public/data/site-metadata.json"] = encoded(altered_meta)
+            with self.assertRaisesRegex(ValueError, "hash differs"):
+                save(altered)
+                verify_release(p)
+            altered2 = copy.deepcopy(files)
+            altered2_info = loads(altered2["public/build-info.json"])
+            altered2_info["lastCatalogueUpdateDate"] = "2026-10-08"
+            altered2["public/build-info.json"] = encoded(altered2_info)
+            with self.assertRaisesRegex(ValueError, "release markers disagree"):
+                save(altered2)
+                verify_release(p)
+            audit_only = {"public/automation-audit/release.json": encoded(
+                {"run_id": "audit-only", "dataset_sha256": dataset_hash(ROOT),
+                 "lastCatalogueUpdateDate": "2026-10-09", "financial_data_changed": False})}
+            save(audit_only)
+            with self.assertRaisesRegex(ValueError, "incorrectly declares"):
+                verify_release(p)
+
     def test_reports_distinguish_fail_partial_and_no_change(self):
         self.assertEqual(run_status(0, 0, 4, 0, []), "NO_CHANGE")
         self.assertEqual(run_status(1, 0, 4, 0, []), "PASS")
@@ -285,6 +413,79 @@ class PipelineTests(unittest.TestCase):
             (p / "sanitized/extra.txt").write_text("unlisted")
             with self.assertRaises(ValueError): verify_release(p)
 
+    def test_verified_one_value_update_advances_site_date_atomically(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target = root / "public/data/site-metadata.json"
+            target.parent.mkdir(parents=True)
+            target.write_bytes(encoded({"schemaVersion": 1,
+                "catalogueSourceCheckDate": "2026-10-05"}))
+            acquisition = {"run_id": "test-run", "completed_at": "2026-10-09T04:00:00+00:00"}
+            files = {"public/data/catalog.json": b'{"fictional":true}\\n'}
+            date = stage_catalogue_update_date(root, files, acquisition)
+            self.assertEqual(date, "2026-10-09")
+            metadata = loads(files["public/data/site-metadata.json"])
+            self.assertEqual(metadata["lastCatalogueUpdateDate"], date)
+            self.assertEqual(metadata["lastCatalogueUpdateRunId"], "test-run")
+            self.assertEqual(metadata["catalogueSourceCheckDate"], "2026-10-05")
+            # The update-date change participates in the financial dataset
+            # checksum, so it cannot be deployed separately by this release.
+            self.assertNotEqual(dataset_hash(root, overlay=files), dataset_hash(root))
+            self.assertEqual(loads(target.read_bytes())["catalogueSourceCheckDate"], "2026-10-05")
+            self.assertNotIn("lastCatalogueUpdateDate", loads(target.read_bytes()))
+            # Audit-only and unsuccessful model runs must leave both date and
+            # baseline exactly unchanged.
+            self.assertIsNone(stage_catalogue_update_date(root, {}, acquisition))
+            self.assertIsNone(stage_catalogue_update_date(root, {"audit/latest.json": b"{}\\n"}, acquisition))
+            self.assertIsNone(stage_catalogue_update_date(root, {"public/automation-audit/latest.json": b"{}\\n"}, acquisition))
+            self.assertEqual(set(files), {"public/data/catalog.json", "public/data/site-metadata.json"})
+            target.write_bytes(files["public/data/site-metadata.json"])
+            stale = {"run_id": "older-run", "completed_at": "2026-10-08T04:00:00+00:00"}
+            with self.assertRaisesRegex(ValueError, "cannot move backwards"):
+                stage_catalogue_update_date(root, {"public/data/catalog.json": b"{}\\n"}, stale)
+
+    def test_website_date_labels_do_not_confuse_snapshot_source_and_publish(self):
+        metadata_source = (ROOT / "lib/site-metadata.ts").read_text()
+        for component in ["components/fund-catalog.tsx", "components/global-catalog.tsx"]:
+            text = (ROOT / component).read_text()
+            self.assertIn("Last catalogue update {catalogueUpdateLabel}", text)
+            self.assertIn("Original source-check baseline {catalogueSourceCheckLabel}", text)
+        self.assertIn("lastCatalogueUpdateDate", metadata_source)
+
+    def test_untrusted_or_failed_collector_cannot_authorize_data_pr(self):
+        base = "a" * 40
+        class FakeProducerAPI:
+            repo = "fixture/repo"
+            def __init__(self, result="failure", event="schedule"):
+                self.result, self.event = result, event
+            def call(self, path):
+                if path == "/pulls/7":
+                    return {"head": {"ref": "automation/catalogue-fixture",
+                                     "repo": {"full_name": self.repo}, "sha": "b" * 40},
+                            "base": {"sha": base, "ref": "main"},
+                            "user": {"login": "publisher"},
+                            "body": "FundLenz-Run: 12345\nFundLenz-Base: " + base}
+                if path == "/actions/runs/12345":
+                    return {"id": 12345, "path": ".github/workflows/catalogue-daily.yml",
+                            "head_branch": "main", "head_repository": {"full_name": self.repo},
+                            "head_sha": base, "event": self.event}
+                raise AssertionError(path)
+            def all(self, path, key):
+                return [{"name": "Collect and validate", "conclusion": self.result}]
+        saved = {k: os.environ.get(k) for k in ["FUNDLENZ_PUBLISHER_LOGIN", "TRUSTED_BASE"]}
+        try:
+            os.environ["FUNDLENZ_PUBLISHER_LOGIN"] = "publisher"
+            os.environ["TRUSTED_BASE"] = base
+            for conclusion in ["failure", "cancelled", "skipped", None]:
+                with self.assertRaisesRegex(ValueError, "successful collection"):
+                    prepare(FakeProducerAPI(result=conclusion), 7)
+            with self.assertRaisesRegex(ValueError, "Untrusted artifact producer"):
+                prepare(FakeProducerAPI(result="success", event="push"), 7)
+        finally:
+            for key, value in saved.items():
+                if value is None: os.environ.pop(key, None)
+                else: os.environ[key] = value
+
     def test_rollback_restores_byte_exact_dataset(self):
         # Reversible overlay trial, never touches production.
         before = dataset_hash()
@@ -295,9 +496,13 @@ class PipelineTests(unittest.TestCase):
     def test_empty_model_task_and_false_source_claim(self):
         doc = read(ROOT / "automation/fixtures/empty-candidate.json")
         acq = {"run_id": doc["run_id"], "base_dataset_sha256": doc["base_dataset_sha256"]}
-        self.assertEqual(validate_model(doc, "reinvestigation", acq, [], {"sources": [], "issues": []}), [])
+        packet = {"sources": [], "issues": [], "sample_adapter_decisions": [],
+                  "run_id": doc["run_id"], "base_dataset_sha256": doc["base_dataset_sha256"],
+                  "task_type": "reinvestigation", "started_at": doc["started_at"],
+                  "completed_at": doc["completed_at"]}
+        self.assertEqual(validate_model(doc, "reinvestigation", acq, [], packet), [])
         forged = copy.deepcopy(doc); forged["source_checks"] = [dict(self.source)]
-        with self.assertRaises(Exception): validate_model(forged, "reinvestigation", acq, [], {"sources": [], "issues": []})
+        with self.assertRaises(Exception): validate_model(forged, "reinvestigation", acq, [], packet)
 
     def model_fixture(self):
         u = self.nav_decision(nav="13.6", date="06-Oct-2026")
@@ -313,7 +518,124 @@ class PipelineTests(unittest.TestCase):
              "publish_recommendation": "candidate_for_validation"}
         doc["source_checks"][0] = dict(self.source, source_sha256=u["source_sha256"])
         doc["proposals"] = [p]
-        return doc, u, {"sources": doc["source_checks"], "issues": []}
+        return doc, u, {"sources": doc["source_checks"], "issues": [],
+                        "run_id": doc["run_id"],
+                        "base_dataset_sha256": doc["base_dataset_sha256"],
+                        "task_type": "fresh_scan", "started_at": doc["started_at"],
+                        "completed_at": doc["completed_at"]}
+
+    def test_model_envelope_requires_exact_trusted_source_ledger(self):
+        doc, unit, packet = self.model_fixture()
+        envelope = dict(packet, run_id=doc["run_id"],
+                        base_dataset_sha256=doc["base_dataset_sha256"],
+                        started_at=doc["started_at"], completed_at=doc["completed_at"],
+                        output_instructions="Return strict schema.")
+        verify_candidate_envelope(doc, envelope, "fresh_scan", self.policy)
+        missing = copy.deepcopy(doc)
+        missing["source_checks"] = []
+        with self.assertRaisesRegex(ValueError, "coverage"):
+            verify_candidate_envelope(missing, envelope, "fresh_scan", self.policy)
+        changed = copy.deepcopy(doc)
+        changed["source_checks"][0]["source_sha256"] = "0" * 64
+        with self.assertRaisesRegex(ValueError, "trusted source-check"):
+            verify_candidate_envelope(changed, envelope, "fresh_scan", self.policy)
+        misleading = copy.deepcopy(doc)
+        misleading["source_checks"][0]["reason"] = "Model claims this was freshly reviewed."
+        with self.assertRaisesRegex(ValueError, "trusted source-check"):
+            verify_candidate_envelope(misleading, envelope, "fresh_scan", self.policy)
+
+    def test_empty_model_tasks_are_deterministic_and_cost_zero_calls(self):
+        doc = read(ROOT / "automation/fixtures/empty-candidate.json")
+        packet = {"sources": [], "issues": [], "sample_adapter_decisions": [],
+                  "run_id": doc["run_id"], "base_dataset_sha256": doc["base_dataset_sha256"],
+                  "task_type": "reinvestigation", "started_at": doc["started_at"],
+                  "completed_at": doc["completed_at"]}
+        self.assertTrue(is_no_work_packet(packet))
+        candidate = trusted_no_work_candidate(packet)
+        self.assertEqual(validate_model(candidate, "reinvestigation", packet, [], packet), [])
+        self.assertEqual(candidate["source_checks"], [])
+        self.assertEqual(candidate["proposals"], [])
+        for category, payload in [
+            ("sources", [dict(self.source)]),
+            ("issues", [{"issue_id": "unresolved"}]),
+            ("sample_adapter_decisions", [{"unit": "nav:test"}]),
+        ]:
+            active = dict(packet, **{category: payload})
+            self.assertFalse(is_no_work_packet(active))
+            with self.assertRaises(ValueError):
+                trusted_no_work_candidate(active)
+
+    def test_independent_validator_catches_all_envelope_tampering(self):
+        doc, unit, packet = self.model_fixture()
+        for key, corrupt in [
+            ("source_id", "forged"), ("source_url", "https://invalid.example"),
+            ("checked_at", "2026-10-08T09:00:00Z"),
+            ("outcome", "unavailable"), ("source_sha256", "0" * 64),
+            ("reason", "Claimed successful inspection"), ("scope", "unapproved"),
+        ]:
+            tampered = copy.deepcopy(doc)
+            tampered["source_checks"][0][key] = corrupt
+            with self.subTest(ledger_field=key), self.assertRaises(ValueError):
+                validate_model(tampered, "fresh_scan", doc, [copy.deepcopy(unit)], packet)
+        for key, corrupt in [
+            ("started_at", "2026-10-02T00:00:00Z"),
+            ("completed_at", "2026-10-02T01:00:00Z"),
+            ("run_id", "another"),
+            ("base_dataset_sha256", "f" * 64),
+            ("task_type", "reinvestigation"),
+        ]:
+            tampered = copy.deepcopy(doc)
+            tampered[key] = corrupt
+            with self.subTest(envelope_field=key), self.assertRaises(ValueError):
+                validate_model(tampered, "fresh_scan", doc, [copy.deepcopy(unit)], packet)
+        allowed = copy.deepcopy(doc)
+        validate_model(allowed, "fresh_scan", doc, [copy.deepcopy(unit)], packet)
+
+    def test_model_source_ledger_fuzz_mutations_never_publish(self):
+        doc, unit, packet = self.model_fixture()
+        variants = 0
+        for field in ["reason", "scope", "source_sha256", "source_url", "outcome",
+                      "checked_at", "source_id"]:
+            for character in range(9):
+                tampered = copy.deepcopy(doc)
+                original = str(tampered["source_checks"][0][field])
+                tampered["source_checks"][0][field] = original + chr(65 + character)
+                with self.assertRaises(Exception):
+                    validate_model(tampered, "fresh_scan", doc, [copy.deepcopy(unit)], packet)
+                variants += 1
+        self.assertEqual(variants, 63)
+
+    def test_incomplete_gemini_output_gets_one_bounded_corrective_retry(self):
+        packet = {"output_instructions": "Copy the trusted source ledger."}
+        calls = []
+        def fix_on_retry(current, task, policy):
+            calls.append(current)
+            if len(calls) == 1:
+                raise ModelContractError("Model source coverage incomplete")
+            self.assertIn("CORRECTIVE RETRY", current["output_instructions"])
+            self.assertIn("EVERY inputs.sources", current["output_instructions"])
+            return {"repaired": True}, {"totalTokenCount": 8}
+        output, usage, attempts = bounded_call(packet, "fresh_scan", self.policy,
+                                               caller=fix_on_retry, wait=lambda _: None)
+        self.assertEqual((output, usage, attempts),
+                         ({"repaired": True}, {"totalTokenCount": 8}, 2))
+        self.assertEqual(packet["output_instructions"], "Copy the trusted source ledger.")
+        def always_invalid(current, task, policy):
+            raise ModelContractError("Malformed model response")
+        with self.assertRaises(ModelContractError) as failure:
+            bounded_call(packet, "fresh_scan", self.policy,
+                         caller=always_invalid, wait=lambda _: None)
+        self.assertEqual(failure.exception.fundlenz_attempts, 2)
+
+    def test_failed_collector_never_starts_publisher(self):
+        workflow = (ROOT / ".github/workflows/catalogue-daily.yml").read_text()
+        self.assertIn("needs.collect.result == 'success' && (github.event_name == 'schedule' || inputs.publish_validated_data == true)", workflow)
+        self.assertIn("      publish_validated_data:", workflow)
+        self.assertIn("        default: false", workflow)
+        self.assertNotIn("if: always() && needs.collect.result != 'cancelled'", workflow)
+        self.assertNotIn("  push:\n    branches: [main]", workflow)
+        self.assertIn("  schedule:\n", workflow)
+        self.assertIn("  workflow_dispatch:\n", workflow)
 
     def test_model_false_positive_does_not_override_rule(self):
         doc, u, packet = self.model_fixture()
@@ -335,7 +657,7 @@ class PipelineTests(unittest.TestCase):
     def test_partial_update_retains_other_plans_and_complete_portfolios(self):
         code, raw = self.mutate_nav(nav="13.6", date="06-Oct-2026")
         s = dict(self.source, source_sha256=sha(raw))
-        units = nav_candidates(self.india, raw, s, self.policy)
+        units = nav_candidates(self.nav_fixture, raw, s, self.policy)
         files = build_files(ROOT, units, {}, {s["source_id"]: raw}, {"completed_at": s["checked_at"]})
         self.assertEqual(set(files), {"public/data/catalog.json", "data/sources/automation/amfi-nav.txt"})
         updated = loads(files["public/data/catalog.json"])

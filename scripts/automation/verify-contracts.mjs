@@ -11,7 +11,8 @@ const json = path => JSON.parse(fs.readFileSync(path, 'utf8'));
 const compile = path => ajv.compile(json(`automation/schemas/${path}.schema.json`));
 const candidate = compile('candidate');
 const issues = compile('open-issues');
-const audit = compile('bootstrap-audit');
+const bootstrapAudit = compile('bootstrap-audit');
+const dailyAudit = compile('daily-audit');
 let checks = 0;
 function accepts(validate, value) { checks++; assert(validate(value), JSON.stringify(validate.errors)); }
 function rejects(validate, value) { checks++; assert(!validate(value), 'Invalid contract unexpectedly accepted'); }
@@ -45,8 +46,15 @@ rejects(candidate, packet({ ...p, source_url: 'javascript:alert(1)' }));
 rejects(candidate, packet({ ...p, snapshot_date: '2026-02-30' }));
 accepts(candidate, packet({ ...p, finding: 'unresolved', new_candidate: null, evidence: [] }));
 accepts(issues, json('audit/open-issues.json'));
-accepts(audit, json('audit/latest.json'));
-rejects(audit, { ...json('audit/latest.json'), report_kind: 'daily' });
+const currentAudit = json('audit/latest.json');
+// The committed audit evolves from bootstrap to daily reports. Preserve the
+// distinct strict schemas; do not treat one phase as the other or allow extras.
+checks++; assert(['bootstrap', 'daily'].includes(currentAudit.report_kind),
+  'Unknown audit report kind');
+const audit = currentAudit.report_kind === 'bootstrap' ? bootstrapAudit : dailyAudit;
+accepts(audit, currentAudit);
+rejects(audit, { ...currentAudit, report_kind: currentAudit.report_kind === 'daily' ? 'bootstrap' : 'daily' });
+rejects(audit, { ...currentAudit, unknown_field: 'reject-this-unreviewed-extra' });
 rejects(issues, { ...json('audit/open-issues.json'), api_key: 'not-a-secret-fixture' });
 
 const meta = json('public/data/site-metadata.json');

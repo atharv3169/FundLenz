@@ -5,6 +5,7 @@ import copy
 import os
 import urllib.parse
 from pathlib import Path
+from zoneinfo import ZoneInfo
 from common import ROOT, dataset_hash, encoded, loads, manifest, read, require, safe_path, schema, sha, timestamp, write
 from adapters import allowed_paths, build_files, reconcile
 from issues import reconcile_issues
@@ -37,14 +38,15 @@ def verify_acquisition(root, run, acquisition):
 
 
 def validate_model(document, task, acquisition, units, input_packet):
-    schema(document, "candidate")
-    require(document["run_id"] == acquisition["run_id"] and document["base_dataset_sha256"] == acquisition["base_dataset_sha256"]
-            and document["task_type"] == task, "Candidate is for a different run/base/task")
+    # The independent validator must enforce exactly the same seven-field
+    # metadata, timestamp and proposal limits as the model transport, on
+    # trusted reconstructed packets (not untrusted saved input artifacts).
+    from model_tasks import verify_candidate_envelope
+    verify_candidate_envelope(document, input_packet, task, read(ROOT / "automation/runtime.json"))
+    require(document["run_id"] == acquisition["run_id"] and
+            document["base_dataset_sha256"] == acquisition["base_dataset_sha256"],
+            "Candidate is for a different acquisition/base")
     supplied = {s["source_id"]: s for s in input_packet["sources"]}
-    require(len(document["source_checks"]) == len(supplied), "Model source coverage incomplete")
-    require({s["source_id"] for s in document["source_checks"]} == set(supplied), "Unknown/duplicate model source")
-    for s in document["source_checks"]:
-        require(all(s[k] == supplied[s["source_id"]][k] for k in ["source_url", "checked_at", "source_sha256", "outcome"]), "Model changed retrieval facts")
     by_url = {s["source_url"]: s for s in supplied.values()}
     actual = {u["unit"]: u for u in units}
     issue_ids = {i["issue_id"] for i in input_packet["issues"]}
@@ -96,6 +98,34 @@ def run_status(accepted, blocked, checked, incomplete, critical):
     return "PASS" if accepted else "NO_CHANGE"
 
 
+
+def stage_catalogue_update_date(root, files, acquisition):
+    """Advance visible catalogue date only for a real source-backed data change.
+
+    The date refers to a verified catalogue data revision, not the age of an
+    individual source snapshot, the date Gemini was called, or an audit-only PR.
+    Return None on audit-only runs; never overwrite source-check baseline dates.
+    """
+    data_paths = [path for path in files if path.startswith("public/data/")
+                  and path != "public/data/site-metadata.json"]
+    if not data_paths:
+        return None
+    require(all(path.startswith("public/data/") for path in data_paths),
+            "Unexpected financial update path")
+    date = timestamp(acquisition["completed_at"]).astimezone(ZoneInfo("Asia/Kolkata")).date().isoformat()
+    metadata = read(root / "public/data/site-metadata.json")
+    require(metadata["schemaVersion"] == 1 and
+            isinstance(metadata["catalogueSourceCheckDate"], str),
+            "Unexpected site metadata schema")
+    old = metadata.get("lastCatalogueUpdateDate")
+    require(old is None or (isinstance(old, str) and old <= date),
+            "Catalogue update date cannot move backwards")
+    metadata["lastCatalogueUpdateDate"] = date
+    metadata["lastCatalogueUpdateRunId"] = acquisition["run_id"]
+    files["public/data/site-metadata.json"] = encoded(metadata)
+    return date
+
+
 def validate(root, run, output):
     acquisition = read(run / "acquisition.json")
     policy = read(ROOT / "automation/runtime.json")
@@ -110,12 +140,19 @@ def validate(root, run, output):
         if status.get("completed_at"):
             completed_at = max(completed_at, status["completed_at"], key=timestamp)
         try:
-            require(status["status"] == "completed", "Model task failed/unavailable")
             # Reconstruct model input from trusted bytes, not an artifact's proposed context.
-            from model_tasks import packets
+            from model_tasks import packets, is_no_work_packet, trusted_no_work_candidate
             packet = packets(acquisition, units, task, policy, run)
+            if status["status"] == "not_required":
+                require(is_no_work_packet(packet) and status.get("attempts") == 0,
+                        "Fake empty-work bypass of required Gemini investigation")
+                require(read(run / (task + ".json")) == trusted_no_work_candidate(packet),
+                        "No-work envelope differs from trusted deterministic construction")
+            else:
+                require(status["status"] == "completed", "Model task failed/unavailable")
             findings.extend(validate_model(read(run / (task + ".json")), task, acquisition, units, packet))
-            model_results.append({"task": task, "status": "validated", "usage": status.get("usage", {}), "attempts": status.get("attempts", 1)})
+            model_results.append({"task": task, "status": "not_required" if status["status"] == "not_required" else "validated",
+                                  "usage": status.get("usage", {}), "attempts": status.get("attempts", 1)})
             if task == "reinvestigation" and packet["issues"]:
                 investigation_after = packet["issues"][-1]["issue_id"]
         except Exception as error:
@@ -134,9 +171,13 @@ def validate(root, run, output):
     # No partial file emission if either required task is malformed/unavailable.
     # All source-derived decisions remain in the report for diagnosis.
     files = build_files(root, units, extras, raws, acquisition) if not critical else {}
-    if any(p.startswith("public/data/") for p in files):
+    # The catalogue update label advances atomically with real verified data,
+    # never on audit-only changes, skipped sources or failed Gemini tasks.
+    catalogue_update_date = stage_catalogue_update_date(root, files, acquisition)
+    if catalogue_update_date:
         build_info = read(root / "public/build-info.json")
         build_info.update(datasetSha256=dataset_hash(root, files), automaticDataUpdates=policy["publication_enabled"],
+                          lastCatalogueUpdateDate=catalogue_update_date,
                           release="catalogue-" + acquisition["run_id"])
         files["public/build-info.json"] = encoded(build_info)
     counts = collections.Counter(u["decision"] for u in units)
@@ -169,7 +210,10 @@ def validate(root, run, output):
     files.update({"audit/latest.json": encoded(report), "audit/open-issues.json": encoded(state["issues"]),
                   "audit/automation-state.json": encoded(state), "public/automation-audit/latest.json": encoded(summary),
                   "public/automation-audit/release.json": encoded({"schema_version": 1, "run_id": acquisition["run_id"],
-                      "base_commit": acquisition["base_commit"], "dataset_sha256": report["candidate_dataset_sha256"]})})
+                      "base_commit": acquisition["base_commit"], "dataset_sha256": report["candidate_dataset_sha256"],
+                      "lastCatalogueUpdateDate": (catalogue_update_date or
+                           read(root / "public/data/site-metadata.json").get("lastCatalogueUpdateDate")),
+                      "financial_data_changed": catalogue_update_date is not None})})
     for relative, raw in files.items():
         require(relative in allowed_paths(root), "Protected/unapproved publication path")
         path = safe_path(output / "sanitized", relative)
@@ -177,7 +221,7 @@ def validate(root, run, output):
         path.write_bytes(raw)
     release = {"schema_version": 1, "run_id": acquisition["run_id"], "base_commit": acquisition["base_commit"],
                "base_dataset_sha256": acquisition["base_dataset_sha256"], "candidate_dataset_sha256": report["candidate_dataset_sha256"],
-               "files": manifest(files), "data_changes": any(p.startswith("public/data/") for p in files),
+               "files": manifest(files), "data_changes": catalogue_update_date is not None,
                "publication_enabled": policy["publication_enabled"]}
     write(output / "release.json", release)
     summary_text = (f"### FundLenz daily check: {report['status']}\n\n"

@@ -9,15 +9,10 @@ on:
         description: 'Re-fetch supported daily feeds for an integration test, even if checked recently'
         type: boolean
         default: false
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/catalogue-daily.yml'
-      - 'scripts/automation/**'
-      - 'automation/runtime.json'
-      - 'automation/source-registry.json'
-      - 'automation/gemini-*.md'
-      - 'automation/schemas/**'
+      publish_validated_data:
+        description: 'EXPLICIT OPT-IN on manual runs: publish a protected PR if validated; default is safe audit-only'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -57,7 +52,7 @@ jobs:
           path: work/state
       - name: Acquire approved official sources
         env:
-          FUNDLENZ_FORCE_SUPPORTED: ${{ github.event_name == 'push' || inputs.force_supported_sources }}
+          FUNDLENZ_FORCE_SUPPORTED: ${{ inputs.force_supported_sources || false }}
         run: python3 scripts/automation/acquire.py
       - name: Run the two bounded Gemini tasks
         env:
@@ -103,7 +98,12 @@ jobs:
   publish:
     name: Publish only when activated
     needs: collect
-    if: always() && needs.collect.result != 'cancelled'
+    # The publisher needs a complete validated release artifact. A failed
+    # collector cannot create one; do not create a second cascading failure.
+    # Schedule follows reviewed automatic-publication policy. Every manual
+    # workflow_dispatch run defaults to audit-only, unless the operator explicitly
+    # opts in to publication. The independent GitHub protections still apply.
+    if: needs.collect.result == 'success' && (github.event_name == 'schedule' || inputs.publish_validated_data == true)
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
