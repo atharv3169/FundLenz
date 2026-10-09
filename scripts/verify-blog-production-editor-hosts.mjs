@@ -73,7 +73,12 @@ function request(host, opts = {}) {
 }
 async function expects(code, operation) {
   await assert.rejects(operation, e => {
-    assert.equal(e.status, code, "Unexpected security result: " + String(e));
+    // The shared authorization helper throws AdminForbidden, which is
+    // converted to HTTP 403 by the route-level safeEditorError handler.
+    // Most other failures have a BlogEditorError.status directly.
+    const actual = e.status ??
+      (e.message === "Cross-origin admin requests are forbidden." ? 403 : undefined);
+    assert.equal(actual, code, "Unexpected security result: " + String(e));
     return true;
   });
 }
