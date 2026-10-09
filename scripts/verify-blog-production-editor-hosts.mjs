@@ -95,9 +95,15 @@ await expects(401, () => editor.requireBlogEditor(request(staging, { cookie: "" 
 await expects(403, () => editor.requireBlogEditor(request(staging, { write: true, origin: null })));
 await expects(403, () => editor.requireBlogEditor(request(staging, { write: true, origin: "https://evil.invalid" })));
 
-// Explicit production configuration grants access to that exact Worker only.
-// Worker modules hold the same live environment object across the test.
+// Host and configured credentials are not enough: the owner must explicitly
+// activate production editing after the Cloudflare outer gate is in place.
+// Worker modules hold the same live environment object across this test.
 Object.assign(stagingEnv, productionEnv);
+await expects(503, () => editor.requireBlogEditor(request(worker)));
+assert.equal(await admin.isAuthenticatedAdmin(request(worker)), false);
+assert.throws(() => admin.requireAdminOrigin(request(worker, { write: true }), [worker]),
+  e => e instanceof admin.AdminUnavailable);
+stagingEnv.BLOG_ADMIN_EDITOR_PRODUCTION_ENABLED = "true";
 assert.equal(await editor.requireBlogEditor(request(worker)), prodDb);
 assert.equal(await editor.requireBlogEditor(request(worker, { write: true })), prodDb);
 assert.equal(await admin.isAuthenticatedAdmin(request(worker)), true);
@@ -128,6 +134,10 @@ stagingEnv.BLOG_ADMIN_DB = undefined;
 await assert.rejects(() => editor.requireBlogEditor(request(worker)),
   e => e instanceof admin.AdminUnavailable || /not configured/.test(String(e)));
 stagingEnv.BLOG_ADMIN_DB = prodDb;
+stagingEnv.BLOG_ADMIN_EDITOR_PRODUCTION_ENABLED = "false";
+await expects(503, () => editor.requireBlogEditor(request(worker)));
+stagingEnv.BLOG_ADMIN_EDITOR_PRODUCTION_ENABLED = "true";
+assert.equal(await editor.requireBlogEditor(request(worker)), prodDb);
 
 // Production homepage content must never reveal staging draft copy.
 const copy = readFileSync("lib/blog-staging-homepage.ts", "utf8");
