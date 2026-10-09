@@ -451,6 +451,15 @@ class PipelineTests(unittest.TestCase):
             self.assertIn("Last catalogue update {catalogueUpdateLabel}", text)
             self.assertIn("Original source-check baseline {catalogueSourceCheckLabel}", text)
         self.assertIn("lastCatalogueUpdateDate", metadata_source)
+        lab = (ROOT / "components/fundlens.tsx").read_text()
+        securities = (ROOT / "components/securities-catalog.tsx").read_text()
+        self.assertIn("catalogueUpdateLabel", lab)
+        self.assertIn("Last catalogue update · {catalogueUpdateLabel", lab)
+        self.assertIn("Snapshot · {snapshotLabel}", lab,
+                      "Source snapshot must remain independent of the site update date")
+        self.assertIn("Last catalogue update {catalogueUpdateLabel", securities)
+        self.assertNotIn("new Date()", lab,
+                         "Rendering must never invent a fresh data update date")
 
     def test_untrusted_or_failed_collector_cannot_authorize_data_pr(self):
         base = "a" * 40

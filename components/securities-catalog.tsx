@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatDate } from "@/lib/catalog";
 import { toCSV } from "@/lib/import";
+import { catalogueUpdateLabel } from "@/lib/site-metadata";
 import { getSecurities, searchSecurities, type Securities, type Security } from "@/lib/securities";
 const count = (n: number) => n.toLocaleString("en-US");
 function Filter({ label, value, set, values }: { label: string; value: string; set: (v: string) => void; values: string[] }) {
@@ -34,6 +35,7 @@ export default function SecuritiesCatalog() {
   return <div className="app-shell">
     <header className="masthead"><Link className="brand" href="/" prefetch={false} aria-label="FundLenz portfolio lab"><span className="brand-mark"><ScanSearch size={25} strokeWidth={1.7}/></span>Fund<span>Lenz</span><span className="brand-divider"/><small>SECURITIES CATALOGUE</small></Link><div className="masthead-right"><Link className="catalog-nav-link" href="/" prefetch={false}>Portfolio lab</Link><span className="project-credit">A project by <strong>Atharva Sahu</strong></span></div></header>
     <main className="workspace catalog-workspace"><nav className="catalog-market-tabs" aria-label="Catalogue market"><a href="/catalogue-global"><Globe2 size={16}/>International</a><a href="/catalogue-india">India</a><a href="/catalogue-securities" aria-current="page">Stocks &amp; bonds</a></nav>
+      <p className="small-note" title="Published catalogue update date, not the as-of date of each individual security">Last catalogue update {catalogueUpdateLabel ?? "not yet recorded"}. Individual security snapshot dates differ.</p>
       <div className="catalog-heading"><div><p className="eyebrow">INDIVIDUAL SECURITIES · OFFICIAL SOURCE DATA</p><h1>Explore beyond the fund.</h1><p>Find exchange-listed securities and bonds identified in issuer disclosures.</p></div><Button variant="outline" onClick={()=>setCoverage(!coverage)}><LibraryBig size={16}/>Data coverage</Button></div>
       {error ? <div className="catalog-empty" role="alert"><p>{error}</p><Button onClick={load}>Try again</Button></div> : !catalog ? <p role="status">Loading the securities catalogue…</p> : <>
         <div className="catalog-stats"><div><span>Security reference records</span><strong>{count(catalog.records.length)}</strong><small>Distinct source identifiers</small></div><div><span>Individually identified bonds</span><strong>{count(options.bonds)}</strong><small>Observed in fund holdings, not an exchange list</small></div><div><span>Other listed securities</span><strong>{count(catalog.records.length-options.bonds)}</strong><small>Stock and other listing types shown separately</small></div><div><span>Sources checked</span><strong>{formatDate(catalog.checkedAt)}</strong><small>Each record retains its disclosure date</small></div></div>
