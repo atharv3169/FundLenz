@@ -59,6 +59,11 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python3 scripts/automation/model_tasks.py
       - name: Independently reconcile and validate
+        env:
+          # Scheduled runs follow the reviewed publication policy. Manual
+          # runs are audit-only unless opted in, including their release
+          # artifact; an accidentally invoked publisher cannot override it.
+          FUNDLENZ_RELEASE_ALLOWED: ${{ github.event_name == 'schedule' || inputs.publish_validated_data == true }}
         run: python3 scripts/automation/validate.py
       - name: Preserve failure diagnostics
         if: always()
@@ -120,6 +125,8 @@ jobs:
           path: work
       - name: Verify output and publication gates
         env:
+          # Exact-byte replay must use the collector's trusted opt-in gate.
+          FUNDLENZ_RELEASE_ALLOWED: 'true'
           FUNDLENZ_PUBLISH_TOKEN: ${{ secrets.FUNDLENZ_PUBLISH_TOKEN }}
           FUNDLENZ_PUBLISHER_LOGIN: ${{ vars.FUNDLENZ_PUBLISHER_LOGIN }}
         run: python3 scripts/automation/publish.py
