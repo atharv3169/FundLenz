@@ -8,6 +8,12 @@ on:
       - "app/blogpost/**"
       - "components/blog/**"
       - "components/fundlens.tsx"
+      - "components/legal-navigation.tsx"
+      - "lib/legal-navigation-state.ts"
+      - "app/layout.tsx"
+      - "app/privacy/page.tsx"
+      - "app/terms/page.tsx"
+      - "scripts/verify-legal-return-navigation.mjs"
       - "components/securities-catalog.tsx"
       - "components/fundlens-blog-nav.module.css"
       - "lib/site-metadata.ts"
@@ -103,6 +109,8 @@ jobs:
         run: node scripts/verify-blog-archive-layout.mjs
       - name: Configurable insights cards and mobile fallback checks
         run: node scripts/verify-blog-insight-cards.mjs
+      - name: Legal return navigation and exact portfolio restore regression
+        run: node scripts/verify-legal-return-navigation.mjs
       - name: Mobile portfolio navigation and verified catalogue date regression
         run: node scripts/verify-mobile-blog-header-and-dates.mjs
       - name: Single-admin authentication security checks

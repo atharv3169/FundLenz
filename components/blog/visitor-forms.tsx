@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import styles from "./visitor-forms.module.css";
+import { LegalLink } from "@/components/legal-navigation";
 
 type TurnstileAPI = {
   render: (element: HTMLElement, options: {
@@ -180,7 +181,7 @@ export function NewsletterBox({ siteKey, heading = "Interested in FundLenz updat
       <p className={styles.newsletterPrivacy} id="fundlenz-newsletter-privacy">
         By clicking <strong>{submitLabel}</strong>, you consent to FundLenz storing your email
         for possible future updates. You can request deletion at any time.
-        <a href="/privacy"> Privacy Policy</a>.
+        <LegalLink href="/privacy"> Privacy Policy</LegalLink>.
       </p>
       <HumanCheck siteKey={siteKey} action="blog_subscribe" onToken={setToken} resetSignal={resetSignal} />
       {message && <p className={styles.feedback} role="status">{message}</p>}
@@ -282,7 +283,7 @@ function ContributionDialog({ siteKey, onDismiss }: { siteKey: string; onDismiss
       {fileProblem && <p role="alert" className={styles.error}>{fileProblem}</p>}
       <label className={styles.consent}>
         <input type="checkbox" required checked={consent} onChange={event => setConsent(event.target.checked)} />
-        <span>I agree to my contribution and contact details being stored privately for editorial review under the <a href="/privacy">Privacy Policy</a>.</span>
+        <span>I agree to my contribution and contact details being stored privately for editorial review under the <LegalLink href="/privacy">Privacy Policy</LegalLink>.</span>
       </label>
       <HumanCheck siteKey={siteKey} action="blog_contribute" onToken={setToken} resetSignal={resetSignal} />
       {message && <p className={styles.error} role="alert">{message}</p>}

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { LegalBackLink } from "@/components/legal-navigation";
 
 export const metadata: Metadata = {
   title: "Terms of Service | FundLenz",
@@ -10,7 +10,7 @@ export default function TermsPage() {
   return (
     <main className="legal-page">
       <article className="legal-page-card">
-        <Link className="legal-home-link" href="/">← Back to FundLenz</Link>
+        <LegalBackLink />
         <p className="legal-page-kicker">FUNDLENZ · LEGAL</p>
         <h1>Terms of Service</h1>
         <p className="legal-page-date">Updated 8 October 2026</p>

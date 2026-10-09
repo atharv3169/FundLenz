@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import blogNavStyles from "./fundlens-blog-nav.module.css";
 import { catalogueUpdateLabel } from "@/lib/site-metadata";
+import { LEGAL_CAPTURE_EVENT, LEGAL_LAB_KEY, LEGAL_SOURCE_KEY, validLegalSource } from "@/lib/legal-navigation-state";
 import { flushSync } from "react-dom";
 import { ArrowDownToLine, ArrowRight, ArrowUpRight, BarChart3, Check, ChevronRight, CircleHelp, Download, FileText, FlaskConical, GitCompareArrows, Layers3, LibraryBig, ListFilter, Plus, RotateCcw, ScanSearch, Search, ShieldCheck, Sparkles, Upload, X } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
@@ -108,10 +109,60 @@ export default function FundLenz() {
       if (!session) setTab("overview");
     } catch (err) { setNotice({ text: err instanceof Error ? err.message : "Unable to read this file.", error: true }); } finally { setLoadingOfficial(false); }
   }
+  // Keep imported holdings and the selected tool when opening a legal page.
+  // Snapshot only for this in-tab navigation; never send private data remotely.
+  useEffect(() => {
+    const capture = () => {
+      try {
+        sessionStorage.setItem(LEGAL_LAB_KEY, JSON.stringify({
+          from: location.pathname + location.search + location.hash,
+          saved: JSON.stringify(createSession(data, amounts, scenario, exampleAmounts)),
+          tab, query, sectorFilter, turnover, pair, showAll,
+        }));
+      } catch { /* Unavailable browser storage must not block navigation. */ }
+    };
+    window.addEventListener(LEGAL_CAPTURE_EVENT, capture);
+    return () => window.removeEventListener(LEGAL_CAPTURE_EVENT, capture);
+  }, [data, amounts, scenario, exampleAmounts, tab, query, sectorFilter, turnover, pair, showAll]);
   useEffect(() => {
     let active = true;
     (async () => {
       try {
+        let pending: { from: string; saved: string; tab?: string; query?: string;
+          sectorFilter?: string; turnover?: number; pair?: [string,string]; showAll?: boolean } | null = null;
+        try {
+          const rawSource = sessionStorage.getItem(LEGAL_SOURCE_KEY);
+          const source = rawSource ? JSON.parse(rawSource) : null;
+          const rawLab = sessionStorage.getItem(LEGAL_LAB_KEY);
+          const stored = rawLab ? JSON.parse(rawLab) : null;
+          const currentPath = location.pathname + location.search + location.hash;
+          if (source && validLegalSource(source, source.to) && source.from === currentPath &&
+              stored?.from === currentPath && typeof stored.saved === "string") {
+            pending = stored;
+            sessionStorage.removeItem(LEGAL_SOURCE_KEY);
+            sessionStorage.removeItem(LEGAL_LAB_KEY);
+          }
+        } catch { /* Malformed stored state is ignored. */ }
+        if (pending) {
+          if (["overview", "holdings", "overlap", "stress", "compare", "methods", "report"].includes(pending.tab || ""))
+            setTab(pending.tab!);
+          try {
+            // restoreSession validates official source hashes and user-supplied data.
+            const restored = await restoreSession(pending.saved);
+            if (!active) return;
+            setData(restored.data); setAmounts(restored.amounts);
+            setScenario(restored.scenario); setExampleAmounts(restored.exampleAmounts);
+            setCandidate(null);
+            setPair(Array.isArray(pending.pair) &&
+              pending.pair.every(id => restored.data.funds.some(f => f.id === id))
+              ? pending.pair : [restored.data.funds[0].id, (restored.data.funds[1] || restored.data.funds[0]).id]);
+            setQuery(typeof pending.query === "string" ? pending.query : "");
+            setSectorFilter(typeof pending.sectorFilter === "string" ? pending.sectorFilter : "");
+            if (typeof pending.turnover === "number" && Number.isFinite(pending.turnover)) setTurnover(pending.turnover);
+            setShowAll(pending.showAll === true); setLoadingOfficial(false);
+            return;
+          } catch { /* Outdated official records must not bypass integrity checks. */ }
+        }
         const params = new URLSearchParams(window.location.search);
         if (params.get("demo") === "1") { if (active) setLoadingOfficial(false); return; }
         const requested = (params.get("funds") || "").split(",").filter(Boolean);
