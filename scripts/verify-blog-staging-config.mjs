@@ -20,7 +20,13 @@ assert.equal(stage.vars.BLOG_ADMIN_ALLOWED_HOSTNAMES, "fundlenz-blog-staging.ath
 assert.equal(stage.routes, undefined, "Staging must never modify the live custom domain");
 assert.equal(stage.route, undefined);
 assert.equal(stage.triggers, undefined);
-assert.equal(prod.d1_databases, undefined, "Staging D1 must not be bound to production");
+assert.equal(prod.keep_vars, true, "Retain existing nonsecret dashboard variables during production deploy");
+assert.equal(prod.d1_databases?.length, 1, "Production must have one reviewed blog database");
+assert.equal(prod.d1_databases[0].binding, "BLOG_ADMIN_DB");
+assert.equal(prod.d1_databases[0].database_name, "fundlenz-blog-admin-production");
+assert.equal(prod.d1_databases[0].database_id, "cfdfc32d-5833-4102-889a-37889bbbb7b1");
+assert.notEqual(prod.d1_databases[0].database_id, stage.d1_databases[0].database_id,
+  "Production and staging must never share a D1 database");
 const vite = readFileSync("vite.config.ts", "utf8");
 assert.ok(!vite.includes("wrangler.blog-staging.jsonc"), "Protected Vite config must not select a staging Worker.");
 const builder = readFileSync("scripts/build-blog-staging.mjs", "utf8");
