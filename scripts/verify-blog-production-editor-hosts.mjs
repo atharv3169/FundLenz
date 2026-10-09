@@ -102,7 +102,7 @@ await expects(403, () => editor.requireBlogEditor(request(staging, { write: true
 await expects(403, () => editor.requireBlogEditor(request(staging, { write: true, origin: "https://evil.invalid" }), true));
 
 // Host and configured credentials are not enough: the owner must explicitly
-// activate production editing after the Cloudflare outer gate is in place.
+// activate production editing after native login security is verified.
 // Worker modules hold the same live environment object across this test.
 Object.assign(stagingEnv, productionEnv);
 assert.equal((await sessionApi.GET(request(worker))).status, 503);
