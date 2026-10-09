@@ -8,6 +8,10 @@ on:
       - "app/blogpost/**"
       - "components/blog/**"
       - "components/fundlens.tsx"
+      - "components/securities-catalog.tsx"
+      - "components/fundlens-blog-nav.module.css"
+      - "lib/site-metadata.ts"
+      - "scripts/verify-mobile-blog-header-and-dates.mjs"
       - "components/fund-catalog.tsx"
       - "components/global-catalog.tsx"
       - "app/globals.css"
@@ -99,6 +103,8 @@ jobs:
         run: node scripts/verify-blog-archive-layout.mjs
       - name: Configurable insights cards and mobile fallback checks
         run: node scripts/verify-blog-insight-cards.mjs
+      - name: Mobile portfolio navigation and verified catalogue date regression
+        run: node scripts/verify-mobile-blog-header-and-dates.mjs
       - name: Single-admin authentication security checks
         run: node scripts/verify-blog-admin-auth.mjs
       - name: Production editor host, origin and session isolation

@@ -109,8 +109,8 @@
     },
     {
       "path": "components/fundlens.tsx",
-      "bytes": 53988,
-      "sha256": "2c7675be0b13f55dc652bb444a4396fbdce0c7b0b95bb472219c5cae94a5f335",
+      "bytes": 54307,
+      "sha256": "f3a1866a9fb3cc1ee4b0bd8cc9cfbca682c3a8c7983ae781bed8126b34c5ba2a",
       "scope": "application"
     },
     {
@@ -121,8 +121,8 @@
     },
     {
       "path": "components/securities-catalog.tsx",
-      "bytes": 12955,
-      "sha256": "b440f741346338322cb10adfede6951a4c9ae2800bde3f0367e5d1a0033b7793",
+      "bytes": 13250,
+      "sha256": "5cd01310373c01f028833cfc316ce11914ab7e1cca742dcad9cf98b9ba15054b",
       "scope": "application"
     },
     {

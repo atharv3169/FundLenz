@@ -21,3 +21,16 @@
     padding: 6px 9px;
   }
 }
+
+/* Mobile only: the third nav item must have its own grid row.
+   Desktop header layout and existing Catalogue / Stocks positions are unchanged. */
+@media (max-width: 800px) {
+  .labShell:global(.portfolio-lab) > :global(.masthead) {
+    grid-template-areas: "brand report" "catalogue securities" "blog blog";
+  }
+  .labShell:global(.portfolio-lab) :global(.masthead .catalog-nav-link.lab-blog-link) {
+    grid-area: blog;
+    width: 100%;
+    justify-self: stretch;
+  }
+}
