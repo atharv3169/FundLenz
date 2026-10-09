@@ -20,10 +20,11 @@ def prepare(api, number):
     require(match, "Missing immutable daily run reference")
     run = api.call("/actions/runs/" + match[1])
     require(run["path"] == ".github/workflows/catalogue-daily.yml" and run["head_branch"] == "main"
-            and run["head_repository"]["full_name"] == api.repo and run["event"] in {"schedule", "workflow_dispatch", "push"}, "Untrusted artifact producer")
+            and run["head_repository"]["full_name"] == api.repo and run["event"] in {"schedule", "workflow_dispatch"}, "Untrusted artifact producer")
     require(run["head_sha"] == pr["base"]["sha"] == os.environ["TRUSTED_BASE"], "Candidate base is stale")
     jobs = api.all(f"/actions/runs/{run['id']}/jobs", "jobs")
-    require(any(j["name"] == "Collect and validate" and j["conclusion"] in {"success", "failure"} for j in jobs), "Producer job is incomplete")
+    require(any(j["name"] == "Collect and validate" and j["conclusion"] == "success" for j in jobs),
+            "Automated publication requires a successful collection and validation job")
     write(ROOT / "work/pr.json", {"number": number, "base": pr["base"]["sha"], "head": pr["head"]["sha"], "run_id": str(run["id"]), "actor": expected_actor, "automated": True})
     with open(os.environ["GITHUB_OUTPUT"], "a") as out:
         out.write("run_id=" + str(run["id"]) + "\nhead=" + pr["head"]["sha"] + "\nbase=" + pr["base"]["sha"] + "\n")
