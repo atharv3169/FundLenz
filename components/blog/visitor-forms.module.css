@@ -5,6 +5,9 @@
 .inputRow input, .form input:not([type=checkbox]) { flex: 1; min-width: 0; width: 100%; border: 1px solid #cfdae2; padding: 11px 13px; border-radius: 7px; background: #fff; color: #203c4d; font-size: 14px; }
 .inputRow button, .primaryButton { color: #fff; background: #0d6777; border: 0; border-radius: 7px; padding: 11px 18px; font-size: 14px; font-weight: 650; white-space: nowrap; cursor: pointer; }
 .inputRow button:disabled, .primaryButton:disabled { opacity: .5; cursor: not-allowed; }
+.panel .newsletterPrivacy { margin: 11px 0 13px; color: #607785; font-size: 12px; line-height: 1.55; }
+.newsletterPrivacy strong { color: #294c5e; font-weight: 700; }
+.newsletterPrivacy a { text-decoration: underline; color: #0d697c; text-underline-offset: 2px; }
 .consent { display: flex; align-items: flex-start; gap: 10px; color: #607785; font-size: 12px; line-height: 1.55; margin: 14px 0; }
 .consent input { width: 15px; height: 15px; flex: 0 0 15px; margin-top: 2px; accent-color: #0d6876; }
 .consent a, .fallback a { text-decoration: underline; color: #0d697c; text-underline-offset: 2px; }
