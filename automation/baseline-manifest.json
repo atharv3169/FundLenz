@@ -61,8 +61,8 @@
     },
     {
       "path": "app/layout.tsx",
-      "bytes": 972,
-      "sha256": "5963115a9827deeb29da960baad58a5135d90fb1a17e5d3f5fc0517cd33a74ff",
+      "bytes": 1021,
+      "sha256": "dc2105439e9b34d2ceb3a81d85bf7423d17cf5aa6c5e5e8c33a2a01b09bf2755",
       "scope": "application"
     },
     {
@@ -73,14 +73,14 @@
     },
     {
       "path": "app/privacy/page.tsx",
-      "bytes": 1910,
-      "sha256": "664eadef7c41ca19ec800f0719b40cf75823aad79900c58d6e980a72c2e15c26",
+      "bytes": 1890,
+      "sha256": "ea683c902988553085bf819f8731825d8e4de7cb8c544a12e6d7a9bb60ec1203",
       "scope": "application"
     },
     {
       "path": "app/terms/page.tsx",
-      "bytes": 1691,
-      "sha256": "751fcbb4cbf0f327511952c84c7f49ca4a31aecc8231708975a03f13ba26b5ab",
+      "bytes": 1671,
+      "sha256": "ce460e782f6b418f80bbf0b78211c680b12371c087d013c202ee4144d69f34b0",
       "scope": "application"
     },
     {
