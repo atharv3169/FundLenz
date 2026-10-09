@@ -11,7 +11,7 @@ import { BlogEditorError, isDraftId, readEditorJson, requireBlogEditor, safeEdit
 
 type WriteDb = Awaited<ReturnType<typeof requireBlogEditor>> & Pick<D1Database, "batch">;
 const noStore = (data: object, status = 200) => privateAdminResponse(data, status);
-const fail = (status: number, message: string): never => { throw new BlogEditorError(status, message); };
+function fail(status: number, message: string): never { throw new BlogEditorError(status, message); }
 const dateToday = () => new Date().toISOString().slice(0, 10);
 
 function requirePublicationSwitch() {
