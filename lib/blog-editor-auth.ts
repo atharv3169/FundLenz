@@ -2,20 +2,7 @@ import { adminRuntime, isAuthenticatedAdmin, requireAdminOrigin, AdminForbidden,
 import type { BlogAdminDatabase } from "@/lib/blog-admin-state";
 import { privateAdminResponse } from "@/lib/blog-admin-crypto";
 
-// These are exact DNS hostnames, not wildcards or user-controlled origins.
-// Staging and production each require independent D1, secrets and an explicit
-// BLOG_ADMIN_ALLOWED_HOSTNAMES setting. The custom domain is inert until the
-// owner changes DNS and adds it to the production runtime allowlist.
-export const BLOG_EDITOR_STAGING_HOST = "fundlenz-blog-staging.atharvsahu711.workers.dev";
-export const BLOG_EDITOR_PRODUCTION_HOST = "fundlenz.atharvsahu711.workers.dev";
-export const BLOG_EDITOR_FUTURE_HOST = "fundlenz.com";
-const REVIEWED_EDITOR_HOSTS = new Set([
-  BLOG_EDITOR_STAGING_HOST, BLOG_EDITOR_PRODUCTION_HOST, BLOG_EDITOR_FUTURE_HOST,
-]);
-
-export function isReviewedEditorHost(host: string): boolean {
-  return REVIEWED_EDITOR_HOSTS.has(host.toLowerCase());
-}
+import { isReviewedEditorUrl } from "@/lib/blog-editor-hosts";
 
 export class BlogEditorError extends Error {
   constructor(public readonly status: number, message: string) { super(message); }
@@ -24,8 +11,7 @@ export class BlogEditorError extends Error {
 export async function requireBlogEditor(request: Request, writing = false): Promise<BlogAdminDatabase> {
   const url = new URL(request.url);
   const host = url.hostname.toLowerCase();
-  if (url.protocol !== "https:" || !isReviewedEditorHost(host) ||
-      (url.port && url.port !== "443")) {
+  if (!isReviewedEditorUrl(request.url)) {
     throw new BlogEditorError(404, "Editorial drafts are not available on this host.");
   }
   // The exact runtime allowlist is an independent, operator-controlled switch.
