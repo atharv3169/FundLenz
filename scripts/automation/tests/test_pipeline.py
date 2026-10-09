@@ -657,6 +657,12 @@ class PipelineTests(unittest.TestCase):
         self.assertIn('and publication_allowed', source)
         publisher = (ROOT / "scripts/automation/publish.py").read_text()
         self.assertIn("require_publishable_release(release)", publisher)
+        # The third trusted replay must agree with the original scheduled
+        # publishable release, or exact-byte/data-head checks will fail.
+        data_review = (ROOT / ".github/workflows/catalogue-data-gate.yml").read_text()
+        self.assertIn("FUNDLENZ_RELEASE_ALLOWED: 'true'", data_review)
+        self.assertIn("if: steps.prepare.outputs.run_id != ''", data_review)
+        self.assertIn("run: python3 scripts/automation/pr_gate.py check", data_review)
 
     def test_failed_collector_never_starts_publisher(self):
         workflow = (ROOT / ".github/workflows/catalogue-daily.yml").read_text()
