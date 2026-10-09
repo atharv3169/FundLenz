@@ -15,7 +15,7 @@ from acquire import due_sources, validate_url, validate_registry
 from adapters import chronology, nav_candidates, parse_nav, holdings_candidate, allowed_paths, build_files
 from issues import issue_id, reconcile_issues
 from publish import protection_gate, verify_release
-from validate import run_status, validate_model
+from validate import run_status, validate_model, stage_catalogue_update_date
 from model_tasks import bounded_call, response_text, packets, ModelContractError, verify_candidate_envelope
 from merge import wait_for_checks
 
@@ -299,6 +299,45 @@ class PipelineTests(unittest.TestCase):
             (p / "sanitized/audit/latest.json").write_bytes(raw)
             (p / "sanitized/extra.txt").write_text("unlisted")
             with self.assertRaises(ValueError): verify_release(p)
+
+    def test_verified_one_value_update_advances_site_date_atomically(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target = root / "public/data/site-metadata.json"
+            target.parent.mkdir(parents=True)
+            target.write_bytes(encoded({"schemaVersion": 1,
+                "catalogueSourceCheckDate": "2026-10-05"}))
+            acquisition = {"run_id": "test-run", "completed_at": "2026-10-09T04:00:00+00:00"}
+            files = {"public/data/catalog.json": b'{"fictional":true}\\n'}
+            date = stage_catalogue_update_date(root, files, acquisition)
+            self.assertEqual(date, "2026-10-09")
+            metadata = loads(files["public/data/site-metadata.json"])
+            self.assertEqual(metadata["lastCatalogueUpdateDate"], date)
+            self.assertEqual(metadata["lastCatalogueUpdateRunId"], "test-run")
+            self.assertEqual(metadata["catalogueSourceCheckDate"], "2026-10-05")
+            # The update-date change participates in the financial dataset
+            # checksum, so it cannot be deployed separately by this release.
+            self.assertNotEqual(dataset_hash(root, overlay=files), dataset_hash(root))
+            self.assertEqual(loads(target.read_bytes())["catalogueSourceCheckDate"], "2026-10-05")
+            self.assertNotIn("lastCatalogueUpdateDate", loads(target.read_bytes()))
+            # Audit-only and unsuccessful model runs must leave both date and
+            # baseline exactly unchanged.
+            self.assertIsNone(stage_catalogue_update_date(root, {}, acquisition))
+            self.assertIsNone(stage_catalogue_update_date(root, {"audit/latest.json": b"{}\\n"}, acquisition))
+            self.assertIsNone(stage_catalogue_update_date(root, {"public/automation-audit/latest.json": b"{}\\n"}, acquisition))
+            self.assertEqual(set(files), {"public/data/catalog.json", "public/data/site-metadata.json"})
+            target.write_bytes(files["public/data/site-metadata.json"])
+            stale = {"run_id": "older-run", "completed_at": "2026-10-08T04:00:00+00:00"}
+            with self.assertRaisesRegex(ValueError, "cannot move backwards"):
+                stage_catalogue_update_date(root, {"public/data/catalog.json": b"{}\\n"}, stale)
+
+    def test_website_date_labels_do_not_confuse_snapshot_source_and_publish(self):
+        metadata_source = (ROOT / "lib/site-metadata.ts").read_text()
+        for component in ["components/fund-catalog.tsx", "components/global-catalog.tsx"]:
+            text = (ROOT / component).read_text()
+            self.assertIn("Last catalogue update {catalogueUpdateLabel}", text)
+            self.assertIn("Original source-check baseline {catalogueSourceCheckLabel}", text)
+        self.assertIn("lastCatalogueUpdateDate", metadata_source)
 
     def test_rollback_restores_byte_exact_dataset(self):
         # Reversible overlay trial, never touches production.
