@@ -454,7 +454,7 @@ class PipelineTests(unittest.TestCase):
                                      "repo": {"full_name": self.repo}, "sha": "b" * 40},
                             "base": {"sha": base, "ref": "main"},
                             "user": {"login": "publisher"},
-                            "body": "FundLenz-Run: 12345\\nFundLenz-Base: " + base}
+                            "body": "FundLenz-Run: 12345\nFundLenz-Base: " + base}
                 if path == "/actions/runs/12345":
                     return {"path": ".github/workflows/catalogue-daily.yml",
                             "head_branch": "main", "head_repository": {"full_name": self.repo},
