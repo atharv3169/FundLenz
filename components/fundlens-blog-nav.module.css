@@ -1,3 +1,4 @@
+/* The portfolio lab has its own compact mobile masthead. Desktop remains unchanged. */
 @media (max-width: 580px) {
   .labShell :global(.masthead) {
     height: auto;
@@ -22,14 +23,26 @@
   }
 }
 
-/* Mobile only: the third nav item must have its own grid row.
-   Desktop header layout and existing Catalogue / Stocks positions are unchanged. */
+/* On phones/tablets: logo alone, Report + Blog beside each other,
+   then Catalogue across the full width. The separate securities catalogue
+   remains reachable under Catalogue rather than duplicating header nav. */
 @media (max-width: 800px) {
   .labShell:global(.portfolio-lab) > :global(.masthead) {
-    grid-template-areas: "brand report" "catalogue securities" "blog blog";
+    grid-template-areas: "brand brand" "report blog" "catalogue catalogue";
+    gap: 9px 10px;
+  }
+  .labShell:global(.portfolio-lab) :global(.masthead .header-button) {
+    grid-area: report;
+    width: 100%;
+    justify-self: stretch;
   }
   .labShell:global(.portfolio-lab) :global(.masthead .catalog-nav-link.lab-blog-link) {
     grid-area: blog;
+    width: 100%;
+    justify-self: stretch;
+  }
+  .labShell:global(.portfolio-lab) :global(.masthead .catalog-nav-link:not(.lab-blog-link)) {
+    grid-area: catalogue;
     width: 100%;
     justify-self: stretch;
   }

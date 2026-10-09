@@ -8,14 +8,29 @@ const metadata = readFileSync("lib/site-metadata.ts","utf8");
 const updater = readFileSync("scripts/automation/validate.py","utf8");
 
 assert.match(css, /grid-template-areas:\s*"brand report" "catalogue securities"/,
-  "Core phone header layout is 2 columns");
-const mobile = nav.slice(nav.indexOf("/* Mobile only:"));
-assert.match(mobile, /@media\s*\(max-width:\s*800px\)/);
-assert.match(mobile, /grid-template-areas:\s*"brand report" "catalogue securities" "blog blog"/,
-  "Blog should live on its own mobile row");
+  "Legacy base grid remains intact; only the mobile module overrides it");
+const mobile = nav.slice(nav.indexOf("/* On phones/tablets:"));
+assert.match(mobile, /@media\s*\(max-width:\s*800px\)/,
+  "Only mobile/tablet breakpoints should change");
+assert.match(mobile, /grid-template-areas:\s*"brand brand" "report blog" "catalogue catalogue"/,
+  "Logo gets full width; Report and Blog share a row; Catalogue uses the bottom row");
+assert.match(mobile, /\.labShell:global\(\.portfolio-lab\) :global\(\.masthead \.header-button\)[\s\S]*?grid-area:\s*report/);
 assert.match(mobile, /\.labShell:global\(\.portfolio-lab\) :global\(\.masthead \.catalog-nav-link\.lab-blog-link\)[\s\S]*?grid-area:\s*blog/);
-assert.doesNotMatch(nav.split("/* Mobile only:")[0], /grid-template-areas:/,
-  "No changes to the pre-existing desktop/tablet header layout");
+assert.match(mobile, /\.labShell:global\(\.portfolio-lab\) :global\(\.masthead \.catalog-nav-link:not\(\.lab-blog-link\)\)[\s\S]*?grid-area:\s*catalogue/);
+assert.doesNotMatch(nav.split("/* On phones/tablets:")[0], /grid-template-areas:/,
+  "Desktop header is not changed");
+const header = portfolio.slice(portfolio.indexOf('<header className="masthead">'),
+  portfolio.indexOf('</header>') + '</header>'.length);
+assert.ok(header.includes('href="/catalogue-global"'), "Catalogue must remain in the header");
+assert.ok(header.includes('href="/blogpost"'), "Blog must remain in the header");
+assert.ok(header.includes('View report'), "Report button must remain in the header");
+assert.doesNotMatch(header, /Stocks\s*&(?:amp;|)\s*bonds|href="\/catalogue-securities"|global-lab-link/,
+  "Stocks and bonds header button must be removed on all viewports");
+for (const catalogueFile of ["components/fund-catalog.tsx","components/global-catalog.tsx"]) {
+  const catalogue = readFileSync(catalogueFile, "utf8");
+  assert.match(catalogue, /href="\/catalogue-securities"/,
+    "Securities catalogue must stay accessible through the Catalogue");
+}
 assert.match(portfolio, /className="catalog-nav-link lab-blog-link" href="\/blogpost"/);
 assert.match(portfolio, /Snapshot · \{snapshotLabel\}/,
   "Per-fund disclosure date must stay genuine");
@@ -34,4 +49,4 @@ assert.match(updater, /if catalogue_update_date:[\s\S]*?lastCatalogueUpdateDate=
   "Updater must save the verified date atomically with data");
 assert.doesNotMatch(portfolio, /Snapshot · \{catalogueUpdateLabel\}/,
   "Publication date cannot replace a stale source snapshot date");
-console.log("PASS: standalone Blog row on mobile; real snapshots and shared verified-update metadata preserved");
+console.log("PASS: logo / Report+Blog / Catalogue mobile rows, no duplicate securities header; verified-date labels preserved");
