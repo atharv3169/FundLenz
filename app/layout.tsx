@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { LegalLink } from "@/components/legal-navigation";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,9 +22,9 @@ export default function RootLayout({
         {children}
         <footer className="legal-footer" aria-label="FundLenz legal information">
           <nav aria-label="Legal links">
-            <Link href="/privacy">Privacy Policy</Link>
+            <LegalLink href="/privacy">Privacy Policy</LegalLink>
             <span aria-hidden="true">·</span>
-            <Link href="/terms">Terms of Service</Link>
+            <LegalLink href="/terms">Terms of Service</LegalLink>
           </nav>
         </footer>
       </body>
