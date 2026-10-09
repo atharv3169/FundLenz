@@ -330,7 +330,8 @@ class PipelineTests(unittest.TestCase):
                     target.parent.mkdir(parents=True, exist_ok=True)
                     target.write_bytes(value)
                 release = {"run_id": "fictional-run", "base_dataset_sha256": dataset_hash(ROOT),
-                           "candidate_dataset_sha256": candidate_hash, "files": manifest(payload),
+                           "candidate_dataset_sha256": dataset_hash(ROOT) if len(payload) == 1 else candidate_hash,
+                           "files": manifest(payload),
                            "data_changes": True}
                 (p / "release.json").write_bytes(encoded(release))
             save(files)
