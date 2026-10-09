@@ -448,7 +448,7 @@ class PipelineTests(unittest.TestCase):
         metadata_source = (ROOT / "lib/site-metadata.ts").read_text()
         for component in ["components/fund-catalog.tsx", "components/global-catalog.tsx"]:
             text = (ROOT / component).read_text()
-            self.assertIn("Last catalogue update {catalogueUpdateLabel}", text)
+            self.assertIn('Last catalogue update {catalogueUpdateLabel ?? "not yet recorded"}', text)
             self.assertIn("Original source-check baseline {catalogueSourceCheckLabel}", text)
         self.assertIn("lastCatalogueUpdateDate", metadata_source)
         lab = (ROOT / "components/fundlens.tsx").read_text()
