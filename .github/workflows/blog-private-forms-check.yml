@@ -13,6 +13,8 @@ on:
       - "app/globals.css"
       - "content/blog-homepage.json"
       - "lib/blog-publications.ts"
+      - "lib/blog-publication-store.ts"
+      - "scripts/verify-blog-publication-store.mjs"
       - "lib/blog-homepage-content.ts"
       - "lib/blog-staging-homepage.ts"
       - "lib/blog-admin-**"
@@ -81,6 +83,8 @@ jobs:
         run: node scripts/verify-blog-homepage-copy.mjs
       - name: Public article search and route validation
         run: node scripts/verify-blog-publications.mjs
+      - name: Publication schema and snapshot safety checks
+        run: node scripts/verify-blog-publication-store.mjs
       - name: Single-admin authentication security checks
         run: node scripts/verify-blog-admin-auth.mjs
       - name: Production editor host, origin and session isolation
