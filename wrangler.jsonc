@@ -13,5 +13,13 @@
   },
   "observability": {
     "enabled": true
-  }
+  },
+  "keep_vars": true,
+  "d1_databases": [
+    {
+      "binding": "BLOG_ADMIN_DB",
+      "database_name": "fundlenz-blog-admin-production",
+      "database_id": "cfdfc32d-5833-4102-889a-37889bbbb7b1"
+    }
+  ]
 }

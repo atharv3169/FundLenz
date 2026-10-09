@@ -14,7 +14,14 @@ const staging = JSON.parse(readFileSync(resolve("wrangler.blog-staging.jsonc"), 
 const production = JSON.parse(readFileSync(resolve("wrangler.jsonc"), "utf8"));
 const expectedHost = "fundlenz-blog-staging.atharvsahu711.workers.dev";
 const expectedDB = "7849f805-0efa-49d3-b5bb-26c2527e4cfd";
+const expectedProductionDB = "cfdfc32d-5833-4102-889a-37889bbbb7b1";
 if (production.name !== "fundlenz" || staging.name !== "fundlenz-blog-staging" ||
+    production.keep_vars !== true ||
+    production.d1_databases?.length !== 1 ||
+    production.d1_databases[0].binding !== "BLOG_ADMIN_DB" ||
+    production.d1_databases[0].database_name !== "fundlenz-blog-admin-production" ||
+    production.d1_databases[0].database_id !== expectedProductionDB ||
+    staging.d1_databases?.[0]?.database_id === expectedProductionDB ||
     !staging.keep_vars || staging.preview_urls !== false ||
     staging.d1_databases?.length !== 1 ||
     staging.d1_databases[0].binding !== "BLOG_ADMIN_DB" ||
@@ -46,12 +53,15 @@ console.log("Safe staging build diagnostics:", JSON.stringify({
   triggerKeys: generatedTriggers && typeof generatedTriggers === "object" ? Object.keys(generatedTriggers) : [],
   noActiveTriggers,
   d1Count: Array.isArray(generated.d1_databases) ? generated.d1_databases.length : -1,
+  productionD1IdMatches: generated.d1_databases?.[0]?.database_id === expectedProductionDB,
   environmentsCount: generated.env && typeof generated.env === "object" ? Object.keys(generated.env).length : -1,
   hasAdminHostnameVar: Boolean(generated.vars?.BLOG_ADMIN_ALLOWED_HOSTNAMES),
   // Do not print any environment variables, tokens or confidential values.
 }));
 if (generated.name !== production.name || generated.routes || generated.route || !noActiveTriggers ||
-    (generated.d1_databases && generated.d1_databases.length) ||
+    !Array.isArray(generated.d1_databases) || generated.d1_databases.length !== 1 ||
+    generated.d1_databases[0].binding !== "BLOG_ADMIN_DB" ||
+    generated.d1_databases[0].database_id !== expectedProductionDB ||
     (generated.env && Object.keys(generated.env).length) ||
     (generated.vars && Object.keys(generated.vars).some(key => key === "BLOG_ADMIN_ALLOWED_HOSTNAMES"))) {
   throw new Error("Unexpected production-generated deployment settings; refusing staging conversion.");
@@ -96,6 +106,8 @@ generated.main = "./blog-staging-gate-entry.mjs";
 // Without this, Cloudflare serves /_next/static assets before the Worker sees auth.
 generated.assets.run_worker_first = true;
 
+// Replace the verified production D1 binding with the isolated staging one
+// ONLY in generated output; no access to either database occurs during build.
 // Rewrite only the generated, ignored build artifact. It is NOT a tracked repository file.
 generated.name = staging.name;
 generated.workers_dev = true;
