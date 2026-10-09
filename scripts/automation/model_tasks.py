@@ -103,6 +103,31 @@ def packets(acquisition, units, task, policy, run=None):
     return packet
 
 
+
+def is_no_work_packet(packet):
+    """Avoid paid/unavailable model calls only when no evidence or assigned issues exist.
+
+    An unavailable source remains represented in the packet and is never
+    misclassified as having been successfully checked.
+    """
+    return (not packet["sources"] and not packet["issues"] and
+            not packet["sample_adapter_decisions"])
+
+
+def trusted_no_work_candidate(packet):
+    """Only the trusted runner may generate this factual empty-source envelope."""
+    require(is_no_work_packet(packet), "Never bypass Gemini for a packet with evidence or issues")
+    candidate = {"schema_version": 1, "run_id": packet["run_id"],
+                 "base_dataset_sha256": packet["base_dataset_sha256"],
+                 "task_type": packet["task_type"],
+                 "started_at": packet["started_at"],
+                 "completed_at": packet["completed_at"],
+                 "source_checks": [], "proposals": [],
+                 "summary": "No sources, adapter decisions or assigned investigation issues in this task; no Gemini request needed."}
+    schema(candidate, "candidate")
+    return candidate
+
+
 def call_model(packet, task, policy):
     key = os.environ.get("GEMINI_API_KEY")
     require(key, "Missing GEMINI_API_KEY")
@@ -168,9 +193,14 @@ def main():
         write(root / (task + "-input.json"), packet)
         started = now()
         try:
-            candidate, usage, attempts = bounded_call(packet, task, policy)
+            if is_no_work_packet(packet):
+                candidate, usage, attempts = trusted_no_work_candidate(packet), {}, 0
+                status = "not_required"
+            else:
+                candidate, usage, attempts = bounded_call(packet, task, policy)
+                status = "completed"
             write(root / (task + ".json"), candidate)
-            report = {"task": task, "status": "completed", "started_at": started, "completed_at": now(), "usage": usage,
+            report = {"task": task, "status": status, "started_at": started, "completed_at": now(), "usage": usage,
                       "source_packets": len(packet["sources"]), "issues_in_packet": len(packet["issues"]), "attempts": attempts}
         except Exception as error:
             report = {"task": task, "status": "failed", "started_at": started, "completed_at": now(), "error_type": clean_error(error)}
