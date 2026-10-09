@@ -214,7 +214,7 @@ def build_files(root, units, extras, raw_sources, acquisition):
 
 def allowed_paths(root=ROOT):
     downloads = read(root / "data/sources/global/holdings/downloads.json")
-    paths = {"public/data/catalog.json", "public/data/global/holdings-index.json", "public/data/global/holdings-coverage.json",
+    paths = {"public/data/site-metadata.json", "public/data/catalog.json", "public/data/global/holdings-index.json", "public/data/global/holdings-coverage.json",
              "data/sources/global/holdings/downloads.json", "data/sources/automation/amfi-nav.txt", "audit/latest.json",
              "audit/open-issues.json", "audit/automation-state.json", "public/automation-audit/latest.json", "public/automation-audit/release.json",
              "public/build-info.json"}
