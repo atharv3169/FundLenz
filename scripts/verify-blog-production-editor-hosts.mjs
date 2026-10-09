@@ -62,6 +62,7 @@ const productionEnv = {
 globalThis.__fundlenzAdminTestEnvironment = stagingEnv;
 const editor = await importTS("lib/blog-editor-auth.ts", true);
 const admin = await importTS("lib/blog-admin-server.ts", true);
+const sessionApi = await importTS("app/api/blog/admin/session/route.ts", true);
 function request(host, opts = {}) {
   const origin = opts.origin === undefined ? "https://" + host : opts.origin;
   const headers = { Cookie: opts.cookie === undefined ? validCookie : opts.cookie };
@@ -99,11 +100,15 @@ await expects(403, () => editor.requireBlogEditor(request(staging, { write: true
 // activate production editing after the Cloudflare outer gate is in place.
 // Worker modules hold the same live environment object across this test.
 Object.assign(stagingEnv, productionEnv);
+assert.equal((await sessionApi.GET(request(worker))).status, 503);
 await expects(503, () => editor.requireBlogEditor(request(worker)));
 assert.equal(await admin.isAuthenticatedAdmin(request(worker)), false);
 assert.throws(() => admin.requireAdminOrigin(request(worker, { write: true }), [worker]),
   e => e instanceof admin.AdminUnavailable);
 stagingEnv.BLOG_ADMIN_EDITOR_PRODUCTION_ENABLED = "true";
+const activeSession = await sessionApi.GET(request(worker));
+assert.equal(activeSession.status, 200);
+assert.equal((await activeSession.json()).authenticated, true);
 assert.equal(await editor.requireBlogEditor(request(worker)), prodDb);
 assert.equal(await editor.requireBlogEditor(request(worker, { write: true })), prodDb);
 assert.equal(await admin.isAuthenticatedAdmin(request(worker)), true);
