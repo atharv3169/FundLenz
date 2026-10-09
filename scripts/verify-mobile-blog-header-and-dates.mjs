@@ -7,35 +7,35 @@ const css = readFileSync("app/globals.css","utf8");
 const metadata = readFileSync("lib/site-metadata.ts","utf8");
 const updater = readFileSync("scripts/automation/validate.py","utf8");
 
-assert.match(css, /grid-template-areas:\s*"brand report" "catalogue securities"/,
-  "Legacy base grid remains intact; only the mobile module overrides it");
-const mobile = nav.slice(nav.indexOf("/* Compact mobile header:"));
-assert.match(mobile, /@media\s*\(max-width:\s*800px\)/,
-  "Only mobile/tablet breakpoints should change");
-assert.match(mobile, /grid-template-areas:\s*"brand blog" "report catalogue"/,
-  "FundLenz and Blog share the first row; Report and Catalogue share the second");
-assert.match(mobile, /grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/,
-  "Both second-row buttons share the available width");
-assert.match(mobile, /\.labShell:global\(\.portfolio-lab\) :global\(\.masthead \.catalog-nav-link\.lab-blog-link\)[\s\S]*?width:\s*auto;[\s\S]*?justify-self:\s*end/,
-  "Blog should be a compact top-right shortcut rather than a full-size card");
-assert.match(mobile, /padding-top:\s*11px;[\s\S]*?padding-bottom:\s*11px/,
-  "Compact header vertical padding");
-assert.match(mobile, /\.labShell:global\(\.portfolio-lab\) :global\(\.masthead \.header-button\)[\s\S]*?grid-area:\s*report/);
-assert.match(mobile, /\.labShell:global\(\.portfolio-lab\) :global\(\.masthead \.catalog-nav-link\.lab-blog-link\)[\s\S]*?grid-area:\s*blog/);
-assert.match(mobile, /\.labShell:global\(\.portfolio-lab\) :global\(\.masthead \.catalog-nav-link:not\(\.lab-blog-link\)\)[\s\S]*?grid-area:\s*catalogue/);
-assert.doesNotMatch(nav.split("/* Compact mobile header:")[0], /grid-template-areas:/,
-  "Desktop header is not changed");
+const mobile = nav.slice(nav.indexOf("/* FundLenz portfolio masthead ONLY:"));
+assert.match(mobile, /@media screen and \(max-width: 800px\)/);
+assert.match(mobile, /grid-template-areas: "brand blog catalogue";/,
+  "All three controls must share one header row on mobile");
+assert.match(mobile, /grid-template-columns: minmax\(max-content, 1fr\) max-content max-content;/,
+  "Preserve the full intrinsic brand width; make buttons only as wide as necessary");
+assert.match(mobile, /min-height: 44px;/, "Keep accessible 44px button targets");
+assert.match(mobile, /font-size: \.75rem;/, "Compact navigation buttons rather than the logo");
+assert.match(mobile, /@media screen and \(max-width: 360px\)/,
+  "Narrow phones must get smaller button padding, never smaller branding");
+assert.doesNotMatch(nav, /\.brand-mark|\.brand\s*\{/,
+  "Do not change the logo dimensions or typography");
+assert.match(mobile, /grid-area: blog;/);
+assert.match(mobile, /grid-area: catalogue;/);
 const header = portfolio.slice(portfolio.indexOf('<header className="masthead">'),
   portfolio.indexOf('</header>') + '</header>'.length);
-assert.ok(header.includes('href="/catalogue-global"'), "Catalogue must remain in the header");
-assert.ok(header.includes('href="/blogpost"'), "Blog must remain in the header");
-assert.ok(header.includes('View report'), "Report button must remain in the header");
+assert.ok(header.includes('href="/catalogue-global"'), "Catalogue remains present");
+assert.ok(header.includes('href="/blogpost"'), "Blog remains present");
+assert.doesNotMatch(header, /View report|header-button|setTab\("report"\)/,
+  "Remove the redundant View report header button at ALL widths");
+assert.match(portfolio, /id: "report", label: "Report", icon: FileText/,
+  "Keep the underlying on-page Report tab available");
+assert.match(portfolio, /<TabsTrigger value=\{t.id\}/,
+  "Existing report navigation inside the page must still render");
 assert.doesNotMatch(header, /Stocks\s*&(?:amp;|)\s*bonds|href="\/catalogue-securities"|global-lab-link/,
-  "Stocks and bonds header button must be removed on all viewports");
+  "Removed Stocks & bonds shortcut must not return");
 for (const catalogueFile of ["components/fund-catalog.tsx","components/global-catalog.tsx"]) {
-  const catalogue = readFileSync(catalogueFile, "utf8");
-  assert.match(catalogue, /href="\/catalogue-securities"/,
-    "Securities catalogue must stay accessible through the Catalogue");
+  assert.match(readFileSync(catalogueFile, "utf8"), /href="\/catalogue-securities"/,
+    "Stocks/bonds should remain accessible inside Catalogue");
 }
 assert.match(portfolio, /className="catalog-nav-link lab-blog-link" href="\/blogpost"/);
 assert.match(portfolio, /Snapshot · \{snapshotLabel\}/,
@@ -55,4 +55,4 @@ assert.match(updater, /if catalogue_update_date:[\s\S]*?lastCatalogueUpdateDate=
   "Updater must save the verified date atomically with data");
 assert.doesNotMatch(portfolio, /Snapshot · \{catalogueUpdateLabel\}/,
   "Publication date cannot replace a stale source snapshot date");
-console.log("PASS: compact logo+Blog / Report+Catalogue mobile header, securities navigation and verified dates preserved");
+console.log("PASS: single-row mobile brand/Blog/Catalogue, no Report shortcut, report tab and verified dates preserved");

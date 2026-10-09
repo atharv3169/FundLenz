@@ -1,57 +1,47 @@
-/* The portfolio lab has its own compact mobile masthead. Desktop remains unchanged. */
-@media (max-width: 580px) {
-  .labShell :global(.masthead) {
-    height: auto;
-    min-height: 65px;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-
-  .labShell :global(.masthead-right) {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 7px;
-  }
-
-  .labShell :global(.catalog-nav-link) {
-    font-size: 12px;
-    padding: 6px 9px;
-  }
-}
-
-/* Compact mobile header: FundLenz logo + small Blog button in the first
-   row; View report + Catalogue are equal-width buttons directly beneath.
-   Desktop layout is intentionally untouched. Securities remains available
-   inside Catalogue rather than consuming a third header button. */
-@media (max-width: 800px) {
+/* FundLenz portfolio masthead ONLY: leave desktop styling unchanged.
+   Mobile: Brand + Blog + Catalogue on the same line. Keep the original brand
+   typography and logo icon dimensions; compact only both navigation links. */
+@media screen and (max-width: 800px) {
   .labShell:global(.portfolio-lab) > :global(.masthead) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-areas: "brand blog" "report catalogue";
-    gap: 9px 10px;
-    padding-top: 11px;
-    padding-bottom: 11px;
+    grid-template-columns: minmax(max-content, 1fr) max-content max-content;
+    grid-template-areas: "brand blog catalogue";
+    column-gap: 6px;
+    row-gap: 0;
+    padding: 9px 12px;
+    min-height: 60px;
+    align-items: center;
   }
-  .labShell:global(.portfolio-lab) :global(.masthead .header-button) {
-    grid-area: report;
-    width: 100%;
-    justify-self: stretch;
+  .labShell:global(.portfolio-lab) :global(.masthead .catalog-nav-link.lab-blog-link),
+  .labShell:global(.portfolio-lab) :global(.masthead .catalog-nav-link:not(.lab-blog-link)) {
+    width: auto;
+    max-width: none;
+    min-width: 0;
+    min-height: 44px;
+    height: 44px;
+    padding: 8px 9px;
+    font-size: .75rem;
+    line-height: 1.1;
+    white-space: nowrap;
+    justify-self: end;
   }
   .labShell:global(.portfolio-lab) :global(.masthead .catalog-nav-link.lab-blog-link) {
     grid-area: blog;
-    width: auto;
-    max-width: 100%;
-    min-width: 94px;
-    padding: 9px 14px;
-    justify-self: end;
-    font-size: .8125rem;
   }
   .labShell:global(.portfolio-lab) :global(.masthead .catalog-nav-link:not(.lab-blog-link)) {
     grid-area: catalogue;
-    width: 100%;
-    justify-self: stretch;
+  }
+}
+/* Narrow phones: trim only button widths and spacing, never logo size. */
+@media screen and (max-width: 360px) {
+  .labShell:global(.portfolio-lab) > :global(.masthead) {
+    column-gap: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  .labShell:global(.portfolio-lab) :global(.masthead .catalog-nav-link.lab-blog-link),
+  .labShell:global(.portfolio-lab) :global(.masthead .catalog-nav-link:not(.lab-blog-link)) {
+    padding-left: 6px;
+    padding-right: 6px;
+    font-size: .6875rem;
   }
 }
