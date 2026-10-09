@@ -42,7 +42,7 @@ export function BlogAdminLogin() {
         throw new Error(result.error || "Could not log in.");
       setPassword("");
       setStatus("logged-in");
-      setMessage("Welcome to the private staging editorial workspace.");
+      setMessage("Welcome to your private FundLenz editorial workspace.");
     } catch (error) {
       setPassword("");
       setMessage(error instanceof Error ? error.message : "Login is unavailable.");
