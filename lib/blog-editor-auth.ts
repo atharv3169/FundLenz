@@ -1,4 +1,4 @@
-import { adminRuntime, isAuthenticatedAdmin, requireAdminOrigin, AdminForbidden, AdminUnavailable } from "@/lib/blog-admin-server";
+import { adminRuntime, isAuthenticatedAdmin, isActiveEditorHost, requireAdminOrigin, AdminForbidden, AdminUnavailable } from "@/lib/blog-admin-server";
 import type { BlogAdminDatabase } from "@/lib/blog-admin-state";
 import { privateAdminResponse } from "@/lib/blog-admin-crypto";
 
@@ -16,6 +16,8 @@ export async function requireBlogEditor(request: Request, writing = false): Prom
   }
   // The exact runtime allowlist is an independent, operator-controlled switch.
   // Enabling a hostname in code alone never grants editor access.
+  if (!isActiveEditorHost(request))
+    throw new BlogEditorError(503, "Editorial access has not been enabled on this host.");
   const { db, hosts } = adminRuntime();
   if (!hosts.includes(host))
     throw new BlogEditorError(503, "Editorial access is not configured.");
