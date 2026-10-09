@@ -1,5 +1,6 @@
 """Adversarial tests use retained official bytes and explicitly fictional mutations."""
 import copy
+import base64
 import json
 import os
 from pathlib import Path
@@ -10,14 +11,14 @@ import unittest
 import urllib.error
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from common import ROOT, dataset_hash, encoded, loads, read, require, safe_path, schema, sha
+from common import ROOT, dataset_hash, encoded, loads, read, require, safe_path, schema, sha, manifest
 from acquire import due_sources, validate_url, validate_registry
 from adapters import chronology, nav_candidates, parse_nav, holdings_candidate, allowed_paths, build_files
 from issues import issue_id, reconcile_issues
 from publish import protection_gate, verify_release
 from validate import run_status, validate_model, stage_catalogue_update_date
 from model_tasks import bounded_call, response_text, packets, ModelContractError, verify_candidate_envelope
-from merge import wait_for_checks
+from merge import wait_for_checks, assert_release_date_current
 
 
 class PipelineTests(unittest.TestCase):
@@ -280,6 +281,82 @@ class PipelineTests(unittest.TestCase):
             wait_for_checks(self.merge_api(["blocked"]), 1, self.policy,
                             "head", "base", "publisher", attempts=2, wait=waits.append)
         self.assertEqual(waits, [15])
+
+    def test_merger_rejects_stale_future_and_mismatched_daily_release_dates(self):
+        head = "1" * 40
+        class FakeReleaseAPI:
+            def __init__(self, date="2026-10-09", marker="2026-10-09", financial=True):
+                self.meta = {"lastCatalogueUpdateDate": date, "lastCatalogueUpdateRunId": "r1"}
+                self.marker = {"run_id": "r1", "lastCatalogueUpdateDate": marker,
+                               "financial_data_changed": financial}
+            def call(self, path):
+                self_path = path.split("?ref=")[0]
+                value = self.marker if self_path.endswith("/release.json") else self.meta
+                return {"type": "file", "encoding": "base64",
+                        "content": base64.b64encode(encoded(value)).decode()}
+        assert_release_date_current(FakeReleaseAPI(), head, today="2026-10-09")
+        assert_release_date_current(FakeReleaseAPI(financial=False), head, today="2026-10-10")
+        for data in [
+            {"date": "2026-10-08"},
+            {"date": "2026-10-10"},
+            {"marker": "2026-10-08"},
+            {"date": "2026-10-09", "marker": "2026-10-10"},
+        ]:
+            with self.assertRaisesRegex(ValueError, "stale, future or inconsistent"):
+                assert_release_date_current(FakeReleaseAPI(**data), head, today="2026-10-09")
+        with self.assertRaisesRegex(ValueError, "Invalid checked head"):
+            assert_release_date_current(FakeReleaseAPI(), "not-a-sha", today="2026-10-09")
+
+    def test_publisher_binds_financial_bytes_and_update_date_into_release(self):
+        with tempfile.TemporaryDirectory() as temp:
+            p = Path(temp)
+            metadata = read(ROOT / "public/data/site-metadata.json")
+            metadata.update(lastCatalogueUpdateDate="2026-10-09", lastCatalogueUpdateRunId="fictional-run")
+            marker = {"run_id": "fictional-run", "dataset_sha256": "",
+                      "lastCatalogueUpdateDate": "2026-10-09", "financial_data_changed": True}
+            info = read(ROOT / "public/build-info.json")
+            info["lastCatalogueUpdateDate"] = "2026-10-09"
+            files = {
+                "public/data/catalog.json": b'{"fictional":true}\\n',
+                "public/data/site-metadata.json": encoded(metadata),
+                "public/build-info.json": encoded(info),
+            }
+            candidate_hash = dataset_hash(ROOT, files)
+            marker["dataset_sha256"] = candidate_hash
+            files["public/automation-audit/release.json"] = encoded(marker)
+            def save(payload):
+                for name, value in payload.items():
+                    target = p / "sanitized" / name
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_bytes(value)
+                release = {"run_id": "fictional-run", "base_dataset_sha256": dataset_hash(ROOT),
+                           "candidate_dataset_sha256": candidate_hash, "files": manifest(payload),
+                           "data_changes": True}
+                (p / "release.json").write_bytes(encoded(release))
+            save(files)
+            verify_release(p)
+            # Tampering with the webpage label is detected even if the
+            # attacker recalculates the public-content hash and manifest.
+            altered = copy.deepcopy(files)
+            altered_meta = loads(altered["public/data/site-metadata.json"])
+            altered_meta["catalogueSourceCheckDate"] = "2026-10-09"
+            altered["public/data/site-metadata.json"] = encoded(altered_meta)
+            with self.assertRaisesRegex(ValueError, "hash differs"):
+                save(altered)
+                verify_release(p)
+            altered2 = copy.deepcopy(files)
+            altered2_info = loads(altered2["public/build-info.json"])
+            altered2_info["lastCatalogueUpdateDate"] = "2026-10-08"
+            altered2["public/build-info.json"] = encoded(altered2_info)
+            with self.assertRaisesRegex(ValueError, "release markers disagree"):
+                save(altered2)
+                verify_release(p)
+            audit_only = {"public/automation-audit/release.json": encoded(
+                {"run_id": "audit-only", "dataset_sha256": dataset_hash(ROOT),
+                 "lastCatalogueUpdateDate": "2026-10-09", "financial_data_changed": False})}
+            save(audit_only)
+            with self.assertRaisesRegex(ValueError, "incorrectly declares"):
+                verify_release(p)
 
     def test_reports_distinguish_fail_partial_and_no_change(self):
         self.assertEqual(run_status(0, 0, 4, 0, []), "NO_CHANGE")
