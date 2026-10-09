@@ -1,4 +1,5 @@
--- FundLenz staging-only editorial drafts; apply to fundlenz-blog-admin-staging.
+-- FundLenz isolated editorial drafts for reviewed staging OR production D1.
+-- Apply only to the explicitly selected database after confirming its identity.
 -- NO GitHub writes, no public publishing, no visitor email/submission storage.
 -- Safe to apply repeatedly. Does not modify existing login tables.
 CREATE TABLE IF NOT EXISTS blog_homepage_draft (
