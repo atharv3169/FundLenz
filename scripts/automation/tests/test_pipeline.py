@@ -750,7 +750,7 @@ class PipelineTests(unittest.TestCase):
              "record_id": "source:tata-unavailable", "scope": "source:tata-unavailable",
              "previous_candidate": None, "previous_verified": None},
         ]
-        acquisition = dict(self.acquisition(), previous_state=state,
+        acquisition = dict(self.acquisition(), previous_state=state, base_dataset_sha256="0" * 64,
                            started_at=self.source["checked_at"],
                            source_checks=[confirmed, unavailable])
         fresh = packets(acquisition, [], "fresh_scan", self.policy)
@@ -772,7 +772,7 @@ class PipelineTests(unittest.TestCase):
             {"issue_id": "case-unavailable", "source_url": unavailable["source_url"],
              "record_id": "source:tata-unavailable", "scope": "source:tata-unavailable",
              "previous_candidate": None, "previous_verified": None}]
-        acquisition = dict(self.acquisition(), previous_state=state,
+        acquisition = dict(self.acquisition(), previous_state=state, base_dataset_sha256="0" * 64,
                            started_at=self.source["checked_at"], source_checks=[unavailable])
         for task in ("fresh_scan", "reinvestigation"):
             packet = packets(acquisition, [], task, self.policy)
@@ -795,8 +795,8 @@ class PipelineTests(unittest.TestCase):
         unavailable = dict(self.source, source_id="monitor-outage",
                            source_url="https://example.invalid/outage", adapter="monitor",
                            outcome="unavailable", source_sha256=None)
-        acquisition = dict(self.acquisition(),
-                           started_at=self.source["checked_at"],
+        acquisition = dict(self.acquisition(), previous_state=self.make_state(),
+                           base_dataset_sha256="0" * 64, started_at=self.source["checked_at"],
                            source_checks=[*monitors, unavailable, holdings, source])
         packet = packets(acquisition, [], "fresh_scan", self.policy)
         self.assertEqual(len(packet["sources"]), self.policy["max_model_source_packets"])
