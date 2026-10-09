@@ -35,7 +35,17 @@
 .form > label:not(.consent) input:not([type=checkbox]) { display: block; margin-top: 6px; }
 .form > label:not(.consent) small { display: block; margin-top: 5px; }
 .form label strong { color: #b44544; }
-.form input[type=file] { padding: 8px 0; }
+/* Custom contributor picker: one clickable field, rather than browser-dependent
+   "Choose File / No file chosen" + filename text. Keep the real file input in
+   the form for keyboard users, required validation and FormData uploads. */
+.form .filePicker { display: block; position: relative; margin-top: 6px; padding: 11px 13px; min-height: 45px; box-sizing: border-box; width: 100%; background: #fff; color: #203c4d; border: 1px solid #cfdae2; border-radius: 7px; cursor: pointer; }
+.form .filePicker:hover { border-color: #7bafb9; background: #fafdfd; }
+.form .filePicker:focus-within { outline: 3px solid #7bc3ce; outline-offset: 2px; }
+.form .filePickerText { display: block; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 400; line-height: 22px; }
+/* Override the generic .form input styling and hide only the browser UI;
+   retain a native, focusable input as the label's actual form control. */
+.form > label:not(.consent) input.fileInput { position: absolute; top: 0; left: 0; width: 1px; height: 1px; margin: 0; padding: 0; border: 0; opacity: 0; overflow: hidden; clip-path: inset(50%); }
+.form .filePicker:has(input:disabled) { cursor: progress; opacity: .7; }
 .form small { color: #7b909e; font-size: 11px; font-weight: 400; }
 .form .consent { margin: 2px 0; font-weight: 400; }
 .form .primaryButton { width: 100%; }
