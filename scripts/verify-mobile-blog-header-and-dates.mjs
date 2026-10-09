@@ -14,6 +14,14 @@ assert.match(mobile, /grid-template-areas: "brand blog catalogue";/,
 assert.match(mobile, /grid-template-columns: minmax\(max-content, 1fr\) max-content max-content;/,
   "Preserve the full intrinsic brand width; make buttons only as wide as necessary");
 assert.match(mobile, /min-height: 44px;/, "Keep accessible 44px button targets");
+assert.match(mobile, /@media screen and \(min-width: 381px\) and \(max-width: 800px\)/,
+  "Wider button treatment must remain scoped to mobile screens with sufficient room");
+assert.match(mobile, /clamp\(70px, 19vw, 88px\) clamp\(108px, 29vw, 130px\)/,
+  "Increase Blog/Catalogue button width toward the red-line reference without changing the logo");
+assert.match(mobile, /width: 100%;\s*justify-self: stretch;/,
+  "Buttons should fill expanded slots rather than keeping their tiny intrinsic widths");
+assert.match(mobile, /minmax\(max-content, 1fr\)/,
+  "Keep original logo width before allocating space to the buttons");
 assert.match(mobile, /font-size: \.75rem;/, "Compact navigation buttons rather than the logo");
 assert.match(mobile, /@media screen and \(max-width: 360px\)/,
   "Narrow phones must get smaller button padding, never smaller branding");

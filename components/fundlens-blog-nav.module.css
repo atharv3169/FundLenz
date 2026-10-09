@@ -31,6 +31,20 @@
     grid-area: catalogue;
   }
 }
+/* Expand the two header buttons into the unused space shown by the mobile
+   review reference (~414px viewport). At 414px this gives roughly 79px for
+   Blog and 120px for Catalogue, keeping the original logo and single row.
+   Smaller phones retain the earlier compact button widths. */
+@media screen and (min-width: 381px) and (max-width: 800px) {
+  .labShell:global(.portfolio-lab) > :global(.masthead) {
+    grid-template-columns: minmax(max-content, 1fr) clamp(70px, 19vw, 88px) clamp(108px, 29vw, 130px);
+  }
+  .labShell:global(.portfolio-lab) :global(.masthead .catalog-nav-link.lab-blog-link),
+  .labShell:global(.portfolio-lab) :global(.masthead .catalog-nav-link:not(.lab-blog-link)) {
+    width: 100%;
+    justify-self: stretch;
+  }
+}
 /* Narrow phones: trim only button widths and spacing, never logo size. */
 @media screen and (max-width: 360px) {
   .labShell:global(.portfolio-lab) > :global(.masthead) {
