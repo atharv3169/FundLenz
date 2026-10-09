@@ -9,6 +9,8 @@ import { BLOG_STAGING_HOST } from "@/lib/blog-staging-homepage";
 import { readPublicHomepageCopy } from "@/lib/blog-public-homepage";
 import { readPublished } from "@/lib/blog-publication-store";
 import type { BlogAdminDatabase } from "@/lib/blog-admin-state";
+import { parseHomepageInsightCards } from "@/lib/blog-insight-cards";
+import { BlogInsightCard } from "@/components/blog/blog-insight-card";
 
 export const metadata: Metadata = {
   title: "FundLenz Blog | Independent financial research",
@@ -24,12 +26,17 @@ export default async function BlogHomePage() {
   const db = (env as unknown as { BLOG_ADMIN_DB?: BlogAdminDatabase }).BLOG_ADMIN_DB;
   const copy = await readPublicHomepageCopy(host, db);
   const publicArticles = await readPublished(db);
+  const leftCards = parseHomepageInsightCards(copy.sideCardsLeft);
+  const rightCards = parseHomepageInsightCards(copy.sideCardsRight);
   // This public key is intentionally non-sensitive. The Turnstile secret stays server-side.
   // The forms fail closed until this is configured in the Cloudflare Worker.
   const siteKey = process.env.TURNSTILE_SITE_KEY || "";
   return <div className={styles.shell}>
     <BlogSiteHeader showAdmin={host === BLOG_STAGING_HOST}/>
-    <main className={styles.main}>
+    <main className={styles.main + (leftCards.length || rightCards.length ? " " + styles.mainWithCards : "")}>
+      <div className={[styles.homeLayout, leftCards.length && styles.withLeft, rightCards.length && styles.withRight,
+        leftCards.length && rightCards.length && styles.withBoth].filter(Boolean).join(" ")}>
+      <div className={styles.homeCenter}>
       <p className={styles.eyebrow}>{copy.eyebrow}</p>
       <h1>{copy.heroHeading}</h1>
       <p className={styles.intro}>{copy.heroDescription}</p>
@@ -37,6 +44,14 @@ export default async function BlogHomePage() {
         status={copy.articlesStatus} empty={copy.articlesEmpty}/>
       <NewsletterBox siteKey={siteKey} heading={copy.newsletterHeading} description={copy.newsletterDescription}
         placeholder={copy.newsletterPlaceholder} submitLabel={copy.newsletterSubmitLabel} />
+      </div>
+      {leftCards.length > 0 && <aside className={styles.homeLeftRail} aria-label="Left homepage insight cards">
+        {leftCards.map(card => <BlogInsightCard key={card.id} card={card}/>)}
+      </aside>}
+      {rightCards.length > 0 && <aside className={styles.homeRightRail} aria-label="Right homepage insight cards">
+        {rightCards.map(card => <BlogInsightCard key={card.id} card={card}/>)}
+      </aside>}
+      </div>
     </main>
     <div className={styles.contributionFooter}>
       <span>{copy.footerDescription}</span>
