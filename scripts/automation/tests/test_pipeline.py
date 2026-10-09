@@ -456,7 +456,7 @@ class PipelineTests(unittest.TestCase):
                             "user": {"login": "publisher"},
                             "body": "FundLenz-Run: 12345\nFundLenz-Base: " + base}
                 if path == "/actions/runs/12345":
-                    return {"path": ".github/workflows/catalogue-daily.yml",
+                    return {"id": 12345, "path": ".github/workflows/catalogue-daily.yml",
                             "head_branch": "main", "head_repository": {"full_name": self.repo},
                             "head_sha": base, "event": self.event}
                 raise AssertionError(path)
