@@ -14,6 +14,8 @@ on:
       - "content/blog-homepage.json"
       - "lib/blog-publications.ts"
       - "lib/blog-publication-store.ts"
+      - "lib/blog-public-homepage.ts"
+      - "scripts/verify-blog-public-homepage.mjs"
       - "scripts/verify-blog-publication-store.mjs"
       - "lib/blog-homepage-content.ts"
       - "lib/blog-staging-homepage.ts"
@@ -85,6 +87,8 @@ jobs:
         run: node scripts/verify-blog-publications.mjs
       - name: Publication schema and snapshot safety checks
         run: node scripts/verify-blog-publication-store.mjs
+      - name: Public homepage promotion safety tests
+        run: node scripts/verify-blog-public-homepage.mjs
       - name: Single-admin authentication security checks
         run: node scripts/verify-blog-admin-auth.mjs
       - name: Production editor host, origin and session isolation

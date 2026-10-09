@@ -5,6 +5,7 @@ import { env } from "cloudflare:workers";
 import { BlogPaper } from "@/components/blog/blog-paper";
 import { BlogSiteFooter, BlogSiteHeader } from "@/components/blog/blog-site-chrome";
 import { readPublished } from "@/lib/blog-publication-store";
+import { readPublicHomepageCopy } from "@/lib/blog-public-homepage";
 import type { BlogAdminDatabase } from "@/lib/blog-admin-state";
 import styles from "../page.module.css";
 
@@ -35,19 +36,20 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const db = (env as unknown as { BLOG_ADMIN_DB?: BlogAdminDatabase }).BLOG_ADMIN_DB;
   const related = (await readPublished(db)).filter(item => item.slug !== article.slug).slice(0, 5);
   const host = (await headers()).get("host")?.toLowerCase();
+  const publishedCopy = await readPublicHomepageCopy(host || null, db);
   const publishedUrl = host && ["fundlenz.com", "www.fundlenz.com", "fundlenz.atharvsahu711.workers.dev"].includes(host)
     ? "https://" + host + "/blogpost/" + article.slug : undefined;
   return <div className={styles.shell}>
     <BlogSiteHeader/>
     <main className={styles.articlePage}>
       <BlogPaper title={article.title} summary={article.summary} category={article.category}
-        blocks={article.blocks} authorProfile={article.author}
+        blocks={article.blocks} authorProfile={article.author} branding={publishedCopy}
         updatedAt={Date.parse(article.publishedAt) / 1000}
         publishedUrl={publishedUrl}
         related={related.map(item => ({
           id: item.slug, title: item.title, category: item.category, url: "/blogpost/" + item.slug,
         }))}/>
     </main>
-    <BlogSiteFooter/>
+    <BlogSiteFooter copy={publishedCopy}/>
   </div>;
 }

@@ -14,11 +14,18 @@ import { SocialIcon, type SocialNetwork } from "./social-icon";
  * Mount it only after verifying the server-side admin session. The onSave
  * callback MUST use the authenticated, version-checked private draft API.
  */
-export function BlogHomepageEditor({ initial, onSave, onCancel, onDirtyChange }: {
+export function BlogHomepageEditor({ initial, onSave, onCancel, onDirtyChange,
+  onPublish, onRevert, onRestore, canPublish, published, publicRevision }: {
   initial: BlogHomepageContent;
   onSave: (draft: BlogHomepageContent) => Promise<void>;
   onCancel: () => void;
   onDirtyChange?: (dirty: boolean) => void;
+  onPublish?: () => Promise<void>;
+  onRevert?: () => Promise<void>;
+  onRestore?: () => Promise<void>;
+  canPublish?: boolean;
+  published?: boolean;
+  publicRevision?: number;
 }) {
   const [draft, setDraft] = useState<BlogHomepageContent>(() => ({ ...initial }));
   const [busy, setBusy] = useState(false);
@@ -47,7 +54,7 @@ export function BlogHomepageEditor({ initial, onSave, onCancel, onDirtyChange }:
     try {
       const verified = validateBlogHomepageContent(draft);
       await onSave(verified);
-      setMessage("Saved to staging. Refresh the password-protected blog homepage to see these changes. The public FundLenz site is unchanged.");
+      setMessage("Homepage draft saved privately. Use Publish homepage to promote it to the public Worker.");
     } catch (error) {
       setFailed(true);
       setMessage(error instanceof Error ? error.message : "Unable to save. Please try again.");
@@ -145,8 +152,16 @@ export function BlogHomepageEditor({ initial, onSave, onCancel, onDirtyChange }:
       <button form="blog-homepage-copy-form" className={styles.save} type="submit"
         disabled={busy || !changed || preview}>{busy ? "Saving…" : "Save homepage wording"}</button>
     </div>
-    <p className={styles.note}>Save stores a private draft in the staging D1 database, not GitHub. It becomes visible
-      on the password-protected staging blog when you refresh that page, but is not
-      published on the public FundLenz site. Privacy-consent wording and private visitor details are not editable here.</p>
+    <div className={styles.actions}>
+      <span>{published ? "PUBLIC HOMEPAGE" : "Unpublished homepage"} · Revision {publicRevision || 0}</span>
+      {onPublish && <button type="button" className={styles.save} disabled={busy || changed || !canPublish || preview}
+        onClick={() => { void onPublish(); }}>{published ? "Update public homepage" : "Publish homepage"}</button>}
+      {published && onRevert && <button type="button" className={styles.quiet} disabled={busy || changed}
+        onClick={() => { void onRevert(); }}>Revert to default homepage</button>}
+      {(publicRevision || 0) > 1 && onRestore && <button type="button" className={styles.quiet} disabled={busy || changed}
+        onClick={() => { void onRestore(); }}>Restore earlier homepage</button>}
+    </div>
+    <p className={styles.note}>Save changes only the private D1 draft. Publish is a separate, deliberate action that
+      updates the Cloudflare Worker homepage after confirmation. The privacy and educational disclaimers remain protected.</p>
   </section>;
 }

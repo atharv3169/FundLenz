@@ -11,6 +11,7 @@ import styles from "./blog-editor-dashboard.module.css";
 
 type Tab = "articles" | "homepage";
 type HomepageData = { content: BlogHomepageContent; version: number };
+type HomepagePublication = { revision: number; published: boolean; updatedAt: number | null };
 type ApiError = { error?: string };
 type PublicationState = { slug: string; draftId: string; revision: number; published: boolean; updatedAt: number };
 
@@ -26,6 +27,7 @@ async function jsonRequest<T>(path: string, init?: RequestInit): Promise<T> {
 
 const articleApi = "/api/blog/admin/article-drafts";
 const homepageApi = "/api/blog/admin/homepage-draft";
+const homepagePublicationApi = "/api/blog/admin/homepage-publication";
 const publicationApi = "/api/blog/admin/publications";
 
 export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (dirty: boolean) => void }) {
@@ -34,6 +36,7 @@ export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (di
   const [article, setArticle] = useState<BlogArticleDraft | null>(null);
   const [rich, setRich] = useState<RichDocument | null>(null);
   const [homepage, setHomepage] = useState<HomepageData | null>(null);
+  const [homepagePublication, setHomepagePublication] = useState<HomepagePublication>({revision:0,published:false,updatedAt:null});
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
@@ -79,12 +82,15 @@ export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (di
 
   const refresh = useCallback(async () => {
     try {
-      const [a, h] = await Promise.all([
+      const [a, h, pub] = await Promise.all([
         jsonRequest<{ drafts: BlogDraftSummary[] }>(articleApi),
         jsonRequest<HomepageData>(homepageApi),
+        jsonRequest<{ publication: HomepagePublication }>(homepagePublicationApi)
+          .catch(() => ({ publication: { revision: 0, published: false, updatedAt: null } })),
       ]);
       setArticles(a.drafts);
       setHomepage(h);
+      setHomepagePublication(pub.publication);
       setError("");
       return true;
     } catch (cause) {
@@ -271,6 +277,56 @@ export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (di
     finally { setBusy(false); }
   }
 
+
+  async function publishHomepage() {
+    if (!homepage?.version || busy) throw Error("Save homepage wording privately before publishing.");
+    if (!window.confirm("Publish reviewed homepage text, footer and social links publicly on this Worker?")) return;
+    setBusy(true); setError(""); setNotice("");
+    try {
+      const res = await jsonRequest<{ publication: HomepagePublication }>(
+        homepagePublicationApi, { method: "POST", body: JSON.stringify({
+          draftVersion: homepage.version, expectedRevision: homepagePublication.revision,
+        }) });
+      setHomepagePublication(res.publication);
+      setNotice("Homepage explicitly published. Open the production Worker blog to verify its public wording.");
+    } catch (e) { setError(e instanceof Error ? e.message : "Unable to publish homepage."); }
+    finally { setBusy(false); }
+  }
+  async function revertHomepage() {
+    if (!homepagePublication.published || busy) return;
+    if (!window.confirm("Revert the public homepage to reviewed default wording? Draft content will stay private.")) return;
+    setBusy(true); setError(""); setNotice("");
+    try {
+      const res = await jsonRequest<{ publication: HomepagePublication }>(
+        homepagePublicationApi, { method: "DELETE", body: JSON.stringify({
+          expectedRevision: homepagePublication.revision,
+        }) });
+      setHomepagePublication(res.publication);
+      setNotice("Public homepage reverted to version-controlled default wording.");
+    } catch (e) { setError(e instanceof Error ? e.message : "Unable to revert homepage."); }
+    finally { setBusy(false); }
+  }
+  async function restoreHomepage() {
+    if (busy || homepagePublication.revision < 2) return;
+    const raw = window.prompt("Earlier published homepage revision number:");
+    if (raw === null) return;
+    const revision = Number(raw);
+    if (!Number.isSafeInteger(revision) || revision < 1 || revision >= homepagePublication.revision) {
+      setError("Choose a valid earlier revision."); return;
+    }
+    if (!window.confirm("Restore earlier homepage revision " + revision + " publicly?")) return;
+    setBusy(true); setError(""); setNotice("");
+    try {
+      const res = await jsonRequest<{ publication: HomepagePublication }>(
+        homepagePublicationApi, { method: "PUT", body: JSON.stringify({
+          expectedRevision: homepagePublication.revision, restoreRevision: revision,
+        }) });
+      setHomepagePublication(res.publication);
+      setNotice("Earlier homepage content restored as a new public revision.");
+    } catch (e) { setError(e instanceof Error ? e.message : "Unable to restore homepage."); }
+    finally { setBusy(false); }
+  }
+
   async function saveHomepage(content: BlogHomepageContent) {
     if (!homepage) throw new Error("Homepage draft is not ready.");
     setBusy(true);
@@ -304,7 +360,9 @@ export function BlogEditorDashboard({ onUnsavedChange }: { onUnsavedChange?: (di
     {notice && <p role="status" className={styles.success}>{notice}</p>}
 
     {tab === "homepage" && homepage && <BlogHomepageEditor key={homepage.version}
-      initial={homepage.content} onSave={saveHomepage} onCancel={leaveHomepage} onDirtyChange={setHomepageDirty}/>}
+      initial={homepage.content} onSave={saveHomepage} onCancel={leaveHomepage} onDirtyChange={setHomepageDirty}
+      canPublish={homepage.version > 0} published={homepagePublication.published} publicRevision={homepagePublication.revision}
+      onPublish={publishHomepage} onRevert={revertHomepage} onRestore={restoreHomepage}/>}
     {tab === "articles" && !loading && <section className={preview ? styles.previewLayout : styles.split}>
       {!preview && <aside className={styles.articleList}>
         <h3>Private article drafts</h3>
