@@ -103,8 +103,8 @@
     },
     {
       "path": "components/fund-catalog.tsx",
-      "bytes": 28217,
-      "sha256": "42cc1c420015b487eb329df24d53a50b73ea2fe6b0fcf64d99d7deb93e2e0627",
+      "bytes": 28202,
+      "sha256": "5e058d0169f3e66497f4017b707a049d3227ba81305427dbe6866a6d15cc4de4",
       "scope": "application"
     },
     {
@@ -115,8 +115,8 @@
     },
     {
       "path": "components/global-catalog.tsx",
-      "bytes": 31868,
-      "sha256": "13645e31d4e4280b73030bca5b0e1665d2f120503b78e87db0f99cb5e89bc53a",
+      "bytes": 31853,
+      "sha256": "84cb265308df27ebab9e73f1b82ddf4303b813fd65c886391ea35fca723cd13c",
       "scope": "application"
     },
     {
