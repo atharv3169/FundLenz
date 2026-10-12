@@ -1,0 +1,91 @@
+name: Diagnose FundLenz public deployment reachability
+
+# Read-only diagnostic for unexplained HTTP 403s from GitHub runners.
+# This workflow makes no changes to data, Workers, security, or custom domains.
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/diagnose-public-deployment.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe-public:
+    name: Compare public Worker and registrar-domain responses
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Read-only HTTP response comparison (no credentials, no body logs)
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import urllib.error
+          import urllib.request
+
+          expected = json.load(open("public/automation-audit/release.json"))
+          metadata = json.load(open("public/data/site-metadata.json"))
+          worker = "https://fundlenz.atharvsahu711.workers.dev"
+          legacy = "https://fundlenz.com"
+          sha = os.environ["GITHUB_SHA"]
+          urls = [
+              ("worker-home", worker + "/", "home"),
+              ("worker-marker", worker + "/automation-audit/release.json", "marker"),
+              ("worker-marker-cache-bust", worker + "/automation-audit/release.json?commit=" + sha, "marker"),
+              ("worker-date", worker + "/data/site-metadata.json", "date"),
+              ("legacy-domain-marker", legacy + "/automation-audit/release.json", "marker"),
+          ]
+          user_agents = [
+              ("python-client", "Python-urllib/3.12"),
+              ("browser-client", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"),
+          ]
+          print("HEADLESS PUBLIC ORIGIN DIAGNOSTICS; no requests authenticated.")
+          print("Never treat a green Cloudflare build as proof that public assets are served.")
+          worker_marker_verified = False
+          worker_date_verified = False
+          for label, user_agent in user_agents:
+              for name, url, kind in urls:
+                  request = urllib.request.Request(url, headers={
+                      "User-Agent": user_agent,
+                      "Accept": "application/json" if kind != "home" else "text/html",
+                      "Cache-Control": "no-cache",
+                  })
+                  status, headers, content = "network-error", {}, None
+                  try:
+                      with urllib.request.urlopen(request, timeout=8) as response:
+                          status, headers = response.status, response.headers
+                          content = response.read(16385)
+                  except urllib.error.HTTPError as error:
+                      status, headers = error.code, error.headers
+                  except (urllib.error.URLError, TimeoutError, OSError):
+                      status = "network-or-timeout"
+                  server = (headers.get("Server", "") or "")[:50].replace("\n", "")
+                  cf_ray = (headers.get("CF-Ray", "") or "")[:65].replace("\n", "")
+                  content_type = (headers.get("Content-Type", "") or "")[:70].replace("\n", "")
+                  match = False
+                  if status == 200 and content is not None and kind != "home":
+                      try:
+                          value = json.loads(content)
+                          if kind == "marker":
+                              match = (value == expected)
+                              if name.startswith("worker") and match:
+                                  worker_marker_verified = True
+                          else:
+                              match = (value.get("lastCatalogueUpdateDate") == metadata.get("lastCatalogueUpdateDate")
+                                  and value.get("lastCatalogueUpdateRunId") == metadata.get("lastCatalogueUpdateRunId"))
+                              if name.startswith("worker") and match:
+                                  worker_date_verified = True
+                      except (UnicodeDecodeError, json.JSONDecodeError, ValueError, AttributeError):
+                          pass
+                  print(f"{label} {name}: HTTP {status}, server={server!r}, cf-ray={cf_ray!r}, "
+                        f"type={content_type!r}, exact_dataset_or_date={match}")
+          print(f"WORKER RELEASE VERIFIED: {worker_marker_verified}; WORKER DATE VERIFIED: {worker_date_verified}")
+          if not (worker_marker_verified and worker_date_verified):
+              print("::warning::Unconfirmed public Worker release: inspect 403 security rules/Access, "
+                    "Worker routes, or the current public deployment. Do not count as financial deployment.")
+          PY
