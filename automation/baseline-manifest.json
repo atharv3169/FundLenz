@@ -55,8 +55,8 @@
     },
     {
       "path": "app/globals.css",
-      "bytes": 56135,
-      "sha256": "249bf18757bbe55d7878312e6d54d1a05b298f397dd57d27643d7bd7e5edaa59",
+      "bytes": 56205,
+      "sha256": "8c6b035a4ece850fd4539d154e3a18a0f910dfcf752502b8d22e34eb8b88a1ea",
       "scope": "application"
     },
     {
@@ -109,8 +109,8 @@
     },
     {
       "path": "components/fundlens.tsx",
-      "bytes": 57284,
-      "sha256": "2833ba7d46f7827787b5ef0439da9b0306dfb234f131a40b481b6696f32fde21",
+      "bytes": 57418,
+      "sha256": "61e956414ef9d5d055e0b04babfc755f9af67adfc23def07ac255eb2f7cce6b5",
       "scope": "application"
     },
     {
