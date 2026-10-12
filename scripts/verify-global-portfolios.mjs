@@ -16,7 +16,7 @@ const downloads=JSON.parse(fs.readFileSync('data/sources/global/holdings/downloa
 const coverage=JSON.parse(fs.readFileSync('public/data/global/holdings-coverage.json'));
 check(coverage.accepted.length===ids.length,'Coverage count');
 check(fs.readdirSync('public/data/global/holdings').filter(p=>p.endsWith('.json')).length===ids.length,'No orphan snapshots');
-const first=ids[0];calls=0;globalThis.fetch=async url=>{calls++;return new Response('',{status:500});};
+const first=ids[0];calls=0;globalThis.fetch=async()=>{calls++;return new Response('',{status:500});};
 await assert.rejects(()=>getGlobalPortfolio(first));globalThis.fetch=localFetch;
 check((await getGlobalPortfolio(first)).id===first,'Portfolio fetch recovers after failure');
 const mismatched=ids[1];globalThis.fetch=async url=>new Response(JSON.stringify({...JSON.parse(fs.readFileSync('public'+url)),sourceSha256:'mismatch'}));

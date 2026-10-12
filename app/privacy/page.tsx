@@ -17,10 +17,10 @@ export default function PrivacyPage() {
         <p>FundLenz is a free educational portfolio lab. We respect your privacy and collect only information needed to operate the website and its optional blog features.</p>
 
         <h2>Information we receive</h2>
-        <p>When available, the blog's email form collects the address you submit for a voluntary contact list. We do not currently send newsletters. If you contribute an article, we collect the name, email, optional social link, article title and document you provide.</p>
+        <p>When available, the blog&apos;s email form collects the address you submit for a voluntary contact list. We do not currently send newsletters. If you contribute an article, we collect the name, email, optional social link, article title and document you provide.</p>
 
         <h2>How it is handled</h2>
-        <p>Form submissions are intended to be stored privately in the FundLenz owner's Google Drive for contact-list management and editorial review—not in the public website repository. Cloudflare may process technical requests to host and protect the site. Portfolio analysis and CSV imports run in your browser rather than being sent to our blog submission storage.</p>
+        <p>Form submissions are intended to be stored privately in the FundLenz owner&apos;s Google Drive for contact-list management and editorial review—not in the public website repository. Cloudflare may process technical requests to host and protect the site. Portfolio analysis and CSV imports run in your browser rather than being sent to our blog submission storage.</p>
 
         <h2>Your choices</h2>
         <p>You can request access to, correction of, or deletion of information you submitted by emailing <a href="mailto:info@fundlenz.com">info@fundlenz.com</a>. Records are kept while needed for these purposes, subject to applicable legal requirements. External websites linked from FundLenz have their own privacy policies.</p>

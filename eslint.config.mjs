@@ -14,6 +14,7 @@ const eslintConfig = defineConfig([
     "dist/**",
     ".sites-runtime/**",
     ".wrangler/**",
+    ".checks/**",
     "next-env.d.ts",
   ]),
   {

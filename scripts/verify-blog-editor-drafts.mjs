@@ -10,13 +10,13 @@ const built = await build({
   entryPoints: ["lib/blog-article-draft.ts"], bundle: true,
   platform: "node", format: "esm", write: false, target: "node22",
 });
-const module = await import("data:text/javascript;base64," +
+const draftModule = await import("data:text/javascript;base64," +
   Buffer.from(built.outputFiles[0].text, "utf8").toString("base64"));
-const validate = module.validateArticleDraft;
+const validate = draftModule.validateArticleDraft;
 const good = { title: "  Fund insights  ", summary: "Intro", body_markdown: "## Section\\nA clear finding",
   category: "Research" };
 assert.deepEqual(validate(good), { ...good, title: "Fund insights" });
-assert.equal(module.blogDraftCategories.length, 4);
+assert.equal(draftModule.blogDraftCategories.length, 4);
 for (const bad of [
   { ...good, title: "" }, { ...good, title: "X".repeat(161) },
   { ...good, body_markdown: "Y".repeat(50001) },

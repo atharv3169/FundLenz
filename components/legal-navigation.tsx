@@ -44,6 +44,6 @@ export function LegalBackLink() {
     else router.replace("/");
   }
   // The href is a functional fallback for no-JavaScript/direct visits.
-  return <a href="/" className="legal-home-link" onClick={goBack}
-    aria-label="Back to previous page">← Back</a>;
+  return <Link href="/" prefetch={false} className="legal-home-link" onClick={goBack}
+    aria-label="Back to previous page">← Back</Link>;
 }

@@ -2,7 +2,7 @@
 
 FundLenz is a free educational portfolio lab and source-based fund, stock and bond catalogue created by Atharva Sahu. It does not provide investment advice or recommend investments.
 
-This is the prepared GitHub migration package for the existing website. It preserves the application and its current data snapshots, and adds the operating specification for controlled catalogue updates. **Cloudflare hosting is active on the temporary workers.dev address. Daily Gemini checks and protected automatic financial publication are active for supported sources.** See [migration status](docs/migration/STATUS.md).
+**Production is https://fundlenz.com on Cloudflare Workers.** GitHub contains the standalone application and reviewed data; scheduled Gemini-assisted checks and protected automatic financial publication are active for supported sources. WWW redirects to the apex while preserving paths and query strings. See [current operations and final audit](docs/maintenance/final-audit-2026-10-13.md) and [migration history](docs/migration/STATUS.md).
 
 ## Included catalogue
 
@@ -27,7 +27,7 @@ Source records, hashes and ingestion scripts are in `data/sources/` and `scripts
 - `/catalogue-securities`: stocks, bonds and other reference securities.
 - Existing legacy redirects, mobile layout, downloadable template, CSV import/export, saved sessions, exposure/overlap analysis and deterministic scenarios remain included.
 
-UI code is in `app/` and `components/`, financial calculations in `lib/finance.ts`, and catalogue records in `public/data/`. The two source-check labels now read their date from a small JSON file; their current visible text is unchanged. The subsequent version 10 feature adds international portfolio selection without changing the financial formulas or theme. See [international analysis coverage and methods](docs/global-portfolio-lab.md).
+UI code is in `app/` and `components/`, financial calculations in `lib/finance.ts`, and catalogue records in `public/data/`. Catalogue labels read verified update metadata from `public/data/site-metadata.json`; a source-check date, an individual snapshot date and a financial publication date have different meanings. The subsequent version 10 feature adds international portfolio selection without changing the financial formulas or theme. See [international analysis coverage and methods](docs/global-portfolio-lab.md).
 
 ## Agreed automation design
 
@@ -39,7 +39,7 @@ Read [the full operating specification](automation/OPERATING-SPEC.md).
 4. Only sanitized, validated data changes can enter automatic merge/deployment. Gemini cannot edit the application, rules or publishing configuration.
 5. Latest reports and the persistent issue queue keep failures visible. Human review is optional and not a subscription-dependent gate.
 
-The scheduled runner, two Gemini tasks, source-backed NAV and complete-portfolio validators, persistent issue state, protected publisher and deployment observer are implemented. Supported financial adapters cover existing AMFI plans and 38 iShares portfolios; other sources are monitoring-only. Live run 37672720902 passed the source/model/validation/audit path with an honest PARTIAL report. Protected main and a dedicated publishing identity still need owner setup. See [the current operating guide](docs/migration/AUTOMATION.md) for coverage, results and activation steps.
+The scheduled runner, two Gemini tasks, source-backed NAV and complete-portfolio validators, persistent issue state, protected publisher and deployment observer are implemented. Supported financial adapters cover existing AMFI plans and 38 iShares portfolios; other sources are monitoring-only. Live run 37672720902 passed the source/model/validation/audit path with an honest PARTIAL report. Protected main and a dedicated publishing identity are configured; successful scheduled data releases on 10, 11 and 12 October 2026 demonstrate the publication path. See [the current operating guide](docs/migration/AUTOMATION.md) for coverage, results and activation steps.
 
 ## Local checks
 
@@ -59,9 +59,9 @@ The integrity check verifies the reviewed standalone repository snapshot in `aut
 
 ## Hosting and repository status
 
-The GitHub copy now has a standalone Cloudflare Workers build using the existing pinned Vinext and Wrangler versions. See [Cloudflare setup](docs/migration/CLOUDFLARE.md) for the exact dashboard commands. The production build, deployment dry runs, type check and existing regression suites pass. Cloudflare deployment succeeded and the owner confirmed the live feature checks. The custom domain stays on the previous host until API integration and further testing are complete.
+The GitHub copy now has a standalone Cloudflare Workers build using the existing pinned Vinext and Wrangler versions. See [Cloudflare setup](docs/migration/CLOUDFLARE.md) for the exact dashboard commands. The production build, deployment dry runs, type check and existing regression suites pass. Cloudflare deployment succeeded and the owner confirmed the live feature checks. The apex custom domain was migrated on 12 October 2026. The original Site and exported DNS records are retained for recovery; they are not the active production source.
 
-The repository is `atharv3169/FundLenz`, private during preparation. It contains the original import plus the international-analysis update published as Site version 10. GitHub visibility/plan and required merge checks must still be configured before enabling automatic catalogue publication.
+The repository is `atharv3169/FundLenz`, now public. It contains the original import, the international-analysis update, the production blog/editor and the reviewed automation. Financial updates require the exact-head FundLenz data gate and protected merge checks.
 
 There are no API keys in the package. Supply future credentials through the appropriate secret settings, never through public files or Gemini prompts. No open-source licence has been selected; third-party source material retains its applicable terms.
 

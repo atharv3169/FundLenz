@@ -59,7 +59,8 @@ try {
     const request=requests.get(msg.id);
     if (!request) return;
     requests.delete(msg.id);
-    msg.error ? request.reject(Error(msg.error.message)) : request.resolve(msg.result);
+    if (msg.error) request.reject(Error(msg.error.message));
+    else request.resolve(msg.result);
   });
   function command(method, params={}) {
     return new Promise((resolve,reject) => {
