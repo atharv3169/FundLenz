@@ -249,6 +249,11 @@ def bounded_call(packet, task, policy, caller=call_model, wait=time.sleep):
                 " CORRECTIVE RETRY: Your previous response was rejected: " + str(error)[:120] +
                 ". Return fewer or zero proposals and exactly one source_checks row for EVERY inputs.sources entry. "
                 "Copy all seven metadata fields unchanged. Return complete valid JSON and never invent evidence.")
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as error:
+            error.fundlenz_attempts = attempt
+            if attempt > policy["model_retries"]:
+                raise
+            wait(policy["model_retry_delay_seconds"])
     raise ValueError("Model attempt budget exhausted")
 
 
