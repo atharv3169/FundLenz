@@ -3,7 +3,6 @@ import { readFileSync } from "node:fs";
 const nav = readFileSync("components/fundlens-blog-nav.module.css","utf8");
 const portfolio = readFileSync("components/fundlens.tsx","utf8");
 const securities = readFileSync("components/securities-catalog.tsx","utf8");
-const css = readFileSync("app/globals.css","utf8");
 const metadata = readFileSync("lib/site-metadata.ts","utf8");
 const updater = readFileSync("scripts/automation/validate.py","utf8");
 

@@ -1,6 +1,8 @@
-# FundLenz blog visitor forms — staging implementation
+# FundLenz blog visitor forms — implementation history
 
-**Status: DRAFT PR #4, NOT MERGED OR DEPLOYED.** The owner has configured Google OAuth + Turnstile production credentials in the Cloudflare dashboard, but no live Google Drive upload has been validated. Do not expose these forms publicly until staging verification is complete.
+**Current status, 13 October 2026 IST:** PR #4 and subsequent form/admin/publication changes are merged and deployed on `fundlenz.com`. The owner confirmed successful form use. Worker rate-limit bindings are active; native D1 article/homepage publication is implemented. Newsletter collection still does not send campaigns, and Drive partial-write cleanup, atomic deduplication and owner notifications are not implemented. See [current operations](../maintenance/final-audit-2026-10-13.md).
+
+The following is the retained original staging design record. Statements below about unmerged work, missing rate limits, consent checkboxes and unavailable publishing describe the earlier stage and are superseded by current code and operations. Do not use them as a new deployment checklist.
 
 ## Architecture and access
 

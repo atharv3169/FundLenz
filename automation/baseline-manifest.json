@@ -73,8 +73,8 @@
     },
     {
       "path": "app/privacy/page.tsx",
-      "bytes": 1890,
-      "sha256": "ea683c902988553085bf819f8731825d8e4de7cb8c544a12e6d7a9bb60ec1203",
+      "bytes": 1900,
+      "sha256": "a59944f60d5aca61d0cc27460d66ce69c25a40a635e5a4e41aae48558d37731a",
       "scope": "application"
     },
     {
@@ -115,8 +115,8 @@
     },
     {
       "path": "components/global-catalog.tsx",
-      "bytes": 31868,
-      "sha256": "13645e31d4e4280b73030bca5b0e1665d2f120503b78e87db0f99cb5e89bc53a",
+      "bytes": 31979,
+      "sha256": "abee6c946971dc03c8263f3c29b29603f55cb81c4409af7f2b2e29db68f163c0",
       "scope": "application"
     },
     {
@@ -1069,8 +1069,8 @@
     },
     {
       "path": "docs/migration/CLOUDFLARE.md",
-      "bytes": 3144,
-      "sha256": "3668fdc32ac822e8ea527c7cda3cb22864eff8666af2cc47f4d9297cb679c757",
+      "bytes": 3506,
+      "sha256": "db4cf62ae54725ee4ba6d58bd6d8aca89f7cfd9acc0bddd4582be4f5200d47f0",
       "scope": "hosting_configuration"
     },
     {
@@ -1093,8 +1093,8 @@
     },
     {
       "path": "eslint.config.mjs",
-      "bytes": 906,
-      "sha256": "f079be71d6c743f6644ff821dc582d60c96bd7c603906720c0e22e2f4708a0c0",
+      "bytes": 924,
+      "sha256": "faf9caa48123d78255d8c5ab16f6b9cae48e853158312415030087455819b002",
       "scope": "application"
     },
     {
@@ -7993,8 +7993,8 @@
     },
     {
       "path": "scripts/verify-global-portfolios.mjs",
-      "bytes": 5732,
-      "sha256": "ed31187575dd08c1e509eb343ac62189e9695174210c91731603af557912904f",
+      "bytes": 5730,
+      "sha256": "35653fccb714b1a6209d30bcf8d7e08c99cc36b3a2dfe1f6a99d0b666e81dc20",
       "scope": "application"
     },
     {

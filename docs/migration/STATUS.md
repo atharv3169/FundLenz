@@ -1,6 +1,16 @@
 # FundLenz migration status
 
-## Current status — 8 October 2026
+## Current status — 13 October 2026 (India time)
+
+The domain migration is complete: https://fundlenz.com is served by the production Cloudflare Worker `fundlenz`. HTTP and HTTPS WWW requests redirect to the HTTPS apex with path/query preservation. The owner confirmed the UI, native admin and visitor forms; email routing and the old Site/DNS backup were retained.
+
+Daily catalogue scheduling remains 03:47 UTC / 09:17 IST, best effort. Gemini runs after approved-source acquisition, not at an exact guaranteed clock time. The latest scheduled run [38242086730](https://github.com/atharv3169/FundLenz/actions/runs/38242086730) succeeded and published the 12 October financial release. Supported scope remains existing AMFI NAV tuples and 38 complete iShares portfolios; the other 437 approved source entries are monitoring-only.
+
+PR #45 added bounded transient deployment/GitHub/Gemini recovery and a read-only health workflow at 12:53 and 00:53 IST. The main-domain deployment observer, production health and release integrity all passed for `af5da8f65bd90ac3334b62489bb0af3e91b4bcdb`. Automatic publication is active; no new activation step is needed. GitHub account notification settings control failure email delivery.
+
+Read [the final operations/audit record](../maintenance/final-audit-2026-10-13.md) before using the historical instructions below. A live hosting rollback rehearsal and independent external watchdog remain untested/not configured. No system guarantees zero future maintenance.
+
+## Historical status — 8 October 2026
 
 Automatic publication is enabled on protected `main`. Run [37731471235](https://github.com/atharv3169/FundLenz/actions/runs/37731471235) completed acquisition and both bounded Gemini tasks. Independent source replay and finance/catalogue regression checks passed; [data PR #7](https://github.com/atharv3169/FundLenz/pull/7) merged automatically as `0680837876d2c3fe8899e2c1bf7684bcd8798eb8`.
 

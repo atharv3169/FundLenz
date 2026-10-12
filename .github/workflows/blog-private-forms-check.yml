@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - "eslint.config.mjs"
+      - "hooks/**"
+      - "lib/**"
+      - "scripts/verify-*.mjs"
       - "app/api/blog/**"
       - "app/blogpost/**"
       - "components/blog/**"
@@ -93,8 +97,8 @@ jobs:
           corepack prepare pnpm@11.25.0 --activate
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Blog code lint
-        run: pnpm exec eslint components/blog lib/blog-*.ts app/blogpost app/api/blog
+      - name: Repository code lint
+        run: pnpm run lint
       - name: Security unit checks
         run: node scripts/verify-blog-forms.mjs
       - name: Editable homepage validation checks

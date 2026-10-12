@@ -1,5 +1,7 @@
 # Cloudflare Workers setup
 
+**Current status, 13 October 2026 IST:** the apex domain migration and protected daily catalogue publication are complete. Read [current operations](../maintenance/final-audit-2026-10-13.md). The original import instructions below are historical; application forms/admin also require the production bindings and secrets documented by their respective runbooks.
+
 This configuration serves the same application and snapshots through Cloudflare Workers. No UI, financial calculations or catalogue records were changed. The existing Site stays live until a separate domain migration.
 
 ## Import this repository
