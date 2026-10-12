@@ -141,7 +141,11 @@ class PipelineTests(unittest.TestCase):
         with self.assertRaises(ValueError): nav_candidates(self.india, b"Scheme Code;Scheme Name\nOpen Ended (x)\nAMC\n1;-;-;X;Direct;Growth;3;01-Oct-2026", self.source, self.policy)
 
     def holding_candidate(self, raw):
-        s = dict(self.source, source_url=self.download["url"], source_sha256=sha(raw))
+        # The official holdings receipt evolves after genuine automated
+        # publications. Use its recorded acquisition time, not a fixed Oct 7
+        # NAV-only fixture time that would incorrectly flag newer CSVs as future.
+        s = dict(self.source, source_url=self.download["url"],
+                 source_sha256=sha(raw), checked_at=self.download["checkedAt"])
         return holdings_candidate(self.old_holdings, self.global_catalogue, self.download, raw, s, self.policy)
 
     def test_whole_official_portfolio_roundtrip(self):
@@ -284,11 +288,11 @@ class PipelineTests(unittest.TestCase):
                             "head", "base", "publisher", attempts=2, wait=waits.append)
         self.assertEqual(waits, [15])
 
-    def test_deployment_fallback_is_only_to_verified_owner_domain(self):
+    def test_deployment_uses_only_the_configured_approved_origin(self):
         worker = "https://fundlenz.atharvsahu711.workers.dev"
         domain = "https://fundlenz.com"
-        self.assertEqual(approved_production_origins(worker), [worker, domain])
-        self.assertEqual(approved_production_origins(domain), [domain, worker])
+        self.assertEqual(approved_production_origins(worker), [worker])
+        self.assertEqual(approved_production_origins(domain), [domain])
         for bad in ["http://fundlenz.com", "https://malicious.example",
                     "https://fundlenz.com.attacker.invalid", domain + "/other"]:
             with self.assertRaisesRegex(ValueError, "Unreviewed production origin"):
@@ -341,11 +345,14 @@ class PipelineTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             p = Path(temp)
             metadata = read(ROOT / "public/data/site-metadata.json")
-            metadata.update(lastCatalogueUpdateDate="2026-10-09", lastCatalogueUpdateRunId="fictional-run")
+            # Use the currently verified baseline; successful scheduled updates
+            # must never make this fictional publisher fixture go backwards.
+            release_date = max(metadata.get("lastCatalogueUpdateDate") or "2026-10-09", "2026-10-09")
+            metadata.update(lastCatalogueUpdateDate=release_date, lastCatalogueUpdateRunId="fictional-run")
             marker = {"run_id": "fictional-run", "dataset_sha256": "",
-                      "lastCatalogueUpdateDate": "2026-10-09", "financial_data_changed": True}
+                      "lastCatalogueUpdateDate": release_date, "financial_data_changed": True}
             info = read(ROOT / "public/build-info.json")
-            info["lastCatalogueUpdateDate"] = "2026-10-09"
+            info["lastCatalogueUpdateDate"] = release_date
             files = {
                 "public/data/catalog.json": b'{"fictional":true}\\n',
                 "public/data/site-metadata.json": encoded(metadata),

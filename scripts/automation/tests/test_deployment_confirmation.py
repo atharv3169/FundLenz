@@ -65,8 +65,10 @@ class DeploymentConfirmationTests(unittest.TestCase):
             def __init__(self, release, metadata):
                 self.release, self.metadata = release, metadata
                 self.requests = []
+                self.request_headers = []
             def open(self, req, timeout):
                 self.requests.append(req.full_url)
+                self.request_headers.append(req.headers)
                 result = self.metadata if "site-metadata.json" in req.full_url else self.release
                 return io.BytesIO(json.dumps(result).encode())
         good_date = {"lastCatalogueUpdateDate":"2026-10-09",
@@ -75,6 +77,12 @@ class DeploymentConfirmationTests(unittest.TestCase):
         deployment.probe_exact_origin(opener, self.HOST, self.COMMIT, marker)
         self.assertEqual(len(opener.requests), 2)
         self.assertTrue(all("commit="+self.COMMIT in u for u in opener.requests))
+        # The real Worker returned 403 to Python-urllib on Oct 10-11,
+        # but accepted an unauthenticated browser-style JSON GET on Oct 12.
+        for headers in opener.request_headers:
+            self.assertTrue(headers.get("User-agent", "").startswith("Mozilla/5.0"))
+            self.assertEqual(headers.get("Accept"), "application/json")
+            self.assertEqual(headers.get("Cache-control"), "no-cache")
         with self.assertRaisesRegex(ValueError, "catalogue date"):
             deployment.probe_exact_origin(Opener(marker,
                 {**good_date, "lastCatalogueUpdateRunId":"wrong"}),
