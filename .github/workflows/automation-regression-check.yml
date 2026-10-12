@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - "scripts/automation/**"
+      - "scripts/deploy-with-retry*"
+      - ".github/workflows/production-health.yml"
       - "automation/**"
       - ".github/workflows/automation-regression-check.yml"
   workflow_dispatch:
@@ -34,6 +36,8 @@ jobs:
           corepack enable
           corepack prepare pnpm@11.25.0 --activate
           pnpm install --frozen-lockfile
+      - name: Check deployment recovery limits
+        run: node --test scripts/deploy-with-retry.test.mjs
       - name: Validate retained baseline and audit contracts
         run: |
           python3 scripts/automation/verify-bootstrap.py
