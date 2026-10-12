@@ -1,18 +1,20 @@
 # FundLenz catalogue automation
 
-Implementation date: 7 October 2026. Last verification: 8 October 2026. Owner: Atharva Sahu.
+Implementation date: 7 October 2026. Last verification: 12 October 2026. Owner: Atharva Sahu.
 
 ## Current operating mode
 
-The daily runner is configured for **automatic publication**, pending completion of the first protected publication/deployment trial. It collects official source bytes, runs
+The daily runner is active with **automatic publication for supported fields**. Scheduled runs on 10 and 11 October published protected releases; deployment confirmation run [38210452793](https://github.com/atharv3169/FundLenz/actions/runs/38210452793) confirmed the exact 11 October dataset on 12 October at 06:07 UTC. It collects official source bytes, runs
 two bounded Gemini tasks, validates supported data, saves a complete audit and
 carries unresolved issues into the next run. Publication switches are enabled; every release still must pass the protection,
 credential, source-replay and exact-commit review gates before merging. The current domain is unchanged.
 
 The repository owner has made the repository public and configured the publisher
 secret, username variable and required branch checks. The activation steps below
-remain the setup reference. A successful end-to-end release and hosting rollback
-will be recorded separately; enabling the switch alone does not prove either.
+remain the setup reference. The source-to-publication path and exact deployed dataset have been verified.
+A real hosting rollback trial remains outstanding; it is not implied by a
+successful deployment. The automation targets
+`https://fundlenz.atharvsahu711.workers.dev`; `fundlenz.com` has not been migrated.
 
 ## What is covered
 
@@ -122,18 +124,18 @@ Open **GitHub → Actions → FundLenz daily catalogue → latest run**.
   a full daily validation completed. GitHub failed-run notifications are the
   default alert mechanism; PARTIAL runs produce a visible Actions warning.
 
-Root `audit/` is not a public website route. After an activated release actually
-deploys, `/automation-audit/latest.json` will expose a sanitized summary and
-`/automation-audit/release.json` the dataset marker. No link is advertised before
-those files have been deployed. Check and snapshot dates remain separate. The
-existing site-wide date is not advanced for a partial scan.
+Root `audit/` is not a public website route. On the deployed Worker, `/automation-audit/latest.json` exposes a sanitized
+summary and `/automation-audit/release.json` the dataset marker. Check and snapshot dates remain separate. The
+site-wide date advances only when accepted financial changes are published;
+a PARTIAL run can publish independently accepted units while retaining rejected
+values. An audit-only scan never advances the date.
 
-## Activation: owner setup still required
+## Activation reference (publication setup completed)
 
-1. **Choose protected-repository access.** This repository is currently private
-   and `main` is unprotected. GitHub Free supports protected branches on public
-   repositories; private protection requires an eligible plan. Do not change
-   visibility or purchase a plan without the owner's choice.
+1. **Retain protected-repository access.** The owner made this repository public
+   and configured protected `main` for unattended publication. The following
+   steps document the setup and recovery requirements; they are not a request
+   to repeat setup or change visibility.
 2. Protect `main`: require a pull request; require **FundLenz data gate** and
    **Verify FundLenz reviewed release**; require branches up to date; enforce for administrators;
    disallow force pushes and deletions. Do not require a daily human approval if
@@ -226,7 +228,7 @@ metadata, mismatched investigation context and malformed legacy source URLs.
 The bounded retry, response parser, issue-scoped packet construction and source
 quarantine fixes were verified before this successful trial.
 
-The current automated unit suite has 39 tests. Additional merge tests cover
+The initial automated unit suite had 39 tests; the current suite has 70. Additional merge tests cover
 transient pending checks, a head changing while waiting, failed checks and bounded
 timeout. The merger can wait up to three minutes for GitHub to finish its checks,
 rechecking identity, head, base and protection each time; it never merges on
@@ -235,5 +237,6 @@ applying packet limits, with a regression test preventing later sources from
 being permanently excluded. Both publication switches must be enabled.
 
 This proves the live acquisition/model/validation/audit path and failure recovery.
-It does not claim that protected publication or a real hosting rollback has been
-tested: those still require the owner setup above.
+That initial trial did not test protected publication or a real hosting rollback.
+Protected publication has since succeeded, as recorded in Current operating mode;
+a real hosting rollback remains untested.
