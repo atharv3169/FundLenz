@@ -14,7 +14,7 @@
     "db:generate": "drizzle-kit generate",
     "verify": "node scripts/verify-all.mjs",
     "typecheck": "tsc --noEmit --incremental false",
-    "deploy": "wrangler deploy --config dist/server/wrangler.json",
+    "deploy": "node scripts/deploy-with-retry.mjs",
     "deploy:preview": "wrangler versions upload --config dist/server/wrangler.json"
   },
   "dependencies": {

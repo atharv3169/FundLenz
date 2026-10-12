@@ -5,6 +5,7 @@ on:
     paths:
       - 'public/automation-audit/release.json'
       - 'scripts/automation/deployment.py'
+      - 'automation/runtime.json'
       - '.github/workflows/catalogue-deployment.yml'
   workflow_dispatch:
 permissions:

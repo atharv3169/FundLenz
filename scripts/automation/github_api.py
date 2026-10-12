@@ -1,6 +1,8 @@
 """Fixed-host GitHub transport. Tokens never follow redirects or enter logs."""
 import os
 import re
+import time
+import urllib.error
 import urllib.request
 from common import encoded, loads, require
 
@@ -23,8 +25,20 @@ class GitHub:
                                          data=encoded(data) if data is not None else None, method=method,
                                          headers={"Authorization": "Bearer " + self.token, "Accept": "application/vnd.github+json",
                                                   "X-GitHub-Api-Version": "2022-11-28", "Content-Type": "application/json"})
-        with urllib.request.build_opener(NoRedirect()).open(request, timeout=30) as response:
-            raw = response.read(32 * 1024 * 1024 + 1)
+        # Retry read-only transient errors. Never replay a possibly completed
+        # write or retry authentication, permission, quota or validation errors.
+        for attempt in range(3):
+            try:
+                with urllib.request.build_opener(NoRedirect()).open(request, timeout=30) as response:
+                    raw = response.read(32 * 1024 * 1024 + 1)
+                break
+            except urllib.error.HTTPError as error:
+                if method != "GET" or attempt == 2 or error.code not in {500, 502, 503, 504}:
+                    raise
+            except (urllib.error.URLError, TimeoutError, ConnectionError):
+                if method != "GET" or attempt == 2:
+                    raise
+            time.sleep(2 ** attempt)
         require(len(raw) <= 32 * 1024 * 1024, "Oversized API response")
         return loads(raw) if raw else None
 
