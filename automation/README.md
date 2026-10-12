@@ -26,8 +26,8 @@ calculations are unchanged; supported financial data updates require independent
 The original `source-inventory.json` is an inventory, not a network allowlist.
 `OPERATING-SPEC.md`, `workflow-spec.md` and `requirements-traceability.md`
 retain the version-1 agreement and distinguish implementation from outstanding
-activation gates. Root `audit/` remains the committed bootstrap until protected
-publishing is enabled; current dry-run results are in Actions artifacts.
+activation gates. Root `audit/` is updated by protected releases. Detailed source/model evidence
+and durable cadence state are retained in Actions artifacts.
 
 ## Local checks
 
@@ -42,12 +42,16 @@ pnpm run typecheck
 pnpm run verify
 ```
 
-The current automation suite has 39 adversarial tests. The existing six finance
+The current automation suite has 70 adversarial tests. The existing six finance
 and catalogue suites remain in place. Live run
 [37672720902](https://github.com/atharv3169/FundLenz/actions/runs/37672720902)
 verified the source/model/validator/audit path with a truthful PARTIAL result.
-Publication, automatic merge and real hosting rollback still require the
-one-time setup and end-to-end trial in the operating guide.
+Scheduled publication and automatic merge succeeded on 10 and 11 October 2026.
+[Deployment confirmation 38210452793](https://github.com/atharv3169/FundLenz/actions/runs/38210452793)
+confirmed the exact 11 October financial release on the production Worker on
+12 October. A real hosting rollback trial and custom-domain migration remain
+separate outstanding work. This is automatic publication for supported fields,
+not automatic financial extraction from the 437 monitoring-only sources.
 
 Gemini has no repository write credential and cannot edit rules, code, UI or
 calculations. Approved independent units can update only through deterministic
