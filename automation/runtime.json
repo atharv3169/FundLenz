@@ -32,6 +32,6 @@
   "artifact_retention_days": 7,
   "state_retention_days": 90,
   "required_check": "FundLenz data gate",
-  "production_url": "https://fundlenz.atharvsahu711.workers.dev",
+  "production_url": "https://fundlenz.com",
   "note": "Limits are caps, not a promise of free quota. Publication also requires protected main, the dedicated publishing identity and explicit activation. Model outcomes cannot override deterministic rules."
 }
