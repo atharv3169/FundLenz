@@ -141,7 +141,11 @@ class PipelineTests(unittest.TestCase):
         with self.assertRaises(ValueError): nav_candidates(self.india, b"Scheme Code;Scheme Name\nOpen Ended (x)\nAMC\n1;-;-;X;Direct;Growth;3;01-Oct-2026", self.source, self.policy)
 
     def holding_candidate(self, raw):
-        s = dict(self.source, source_url=self.download["url"], source_sha256=sha(raw))
+        # The official holdings receipt evolves after genuine automated
+        # publications. Use its recorded acquisition time, not a fixed Oct 7
+        # NAV-only fixture time that would incorrectly flag newer CSVs as future.
+        s = dict(self.source, source_url=self.download["url"],
+                 source_sha256=sha(raw), checked_at=self.download["checkedAt"])
         return holdings_candidate(self.old_holdings, self.global_catalogue, self.download, raw, s, self.policy)
 
     def test_whole_official_portfolio_roundtrip(self):
@@ -341,11 +345,14 @@ class PipelineTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             p = Path(temp)
             metadata = read(ROOT / "public/data/site-metadata.json")
-            metadata.update(lastCatalogueUpdateDate="2026-10-09", lastCatalogueUpdateRunId="fictional-run")
+            # Use the currently verified baseline; successful scheduled updates
+            # must never make this fictional publisher fixture go backwards.
+            release_date = max(metadata.get("lastCatalogueUpdateDate") or "2026-10-09", "2026-10-09")
+            metadata.update(lastCatalogueUpdateDate=release_date, lastCatalogueUpdateRunId="fictional-run")
             marker = {"run_id": "fictional-run", "dataset_sha256": "",
-                      "lastCatalogueUpdateDate": "2026-10-09", "financial_data_changed": True}
+                      "lastCatalogueUpdateDate": release_date, "financial_data_changed": True}
             info = read(ROOT / "public/build-info.json")
-            info["lastCatalogueUpdateDate"] = "2026-10-09"
+            info["lastCatalogueUpdateDate"] = release_date
             files = {
                 "public/data/catalog.json": b'{"fictional":true}\\n',
                 "public/data/site-metadata.json": encoded(metadata),
