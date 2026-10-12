@@ -1201,8 +1201,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 2193,
-      "sha256": "05f9c66977ea56aec3e47fa72eb111bd1aae8a78f2dad739a14abc3337452219",
+      "bytes": 2177,
+      "sha256": "5abcacdd349ab2febe5f05cfbe9bf78e6498b665b3c87c00ff23c903fae101e0",
       "scope": "application"
     },
     {
