@@ -284,11 +284,11 @@ class PipelineTests(unittest.TestCase):
                             "head", "base", "publisher", attempts=2, wait=waits.append)
         self.assertEqual(waits, [15])
 
-    def test_deployment_fallback_is_only_to_verified_owner_domain(self):
+    def test_deployment_uses_only_the_configured_approved_origin(self):
         worker = "https://fundlenz.atharvsahu711.workers.dev"
         domain = "https://fundlenz.com"
-        self.assertEqual(approved_production_origins(worker), [worker, domain])
-        self.assertEqual(approved_production_origins(domain), [domain, worker])
+        self.assertEqual(approved_production_origins(worker), [worker])
+        self.assertEqual(approved_production_origins(domain), [domain])
         for bad in ["http://fundlenz.com", "https://malicious.example",
                     "https://fundlenz.com.attacker.invalid", domain + "/other"]:
             with self.assertRaisesRegex(ValueError, "Unreviewed production origin"):
