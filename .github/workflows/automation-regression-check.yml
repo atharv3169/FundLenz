@@ -7,6 +7,8 @@ on:
       - "scripts/automation/**"
       - "scripts/deploy-with-retry*"
       - ".github/workflows/production-health.yml"
+      - ".github/workflows/catalogue-daily.yml"
+      - "wrangler.catalogue-scheduler.jsonc"
       - "automation/**"
       - ".github/workflows/automation-regression-check.yml"
   workflow_dispatch:
@@ -38,6 +40,10 @@ jobs:
           pnpm install --frozen-lockfile
       - name: Check deployment recovery limits
         run: node --test scripts/deploy-with-retry.test.mjs
+      - name: Check external timer and duplicate protection
+        run: |
+          pnpm exec eslint scripts/automation/scheduler/*.mjs --max-warnings=0
+          node --test scripts/automation/scheduler/worker.test.mjs
       - name: Validate retained baseline and audit contracts
         run: |
           python3 scripts/automation/verify-bootstrap.py

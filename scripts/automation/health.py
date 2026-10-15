@@ -7,10 +7,11 @@ import urllib.request
 from common import ROOT, now, read, require, timestamp, write
 from deployment import approved_production_origins, probe_exact_origin, safe_probe_problem
 from github_api import GitHub, NoRedirect
+from schedule_guard import is_automatic_run
 
 
 def verify_schedule(runs, at):
-    scheduled = [r for r in runs if r.get("event") == "schedule" and r.get("head_branch") == "main"]
+    scheduled = [r for r in runs if is_automatic_run(r)]
     require(scheduled, "No scheduled catalogue run found")
     latest = max(scheduled, key=lambda r: timestamp(r["created_at"]))
     age = (at - timestamp(latest["created_at"])).total_seconds()
@@ -35,7 +36,7 @@ def main():
     report = {"checked_at": now(), "status": "failed"}
     try:
         api = GitHub()
-        runs = api.call("/actions/workflows/catalogue-daily.yml/runs?branch=main&event=schedule&per_page=10")["workflow_runs"]
+        runs = api.call("/actions/workflows/catalogue-daily.yml/runs?branch=main&per_page=100")["workflow_runs"]
         report["daily_run_id"] = verify_schedule(runs, dt.datetime.now(dt.timezone.utc))
         origin = approved_production_origins(read(ROOT / "automation/runtime.json")["production_url"])[0]
         release = read(ROOT / "public/automation-audit/release.json")
