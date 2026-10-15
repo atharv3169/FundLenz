@@ -1,10 +1,15 @@
 name: FundLenz daily catalogue
+run-name: ${{ inputs.automated_daily && 'FundLenz daily catalogue (external scheduler)' || 'FundLenz daily catalogue' }}
 
 on:
   schedule:
     - cron: '47 3 * * *'
   workflow_dispatch:
     inputs:
+      automated_daily:
+        description: 'External timer only: apply the once-per-IST-day guard; requires publication opt-in'
+        type: boolean
+        default: false
       force_supported_sources:
         description: 'Re-fetch supported daily feeds for an integration test, even if checked recently'
         type: boolean
@@ -22,8 +27,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  schedule_guard:
+    name: Guard automatic daily collection
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      run_collect: ${{ steps.decide.outputs.run_collect }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Check India-local day before source or Gemini requests
+        id: decide
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/automation/schedule_guard.py
+
   collect:
     name: Collect and validate
+    needs: schedule_guard
+    if: needs.schedule_guard.outputs.run_collect == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 18
     permissions:
