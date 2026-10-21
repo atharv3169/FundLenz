@@ -9,7 +9,7 @@ export function indiaDate(milliseconds) {
   return new Date(milliseconds + 330 * 60_000).toISOString().slice(0, 10);
 }
 
-export async function runScheduler(event, env, fetcher = fetch, at = Date.now()) {
+export async function runScheduler(event, env, fetcher = (url, options) => globalThis.fetch(url, options), at = Date.now()) {
   if (env.SCHEDULER_ENABLED !== "true") return { status: "disabled" };
   if (!CRONS.includes(event.cron) || !Number.isFinite(event.scheduledTime)
       || event.scheduledTime > at || indiaDate(event.scheduledTime) !== indiaDate(at)) {
@@ -34,8 +34,13 @@ export async function runScheduler(event, env, fetcher = fetch, at = Date.now())
         },
         ...(body ? { body: JSON.stringify(body) } : {}),
       });
-    } catch {
-      throw new Error(`GitHub ${method} transport failure; inspect run history before recovery`);
+    } catch (error) {
+      // Only fixed diagnostic labels are logged; never exception text or credentials.
+      const category = error?.name === "TimeoutError" ? "timeout"
+        : error?.name === "AbortError" ? "aborted"
+        : error?.name === "TypeError" ? "type_error"
+        : "network_or_runtime_error";
+      throw new Error(`GitHub ${method} transport failure (${category}); inspect run history before recovery`);
     }
     if (!response.ok) throw new Error(`GitHub ${method} failed (HTTP ${response.status})`);
     return response;
@@ -80,3 +85,4 @@ const worker = {
 };
 
 export default worker;
+
