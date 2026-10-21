@@ -103,6 +103,35 @@ test("ambiguous POST failures are never automatically retried", async () => {
   }
 });
 
+test("default transport preserves the runtime fetch receiver", async () => {
+  const original = globalThis.fetch;
+  let calls = 0;
+  globalThis.fetch = async function () {
+    assert.equal(this, globalThis);
+    calls++;
+    return history([run()]);
+  };
+  try {
+    assert.equal((await runScheduler(event, env, undefined, at)).status, "already_triggered");
+    assert.equal(calls, 1);
+  } finally { globalThis.fetch = original; }
+});
+
+test("transport diagnostics classify errors without leaking exception text", async () => {
+  for (const [name, label] of [["TimeoutError", "timeout"], ["AbortError", "aborted"],
+    ["TypeError", "type_error"], ["fictional-test-token", "network_or_runtime_error"]]) {
+    const error = new Error("fictional-test-token");
+    error.name = name;
+    const fake = transport([error]);
+    await assert.rejects(runScheduler(event, env, fake.fetcher, at), failure => {
+      assert.ok(failure.message.includes(`(${label})`));
+      assert.ok(!failure.message.includes("fictional-test-token"));
+      return true;
+    });
+    assert.equal(fake.calls.length, 1);
+  }
+});
+
 test("scheduler config stays isolated and inert until explicit activation", () => {
   const config=JSON.parse(readFileSync(new URL("../../../wrangler.catalogue-scheduler.jsonc",import.meta.url),"utf8"));
   assert.equal(config.name,"fundlenz-catalogue-scheduler");
@@ -112,3 +141,4 @@ test("scheduler config stays isolated and inert until explicit activation", () =
   assert.deepEqual(config.triggers.crons,CRONS);
   for (const key of ["routes","d1_databases","assets","kv_namespaces"]) assert.equal(config[key],undefined);
 });
+
