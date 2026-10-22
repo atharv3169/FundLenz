@@ -36,7 +36,7 @@ test("fixed main workflow, explicit opt-in, no forced sources, protected credent
     assert.equal(fake.calls.length, 2);
     for (const [url, options] of fake.calls) {
       assert.equal(new URL(url).origin, "https://api.github.com");
-      assert.equal(options.redirect, "error");
+      assert.equal(options.redirect, "manual");
       assert.ok(options.signal instanceof AbortSignal);
     }
     const [url, options] = fake.calls[1];
@@ -91,6 +91,21 @@ test("truncated history and provider errors fail closed without POST or credenti
       return true;
     });
     assert.equal(fake.calls.length,1);
+  }
+});
+
+test("redirects at either request stop without following or leaking the target", async () => {
+  for (const status of [301,302,303,307,308]) {
+    for (const method of ["GET", "POST"]) {
+      const redirect = new Response(null, {status, headers: {Location: "https://example.invalid/fictional-test-token"}});
+      const fake = transport(method === "GET" ? [redirect] : [history(), redirect]);
+      await assert.rejects(runScheduler(event,env,fake.fetcher,at), error => {
+        assert.match(error.message, /redirect rejected/);
+        assert.ok(!error.message.includes("fictional-test-token"));
+        return true;
+      });
+      assert.equal(fake.calls.length, method === "GET" ? 1 : 2);
+    }
   }
 });
 

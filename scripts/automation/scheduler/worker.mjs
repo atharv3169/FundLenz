@@ -26,7 +26,7 @@ export async function runScheduler(event, env, fetcher = (url, options) => globa
     let response;
     try {
       response = await fetcher(url, {
-        method, redirect: "error", signal: AbortSignal.timeout(10_000),
+        method, redirect: "manual", signal: AbortSignal.timeout(10_000),
         headers: {
           Authorization: `Bearer ${env.FUNDLENZ_DISPATCH_TOKEN}`,
           Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28",
@@ -41,6 +41,9 @@ export async function runScheduler(event, env, fetcher = (url, options) => globa
         : error?.name === "TypeError" ? "type_error"
         : "network_or_runtime_error";
       throw new Error(`GitHub ${method} transport failure (${category}); inspect run history before recovery`);
+    }
+    if (response.status >= 300 && response.status < 400) {
+      throw new Error(`GitHub ${method} redirect rejected (HTTP ${response.status})`);
     }
     if (!response.ok) throw new Error(`GitHub ${method} failed (HTTP ${response.status})`);
     return response;
