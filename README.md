@@ -8,16 +8,16 @@ FundLenz is a free educational portfolio lab and source-based fund, stock and bo
 
 | Dataset | Retained coverage | Location |
 |---|---|---|
-| Indian funds | 3,372 grouped records; 14,354 plan/option codes | `public/data/catalog.json` |
-| Indian holdings | 803 portfolios; 49,022 positions; 21 fund houses | `public/data/holdings/` |
-| International funds | 21,389 directory records | `public/data/global/` |
-| International analysis | 38 selectable ETFs; holdings count varies with validated releases | `public/data/global/holdings/` |
+| Indian funds | 3,387 grouped records; 14,409 plan/option codes at this release | `public/data/catalog.json` |
+| Indian holdings | 1,445 portfolios; 83,133 positions; 33 fund houses | `public/data/holdings/` |
+| International funds | 28,280 directory records, including 6,891 Irish registry entries | `public/data/global/` |
+| International analysis | 744 selectable portfolios: 706 Irish issuer classes and 38 US ETFs | `public/data/global/holdings/` |
 | Stocks, bonds and other securities | 31,664 reference records | `public/data/securities/` |
 | US example | IVV, IWB and IWF; illustrative investment amounts | `public/data/us-example.json` |
 
-These counts describe different, partly overlapping kinds of records; they are not a count of unique active investments. Retained source dates differ: Indian holdings are August 2026, US example holdings are 2 October 2026, some listing/NAV sources were checked on 5 October 2026, and the SEC series registry is dated June 2026. The preparation date is not a new financial-data date.
+These counts describe different, partly overlapping kinds of records; they are not a count of unique active investments. Indian holdings include 1,218 September 2026 statements and 227 retained August statements. The Irish register is dated 16 October 2026; issuer portfolio and NAV dates vary by record. The US example remains dated 2 October 2026 and the SEC series registry June 2026. The preparation date is not a new financial-data date. See [expansion coverage, sources and limitations](docs/catalogue-expansion-2026-10.md).
 
-Source records, hashes and ingestion scripts are in `data/sources/` and `scripts/data/`. Original AMC workbooks that were never bundled remain referenced by URL/checksum. This package contains all files retained by the existing Site, not every remote document on the Internet. Detailed coverage and methodology remain in [the original Site README](docs/migration/original-site-readme.md).
+Source records, hashes and ingestion scripts are in `data/sources/` and `scripts/data/`. The expansion retains 85 official Indian source files in seven ZIP bundles, all 706 accepted Irish CSVs and the CBI register PDF for offline replay. Older AMC workbooks that were never bundled remain referenced by URL/checksum. Detailed original coverage and methodology remain in [the original Site README](docs/migration/original-site-readme.md).
 
 ## Website structure
 
@@ -39,7 +39,7 @@ Read [the full operating specification](automation/OPERATING-SPEC.md).
 4. Only sanitized, validated data changes can enter automatic merge/deployment. Gemini cannot edit the application, rules or publishing configuration.
 5. Latest reports and the persistent issue queue keep failures visible. Human review is optional and not a subscription-dependent gate.
 
-The scheduled runner, two Gemini tasks, source-backed NAV and complete-portfolio validators, persistent issue state, protected publisher and deployment observer are implemented. Supported financial adapters cover existing AMFI plans and 38 iShares portfolios; other sources are monitoring-only. Live run 37672720902 passed the source/model/validation/audit path with an honest PARTIAL report. Protected main and a dedicated publishing identity are configured; successful scheduled data releases on 10, 11 and 12 October 2026 demonstrate the publication path. See [the current operating guide](docs/migration/AUTOMATION.md) for coverage, results and activation steps.
+The scheduled runner, two Gemini tasks, source-backed NAV and complete-portfolio validators, persistent issue state, protected publisher and deployment observer are implemented. Financial adapters cover existing AMFI NAVs, conservatively admitted new AMFI identities, 38 daily US iShares endpoints and 706 weekly Irish iShares endpoints. Monthly Indian workbook imports and CBI register refreshes still require reviewed imports; other sources are monitoring-only. Protected main and a dedicated publishing identity are configured. External scheduler runs on 23 and 24 October 2026 successfully completed the publication path. See [the expansion operating details](docs/catalogue-expansion-2026-10.md) and [the operating guide](docs/migration/AUTOMATION.md).
 
 ## Local checks
 
@@ -48,6 +48,8 @@ Use the versions declared in `package.json`: Node 22.13.0 or later and pnpm 11.2
 ```sh
 pnpm install --frozen-lockfile
 python3 -m pip install -r scripts/automation/requirements.txt
+python3 -m pip install -r scripts/data/requirements.txt
+python3 scripts/data/verify_expansion_sources.py
 python3 -m unittest discover -s scripts/automation/tests -v
 python3 scripts/automation/verify-bootstrap.py
 node scripts/automation/verify-contracts.mjs

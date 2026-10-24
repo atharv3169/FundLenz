@@ -69,3 +69,7 @@ Failures retain previous complete values and unresolved issue history.
 - Health failures create failed Actions runs with retained diagnostics. Enable GitHub Actions failure notifications in the owner's GitHub notification settings; email delivery depends on those account settings and is not verified by the repository. These checks do not send a separate email or SMS.
 
 This reduces routine maintenance; it cannot repair expired/revoked credentials, exhausted provider quotas, broken source formats or a provider outage. If all GitHub scheduling stops, the GitHub-hosted watchdog also cannot run; an external uptime monitor is required for independence from GitHub. Monitoring-only sources still require new reviewed adapters before they can update financial values automatically.
+
+## Expanded catalogue coverage
+
+See [October 2026 expansion](../docs/catalogue-expansion-2026-10.md) for the current source scope, weekly Irish holdings rotation, new AMFI identity checks and remaining monthly-import limitations. These instructions supersede earlier fixed coverage counts.

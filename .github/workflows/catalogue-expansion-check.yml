@@ -1,0 +1,25 @@
+name: FundLenz catalogue source replay
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/data/**'
+      - 'data/sources/india-disclosures/**'
+      - 'data/sources/global/ireland/**'
+      - '.github/workflows/catalogue-expansion-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  source-replay:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - run: python3 -m pip install --disable-pip-version-check -r scripts/data/requirements.txt
+      - name: Reproduce all expanded portfolios from retained official bytes
+        run: python3 scripts/data/verify_expansion_sources.py

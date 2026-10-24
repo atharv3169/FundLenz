@@ -1,1 +1,7 @@
-{"automaticDataUpdates":true,"catalogueSourceCheckDate":"2026-10-05","datasetSha256":"ae7e019f5a1d91d654bda836dad6ef8699767cab7cc082f410ce600766ae861e","lastCatalogueUpdateDate":"2026-10-24","release":"catalogue-40059744230-1"}
+{
+  "automaticDataUpdates": true,
+  "catalogueSourceCheckDate": "2026-10-05",
+  "datasetSha256": "622e73174458078c00eba05585643ab89900bb069014d56d5cf19b9670f6f2bd",
+  "lastCatalogueUpdateDate": "2026-10-24",
+  "release": "manual-catalogue-expansion-2026-10-24"
+}

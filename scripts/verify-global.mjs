@@ -28,6 +28,11 @@ for(const file of fs.readdirSync('public/data/global/details')){
  }
 }
 assert.equal(catalog.funds.length,byId.size);assert.equal(catalog.stats.records,byId.size);
+const coverage=JSON.parse(fs.readFileSync('public/data/global/coverage.json','utf8'));
+const counts=key=>catalog.funds.reduce((result,f)=>{result[f[key]]=(result[f[key]]||0)+1;return result;},{});
+assert.deepEqual(coverage.stats,catalog.stats);
+assert.deepEqual(coverage.recordsBySourceMarket,counts('market'));
+assert.deepEqual(coverage.recordsByKind,counts('kind'));
 for(const f of catalog.funds){const d=byId.get(f.id);assert(d);for(const [k,v] of Object.entries(f))assert.deepEqual(v,d[k]);}
 assert.equal(registry,18653);assert.equal(classes,39138);assert.equal(listedTickers.size,5755);assert.equal(issuerClasses,1497);
 assert.equal(catalog.stats.registeredSeries,registry);assert.equal(catalog.stats.shareClasses,classes);assert.equal(catalog.stats.etfListings,listedTickers.size);assert.equal(catalog.stats.issuerClasses,issuerClasses);
@@ -43,11 +48,19 @@ assert(searchGlobalFunds(catalog.funds,'','','','','','fixed income').every(f=>f
 assert(searchGlobalFunds(catalog.funds,'','','','','','','ETC').every(f=>f.productTypes.includes('ETC')));
 for(const t of NAME_THEMES)assert(searchGlobalFunds(catalog.funds,'','','',t.value).length>0,`${t.label} theme has records`);
 assert.equal(globalMoney(10,null),'Not supplied');assert.equal(globalMoney(null,'USD'),'Not supplied');assert(globalMoney(10,'GBP').startsWith('GBP '));
-const rawFiles={'nasdaq-listed':'us/nasdaqlisted.txt','nasdaq-other-listed':'us/otherlisted.txt','sec-mutualfund-tickers':'us/sec-mutualfund-tickers.json','sec-series-classes-june-2026':'us/sec-series-classes-2026.csv','ishares-uk-screener':'issuer/ishares-uk-screener.json','vanguard-au-funds':'issuer/vanguard-au-funds.json'};
+const rawFiles={'nasdaq-listed':'us/nasdaqlisted.txt','nasdaq-other-listed':'us/otherlisted.txt','sec-mutualfund-tickers':'us/sec-mutualfund-tickers.json','sec-series-classes-june-2026':'us/sec-series-classes-2026.csv','ishares-uk-screener':'issuer/ishares-uk-screener.json','vanguard-au-funds':'issuer/vanguard-au-funds.json','cbi-ucits-register':'ireland/ucits-register-2026-10-16.pdf'};
 for(const s of catalog.sources)assert.equal(crypto.createHash('sha256').update(fs.readFileSync(`data/sources/global/${rawFiles[s.id]}`)).digest('hex'),s.sha256);
 globalThis.fetch=async url=>{const file='public'+url;return new Response(fs.existsSync(file)?fs.readFileSync(file):'',{status:fs.existsSync(file)?200:404,headers:{'content-type':'application/json'}});};
-assert.equal((await getGlobalCatalog()).stats.records,21389);
+assert.equal((await getGlobalCatalog()).stats.records,28280);
 assert.equal((await getGlobalDetail(vti.id)).name,vti.name);
 await assert.rejects(()=>getGlobalDetail('../../bad'));
 await assert.rejects(()=>getGlobalDetail('g-0000000000000000'));
 console.log(JSON.stringify({status:'passed',records:byId.size,registeredSeries:registry,registeredClasses:classes,etfListings:listedTickers.size,issuerClasses,markets:catalog.stats.markets,verified:['identity joins','source checksums','currencies and dated NAVs','search and filters','lazy detail loading','reused-ticker separation']},null,2));
+
+const irish=searchGlobalFunds(catalog.funds,'','','','','','','','Ireland');
+assert(irish.length>8000 && irish.every(f=>f.domiciles.includes('Ireland')));
+const registered=searchGlobalFunds(catalog.funds,'','','irish-registered');
+assert.equal(registered.length,catalog.stats.irishRegistryEntries);
+assert.equal(registered.filter(f=>f.kind==='Registered UCITS entity').length,557);
+assert.equal(registered.filter(f=>f.kind==='Registered UCITS sub-fund').length,6334);
+assert(registered.every(f=>!f.enriched && f.classCount===0));

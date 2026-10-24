@@ -1,0 +1,22 @@
+Fund Holdings as of,"21/Oct/2026"
+
+Ticker,Name,Sector,Asset Class,Market Value,Weight (%),Notional Value,Shares,Par Value,Price,Location,Exchange,Duration,Maturity,Coupon (%),Market Currency,Effective Date
+"FRTR","FRANCE (REPUBLIC OF)","Treasury","Fixed Income","390,785,291.57","15.35","390,785,291.57","399,725,000.00","399,725,000.00","97.59","France","-","1.88","24/Sept/2028","2.40","EUR","24/Feb/2025"
+"FRTR","FRANCE (REPUBLIC OF)","Treasury","Fixed Income","260,975,472.89","10.25","260,975,472.89","272,041,000.00","272,041,000.00","95.75","France","-","2.81","24/Sept/2029","2.40","EUR","23/Feb/2026"
+"BKO","GERMANY (FEDERAL REPUBLIC OF) RegS","Treasury","Fixed Income","188,015,147.15","7.38","188,015,147.15","187,560,000.00","187,560,000.00","98.72","Germany","-","1.36","15/Mar/2028","2.10","EUR","29/Jan/2026"
+"BKO","GERMANY (FEDERAL REPUBLIC OF) RegS","Treasury","Fixed Income","185,143,288.34","7.27","185,143,288.34","185,193,000.00","185,193,000.00","99.26","Germany","-","1.84","13/Sept/2028","2.70","EUR","16/Jul/2026"
+"SPGB","SPAIN (KINGDOM OF)","Treasury","Fixed Income","184,637,258.23","7.25","184,637,258.23","185,287,000.00","185,287,000.00","98.71","Spain","-","1.56","31/May/2028","2.40","EUR","14/Jan/2025"
+"DEGV","GERMANY (FEDERAL REPUBLIC OF) RegS","Treasury","Fixed Income","180,418,274.01","7.09","180,418,274.01","179,869,000.00","179,869,000.00","99.07","Germany","-","1.60","14/Jun/2028","2.50","EUR","23/Apr/2026"
+"BKO","GERMANY (FEDERAL REPUBLIC OF)","Treasury","Fixed Income","171,857,759.21","6.75","171,857,759.21","170,317,000.00","170,317,000.00","98.88","Germany","-","1.11","16/Dec/2027","2.00","EUR","16/Oct/2025"
+"BTPS","ITALY (REPUBLIC OF) RegS","Treasury","Fixed Income","159,430,710.93","6.26","159,430,710.93","161,448,000.00","161,448,000.00","98.43","Italy","-","1.32","28/Feb/2028","2.20","EUR","29/Jan/2026"
+"SPGB","SPAIN (KINGDOM OF)","Treasury","Fixed Income","152,347,911.78","5.98","152,347,911.78","154,069,000.00","154,069,000.00","97.57","Spain","-","2.34","31/Mar/2029","2.35","EUR","20/Jan/2026"
+"BTPS","ITALY (REPUBLIC OF) RegS","Treasury","Fixed Income","139,847,051.49","5.49","139,847,051.49","143,648,000.00","143,648,000.00","97.12","Italy","-","2.30","15/Mar/2029","2.40","EUR","15/Jan/2026"
+"BTPS","ITALY (REPUBLIC OF) RegS","Treasury","Fixed Income","132,063,755.48","5.19","132,063,755.48","134,912,000.00","134,912,000.00","97.26","Italy","-","2.14","15/Jan/2029","2.35","EUR","15/Jul/2025"
+"BTPS","ITALY (REPUBLIC OF) RegS","Treasury","Fixed Income","129,131,219.73","5.07","129,131,219.73","129,662,000.00","129,662,000.00","98.66","Italy","-","1.59","15/Jun/2028","2.65","EUR","17/Mar/2025"
+"BTPS","ITALY (REPUBLIC OF) RegS","Treasury","Fixed Income","123,327,077.51","4.84","123,327,077.51","123,899,000.00","123,899,000.00","99.49","Italy","-","0.96","15/Oct/2027","2.70","EUR","15/Nov/2024"
+"BTPS","ITALY (REPUBLIC OF) RegS","Treasury","Fixed Income","92,877,185.85","3.65","92,877,185.85","94,572,000.00","94,572,000.00","97.91","Italy","-","2.75","15/Sept/2029","3.00","EUR","15/Jun/2026"
+"BTPS","ITALY (REPUBLIC OF)","Treasury","Fixed Income","52,937,409.17","2.08","52,937,409.17","53,326,000.00","53,326,000.00","98.83","Italy","-","1.94","30/Oct/2028","3.00","EUR","28/Aug/2026"
+"ICSEALD","BLK LEAF FUND AGENCY ACC T0 EUR","Cash and/or Derivatives","Money Market","3,968,103.59","0.16","3,968,103.59","36,041.00","36,041.00","110.10","Ireland","-","0.14","-","2.43","EUR","25/Apr/2013"
+"GBP","GBP CASH","Cash and/or Derivatives","Cash","253,805.00","0.01","253,805.00","212,844.00","212,844.00","119.24","United Kingdom","-","0.00","-","0.00","GBP","01/Jan/1989"
+"EUR","EUR CASH","Cash and/or Derivatives","Cash","-1,976,693.05","-0.08","-1,976,693.05","-1,976,693.00","-1,976,693.00","100.00","European Union","-","0.00","-","0.00","EUR","01/Jan/1989"
+
