@@ -24,7 +24,7 @@ await assert.rejects(()=>getGlobalPortfolio(mismatched),/different snapshots/);g
 let totalHoldings=0;const identities=new Map();
 for(const id of ids){
  const p=await getGlobalPortfolio(id),s=index.portfolios[id],d=downloads.find(x=>x.id===id),c=catalogue.funds.find(f=>f.id===id);
- check(c?.tickers.includes(s.ticker)&&d.status==='downloaded','Exact catalogue and source match');
+ check((d.format==='ishares_ucits_csv' ? c?.isins.includes(d.isin) && c.domiciles.includes('Ireland') : c?.tickers.includes(s.ticker))&&d.status==='downloaded','Exact catalogue and source match');
  check(crypto.createHash('sha256').update(fs.readFileSync('data/sources/global/holdings/'+d.filename)).digest('hex')===p.sourceSha256,'Retained original checksum');
  check(p.currency==='USD'&&p.scenarioScope==='disclosed_equities_only','Currency and scenario scope');
  check(p.date<=index.checkedAt.slice(0,10),'No future snapshot');
@@ -32,7 +32,7 @@ for(const id of ids){
  const total=p.holdings.reduce((n,h)=>n+h.weight,0);check(Math.abs(total-100)<=.50000001&&Math.abs(total-s.weightTotalPct)<1e-9,'Published weights reconcile');
  for(const type of ['equity','cash','other'])check(Math.abs(p.holdings.filter(h=>h.type===type).reduce((n,h)=>n+h.weight,0)-s[type+'Pct'])<1e-8,'Asset totals reconcile');
  for(const h of p.holdings){
-  check(Number.isFinite(h.weight)&&Number.isFinite(h.marketValue)&&h.sourceRows.length>0,'Finite sourced holding');
+  check(Number.isFinite(h.weight)&&(d.format==='ishares_ucits_csv' ? h.marketValue===undefined : Number.isFinite(h.marketValue))&&h.sourceRows.length>0,'Finite sourced holding');
   if(h.type==='equity'){check(h.weight>=0,'Long equity');const k=JSON.stringify([h.name,h.sector]);check(!identities.has(h.id)||identities.get(h.id)===k,'Consistent security identity');identities.set(h.id,k);}
  }
  const a=analyze([p],{[id]:1000});check(Math.abs(a.equity-s.equityPct/100)<1e-10,'Analysis uses published equity total');

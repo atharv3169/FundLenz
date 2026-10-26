@@ -11,7 +11,7 @@ export type CatalogFund = {
 };
 export type Catalog = {
   schemaVersion: number; retrievedAt: string; source: string; sourceSha256: string; directorySource: string;
-  stats: { fundRecords: number; planRecords: number; fundHouses: number; directoryHouses: number; latestNavDate: string; plansAtLatestDate: number; holdingsFunds: number; holdingsFundHouses: number; holdingsDate: string };
+  stats: { fundRecords: number; planRecords: number; fundHouses: number; directoryHouses: number; latestNavDate: string; plansAtLatestDate: number; holdingsFunds: number; holdingsFundHouses: number; holdingsDate: string; holdingsDates?: string[]; holdingsOldestDate?: string };
   funds: CatalogFund[]; houses: { id: string; name: string; company: string; website: string; portfolio: string; factsheet: string }[];
 };
 export type OfficialHolding = Holding & { originalName: string; reportedWeight: number | null; assetClass: string; marketValueINR: number; quantity: number | null; sourceRow: number };
@@ -38,8 +38,12 @@ export async function officialDataset(ids: string[]): Promise<Dataset> {
   const catalog = await getCatalog();
   if (unique.some(id => !catalog.funds.some(f => f.id === id && f.portfolioId))) throw new Error("Holdings are not available for one of the selected funds.");
   const funds = await Promise.all(unique.map(getPortfolio));
-  if (new Set(funds.map(f => f.date)).size !== 1) throw new Error("The selected portfolios do not share a snapshot date.");
-  return { mode: "official", currency: "INR", region: "IN", funds, note: "Official AMC monthly disclosures, reconciled to reported net assets. Equity weights use disclosed market values / net assets; original percentages are retained in the catalogue. Holdings reflect their stated month end, not today's trades. Scenarios cover disclosed equities only; debt, derivatives, currency effects and other assets are not modeled." };
+  for (const fund of funds) {
+    const expected = catalog.funds.find(f => f.id === fund.id);
+    if (fund.date !== expected?.portfolioSummary?.date || fund.portfolioId !== expected?.portfolioId) throw new Error("The catalogue and holdings refer to different snapshots. Reload and try again.");
+  }
+  const dates = [...new Set(funds.map(f => f.date))].sort();
+  return { mode: "official", currency: "INR", region: "IN", funds, note: (dates.length > 1 ? `Mixed snapshot dates (${dates.join(", ")}); this comparison is not a single-date portfolio. ` : "") + "Official AMC monthly disclosures, reconciled to reported net assets. Equity weights use disclosed market values / net assets; original percentages are retained in the catalogue. Holdings reflect their stated month end, not today's trades. Scenarios cover disclosed equities only; debt, derivatives, currency effects and other assets are not modeled." };
 }
 export function preferredPlan(fund: CatalogFund, plan = "", option = ""): Plan | undefined {
   const planFilter = plan.toLowerCase(), optionFilter = option.toLowerCase();

@@ -5,7 +5,7 @@ export type GlobalFund = {
   id: string; name: string; market: string; kind: string; provider: string | null;
   registrant: string | null; tickers: string[]; isins: string[]; classCount: number;
   categories: string[]; currencies: string[]; listed: boolean; enriched: boolean;
-  asOf: string | null; sourceIds: string[]; productTypes: string[]; shareClassLabel?: string | null;
+  domiciles?: string[]; authorisationDate?: string; asOf: string | null; sourceIds: string[]; productTypes: string[]; shareClassLabel?: string | null;
 };
 export type GlobalClass = {
   id: string; name: string; tickers: string[]; directoryTicker?: string | null;
@@ -24,7 +24,7 @@ export type GlobalDetail = GlobalFund & {
 };
 export type GlobalCatalog = {
   schemaVersion: number; builtAt: string; sources: GlobalSource[];
-  stats: { records: number; registeredSeries: number; shareClasses: number; etfListings: number; standaloneEtfs: number; issuerClasses: number; markets: number };
+  stats: { records: number; registeredSeries: number; shareClasses: number; etfListings: number; standaloneEtfs: number; issuerClasses: number; markets: number; irishRegistryEntries?: number; irishReportedFundCount?: number };
   caveats: string[]; funds: GlobalFund[];
 };
 let catalogPromise: Promise<GlobalCatalog> | undefined;
@@ -62,15 +62,15 @@ const searchText = new WeakMap<GlobalFund, string>();
 export function globalSearchText(f: GlobalFund) {
   let text = searchText.get(f);
   if (text === undefined) {
-    text = [f.name, f.registrant || "", f.provider || "", ...f.tickers, ...f.isins, ...f.categories].join(" ").toLowerCase();
+    text = [f.name, f.registrant || "", f.provider || "", ...f.tickers, ...f.isins, ...f.categories, ...(f.domiciles || [])].join(" ").toLowerCase();
     searchText.set(f, text);
   }
   return text;
 }
-export function searchGlobalFunds(funds: GlobalFund[], query: string, market = "", kind = "", theme = "", coverage = "", asset = "", product = "") {
+export function searchGlobalFunds(funds: GlobalFund[], query: string, market = "", kind = "", theme = "", coverage = "", asset = "", product = "", domicile = "") {
   const terms = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
   const pattern = NAME_THEMES.find(t => t.value === theme)?.pattern;
-  return funds.filter(f => (!market || f.market === market) && (!kind || (kind === "listed" ? f.listed : kind === "registered" ? f.kind === "Registered fund series" : f.kind === "Issuer share class")) && (!pattern || pattern.test(f.name)) && (!coverage || (coverage === "issuer" ? f.enriched : !f.enriched)) && (!asset || f.categories.some(c => c.toLowerCase() === asset)) && (!product || f.productTypes.includes(product)) && terms.every(t => globalSearchText(f).includes(t)));
+  return funds.filter(f => (!market || f.market === market) && (!domicile || f.domiciles?.includes(domicile)) && (!kind || (kind === "listed" ? f.listed : kind === "registered" ? f.kind === "Registered fund series" : kind === "irish-registered" ? f.sourceIds.includes("cbi-ucits-register") : f.kind === "Issuer share class")) && (!pattern || pattern.test(f.name)) && (!coverage || (coverage === "issuer" ? f.enriched : !f.enriched)) && (!asset || f.categories.some(c => c.toLowerCase() === asset)) && (!product || f.productTypes.includes(product)) && terms.every(t => globalSearchText(f).includes(t)));
 }
 const moneyFormatters = [false, true].map(compact => new Intl.NumberFormat("en-GB", { maximumFractionDigits: compact ? 2 : 4, notation: compact ? "compact" : "standard" }));
 export function globalMoney(value: number | null | undefined, currency: string | null | undefined, compact = false) {

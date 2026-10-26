@@ -51,7 +51,7 @@ jobs:
     needs: schedule_guard
     if: needs.schedule_guard.outputs.run_collect == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 18
+    timeout-minutes: 60
     permissions:
       contents: read
       actions: read
@@ -137,7 +137,7 @@ jobs:
     # opts in to publication. The independent GitHub protections still apply.
     if: needs.collect.result == 'success' && (github.event_name == 'schedule' || inputs.publish_validated_data == true)
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 30
     permissions:
       contents: read
       actions: read
