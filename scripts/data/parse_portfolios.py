@@ -6,9 +6,16 @@ Original percentage weights and row numbers remain attached to each holding.
 from pathlib import Path
 import json,re,io,zipfile,hashlib,math,collections,argparse,unicodedata,warnings
 import pandas as pd
+import datetime, calendar
 warnings.filterwarnings('ignore',category=UserWarning)
 ROOT=Path(__file__).resolve().parents[2]
 DATE='2026-08-31'
+def confirms_date(text, date):
+ day=datetime.date.fromisoformat(date)
+ if day.day!=calendar.monthrange(day.year,day.month)[1]:return False
+ months=day.strftime('%b')+'(?:'+day.strftime('%B')[3:]+')?'
+ year='(?:'+str(day.year)+'|'+day.strftime('%y')+')'
+ return bool(re.search(r'(?:\b'+str(day.day)+r'(?:st|nd|rd|th)?[- /.,]*'+months+r'[- /.,]*'+year+r'\b|\b'+months+r'[- /.,]*'+str(day.day)+r'(?:st|nd|rd|th)?[- /.,]*'+str(day.year)+r'\b|'+date+r'\b|\b'+str(day.day)+r'[-/.]0?'+str(day.month)+r'[-/.]'+year+r'\b|\bFOR '+day.strftime('%B %Y')+r'\b)',text,re.I))
 def txt(v):
  if v is None:return ''
  try:
@@ -57,14 +64,15 @@ def parse_sheet(df,sheet,source):
    cols={'isin':ic,'name':nc,'weight':wc,'value':mc,'sector':next((j for j,v in enumerate(ss) if 'industry' in v or 'rating' in v),None),'quantity':next((j for j,v in enumerate(ss) if 'quantity' in v),None)};header=i;break
  if header is None:return None,'no supported instrument table'
  top=' | '.join(dict.fromkeys(txt(v) for r in rows[:header] for v in r if txt(v)))
- if not (re.search(r'(?:31(?:st)?[- /]*(?:aug(?:ust)?)[- ,]*(?:2026|26)|aug(?:ust)?\s*31[, ]*2026|2026-08-31|31[-/.]08[-/.](?:2026|26)|FOR AUGUST 2026)',top,re.I)):
+ snapshot_date=source.get('snapshotDate',DATE)
+ if not confirms_date(top,snapshot_date):
   return None,'snapshot date not confirmed'
  title_candidates=[]
  for row in rows[:header]:
   for v in row:
    s=txt(v)
-   s=re.sub(r'^MONTHLY PORTFOLIO STATEMENT OF (.*?) (?:AS ON|FOR AUGUST) .*$',r'\1',s,flags=re.I)
-   if re.search(r'fund|bees|scheme|etf|\bfof\b|\bfmp\b',s,re.I) and not re.search('portfolio statement|mutual fund$|scheme name|inception|monthly portfolio',s,re.I) and len(s)>10:title_candidates.append(s)
+   s=re.sub(r'^(?:MONTHLY )?PORTFOLIO (?:STATEMENT OF|OF) (.*?) (?:AS ON|FOR [A-Z]+) .*$',r'\1',s,flags=re.I)
+   if re.search(r'fund|bees|scheme|etf|\bfof\b|\bfmp\b',s,re.I) and not re.search(r'portfolio statement|^.{0,80}mutual fund(?:\s*\(LIVE SCHEMES\))?$|scheme name|inception|monthly portfolio|^\(?an? open|^\[?p[eu]rsuant',s,re.I) and len(s)>10:title_candidates.append(s)
  if not title_candidates:return None,'fund title not found'
  name=source.get('statementTitleOverride') or title_candidates[0]
  grand_index=None;grand=None;grand_weight=None
@@ -85,6 +93,11 @@ def parse_sheet(df,sheet,source):
  section='Unclassified';holdings=[];unclassified=[];seen=collections.defaultdict(int)
  for i in range(header+1,grand_index):
   row=rows[i];label=txt(row[cols['name']]);isin=txt(row[cols['isin']]);val=num(row[cols['value']]);reported=num(row[cols['weight']]);whole=' '.join(dict.fromkeys(txt(v) for v in row[:cols['value']] if txt(v)))
+  # Some issuers merge the name header over several columns, then indent
+  # instrument names within that same span (e.g. Kotak's consolidated file).
+  if cols['name']<cols['isin']:
+   end=next((j for j in range(cols['name']+1,len(rows[header])) if txt(rows[header][j])),cols['isin'])
+   label=' '.join(txt(v) for v in row[cols['name']:end] if txt(v))
   if source.get('utiBlock'):isin=re.sub(r'^[*$\s]+','',isin)
   if val is None:
    # Headings may be in the ISIN column rather than the instrument column.
@@ -149,14 +162,14 @@ def parse_sheet(df,sheet,source):
    elif s.lower() in ('benchmark','benchmark name') and j+1<len(row) and txt(row[j+1]):benchmark=txt(row[j+1])
  note='Weights calculated from disclosed instrument market values divided by reported net assets; original disclosed percentage weights are retained.'
  if abs(difference_pct)>1e-7:note+=f' Unreconciled difference: {difference_pct:.6f}% of net assets.'
- if re.search(r'FOR AUGUST 2026',top,re.I):note+=' The source specifies August 2026; its reporting month is represented by the month-end date.'
+ if re.search(r'FOR '+datetime.date.fromisoformat(snapshot_date).strftime('%B %Y'),top,re.I):note+=' The source specifies the reporting month; its month-end date is shown.'
  if derivative:note+=' Derivative exposure is disclosed and is excluded from the price-shock model.'
  if source.get('rowOffset'):
   for h in holdings:
    h['sourceRow']+=source['rowOffset']
    if h.get('sourceRows'):h['sourceRows']=[r+source['rowOffset'] for r in h['sourceRows']]
   note+=' Source row numbers refer to the original consolidated worksheet.'
- return {'statementTitle':title,'description':subtitle[:600] or None,'amc':source['amc'],'date':DATE,'source':source['url'],'sourcePage':source['sourcePage'],'sourceSheet':sheet,'sourceFile':source.get('archiveMember',source['file']),'sourceSha256':source['sha256'],'aumINR':grand*unit,'benchmark':benchmark,'holdings':holdings,'derivatives':derivative,'reconciliationDifferencePct':difference_pct,'weightBasis':'disclosed_market_value_over_reported_net_assets','note':note},None
+ return {'statementTitle':title,'description':subtitle[:600] or None,'amc':source['amc'],'date':snapshot_date,'source':source['url'],'sourcePage':source['sourcePage'],'sourceSheet':sheet,'sourceFile':source.get('archiveMember',source['file']),'sourceSha256':source['sha256'],'aumINR':grand*unit,'benchmark':benchmark,'holdings':holdings,'derivatives':derivative,'reconciliationDifferencePct':difference_pct,'weightBasis':'disclosed_market_value_over_reported_net_assets','note':note},None
 
 def main(root):
  manifest=json.loads((root/'download-manifest.json').read_text());catalog=json.loads((ROOT/'public/data/catalog.json').read_text());funds=catalog['funds'];by_amc=collections.defaultdict(list)
