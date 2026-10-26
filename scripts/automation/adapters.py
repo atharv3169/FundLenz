@@ -1,16 +1,19 @@
 """Trusted financial adapters. Each decision carries actual old/new values.
 
 The model never supplies production numbers to these adapters. Unsupported
-fields, new identities and lifecycle changes stay blocked for adapter review.
+fields and lifecycle changes stay blocked. Fresh AMFI identities have a separate
+checksum-verified admission adapter.
 """
 import copy
 import datetime as dt
 import importlib.util
 import math
 import re
+import sys
 from decimal import Decimal
 from common import ROOT, encoded, read, require, sha
 
+sys.path.insert(0, str(ROOT / "scripts/data"))
 spec = importlib.util.spec_from_file_location("global_builder", ROOT / "scripts/data/build_global_holdings.py")
 global_builder = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(global_builder)
@@ -40,7 +43,7 @@ def decision(unit, source, old, new, date, previous_date, outcome, reason, locat
 def parse_nav(raw):
     text = raw.decode("utf-8-sig")
     require("Scheme Code;" in text and "Scheme Name" in text, "Unrecognized AMFI header")
-    rows, amc, category = {}, "", ""
+    rows, amc, category, structure = {}, "", "", ""
     for line_number, original in enumerate(text.splitlines(), 1):
         line = clean(original)
         if not line:
@@ -54,9 +57,11 @@ def parse_nav(raw):
                           "reinvestmentIsin": None if reinvest == "-" else reinvest,
                           "name": name, "amc": amc, "plan": plan or "Not specified in source",
                           "option": option or "Not specified in source", "raw_nav": value,
-                          "raw_date": date, "line": line_number}
+                          "raw_date": date, "line": line_number,
+                          "category": category, "structure": structure}
         elif re.search(r"^(?:Open Ended|Close Ended|Closed Ended|Interval).*\(", line):
-            category = line
+            structure = line.split("(", 1)[0].strip()
+            category = line.split("(", 1)[1].rstrip(")").strip()
         elif ";" not in line:
             amc = line
     require(rows, "Empty AMFI feed")
@@ -102,10 +107,10 @@ def nav_candidates(catalogue, raw, source, policy):
             outcome, reason = "blocked", str(error)
         decisions.append(decision("nav:" + code, source, old, proposed, date, plan["navDate"], outcome, reason,
                                   "AMFI line " + str(row["line"]) + "; scheme code " + code))
-    new_codes = sorted(rows.keys() - known.keys())
-    if new_codes:
-        decisions.append(decision("nav:new-identities", source, None, new_codes, None, None, "blocked",
-                                  "New identities require a reviewed catalogue adapter; no automatic creation.", "AMFI scheme codes"))
+    # New scheme codes are source-derived, never model-authored. Only an exact
+    # known AMC and fresh, checksum-valid ISIN identity may create a plan.
+    from india_discovery import new_plan_candidates
+    decisions.extend(new_plan_candidates(catalogue, rows, source, decision))
     return decisions
 
 
@@ -117,7 +122,7 @@ def holdings_candidate(old, catalogue, download, raw, source, policy):
             "Holding-row count fell by over half; source completeness needs review")
     outcome = chronology(old["date"], portfolio["date"], old["holdings"], portfolio["holdings"])
     change = decision("holdings:" + old["id"], source, old, portfolio, portfolio["date"], old["date"], outcome,
-                      "Complete issuer snapshot, exact fund identity, reporting currency and unscaled weights checked.",
+                      "Complete issuer snapshot, exact fund identity and unscaled weights checked; source currency handling follows the reviewed format.",
                       "Full CSV leaf rows; sourceRow/sourceRows in each position")
     return change, summary, report, desc
 
@@ -173,8 +178,11 @@ def build_files(root, units, extras, raw_sources, acquisition):
     files = {}
     accepted = [u for u in units if u["decision"] == "accepted"]
     nav = {u["unit"][4:]: u for u in accepted if u["unit"].startswith("nav:")}
-    if nav:
+    additions = [u for u in accepted if u["unit"].startswith("new_plan:")]
+    if nav or additions:
         catalog = read(root / "public/data/catalog.json")
+        from india_discovery import append_plans
+        append_plans(catalog, additions)
         for fund in catalog["funds"]:
             for plan in fund["plans"]:
                 if plan["code"] in nav:
@@ -188,7 +196,7 @@ def build_files(root, units, extras, raw_sources, acquisition):
         # Existing sourceSha256/retrievedAt still describe the original directory
         # import. Individual NAV tuples have their own actual source provenance.
         files["public/data/catalog.json"] = encoded(catalog)
-        u = next(iter(nav.values()))
+        u = next(iter(nav.values())) if nav else additions[0]
         files["data/sources/automation/amfi-nav.txt"] = raw_sources[u["source_id"]]
     holdings = [u for u in accepted if u["unit"].startswith("holdings:")]
     if holdings:

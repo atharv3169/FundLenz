@@ -82,7 +82,7 @@ def due_sources(registry, state, issues, at, limit, force_supported=False):
     # All daily adapters first. Remaining slots rotate fairly by actual attempt time,
     # including unresolved monitoring issues; one broken site cannot starve all others.
     discovery_urls = {i["source_url"] for i in issues["issues"] if i["origin"] == "bootstrap_existing_source_check"}
-    due.sort(key=lambda s: (0 if s["adapter"] != "monitor" else 1 if s["url"] in discovery_urls else 2,
+    due.sort(key=lambda s: (0 if s["adapter"] != "monitor" and s["cadence_hours"] <= 24 else 1 if s["adapter"] != "monitor" else 2 if s["url"] in discovery_urls else 3,
                             state.get(s["id"], {}).get("last_attempt_at", ""), s["id"]))
     return due[:limit], due[limit:], later
 

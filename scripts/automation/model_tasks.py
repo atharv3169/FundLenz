@@ -110,6 +110,7 @@ def packets(acquisition, units, task, policy, run=None):
                 "Review only supplied excerpts; do not claim full-file model verification. Do not invent values when a sample hash replaces a value. "
                 "At most 8 proposals. For unresolved issues return null new_candidate, finding unresolved, and their exact issue_id. "
                 "If proposing a supported NAV change use atomic_group nav:<AMFI code>, record_id <AMFI code>, field nav, new_candidate {nav,navDate}; "
+                "New AMFI identities are admitted only by the trusted new_plan adapter, never inferred from names. Do not propose replacement identities or fabricate holdings. Omit a proposal when the supplied deterministic result has no evidenced problem; "
                 "otherwise report unresolved observations. Sources outside this packet were not inspected by this task."}
     return packet
 

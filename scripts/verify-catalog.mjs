@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { analyze, stress, overlap, allocationSearch } from '../lib/finance.ts';
-import { preferredPlan, isOlderNav } from '../lib/catalog.ts';
+import { preferredPlan, isOlderNav, officialDataset } from '../lib/catalog.ts';
 
 const catalog = JSON.parse(fs.readFileSync('public/data/catalog.json', 'utf8'));
 let checks = 0;
@@ -23,7 +23,7 @@ for (const fund of catalog.funds) {
   const p = JSON.parse(fs.readFileSync(`public/data/holdings/${fund.id}.json`, 'utf8'));
   portfolios.push(p);
   ok(p.id === fund.id && p.name === fund.name && p.amc === fund.amc, 'Portfolio matches catalogue identity');
-  ok(p.date === catalog.stats.holdingsDate && p.scenarioScope === 'disclosed_equities_only', 'Consistent snapshot and model scope');
+  ok(p.date === fund.portfolioSummary.date && (catalog.stats.holdingsDates || [catalog.stats.holdingsDate]).includes(p.date) && p.scenarioScope === 'disclosed_equities_only', 'Consistent snapshot and model scope');
   ok(p.aumINR > 0 && p.holdings.length > 0 && /^[a-f0-9]{64}$/.test(p.sourceSha256), 'Net assets and source provenance');
   const ids = new Set();
   for (const h of p.holdings) {
@@ -59,3 +59,10 @@ const a = analyze(mid, amounts), result = allocationSearch(mid, amounts, .2), b 
 close(a.total, b.total, 1e-6); close(a.equity, b.equity); ok(b.hhi <= a.hhi + 1e-9 && result.turnover <= .2 + 1e-9, 'Real allocation search improves or preserves HHI within turnover cap');
 ok(Object.values(result.amounts).every(v => v >= -1e-7), 'Long-only fund allocation');
 console.log(JSON.stringify({status:'passed', checks, fundRecords:allIds.size, plans:planCodes.size, portfolios:portfolios.length, holdings:portfolios.reduce((s,p)=>s+p.holdings.length,0), realSearch:{baselineHHI:a.hhi,candidateHHI:b.hhi,turnover:result.turnover}}, null, 2));
+
+// Mixed monthly disclosures stay selectable, with an explicit snapshot warning.
+globalThis.fetch=async url=>new Response(fs.readFileSync('public'+url));
+const dated=[...new Set(portfolios.map(p=>p.date))].map(date=>portfolios.find(p=>p.date===date).id);
+const mixed=await officialDataset(dated);
+ok(mixed.funds.length===dated.length,'All dated selections loaded');
+if(dated.length>1)ok(mixed.note.includes('Mixed snapshot dates'),'Mixed dates disclosed');
