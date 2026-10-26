@@ -1,0 +1,28 @@
+name: Reconstruct retained catalogue source bytes
+on:
+  push:
+    branches: [catalogue-expansion-small-parts]
+    paths: ['_catalogue-transfer/source-recipe.json']
+permissions:
+  contents: write
+jobs:
+  restore:
+    if: github.repository == 'atharv3169/FundLenz'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: catalogue-expansion-small-parts
+      - name: Retrieve exact public sources and verify archive hashes
+        run: python3 _catalogue-transfer/restore_sources.py
+      - name: Save verified sources to the transfer branch only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add _catalogue-transfer/source-cache _catalogue-transfer/source-status.json
+          python3 -c 'import pathlib,subprocess; p=list(map(str,pathlib.Path("data/sources/india-disclosures").glob("september-2026-*.zip"))); subprocess.run(["git","add","--",*p],check=True) if p else None'
+          if ! git diff --cached --quiet; then
+            git commit -m 'Retain checksum-verified public source bytes for transfer'
+            git push origin HEAD:refs/heads/catalogue-expansion-small-parts
+          fi
