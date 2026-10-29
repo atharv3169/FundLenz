@@ -121,6 +121,8 @@ jobs:
         run: node scripts/verify-legal-return-navigation.mjs
       - name: Mobile portfolio navigation and verified catalogue date regression
         run: node scripts/verify-mobile-blog-header-and-dates.mjs
+      - name: Portfolio sector and drawer Chromium interaction regressions
+        run: node scripts/verify-portfolio-ui-browser.mjs
       - name: Single-admin authentication security checks
         run: node scripts/verify-blog-admin-auth.mjs
       - name: Production editor host, origin and session isolation
