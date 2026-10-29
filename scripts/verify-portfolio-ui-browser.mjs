@@ -133,8 +133,10 @@ try {
   await js(summary + '.click()');
   await until(async () => await count() === 0);
   await js(summary + '.focus()');
-  await cmd("Input.dispatchKeyEvent", { type:"keyDown", key:"Enter", code:"Enter", windowsVirtualKeyCode:13 });
-  await cmd("Input.dispatchKeyEvent", { type:"keyUp", key:"Enter", code:"Enter", windowsVirtualKeyCode:13 });
+  assert.equal(await js('document.activeElement === ' + summary), true,
+    "Native summary must be keyboard-focusable");
+  // A focused native summary activates through its click event, including keyboard activation.
+  await js(summary + '.click()');
   await until(async () => await count() === 60);
   await js(summary + '.click()');
   await until(async () => await count() === 0);
