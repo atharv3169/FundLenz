@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import { ProjectsDrawer } from "../../components/projects-drawer";
 import { SectorExposureGroup } from "../../components/sector-exposure-group";
 import type { Exposure } from "../../lib/finance";
-import "../../app/globals.css";
 
 const stocks: Exposure[] = Array.from({ length: 1300 }, (_, i) => ({
   id: `S-${i}`, name: `Security ${i}`, sector: i < 1100 ? "Technology" : "Healthcare",

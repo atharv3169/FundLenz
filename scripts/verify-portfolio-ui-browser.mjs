@@ -82,7 +82,8 @@ try {
     if (!message.id || !pending.has(message.id)) return;
     const p = pending.get(message.id);
     pending.delete(message.id);
-    message.error ? p.reject(Error(message.error.message)) : p.resolve(message.result);
+    if (message.error) p.reject(Error(message.error.message));
+    else p.resolve(message.result);
   });
   function cmd(method, params = {}) {
     return new Promise((resolve, reject) => {
@@ -97,7 +98,17 @@ try {
     return result.result.value;
   }
   const count = () => js('document.querySelectorAll(".sector-stocks li").length');
-  await until(() => js('document.querySelectorAll(".sector-group").length === 2'));
+  try {
+    await until(() => js('document.querySelectorAll(".sector-group").length === 2'));
+  } catch (error) {
+    const diagnostic = await js(`({
+      body: document.body.innerText.slice(0, 1200),
+      root: document.getElementById("root")?.innerHTML.slice(0, 1200),
+      overlay: document.querySelector("vite-error-overlay")?.shadowRoot?.textContent.slice(0, 2400)
+    })`);
+    console.error("FundLenz browser fixture diagnostic:", diagnostic);
+    throw error;
+  }
   assert.equal(await count(), 0, "Collapsed sectors must not render stock rows");
   await js(`(() => {
     const select = document.querySelector("#filter"); select.value = "Healthcare";
@@ -128,13 +139,14 @@ try {
     await js('document.querySelector(' + JSON.stringify(selector) + ').click()');
     await until(() => js('Boolean(document.querySelector(\'[role="dialog"]\'))'));
     assert.equal(await js('document.body.style.overflow'), "hidden");
-    assert.equal(await js('document.activeElement?.hasAttribute("data-close-projects")'), true);
+    await until(() => js('document.activeElement?.hasAttribute("data-close-projects")'));
   }
   async function closed(triggerClass) {
     await until(() => js('!document.querySelector(\'[role="dialog"]\')'));
     assert.equal(await js('document.body.style.overflow'), "");
     assert.equal(await js('document.activeElement?.classList.contains(' + JSON.stringify(triggerClass) + ')'), true);
   }
+  await cmd("Emulation.setDeviceMetricsOverride",{width:1280,height:800,deviceScaleFactor:1,mobile:false});
   await open(".projects-desktop-trigger");
   await js('(() => { const links=document.querySelectorAll(\'[role="dialog"] a\');links[links.length-1].focus();})()');
   await cmd("Input.dispatchKeyEvent",{type:"keyDown",key:"Tab",code:"Tab",windowsVirtualKeyCode:9});
