@@ -37,6 +37,7 @@ const server = await createServer({
 });
 const directory = await mkdtemp(path.join(tmpdir(), "fundlenz-ui-"));
 let chrome = null, socket = null;
+let phase = "initialization";
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function until(probe, timeout = 15000) {
   const started = Date.now();
@@ -45,7 +46,7 @@ async function until(probe, timeout = 15000) {
     try { if (await probe()) return; } catch (e) { last = e; }
     await sleep(100);
   }
-  throw Error("UI check timed out: " + (last?.message || "condition not met"));
+  throw Error("UI check timed out during " + phase + ": " + (last?.message || "condition not met"));
 }
 try {
   await server.listen();
@@ -98,6 +99,7 @@ try {
     return result.result.value;
   }
   const count = () => js('document.querySelectorAll(".sector-stocks li").length');
+  phase = "fixture mounting";
   try {
     await until(() => js('document.querySelectorAll(".sector-group").length === 2'));
   } catch (error) {
@@ -117,8 +119,10 @@ try {
     Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set.call(input, "needle");
     input.dispatchEvent(new Event("input", { bubbles: true }));
   })()`);
+  phase = "independent table state";
   await until(() => js('document.querySelector("#table-state").textContent === "Healthcare:needle"'));
   const summary = 'document.querySelector(\'details[data-sector="Technology"] summary\')';
+  phase = "sector expansion";
   await js(summary + '.click()');
   await until(async () => await count() === 60);
   assert.equal(await js(summary + '.getAttribute("aria-expanded")'), "true");
@@ -146,6 +150,7 @@ try {
     assert.equal(await js('document.body.style.overflow'), "");
     assert.equal(await js('document.activeElement?.classList.contains(' + JSON.stringify(triggerClass) + ')'), true);
   }
+  phase = "desktop drawer";
   await cmd("Emulation.setDeviceMetricsOverride",{width:1280,height:800,deviceScaleFactor:1,mobile:false});
   await open(".projects-desktop-trigger");
   await js('(() => { const links=document.querySelectorAll(\'[role="dialog"] a\');links[links.length-1].focus();})()');
@@ -162,10 +167,12 @@ try {
   await open(".projects-desktop-trigger");
   await js('document.querySelector(\'[role="dialog"] a[href="/fincalc"]\').click()');
   await closed("projects-desktop-trigger");
+  phase = "mobile drawer";
   await cmd("Emulation.setDeviceMetricsOverride",{width:375,height:760,deviceScaleFactor:1,mobile:true});
   await open(".fundlenz-mobile-menu-trigger");
   await js('document.querySelector(".projects-drawer-backdrop").click()');
   await closed("fundlenz-mobile-menu-trigger");
+  phase = "reduced motion";
   await cmd("Emulation.setEmulatedMedia",{features:[{name:"prefers-reduced-motion",value:"reduce"}]});
   assert.equal(await js('matchMedia("(prefers-reduced-motion: reduce)").matches'), true);
   await open(".fundlenz-mobile-menu-trigger");
@@ -174,7 +181,14 @@ try {
   console.log("PASS: sector lazy/paged rows, filters, keyboard, drawer close/focus, Escape, backdrop, links, reduced motion");
 } finally {
   socket?.close();
-  chrome?.kill();
+  if (chrome) {
+    const exited = chrome.exitCode !== null || chrome.signalCode !== null;
+    if (!exited) {
+      const exit = new Promise(resolve => chrome.once("exit", resolve));
+      chrome.kill();
+      await Promise.race([exit, sleep(1500)]);
+    }
+  }
   await server.close();
-  await rm(directory, {recursive:true,force:true});
+  await rm(directory, {recursive:true,force:true,maxRetries:10,retryDelay:200});
 }
