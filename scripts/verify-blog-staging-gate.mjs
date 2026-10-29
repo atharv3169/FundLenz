@@ -87,7 +87,7 @@ assert.equal(assets.at(-1).path, "/projects/fincalc/core.mjs");
 const stylesheet = await serveStagingRequest(makeRequest("/_next/static/css/style.css"),
   env, app);
 assert.equal(stylesheet.status, 200);
-assert.equal(assets.length, 2);
+assert.equal(assets.length, 3, "The baseline JS, FinCalc JS, and CSS must all use the assets binding");
 const about = await serveStagingRequest(makeRequest("/about"), env, app);
 assert.equal(about.status, 200);
 assert.equal(appRoutes.at(-1).path, "/about");
