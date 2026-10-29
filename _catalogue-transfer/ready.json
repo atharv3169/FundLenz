@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "source_commit": "b3c2b0c8a47e85882772b1e0431ba4e2834f5ecd",
+  "source_tree": "a66d0d7da7082189c7ebc5dadf2c5b16cc3f8220",
+  "required_base": "9e6ee225a4f4bd9a179cf0b7057b34c5d8aa9180",
+  "streams": {
+    "release": {
+      "bytes": 23318771,
+      "sha256": "fe1b4334fc5d1b4150ed5dcee7a69b96c130279bd4cce5d5e4b4485ced26c053",
+      "count": 475
+    },
+    "sources": {
+      "bytes": 3179791,
+      "sha256": "bdda5c27dfe90448d8e21af002768117309dea446a77871a05aa213aeaa0bbc5",
+      "count": 65
+    }
+  }
+}

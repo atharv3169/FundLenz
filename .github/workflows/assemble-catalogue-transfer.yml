@@ -1,0 +1,19 @@
+name: Assemble verified catalogue packets
+on:
+  push:
+    branches: [catalogue-expansion-small-parts]
+    paths: ['_catalogue-transfer/ready.json']
+permissions:
+  contents: write
+jobs:
+  assemble:
+    if: github.repository == 'atharv3169/FundLenz'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: catalogue-expansion-small-parts
+          fetch-depth: 0
+      - name: Verify packets and restore the exact candidate branch
+        run: python3 _catalogue-transfer/assemble.py
