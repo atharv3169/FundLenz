@@ -147,10 +147,10 @@ try {
     assert.equal(await js('document.body.style.overflow'), "hidden");
     await until(() => js('document.activeElement?.hasAttribute("data-close-projects")'));
   }
-  async function closed(triggerClass) {
+  async function closed(triggerClass, expectReturnFocus = true) {
     await until(() => js('!document.querySelector(\'[role="dialog"]\')'));
     assert.equal(await js('document.body.style.overflow'), "");
-    assert.equal(await js('document.activeElement?.classList.contains(' + JSON.stringify(triggerClass) + ')'), true);
+    if (expectReturnFocus) assert.equal(await js('document.activeElement?.classList.contains(' + JSON.stringify(triggerClass) + ')'), true);
   }
   phase = "desktop drawer";
   await cmd("Emulation.setDeviceMetricsOverride",{width:1280,height:800,deviceScaleFactor:1,mobile:false});
@@ -167,7 +167,6 @@ try {
       first:first?.outerHTML.slice(0,120),last:last?.outerHTML.slice(0,120),
       active:document.activeElement?.outerHTML.slice(0,120)};
   })()`);
-  console.log("Drawer Tab focus trap:",focusTrap);
   assert.equal(focusTrap.before,true,"Last navigation control must be focusable");
   assert.equal(focusTrap.focusedFirst,true,"Tab at last navigation control must wrap to first");
   await js('document.activeElement.dispatchEvent(new KeyboardEvent("keydown",{key:"Escape",bubbles:true,cancelable:true}))');
@@ -178,7 +177,7 @@ try {
   await closed("projects-desktop-trigger");
   await open(".projects-desktop-trigger");
   await js('document.querySelector(\'[role="dialog"] a[href="/fincalc"]\').click()');
-  await closed("projects-desktop-trigger");
+  await closed("projects-desktop-trigger", false); // Destination route owns focus after navigation.
   phase = "mobile drawer";
   await cmd("Emulation.setDeviceMetricsOverride",{width:375,height:760,deviceScaleFactor:1,mobile:true});
   await open(".fundlenz-mobile-menu-trigger");
