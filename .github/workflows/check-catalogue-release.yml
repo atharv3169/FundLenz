@@ -1,0 +1,21 @@
+name: Manually requested post-merge expansion checks
+on:
+  push:
+    branches: [catalogue-expansion-small-parts]
+    paths: ['.github/workflows/check-catalogue-release.yml']
+permissions:
+  contents: read
+  actions: write
+jobs:
+  dispatch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Dispatch existing audit-only checks on merged main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: atharv3169/FundLenz
+        run: |
+          gh workflow run gemini-connection.yml --ref main
+          gh workflow run catalogue-daily.yml --ref main -f automated_daily=false -f force_supported_sources=true -f publish_validated_data=false
+          gh workflow run production-health.yml --ref main
