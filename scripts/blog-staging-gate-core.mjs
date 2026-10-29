@@ -1,7 +1,9 @@
 /**
- * FundLenz staging-only HTTP Basic access gate.
- * Never imported by the public FundLenz Worker. No database, payment or identity provider.
- * All content, including static assets, must traverse this code (run_worker_first=true).
+ * FundLenz staging-only access control.
+ * Public preview pages and assets are freely viewable for UI testing.
+ * Private admin pages/APIs retain the HTTP Basic gate, in addition to app-level
+ * authentication. Never imported by the production FundLenz Worker.
+ * All requests still traverse this wrapper (run_worker_first=true).
  */
 const USERNAME = "fundlenz-staging";
 const MIN_SECRET_CHARS = 24;
@@ -48,8 +50,21 @@ async function constantTimeMatch(given, expected) {
   return difference === 0;
 }
 
-/** Return a denial response or null when the request may reach the application. */
+/**
+ * Restrict only private admin areas; never challenge visitors viewing preview pages.
+ * Normalize encoded separators and duplicate slashes to avoid routing bypasses.
+ */
+export function isPrivateStagingPath(pathname) {
+  let decoded;
+  try { decoded = decodeURIComponent(pathname); }
+  catch { return true; }
+  const normalized = decoded.replace(/\\/g, "/").replace(/\/+/g, "/").toLowerCase();
+  return /^(?:\/blogpost\/admin|\/api\/blog\/admin)(?:\/|$)/.test(normalized);
+}
+
+/** Return a denial response or null when a request may reach the application. */
 export async function stagingGate(request, env) {
+  if (!isPrivateStagingPath(new URL(request.url).pathname)) return null;
   const secret = failClosedSecret(env);
   if (!secret) {
     return response("FundLenz staging access is not configured yet.", 503);
@@ -77,8 +92,8 @@ export function forwardWithoutBasicHeader(request) {
 }
 
 /**
- * Authentication MUST happen first. With run_worker_first enabled, static assets
- * must be explicitly fetched from the ASSETS binding after successful auth.
+ * The private admin gate runs before routing. With run_worker_first enabled,
+ * public static assets are fetched explicitly from the ASSETS binding.
  */
 function isStaticAssetPath(pathname) {
   return pathname.startsWith("/_next/static/") ||
@@ -86,7 +101,7 @@ function isStaticAssetPath(pathname) {
     /^\/(?:favicon\.(?:ico|svg|png)|manifest\.webmanifest|robots\.txt|sitemap\.xml)$/.test(pathname);
 }
 
-/** Authentication and routing of every staging request. */
+/** Public preview routing and private admin authentication for staging requests. */
 export async function serveStagingRequest(request, env, applicationFetch) {
   const denial = await stagingGate(request, env);
   if (denial) return denial;
