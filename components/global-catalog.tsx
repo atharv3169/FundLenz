@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { catalogueSourceCheckLabel, catalogueUpdateLabel } from "@/lib/site-metadata";
 import { useFilterPage } from "@/hooks/use-filter-page";
+import { CatalogueReturnLink } from "@/components/catalogue-return-link";
 
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { ArrowUpRight, Check, CheckCircle2, CircleHelp, Download, Globe2, LibraryBig, Search, X } from "lucide-react";
@@ -109,6 +110,7 @@ export default function GlobalCatalog() {
   return <div className="app-shell catalog-shell">
     
     <main className="workspace catalog-workspace">
+      <CatalogueReturnLink />
       <nav className="catalog-market-tabs" aria-label="Catalogue market"><a href="/catalogue-global" aria-current="page"><Globe2 size={16} /> International</a><a href="/catalogue-india">India</a><a href="/catalogue-securities">Stocks & bonds</a></nav><p className="small-note">{catalogueUpdateLabel ? <>Last catalogue update {catalogueUpdateLabel}. </> : null}Original source-check baseline {catalogueSourceCheckLabel}. Record dates differ. <a className="text-link" href="/data/freshness.json" target="_blank" rel="noreferrer">View freshness checks</a></p>
       <div className="catalog-heading"><div><p className="eyebrow">GLOBAL FUND DISCOVERY · OFFICIAL SOURCES</p><h1>A wider world of funds.</h1><p>Explore overseas ETFs, registered fund series and issuer share classes.</p></div><Button variant="outline" onClick={() => setCoverageOpen(v => !v)}><LibraryBig size={16} /> Data coverage</Button></div>
       {error ? <div className="panel catalog-empty" role="alert"><h2>We couldn’t load the international catalogue</h2><p>{error}</p><Button onClick={load}>Try again</Button></div> : !catalog || !stats ? <div className="panel catalog-empty" role="status"><Globe2 size={30} /><h2>Loading the international fund directory…</h2><p>Preparing fund names, ticker symbols and source coverage.</p><Skeleton className="h-4 w-1/2 mx-auto mt-4" /></div> : <>
