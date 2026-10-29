@@ -535,6 +535,12 @@ h1,h2,h3,p { margin: 0; } h1,h2,h3 { line-height: 1.25; letter-spacing: -.025em;
     margin: 0 0 28px !important;
     line-height: 1.7;
   }
+  /* Keep the lower divider near Blog instead of pushing it to the
+     bottom of a full-height mobile drawer. Desktop keeps its footer anchored. */
+  .fundlenz-drawer-footer {
+    margin-top: 14px !important;
+    padding-top: 14px;
+  }
   .portfolio-lab .masthead .projects-desktop-trigger,
   .fincalc-header .projects-desktop-trigger { display: none !important; }
   .portfolio-lab .masthead .fundlenz-mobile-menu-trigger,
