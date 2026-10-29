@@ -18,7 +18,7 @@ export default function FinCalcPage() {
           Fund<span>Lenz</span><span className="brand-divider" /><small>FINCALC</small>
         </Link>
         <div className="masthead-right">
-          <Link href="/catalogue-global" className="catalog-nav-link">Catalogue</Link>
+          <Link href="/catalogue-global" className="catalog-nav-link catalogue-main-link">Catalogue</Link>
           <Link href="/blogpost" className="catalog-nav-link lab-blog-link">Blog</Link>
           <ProjectsDrawer />
           <span className="project-credit inline-flex items-center gap-1.5 whitespace-nowrap">

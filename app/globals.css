@@ -487,3 +487,83 @@ h1,h2,h3,p { margin: 0; } h1,h2,h3 { line-height: 1.25; letter-spacing: -.025em;
   .fincalc-header .lab-blog-link { display: none; }
   .fincalc-header .masthead-action { grid-column: 2; }
 }
+
+/* Creator link: always visibly underlined, including when the utility reset
+   removes text-decoration from navigation links. */
+.masthead .project-credit a[href="/about"],
+.fundlenz-drawer-creator .fundlenz-creator-link {
+  text-decoration-line: underline !important;
+  text-decoration-style: solid;
+  text-decoration-color: #a9c8d3;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.masthead .project-credit a[href="/about"]:hover,
+.fundlenz-drawer-creator .fundlenz-creator-link:hover {
+  text-decoration-color: #8adacc;
+}
+
+/* Shared project menu controls. The mobile trigger deliberately does not use
+   catalog-nav-link, which had forced the desktop button into the mobile grid. */
+.fundlenz-mobile-menu-trigger {
+  display: none;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  border: 1px solid #537080;
+  border-radius: 7px;
+  background: #ffffff0a;
+  color: #dce8f5;
+  cursor: pointer;
+}
+.fundlenz-mobile-menu-trigger:hover { border-color: #8adacc; background: #ffffff12; }
+.fundlenz-drawer-creator,
+.fundlenz-drawer-mobile-links { display: none; }
+@media screen and (max-width: 800px) {
+  .fundlenz-drawer-creator,
+  .fundlenz-drawer-mobile-links { display: block; }
+  .portfolio-lab .masthead .projects-desktop-trigger,
+  .fincalc-header .projects-desktop-trigger { display: none !important; }
+  .portfolio-lab .masthead .fundlenz-mobile-menu-trigger,
+  .fincalc-header .fundlenz-mobile-menu-trigger { display: inline-flex; }
+
+  /* FinCalc uses the same one-row three-column mobile header as Portfolio Lab. */
+  .fincalc-header {
+    grid-template-columns: minmax(0, 1fr) max-content 44px;
+    column-gap: 7px;
+    padding: 9px 12px;
+  }
+  .fincalc-header .masthead-right .catalogue-main-link {
+    display: inline-flex !important;
+    grid-column: 2;
+    min-width: 0;
+    min-height: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 10px;
+    font-size: 12px;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+  .fincalc-header .masthead-right .lab-blog-link,
+  .fincalc-header .masthead-right .masthead-action {
+    display: none !important;
+  }
+  .fincalc-header .fundlenz-mobile-menu-trigger {
+    grid-column: 3;
+    justify-self: end;
+  }
+}
+@media screen and (max-width: 360px) {
+  .fincalc-header { column-gap: 5px; padding-left: 8px; padding-right: 8px; }
+  .fincalc-header .brand { font-size: 19px; }
+  .fincalc-header .brand-mark { width: 31px; height: 31px; margin-right: 6px; }
+  .fincalc-header .masthead-right .catalogue-main-link {
+    padding-left: 7px;
+    padding-right: 7px;
+    font-size: 11px;
+  }
+}

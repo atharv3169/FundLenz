@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, Calculator, Layers3, ScanSearch, X } from "lucide-react";
+import { ArrowRight, Calculator, Layers3, Menu, ScanSearch, X } from "lucide-react";
 
 const focusable = 'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
@@ -13,11 +13,13 @@ export function ProjectsDrawer() {
   const currentPath = usePathname();
   const isFinCalc = currentPath === "/fincalc";
   const trigger = useRef<HTMLButtonElement>(null);
+  const mobileTrigger = useRef<HTMLButtonElement>(null);
   const dialog = useRef<HTMLDivElement>(null);
 
   function close() {
     setOpen(false);
-    trigger.current?.focus();
+    const useMobileTrigger = typeof window !== "undefined" && window.matchMedia("(max-width: 800px)").matches;
+    (useMobileTrigger ? mobileTrigger.current : trigger.current)?.focus();
   }
   useEffect(() => {
     if (!open) return;
@@ -57,13 +59,26 @@ export function ProjectsDrawer() {
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-controls="fundlenz-projects-panel"
-        className="catalog-nav-link hidden min-[1024px]:inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap transition-colors hover:border-[#8adacc] hover:bg-white/[0.06] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc]"
+        className="catalog-nav-link projects-desktop-trigger hidden min-[801px]:inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap transition-colors hover:border-[#8adacc] hover:bg-white/[0.06] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc]"
       >
         <Layers3 size={14} strokeWidth={1.8} aria-hidden="true" />
         More projects
       </button>
+      <button
+        ref={mobileTrigger}
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label="Open navigation menu"
+        title="Menu"
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        aria-controls="fundlenz-projects-panel"
+        className="fundlenz-mobile-menu-trigger focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc]"
+      >
+        <Menu size={22} strokeWidth={1.9} aria-hidden="true" />
+      </button>
       {open && createPortal(
-        <div className="fixed inset-0 z-[100] hidden min-[1024px]:block">
+        <div className="fixed inset-0 z-[100]">
           <button type="button" aria-label="Close projects menu" tabIndex={-1}
             className="absolute inset-0 h-full w-full bg-[#091e2c]/65 backdrop-blur-[2px]"
             onClick={close} />
@@ -71,7 +86,10 @@ export function ProjectsDrawer() {
             aria-labelledby="fundlenz-projects-heading"
             className="absolute inset-y-0 right-0 flex w-[min(380px,90vw)] flex-col overflow-y-auto border-l border-[#385d6c] bg-[#102c40] px-6 py-7 text-white shadow-2xl">
             <div className="flex items-start justify-between gap-4">
-              <div>
+              <div className="min-w-0">
+                <p className="fundlenz-drawer-creator mb-5 text-[13px] leading-6 text-[#b6ccd5]">
+                  A project by <Link href="/about" onClick={close} className="fundlenz-creator-link font-semibold text-[#e4f2f4] hover:text-[#8adacc]">Atharva Sahu</Link>
+                </p>
                 <div className="mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.13em] text-[#8adacc]">
                   <Layers3 size={14} aria-hidden="true" /> FundLenz projects
                 </div>
@@ -108,6 +126,11 @@ export function ProjectsDrawer() {
                   <span className="mt-1 block text-[13px] leading-5 text-[#b6cad5]">Compound interest, EMI, CAGR, present value and loan schedules.</span>
                 </div>
                 <ArrowRight size={16} aria-hidden="true" className="mt-4 shrink-0 text-[#a3d7cc] transition group-hover:translate-x-0.5" />
+              </Link>
+            </nav>
+            <nav aria-label="Other site pages" className="fundlenz-drawer-mobile-links mt-5 border-t border-[#355569] pt-4">
+              <Link href="/blogpost" onClick={close} className="flex min-h-11 items-center justify-between rounded-[7px] px-3 text-[14px] font-medium text-[#dce7ec] hover:bg-[#24495a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc]">
+                Blog <ArrowRight size={16} aria-hidden="true" />
               </Link>
             </nav>
             <div className="mt-auto border-t border-[#355569] pt-5 text-[13px] leading-6 text-[#9db4c1]">
