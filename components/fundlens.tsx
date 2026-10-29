@@ -2,8 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import blogNavStyles from "./fundlens-blog-nav.module.css";
-import { ProjectsDrawer } from "./projects-drawer";
 import { catalogueUpdateLabel } from "@/lib/site-metadata";
 import { LEGAL_CAPTURE_EVENT, LEGAL_LAB_KEY, LEGAL_SOURCE_KEY, validLegalSource } from "@/lib/legal-navigation-state";
 import { flushSync } from "react-dom";
@@ -194,8 +192,8 @@ export default function FundLenz() {
     return () => lifecycle.abort();
   }, []);
 
-  return <div className={`app-shell portfolio-lab ${blogNavStyles.labShell}`} aria-busy={loadingOfficial}>
-    <header className="masthead"><a className="brand" href="#" aria-label="FundLenz home" onClick={e => { e.preventDefault(); setTab("overview"); }}><span className="brand-mark"><ScanSearch size={25} strokeWidth={1.7} /></span>Fund<span>Lenz</span><span className="brand-divider" /><small>PORTFOLIO LAB</small></a><div className="masthead-right"><a className="catalog-nav-link catalogue-main-link" href="/catalogue-global">Catalogue</a><Link className="catalog-nav-link lab-blog-link" href="/blogpost">Blog</Link><ProjectsDrawer /><span className="project-credit inline-flex items-center gap-1.5 whitespace-nowrap">A project by <Link href="/about" className="font-medium text-[#dce7ec] underline decoration-[#9ab5c2] underline-offset-[3px] hover:text-[#8adacc] hover:decoration-[#8adacc] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc]">Atharva Sahu</Link></span></div></header>
+  return <div className="app-shell portfolio-lab" aria-busy={loadingOfficial}>
+    
     <div className="workspace">
       <div className="intro"><div><div className="eyebrow"><span className="live-dot" /> LOOK THROUGH THE FUND. UNDERSTAND THE PORTFOLIO.</div><h1>See what you really hold.</h1><p>Uncover shared stocks. Explore concentration. Test the what-ifs.</p></div><div className="intro-meta"><span className={`mode-badge ${data.mode !== "demo" ? "imported" : ""}`}><FlaskConical size={14} />{data.mode === "demo" ? "Illustrative data" : data.mode === "official" ? "Official fund holdings" : "User-imported data"}</span><span>Snapshot · {snapshotLabel}</span><span className="catalogue-update-label"
   title="Date of the most recent published, independently verified catalogue data change. Individual fund disclosure dates may be older.">

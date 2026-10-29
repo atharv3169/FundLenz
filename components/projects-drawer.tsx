@@ -12,6 +12,7 @@ export function ProjectsDrawer() {
   const [open, setOpen] = useState(false);
   const currentPath = usePathname();
   const isFinCalc = currentPath === "/fincalc";
+  const isPortfolioLab = currentPath === "/";
   const trigger = useRef<HTMLButtonElement>(null);
   const mobileTrigger = useRef<HTMLButtonElement>(null);
   const dialog = useRef<HTMLDivElement>(null);
@@ -103,8 +104,8 @@ export function ProjectsDrawer() {
               </button>
             </div>
             <nav aria-label="FundLenz projects" className="mt-7 grid gap-3">
-              <Link href="/" onClick={close} aria-current={!isFinCalc ? "page" : undefined}
-                className={`group flex items-start gap-3 rounded-[8px] border p-4 transition hover:border-[#8adacc] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc] ${!isFinCalc ? "border-[#537080] bg-[#234d57]" : "border-[#385766] bg-white/[0.04]"}`}>
+              <Link href="/" onClick={close} aria-current={isPortfolioLab ? "page" : undefined}
+                className={`group flex items-start gap-3 rounded-[8px] border p-4 transition hover:border-[#8adacc] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc] ${isPortfolioLab ? "border-[#537080] bg-[#234d57]" : "border-[#385766] bg-white/[0.04]"}`}>
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[7px] bg-[#254759] text-[#b6f1e6]">
                   <ScanSearch size={18} aria-hidden="true" />
                 </div>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LegalLink } from "@/components/legal-navigation";
+import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
+        <SiteHeader />
         {children}
         <footer className="legal-footer" aria-label="FundLenz legal information">
           <nav aria-label="Legal links">

@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import type { Metadata } from "next";
 import { env } from "cloudflare:workers";
 import { BlogPaper } from "@/components/blog/blog-paper";
-import { BlogSiteFooter, BlogSiteHeader } from "@/components/blog/blog-site-chrome";
+import { BlogSiteFooter } from "@/components/blog/blog-site-chrome";
 import { readPublished } from "@/lib/blog-publication-store";
 import { readPublicHomepageCopy } from "@/lib/blog-public-homepage";
 import type { BlogAdminDatabase } from "@/lib/blog-admin-state";
@@ -41,7 +41,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const publishedUrl = host && ["fundlenz.com", "www.fundlenz.com", "fundlenz.atharvsahu711.workers.dev"].includes(host)
     ? "https://" + host + "/blogpost/" + article.slug : undefined;
   return <div className={styles.shell}>
-    <BlogSiteHeader/>
     <main className={styles.articlePage}>
       <Link href="/blogpost" className={styles.backToBlog} aria-label="Back to FundLenz blog">
         <span aria-hidden="true">←</span> Back to blog

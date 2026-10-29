@@ -152,13 +152,13 @@ assert.equal(await editor.requireBlogEditor(request(worker)), prodDb);
 // A public navigation link must be visible on the exact reviewed Worker and
 // future domain hostnames; linking does not grant unauthenticated admin access.
 const blogHome = readFileSync("app/blogpost/page.tsx", "utf8");
-const blogHeader = readFileSync("components/blog/blog-site-chrome.tsx", "utf8");
-assert.match(blogHome, /showAdmin=\{host !== null && isReviewedEditorHost\(host\)\}/,
-  "Homepage must render Admin link on both production and staging Worker URLs.");
-assert.match(blogHeader, /href="\/blogpost\/admin"/,
-  "Admin navigation must open the existing protected editor login.");
-assert.match(blogHeader, /\{showAdmin && <Link/,
-  "Only reviewed blog hosts should render the Admin navigation.");
+assert.match(blogHome, /host && isReviewedEditorHost\(host\) && <nav/,
+  "Blog Admin access must remain limited to reviewed production and staging hosts.");
+assert.match(blogHome, /href="\/blogpost\/admin"/,
+  "Editor access must open the same protected admin login route.");
+const rootLayout = readFileSync("app/layout.tsx", "utf8");
+assert.match(rootLayout, /<SiteHeader \/>/,
+  "All pages must use the shared site-wide navigation header.");
 assert.equal(policy.isReviewedEditorHost("fundlenz.com"), true);
 assert.equal(policy.isReviewedEditorHost("evil.fundlenz.com"), false);
 
