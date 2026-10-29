@@ -15,11 +15,11 @@ assert.match(mobile, /grid-template-areas: "brand catalogue blog menu";/,
   "Brand, Catalogue, Blog, and menu must appear in that order on mobile");
 assert.match(mobile, /grid-template-columns: max-content minmax\(0, 1\.5fr\) minmax\(0, \.85fr\) 44px;/,
   "Reserve space for the logo, expand Catalogue and Blog, and keep the 44px menu");
-assert.match(mobile, /grid-area: catalogue;[\s\S]*?height: 42px;[\s\S]*?min-height: 42px;/,
-  "Catalogue border must be 42px high on mobile");
-assert.match(mobile, /grid-area: blog;[\s\S]*?min-height: 42px;[\s\S]*?height: 42px;/,
-  "Blog border must be 42px high on mobile");
-assert.match(mobile, /inset: -1px 0;/,
+assert.match(mobile, /grid-area: catalogue;[\s\S]*?height: 40px;[\s\S]*?min-height: 40px;/,
+  "Catalogue border must be 40px high on mobile");
+assert.match(mobile, /grid-area: blog;[\s\S]*?min-height: 40px;[\s\S]*?height: 40px;/,
+  "Blog border must be 40px high on mobile");
+assert.match(mobile, /inset: -2px 0;/,
   "Both shortened buttons retain at least a 44px effective touch area");
 assert.match(mobile, /column-gap: 12px;/,
   "Subtly enlarge spacing between logo and action buttons on regular phones");
