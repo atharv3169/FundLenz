@@ -613,6 +613,9 @@ h1,h2,h3,p { margin: 0; } h1,h2,h3 { line-height: 1.25; letter-spacing: -.025em;
 .sector-stocks { list-style: none; margin: 0; padding: 0 16px 8px; background: #f8fbfc; }
 .sector-stocks li { display: flex; justify-content: space-between; align-items: start; gap: 12px; padding: 10px 0; border-bottom: 1px solid #e6eef2; font-size: 11px; }
 .sector-stocks li:last-child { border-bottom: 0; }
+.sector-show-more { display: block; width: 100%; padding: 11px 16px; text-align: left; font-size: 12px; color: #176b79; background: #f8fbfc; border-top: 1px solid #e6eef2; }
+.sector-show-more:hover { background: #edf6f6; }
+.sector-show-more:focus-visible { outline: 2px solid #087f8c; outline-offset: -3px; }
 .sector-stocks li > span:first-child { min-width: 0; overflow-wrap: anywhere; }
 .sector-stocks strong { font-weight: 550; }
 .sector-stocks small { display: block; color: #748996; margin-top: 2px; font-size: 10px; }

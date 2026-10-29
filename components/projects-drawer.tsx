@@ -11,6 +11,7 @@ const focusable = 'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"]
 export function ProjectsDrawer() {
   const [open, setOpen] = useState(false);
   const [closing, setClosing] = useState(false);
+  const closingRef = useRef(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const currentPath = usePathname();
   const isFinCalc = currentPath === "/fincalc";
@@ -21,16 +22,20 @@ export function ProjectsDrawer() {
 
   function show() {
     if (closeTimer.current) clearTimeout(closeTimer.current);
+    closingRef.current = false;
     setClosing(false);
     setOpen(true);
   }
   function close() {
+    if (closingRef.current) return; // Ignore repeated Escape/backdrop/link closes.
+    closingRef.current = true;
     if (closeTimer.current) clearTimeout(closeTimer.current);
     setClosing(true);
     const delay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 240;
     closeTimer.current = setTimeout(() => {
       setOpen(false);
       setClosing(false);
+      closingRef.current = false;
       closeTimer.current = null;
       const useMobileTrigger = window.matchMedia("(max-width: 800px)").matches;
       (useMobileTrigger ? mobileTrigger.current : trigger.current)?.focus();

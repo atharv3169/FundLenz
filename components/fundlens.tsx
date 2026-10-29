@@ -9,6 +9,7 @@ import { ArrowDownToLine, ArrowRight, ArrowUpRight, BarChart3, Check, ChevronRig
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SectorExposureGroup } from "@/components/sector-exposure-group";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
@@ -232,19 +233,7 @@ export default function FundLenz() {
               <section className="panel sector-panel" aria-label="Sector exposure">
                 <PanelTitle title="Sector exposure" aside={<span className="small-note">% of portfolio</span>} />
                 <p className="sector-hint">Expand a sector to see its stocks.</p>
-                {a.sectors.map((s, i) => <details className="sector-group" key={s.name}>
-                  <summary className="sector-row">
-                    <span>{s.name}</span>
-                    <div className="bar-track"><div style={{ width: `${s.weight * 100}%`, background: COLORS[i % COLORS.length] }} /></div>
-                    <strong>{pct(s.weight, 2)}</strong><ChevronRight size={14} aria-hidden="true" />
-                  </summary>
-                  <ul className="sector-stocks" aria-label={`${s.name} stocks`}>
-                    {a.stocks.filter(stock => stock.sector === s.name).map(stock => <li key={stock.id}>
-                      <span><strong>{stock.name}</strong><small>{stock.id}</small></span>
-                      <span className="sector-stock-value"><strong>{pct(stock.weight, 2)}</strong><small>{money(stock.value)}</small></span>
-                    </li>)}
-                  </ul>
-                </details>)}
+                {a.sectors.map((s, i) => <SectorExposureGroup key={s.name} sector={s} stocks={a.stocks} color={COLORS[i % COLORS.length]} money={money} />)}
                 {!a.sectors.length && <p className="help-text">Sector exposure appears after you enter an amount.</p>}
               </section>
               </div>
