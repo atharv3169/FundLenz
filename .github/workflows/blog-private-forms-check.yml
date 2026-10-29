@@ -8,6 +8,8 @@ on:
       - "hooks/**"
       - "lib/**"
       - "scripts/verify-*.mjs"
+      - "public/projects/fincalc/**"
+      - "components/catalogue-return-link.tsx"
       - "app/api/blog/**"
       - "app/blogpost/**"
       - "components/blog/**"
@@ -99,6 +101,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Repository code lint
         run: pnpm run lint
+      - name: FinCalc examples and catalogue return links
+        run: node scripts/verify-fincalc-examples.mjs
       - name: Security unit checks
         run: node scripts/verify-blog-forms.mjs
       - name: Editable homepage validation checks

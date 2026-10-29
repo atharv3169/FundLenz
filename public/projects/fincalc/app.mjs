@@ -1,6 +1,6 @@
 import {
-  compoundInterest, loanEmi, amortizationSchedule, investmentCagr,
-  presentValue, format, csv, scheduleCsv, FinancialInputError,
+  compoundInterest, amortizationSchedule, investmentCagr,
+  presentValue, number, format, csv, scheduleCsv, FinancialInputError,
 } from "./core.mjs";
 
 const configurations = {
@@ -120,6 +120,7 @@ function renderTool(mode) {
     fields.append(wrapper);
   }
   clearResults();
+  showCalculation(false);
 }
 function calculate(mode, values) {
   if (mode === "compound") {
@@ -142,12 +143,12 @@ function calculate(mode, values) {
     const r = investmentCagr(values);
     return { value: r.cagr, display: format(r.cagr, true),
       detail: "Annualized compound percentage change.",
-      stats: [["Growth factor", format(Number(values.endValue) / Number(values.startValue)) + "×"]] };
+      stats: [["Growth factor", format(number(values.endValue, "Ending value") / number(values.startValue, "Starting value")) + "×"]] };
   }
   const r = presentValue(values);
   return { value: r.presentValue, display: format(r.presentValue),
     detail: "Equivalent value today under the chosen discount rate.",
-    stats: [["Future amount", format(Number(values.futureValue))]] };
+    stats: [["Future amount", format(number(values.futureValue, "Future value"))]] };
 }
 function saveHistory(mode, values, result) {
   history.unshift({ timestamp_utc: new Date().toISOString(), calculator: configurations[mode].title,
@@ -178,9 +179,9 @@ function download(name, content) {
 }
 buttons.forEach(button => button.addEventListener("click", () => renderTool(button.dataset.mode)));
 document.querySelector("#reset").addEventListener("click", () => renderTool(active));
-form.addEventListener("submit", event => {
-  event.preventDefault();
+function showCalculation(recordHistory) {
   error.hidden = true;
+  error.textContent = "";
   resultExtra.replaceChildren();
   currentSchedule = null;
   scheduleButton.hidden = true;
@@ -189,11 +190,12 @@ form.addEventListener("submit", event => {
     const result = calculate(active, values);
     document.querySelector("#result-title").textContent = configurations[active].result;
     document.querySelector("#result-value").textContent = result.display;
-    document.querySelector("#result-support").textContent = result.detail;
-    document.querySelector("#result-state").textContent = "CALCULATED";
+    document.querySelector("#result-support").textContent = recordHistory
+      ? result.detail : "Example using the prefilled values. " + result.detail;
+    document.querySelector("#result-state").textContent = recordHistory ? "CALCULATED" : "EXAMPLE";
     result.stats.forEach(([label, value]) => addStat(label, value));
     scheduleButton.hidden = active !== "emi";
-    saveHistory(active, values, result);
+    if (recordHistory) saveHistory(active, values, result);
   } catch (problem) {
     document.querySelector("#result-state").textContent = "INPUT ERROR";
     document.querySelector("#result-value").textContent = "—";
@@ -201,7 +203,12 @@ form.addEventListener("submit", event => {
     error.textContent = problem instanceof FinancialInputError ? problem.message : "Could not calculate. Check your inputs.";
     error.hidden = false;
   }
+}
+form.addEventListener("submit", event => {
+  event.preventDefault();
+  showCalculation(true);
 });
+fields.addEventListener("input", () => clearResults());
 scheduleButton.addEventListener("click", () => {
   if (currentSchedule) download("fincalc-amortization.csv", scheduleCsv(currentSchedule));
 });

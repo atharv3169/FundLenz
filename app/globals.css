@@ -584,3 +584,14 @@ h1,h2,h3,p { margin: 0; } h1,h2,h3 { line-height: 1.25; letter-spacing: -.025em;
     font-size: 11px;
   }
 }
+
+/* Shared catalogue return control; lives above the market tabs on every catalogue. */
+.catalog-return-link {
+  display: inline-flex; align-items: center; gap: 8px; width: fit-content;
+  min-height: 38px; margin: 0 0 17px; padding: 7px 12px;
+  border: 1px solid #d0dee6; border-radius: 7px;
+  color: #315d70; background: #fff; font-size: 13px; font-weight: 600; line-height: 1.25;
+}
+.catalog-return-link:hover { background: #e9f3f5; border-color: #94bec4; color: #144b61; }
+.catalog-return-link:focus-visible { outline: 2px solid #087f8c; outline-offset: 3px; }
+@media (max-width: 800px) { .catalog-return-link { min-height: 42px; margin-bottom: 14px; } }

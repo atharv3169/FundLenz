@@ -11,10 +11,11 @@ export class FinancialInputError extends Error {
 }
 export function number(value, label, { min = -AMOUNT_LIMIT, max = AMOUNT_LIMIT } = {}) {
   const text = String(value ?? "").trim();
-  if (!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(text)) {
+  // Visible examples use commas; only accept correctly grouped thousands.
+  if (!/^[+-]?(?:(?:\d+(?:\.\d*)?|\.\d+)|\d{1,3}(?:,\d{3})+(?:\.\d*)?)$/.test(text)) {
     throw new FinancialInputError(label + " must be a finite number.");
   }
-  const n = Number(text);
+  const n = Number(text.replace(/,/g, ""));
   if (!Number.isFinite(n) || n < min || n > max) {
     throw new FinancialInputError(label + " must be between " + min + " and " + max + ".");
   }

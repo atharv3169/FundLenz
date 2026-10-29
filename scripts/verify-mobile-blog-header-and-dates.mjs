@@ -89,4 +89,7 @@ assert.match(nav, /white-space: normal;/);
 assert.match(nav, /data-section="blog"/);
 assert.match(nav, /@media screen and \(min-width: 801px\)/);
 assert.match(header, /project-credit[\s\S]*?href="\/about"/);
+for (const file of ["fund-catalog","global-catalog","securities-catalog"]) {
+  assert.match(read("components/" + file + ".tsx"), /<CatalogueReturnLink \/>/);
+}
 console.log("PASS: route-specific header buttons, 35px mobile controls, linked desktop creator and unchanged financial data");
