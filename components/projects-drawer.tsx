@@ -3,12 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowRight, Calculator, Layers3, ScanSearch, X } from "lucide-react";
 
 const focusable = 'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
 export function ProjectsDrawer() {
   const [open, setOpen] = useState(false);
+  const currentPath = usePathname();
+  const isFinCalc = currentPath === "/fincalc";
   const trigger = useRef<HTMLButtonElement>(null);
   const dialog = useRef<HTMLDivElement>(null);
 
@@ -82,8 +85,8 @@ export function ProjectsDrawer() {
               </button>
             </div>
             <nav aria-label="FundLenz projects" className="mt-7 grid gap-3">
-              <Link href="/" onClick={close}
-                className="group flex items-start gap-3 rounded-[8px] border border-[#537080] bg-white/[0.06] p-4 transition hover:border-[#8adacc] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc]">
+              <Link href="/" onClick={close} aria-current={!isFinCalc ? "page" : undefined}
+                className={`group flex items-start gap-3 rounded-[8px] border p-4 transition hover:border-[#8adacc] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc] ${!isFinCalc ? "border-[#537080] bg-[#234d57]" : "border-[#385766] bg-white/[0.04]"}`}>
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[7px] bg-[#254759] text-[#b6f1e6]">
                   <ScanSearch size={18} aria-hidden="true" />
                 </div>
@@ -94,8 +97,8 @@ export function ProjectsDrawer() {
                 </div>
                 <ArrowRight size={16} aria-hidden="true" className="mt-4 shrink-0 text-[#a3d7cc] transition group-hover:translate-x-0.5" />
               </Link>
-              <Link href="/fincalc" onClick={close}
-                className="group flex items-start gap-3 rounded-[8px] border border-[#537080] bg-white/[0.04] p-4 transition hover:border-[#8adacc] hover:bg-[#24495a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc]">
+              <Link href="/fincalc" onClick={close} aria-current={isFinCalc ? "page" : undefined}
+                className={`group flex items-start gap-3 rounded-[8px] border p-4 transition hover:border-[#8adacc] hover:bg-[#24495a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc] ${isFinCalc ? "border-[#537080] bg-[#234d57]" : "border-[#385766] bg-white/[0.04]"}`}>
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[7px] bg-[#254759] text-[#a9d9dc]">
                   <Calculator size={18} aria-hidden="true" />
                 </div>
