@@ -98,6 +98,7 @@ export function forwardWithoutBasicHeader(request) {
 function isStaticAssetPath(pathname) {
   return pathname.startsWith("/_next/static/") ||
     pathname.startsWith("/assets/") ||
+    pathname.startsWith("/projects/fincalc/") ||
     /^\/(?:favicon\.(?:ico|svg|png)|manifest\.webmanifest|robots\.txt|sitemap\.xml)$/.test(pathname);
 }
 
