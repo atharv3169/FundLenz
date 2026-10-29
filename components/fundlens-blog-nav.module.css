@@ -4,9 +4,9 @@
 @media screen and (max-width: 800px) {
   .labShell:global(.portfolio-lab) > :global(.masthead) {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) max-content max-content 44px;
+    grid-template-columns: max-content minmax(0, 1.5fr) minmax(0, .85fr) 44px;
     grid-template-areas: "brand catalogue blog menu";
-    column-gap: 6px;
+    column-gap: 10px;
     row-gap: 0;
     padding: 9px 12px;
     min-height: 60px;
@@ -19,13 +19,13 @@
   .labShell:global(.portfolio-lab) :global(.masthead .catalogue-main-link) {
     grid-area: catalogue;
     display: inline-flex;
-    width: auto;
+    width: 100%;
     height: 44px;
     min-height: 44px;
     min-width: 0;
     align-items: center;
     justify-content: center;
-    justify-self: end;
+    justify-self: stretch;
     padding: 8px 10px;
     font-size: .75rem;
     line-height: 1.1;
@@ -36,9 +36,11 @@
     display: inline-flex !important;
     min-height: 44px;
     height: 44px;
+    width: 100%;
+    min-width: 0;
     align-items: center;
     justify-content: center;
-    justify-self: end;
+    justify-self: stretch;
     padding: 8px 10px;
     font-size: .75rem;
     line-height: 1.1;
@@ -55,6 +57,7 @@
 }
 @media screen and (max-width: 360px) {
   .labShell:global(.portfolio-lab) > :global(.masthead) {
+    grid-template-columns: max-content minmax(0, 1.5fr) minmax(0, .8fr) 44px;
     column-gap: 4px;
     padding-left: 8px;
     padding-right: 8px;
