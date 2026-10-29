@@ -1,0 +1,32 @@
+name: Reconcile catalogue expansion with latest daily release
+on:
+  push:
+    branches: [catalogue-expansion-small-parts]
+    paths: ['_catalogue-transfer/reconcile.py']
+permissions:
+  contents: write
+jobs:
+  reconcile:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+      - name: Reconcile exact reviewed snapshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp _catalogue-transfer/reconcile.py "$RUNNER_TEMP/reconcile.py"
+          git checkout -b catalogue-expansion-reconciled-20261029 b3c2b0c8a47e85882772b1e0431ba4e2834f5ecd
+          git config user.name 'Atharva Sahu'
+          git config user.email '130219379+atharv3169@users.noreply.github.com'
+          git update-ref refs/remotes/github/main e3356396553bace9b3ca769a64e9d6ab1f032d14
+          test "$(git rev-parse origin/main)" = e3356396553bace9b3ca769a64e9d6ab1f032d14
+          git merge --no-commit --no-ff github/main || test -f .git/MERGE_HEAD
+          python3 "$RUNNER_TEMP/reconcile.py"
+          git diff --name-only --diff-filter=U | tee "$RUNNER_TEMP/conflicts"
+          test ! -s "$RUNNER_TEMP/conflicts"
+          python3 scripts/automation/verify-bootstrap.py
+          git commit -m 'Reconcile catalogue expansion with 29 October daily release'
+          git push origin HEAD:refs/heads/catalogue-expansion-reconciled-20261029
