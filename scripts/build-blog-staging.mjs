@@ -24,6 +24,12 @@ if (production.name !== "fundlenz" || staging.name !== "fundlenz-blog-staging" |
   throw new Error("Staging resources do not match the owner-reviewed configuration.");
 }
 
+const gateTests = spawnSync(process.execPath, ["scripts/verify-blog-staging-gate.mjs"], {
+  stdio: "inherit", env: process.env,
+});
+if (gateTests.error) throw gateTests.error;
+if (gateTests.status !== 0) throw new Error("Staging access-control tests failed; refusing build and deploy.");
+
 const command = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
 const result = spawnSync(command, ["run", "build"], { stdio: "inherit", env: process.env });
 if (result.error) throw result.error;
@@ -57,8 +63,9 @@ if (generated.name !== production.name || generated.routes || generated.route ||
   throw new Error("Unexpected production-generated deployment settings; refusing staging conversion.");
 }
 
-// Inject the staging-only access gate at the Worker's true entrypoint, so it runs
-// before ALL application routes or assets. Never modify the production source entrypoint.
+// Apply the staging-only router at the Worker's true entrypoint for all requests.
+// Public preview routes remain open; admin paths retain the private gate.
+// Never modify the production source entrypoint.
 const workerEntry = generated.main;
 if (typeof workerEntry !== "string" ||
     !/^(?:\.\/)?[a-zA-Z0-9_./-]+\.js$/.test(workerEntry) ||
@@ -93,7 +100,7 @@ writeFileSync(wrapper, [
   "",
 ].join("\n"), "utf8");
 generated.main = "./blog-staging-gate-entry.mjs";
-// Without this, Cloudflare serves /_next/static assets before the Worker sees auth.
+// Route assets through the staging wrapper so private paths and noindex apply consistently.
 generated.assets.run_worker_first = true;
 
 // Rewrite only the generated, ignored build artifact. It is NOT a tracked repository file.
@@ -109,5 +116,5 @@ delete generated.triggers;
 
 writeFileSync(outputPath, JSON.stringify(generated, null, 2) + "\n", "utf8");
 console.log("Staging artifact prepared for " + staging.name + " with D1 binding " + expectedDB);
-console.log("Staging Basic Auth gate applied at Worker entrypoint; all static assets run Worker first.");
+console.log("Public staging preview enabled; private admin paths retain Basic Auth.");
 console.log("PASS: original source configuration left unchanged; NO deployment occurred.");
