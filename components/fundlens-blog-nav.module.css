@@ -6,7 +6,7 @@
     display: grid;
     grid-template-columns: max-content minmax(0, 1.5fr) minmax(0, .85fr) 44px;
     grid-template-areas: "brand catalogue blog menu";
-    column-gap: 10px;
+    column-gap: 12px;
     row-gap: 0;
     padding: 9px 12px;
     min-height: 60px;
@@ -18,33 +18,43 @@
   }
   .labShell:global(.portfolio-lab) :global(.masthead .catalogue-main-link) {
     grid-area: catalogue;
+    position: relative;
     display: inline-flex;
     width: 100%;
-    height: 44px;
-    min-height: 44px;
+    height: 42px;
+    min-height: 42px;
     min-width: 0;
     align-items: center;
     justify-content: center;
     justify-self: stretch;
-    padding: 8px 10px;
+    padding: 7px 10px;
     font-size: .75rem;
     line-height: 1.1;
     white-space: nowrap;
   }
   .labShell:global(.portfolio-lab) :global(.masthead .lab-blog-link) {
     grid-area: blog;
+    position: relative;
     display: inline-flex !important;
-    min-height: 44px;
-    height: 44px;
+    min-height: 42px;
+    height: 42px;
     width: 100%;
     min-width: 0;
     align-items: center;
     justify-content: center;
     justify-self: stretch;
-    padding: 8px 10px;
+    padding: 7px 10px;
     font-size: .75rem;
     line-height: 1.1;
     white-space: nowrap;
+  }
+  /* Border is 42px high, while a transparent 1px vertical extension
+     keeps the effective tap target 44px without changing desktop styles. */
+  .labShell:global(.portfolio-lab) :global(.masthead .catalogue-main-link)::after,
+  .labShell:global(.portfolio-lab) :global(.masthead .lab-blog-link)::after {
+    content: "";
+    position: absolute;
+    inset: -1px 0;
   }
   .labShell:global(.portfolio-lab) :global(.masthead .projects-desktop-trigger) {
     display: none !important;
@@ -55,10 +65,16 @@
     display: inline-flex;
   }
 }
+/* Give the label text room on narrower handsets without changing its size. */
+@media screen and (min-width: 361px) and (max-width: 380px) {
+  .labShell:global(.portfolio-lab) > :global(.masthead) {
+    column-gap: 8px;
+  }
+}
 @media screen and (max-width: 360px) {
   .labShell:global(.portfolio-lab) > :global(.masthead) {
     grid-template-columns: max-content minmax(0, 1.5fr) minmax(0, .8fr) 44px;
-    column-gap: 4px;
+    column-gap: 5px;
     padding-left: 8px;
     padding-right: 8px;
   }
