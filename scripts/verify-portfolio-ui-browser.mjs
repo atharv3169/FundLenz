@@ -155,9 +155,21 @@ try {
   phase = "desktop drawer";
   await cmd("Emulation.setDeviceMetricsOverride",{width:1280,height:800,deviceScaleFactor:1,mobile:false});
   await open(".projects-desktop-trigger");
-  await js('(() => { const links=document.querySelectorAll(\'[role="dialog"] a\');links[links.length-1].focus();})()');
-  await js('document.activeElement.dispatchEvent(new KeyboardEvent("keydown",{key:"Tab",bubbles:true,cancelable:true}))');
-  assert.equal(await js('document.activeElement?.hasAttribute("data-close-projects")'), true);
+  const focusTrap = await js(`(() => {
+    const dialog=document.querySelector('[role="dialog"]');
+    const controls=[...dialog.querySelectorAll('a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])')];
+    const first=controls[0], last=controls[controls.length-1];
+    last.focus();
+    const before=document.activeElement===last;
+    const event=new KeyboardEvent("keydown",{key:"Tab",bubbles:true,cancelable:true});
+    document.dispatchEvent(event);
+    return {before,prevented:event.defaultPrevented,focusedFirst:document.activeElement===first,
+      first:first?.outerHTML.slice(0,120),last:last?.outerHTML.slice(0,120),
+      active:document.activeElement?.outerHTML.slice(0,120)};
+  })()`);
+  console.log("Drawer Tab focus trap:",focusTrap);
+  assert.equal(focusTrap.before,true,"Last navigation control must be focusable");
+  assert.equal(focusTrap.focusedFirst,true,"Tab at last navigation control must wrap to first");
   await js('document.activeElement.dispatchEvent(new KeyboardEvent("keydown",{key:"Escape",bubbles:true,cancelable:true}))');
   assert.equal(await js('document.querySelector(".projects-drawer-layer")?.dataset.state'), "closing");
   await closed("projects-desktop-trigger");
