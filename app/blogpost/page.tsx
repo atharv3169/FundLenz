@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { headers } from "next/headers";
 import { env } from "cloudflare:workers";
 import { ContributionButton, NewsletterBox } from "@/components/blog/visitor-forms";
 import styles from "./page.module.css";
 import { BlogSiteFooter } from "@/components/blog/blog-site-chrome";
 import { BlogArticleArchive } from "@/components/blog/blog-article-archive";
-import { isReviewedEditorHost } from "@/lib/blog-editor-hosts";
 import { readPublicHomepageCopy } from "@/lib/blog-public-homepage";
 import { readPublished } from "@/lib/blog-publication-store";
 import type { BlogAdminDatabase } from "@/lib/blog-admin-state";
@@ -34,7 +32,6 @@ export default async function BlogHomePage() {
   const siteKey = process.env.TURNSTILE_SITE_KEY || "";
   return <div className={styles.shell}>
     <main className={styles.main + (leftCards.length || rightCards.length ? " " + styles.mainWithCards : "")}>
-      {host && isReviewedEditorHost(host) && <nav aria-label="Blog editorial access" className="mb-4 flex justify-end"><Link href="/blogpost/admin" className="rounded-md border border-[#537080] px-3 py-2 text-xs font-semibold text-[#315c73] hover:bg-[#edf6f7]">Admin</Link></nav>}
       <div className={[styles.homeLayout, leftCards.length && styles.withLeft, rightCards.length && styles.withRight,
         leftCards.length && rightCards.length && styles.withBoth].filter(Boolean).join(" ")}>
       <header className={styles.homeHero}>

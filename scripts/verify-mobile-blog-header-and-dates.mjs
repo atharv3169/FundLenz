@@ -10,26 +10,37 @@ const drawer = read("components/projects-drawer.tsx");
 const globalCss = read("app/globals.css");
 const metadata = read("lib/site-metadata.ts");
 const updater = read("scripts/automation/validate.py");
-// One header instance, anchored outside every individual page.
+// Shared geometry with page-specific button destinations.
 assert.match(root, /<SiteHeader \/>/);
 assert.match(header, /styles\.siteHeader/);
 assert.match(header, /className="brand"/);
 assert.match(header, /className="brand-mark"/);
 assert.match(header, /<ScanSearch size=\{25\} strokeWidth=\{1\.7\}/);
-assert.match(header, /href="\/catalogue-global" className="catalog-nav-link catalogue-main-link"/);
-assert.match(header, /href="\/blogpost" className="catalog-nav-link lab-blog-link"/);
+assert.match(header, /usePathname\(\)/);
+assert.match(header, /pathname === "\/blogpost" \|\| pathname\.startsWith\("\/blogpost\/"\)/);
+assert.match(header, /href: "\/catalogue-global", label: "Catalogue"/);
+assert.match(header, /href: "\/", label: "Portfolio Lab"/);
+assert.match(header, /href: "\/blogpost\/admin", label: "Admin"/);
+assert.match(header, /href: "\/blogpost", label: "Blog"/);
+assert.match(header, /blogPage && reviewedEditorHost/);
+assert.match(header, /isReviewedEditorHost/);
+assert.match(header, /useSyncExternalStore\(subscribeToHost, isEditorHost, serverEditorHost\)/);
+assert.match(header, /href=\{primary\.href\} className="catalog-nav-link catalogue-main-link"/);
+assert.match(header, /href=\{secondary\.href\} className="catalog-nav-link lab-blog-link"/);
 assert.match(header, /<ProjectsDrawer \/>/);
 assert.match(header, /href="\/about"/);
-assert.ok(header.indexOf('href="/catalogue-global"')<header.indexOf('href="/blogpost"'));
-assert.ok(header.indexOf('href="/blogpost"')<header.indexOf('<ProjectsDrawer />'));
-assert.doesNotMatch(header,/View report|Stocks & bonds|href="\/catalogue-securities"/);
+assert.ok(header.indexOf('className="catalog-nav-link catalogue-main-link"') < header.indexOf('className="catalog-nav-link lab-blog-link"'));
+assert.ok(header.indexOf('className="catalog-nav-link lab-blog-link"') < header.indexOf('<ProjectsDrawer />'));
+assert.ok(header.indexOf('<ProjectsDrawer />') < header.indexOf('className="project-credit'));
+assert.doesNotMatch(header, /View report|Stocks & bonds|masthead-action/);
+assert.doesNotMatch(read("app/fincalc/page.tsx"), /masthead-action|Back to Portfolio Lab/);
 for(const path of ["components/fundlens.tsx","components/fund-catalog.tsx","components/global-catalog.tsx","components/securities-catalog.tsx","app/fincalc/page.tsx","app/blogpost/page.tsx","app/blogpost/[slug]/page.tsx"]) {
   assert.doesNotMatch(read(path), /<header className="masthead|<BlogSiteHeader/,path+" reintroduces a divergent header");
 }
 for(const path of ["components/fund-catalog.tsx","components/global-catalog.tsx","components/securities-catalog.tsx"])
   assert.match(read(path), /className="catalog-market-tabs"/);
-assert.match(read("app/blogpost/page.tsx"), /isReviewedEditorHost\(host\)/);
-assert.match(read("app/blogpost/page.tsx"), /href="\/blogpost\/admin"/);
+assert.doesNotMatch(read("app/blogpost/page.tsx"), /Blog editorial access|href="\/blogpost\/admin"/,
+  "No duplicate Blog Admin link in page body");
 // Exact main homepage navigation, logo and spacing now shared with all routes.
 assert.match(nav, /@media screen and \(max-width: 800px\)/);
 assert.match(nav, /grid-template-areas: "brand catalogue blog menu";/);
@@ -73,4 +84,9 @@ assert.match(updater, /stage_catalogue_update_date\(root, files, acquisition\)/)
 assert.match(updater, /if not data_paths:/);
 assert.match(updater, /if catalogue_update_date:[\s\S]*?lastCatalogueUpdateDate=catalogue_update_date/);
 assert.doesNotMatch(portfolio, /Snapshot · \{catalogueUpdateLabel\}/);
-console.log("PASS: every FundLenz route shares homepage masthead, mobile controls and verified data invariants");
+assert.match(nav, /data-primary="portfolio"/);
+assert.match(nav, /white-space: normal;/);
+assert.match(nav, /data-section="blog"/);
+assert.match(nav, /@media screen and \(min-width: 801px\)/);
+assert.match(header, /project-credit[\s\S]*?href="\/about"/);
+console.log("PASS: route-specific header buttons, 35px mobile controls, linked desktop creator and unchanged financial data");
