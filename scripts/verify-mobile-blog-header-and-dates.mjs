@@ -13,9 +13,15 @@ const mobile = nav.slice(nav.indexOf("/* Portfolio Lab mobile masthead."));
 assert.match(mobile, /@media screen and \(max-width: 800px\)/);
 assert.match(mobile, /grid-template-areas: "brand catalogue blog menu";/,
   "Brand, Catalogue, Blog, and menu must appear in that order on mobile");
-assert.match(mobile, /grid-template-columns: minmax\(0, 1fr\) max-content max-content 44px;/,
-  "Preserve one flexible brand slot followed by two links and the 44px menu");
+assert.match(mobile, /grid-template-columns: max-content minmax\(0, 1\.5fr\) minmax\(0, \.85fr\) 44px;/,
+  "Reserve space for the logo, expand Catalogue and Blog, and keep the 44px menu");
 assert.match(mobile, /min-height: 44px;/, "Catalogue needs a 44px touch target");
+assert.match(mobile, /grid-area: catalogue;[\s\S]*?width: 100%;[\s\S]*?justify-self: stretch;/,
+  "Catalogue must extend into available space beside the logo");
+assert.match(mobile, /grid-area: blog;[\s\S]*?width: 100%;[\s\S]*?justify-self: stretch;/,
+  "Blog should fill its grid column instead of shrinking to its text width");
+assert.match(mobile, /@media screen and \(max-width: 360px\)[\s\S]*?grid-template-columns: max-content/,
+  "Narrow phones must retain a compact, non-overlapping grid");
 assert.match(mobile, /:global\(\.masthead \.lab-blog-link\)[\s\S]*?grid-area: blog;[\s\S]*?display: inline-flex !important;/,
   "Display Blog between Catalogue and menu on mobile");
 assert.match(mobile, /:global\(\.masthead \.projects-desktop-trigger\)[\s\S]*?display: none !important;/,
@@ -32,6 +38,14 @@ assert.match(drawer, /A project by <Link href="\/about"/,
 assert.match(drawer, /href="\/fincalc"/, "Keep FinCalc available in the drawer");
 assert.match(drawer, /href="\/blogpost"/, "Move Blog into the mobile drawer");
 assert.match(drawer, /aria-modal="true"/, "Drawer needs a dialog");
+assert.doesNotMatch(drawer, /overflow-y-auto border-l border-\[#385d6c\]/,
+  "Drawer left edge must not have a contrasting border");
+assert.match(drawer, /data-close-projects[\s\S]*?className="[^"]*border-0 bg-transparent/,
+  "Close X must be unboxed while remaining a reachable button");
+assert.match(drawer, /fundlenz-drawer-footer mt-auto border-t/,
+  "Drawer footer needs its own responsive spacing hook");
+assert.match(globalCss, /\.fundlenz-drawer-footer \{[\s\S]*?margin-top: 14px !important;[\s\S]*?padding-top: 14px;/,
+  "On mobile, lower divider must sit near Blog rather than at the viewport bottom");
 assert.match(drawer, /event.key === "Escape"/, "Drawer remains keyboard dismissible");
 assert.match(globalCss, /\.fundlenz-mobile-menu-trigger \{[\s\S]*?border: 0;[\s\S]*?background: transparent;/,
   "Hamburger must have no permanent border or filled background");
@@ -86,4 +100,4 @@ assert.match(updater, /if catalogue_update_date:[\s\S]*?lastCatalogueUpdateDate=
   "Updater must save the verified date atomically with data");
 assert.doesNotMatch(portfolio, /Snapshot · \{catalogueUpdateLabel\}/,
   "Publication date cannot replace a stale source snapshot date");
-console.log("PASS: mobile FundLenz/Catalogue/Blog/borderless menu, spaced creator credit, drawer navigation, report tab and verified dates preserved");
+console.log("PASS: expanded Catalogue/Blog buttons, borderless drawer edge and close X, compact lower Blog divider, and verified navigation/data invariants");
