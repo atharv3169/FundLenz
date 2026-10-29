@@ -21,7 +21,7 @@ assert.match(mobile, /:global\(\.masthead \.lab-blog-link\)[\s\S]*?grid-area: bl
 assert.match(mobile, /:global\(\.masthead \.projects-desktop-trigger\)[\s\S]*?display: none !important;/,
   "Hide only the desktop More projects button at mobile widths");
 assert.match(mobile, /:global\(\.masthead \.fundlenz-mobile-menu-trigger\)[\s\S]*?grid-area: menu;/,
-  "Place hamburger immediately to the right of Catalogue");
+  "Place hamburger immediately to the right of Blog");
 assert.match(mobile, /@media screen and \(max-width: 360px\)/,
   "Compact layout must accommodate narrow phones");
 assert.match(drawer, /<Menu size=\{22\}/, "Render a three-line hamburger icon");
