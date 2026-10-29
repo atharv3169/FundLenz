@@ -49,8 +49,8 @@
     },
     {
       "path": "app/fincalc/page.tsx",
-      "bytes": 1787,
-      "sha256": "281ac6bf8548c66f2fa6344e24ab053c21c3fe0240b7be6e69baa88f112bd0f6",
+      "bytes": 2650,
+      "sha256": "e311773cc73407c0127489e2d8876e0563c194127822e6835e07824eb04a6ff3",
       "scope": "application"
     },
     {
@@ -67,8 +67,8 @@
     },
     {
       "path": "app/globals.css",
-      "bytes": 56135,
-      "sha256": "249bf18757bbe55d7878312e6d54d1a05b298f397dd57d27643d7bd7e5edaa59",
+      "bytes": 58587,
+      "sha256": "a452c6b84ca797d611ca930f4cd7f2692a1ad5f611271982b092d245fa493d35",
       "scope": "application"
     },
     {
@@ -133,8 +133,8 @@
     },
     {
       "path": "components/fundlens.tsx",
-      "bytes": 54766,
-      "sha256": "b812a5f6122990727bd00341773af5e04efa28355a2372b2bb71a7f44be8d2fa",
+      "bytes": 54782,
+      "sha256": "ce4fd7221ee3d3a716736eff321de6d5335f4452a6037732b3dafcaf38bf40c0",
       "scope": "application"
     },
     {
@@ -7951,8 +7951,8 @@
     },
     {
       "path": "public/projects/fincalc/styles.css",
-      "bytes": 7415,
-      "sha256": "c6d00df71d0adfb39d131bcf7bead6c4f01731d04eb530196e8844cf6b1a01a3",
+      "bytes": 7447,
+      "sha256": "35e41d7f19c37af6f739feb1ec4a511826cf6a6eef81a8cb0b7ebb816654a4ef",
       "scope": "application"
     },
     {
