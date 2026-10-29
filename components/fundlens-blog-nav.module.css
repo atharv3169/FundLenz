@@ -1,12 +1,12 @@
 /* Portfolio Lab mobile masthead.
-   One row: FundLenz brand | Catalogue | hamburger.
-   Blog and additional project navigation live in the accessible drawer. */
+   One row: FundLenz brand | Catalogue | Blog | hamburger.
+   Project navigation and the creator credit remain in the drawer. */
 @media screen and (max-width: 800px) {
   .labShell:global(.portfolio-lab) > :global(.masthead) {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) max-content 44px;
-    grid-template-areas: "brand catalogue menu";
-    column-gap: 7px;
+    grid-template-columns: minmax(0, 1fr) max-content max-content 44px;
+    grid-template-areas: "brand catalogue blog menu";
+    column-gap: 6px;
     row-gap: 0;
     padding: 9px 12px;
     min-height: 60px;
@@ -31,7 +31,19 @@
     line-height: 1.1;
     white-space: nowrap;
   }
-  .labShell:global(.portfolio-lab) :global(.masthead .lab-blog-link),
+  .labShell:global(.portfolio-lab) :global(.masthead .lab-blog-link) {
+    grid-area: blog;
+    display: inline-flex !important;
+    min-height: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    justify-self: end;
+    padding: 8px 10px;
+    font-size: .75rem;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
   .labShell:global(.portfolio-lab) :global(.masthead .projects-desktop-trigger) {
     display: none !important;
   }
@@ -43,21 +55,26 @@
 }
 @media screen and (max-width: 360px) {
   .labShell:global(.portfolio-lab) > :global(.masthead) {
-    column-gap: 5px;
+    column-gap: 4px;
     padding-left: 8px;
     padding-right: 8px;
   }
   .labShell:global(.portfolio-lab) :global(.masthead .brand) {
-    font-size: 19px;
+    font-size: 18px;
   }
   .labShell:global(.portfolio-lab) :global(.masthead .brand-mark) {
-    width: 31px;
-    height: 31px;
-    margin-right: 6px;
+    width: 29px;
+    height: 29px;
+    margin-right: 5px;
   }
   .labShell:global(.portfolio-lab) :global(.masthead .catalogue-main-link) {
-    padding-left: 7px;
-    padding-right: 7px;
+    padding-left: 6px;
+    padding-right: 6px;
+    font-size: 11px;
+  }
+  .labShell:global(.portfolio-lab) :global(.masthead .lab-blog-link) {
+    padding-left: 6px;
+    padding-right: 6px;
     font-size: 11px;
   }
 }
