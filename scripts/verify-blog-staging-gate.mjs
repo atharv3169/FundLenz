@@ -15,7 +15,8 @@ for (const path of [
   "/", "/about", "/upcoming-projects", "/blogpost", "/blogpost/example",
   "/catalogue-global", "/catalogue-india", "/catalogue-securities",
   "/_next/static/chunks/foo.js", "/_next/static/css/style.css",
-  "/favicon.svg", "/api/blog/subscribe", "/api/blog/contribute",
+  "/favicon.svg", "/projects/fincalc/index.html", "/projects/fincalc/core.mjs",
+  "/api/blog/subscribe", "/api/blog/contribute",
 ]) {
   assert.equal(isPrivateStagingPath(path), false, path + " must be public");
   assert.equal(await stagingGate(makeRequest(path), {}), null,
@@ -80,6 +81,9 @@ assert.equal(script.headers.get("Content-Type"), "application/javascript");
 assert.equal(assets.length, 1, "Public JS must be served without the browser login");
 assert.equal(assets[0].auth, false);
 assert.equal(appRoutes.length, 0, "Static scripts must not go through the application");
+const calcScript = await serveStagingRequest(makeRequest("/projects/fincalc/core.mjs"), env, app);
+assert.equal(calcScript.status, 200, "FinCalc assets must be served without login");
+assert.equal(assets.at(-1).path, "/projects/fincalc/core.mjs");
 const stylesheet = await serveStagingRequest(makeRequest("/_next/static/css/style.css"),
   env, app);
 assert.equal(stylesheet.status, 200);
