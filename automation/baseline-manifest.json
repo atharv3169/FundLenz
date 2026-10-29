@@ -8053,8 +8053,8 @@
     },
     {
       "path": "scripts/verify-blog-staging-gate.mjs",
-      "bytes": 5711,
-      "sha256": "a02d4e363c7727c397f432e3fb17a34009a22e13b3a1a01ef2f4a8083f2be4ea",
+      "bytes": 5783,
+      "sha256": "9a0856a867449cffb7990f11bb20ad097c7fff38dc941e2eeca1c2f86917d5cf",
       "scope": "application"
     },
     {
