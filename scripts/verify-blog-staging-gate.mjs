@@ -1,77 +1,104 @@
 import assert from "node:assert/strict";
 import {
-  stagingGate, forwardWithoutBasicHeader, serveStagingRequest,
+  stagingGate, forwardWithoutBasicHeader, serveStagingRequest, isPrivateStagingPath,
 } from "./blog-staging-gate-core.mjs";
 
-const url = "https://fundlenz-blog-staging.atharvsahu711.workers.dev/blogpost/admin";
+const host = "https://fundlenz-blog-staging.atharvsahu711.workers.dev";
+const adminURL = host + "/blogpost/admin";
 const secret = "staging-test-password-that-is-not-real-2026";
 const authorizedHeader = "Basic " + btoa("fundlenz-staging:" + secret);
-const makeRequest = (auth, path = url) =>
-  new Request(path, { headers: auth ? { Authorization: auth } : {} });
-const pass = { FUNDLENZ_STAGING_GATE_PASSWORD: secret };
+const makeRequest = (path, auth) =>
+  new Request(host + path, { headers: auth ? { Authorization: auth } : {} });
+const configured = { FUNDLENZ_STAGING_GATE_PASSWORD: secret };
 
-const unset = await stagingGate(makeRequest(), {});
-assert.equal(unset.status, 503);
-assert.equal(unset.headers.get("Cache-Control"), "no-store, private");
-assert.equal((await stagingGate(makeRequest(), {
+for (const path of [
+  "/", "/about", "/upcoming-projects", "/blogpost", "/blogpost/example",
+  "/catalogue-global", "/catalogue-india", "/catalogue-securities",
+  "/_next/static/chunks/foo.js", "/_next/static/css/style.css",
+  "/favicon.svg", "/api/blog/subscribe", "/api/blog/contribute",
+]) {
+  assert.equal(isPrivateStagingPath(path), false, path + " must be public");
+  assert.equal(await stagingGate(makeRequest(path), {}), null,
+    "No staging password may be required for preview route " + path);
+  assert.equal(await stagingGate(makeRequest(path, "Bearer example"), configured), null);
+}
+for (const path of [
+  "/blogpost/admin", "/blogpost/admin/", "/blogpost/admin/settings",
+  "/api/blog/admin", "/api/blog/admin/login", "/api/blog/admin/session",
+  "/api/blog/admin/homepage-draft",
+  "/api/blog%2Fadmin/login", "/blogpost/%61dmin",
+  "/api/blog//admin/login", "/API/BLOG/ADMIN/LOGIN",
+]) {
+  assert.equal(isPrivateStagingPath(new URL(host + path).pathname), true, path);
+  assert.equal((await stagingGate(makeRequest(path), {})).status, 503,
+    "Missing gate secret must fail closed for admin path " + path);
+  const denial = await stagingGate(makeRequest(path), configured);
+  assert.equal(denial.status, 401, "Admin must require authentication: " + path);
+  assert.match(denial.headers.get("WWW-Authenticate"), /^Basic realm=/);
+  assert.equal(await stagingGate(makeRequest(path, authorizedHeader), configured), null);
+}
+assert.equal(isPrivateStagingPath("/api/blog/%"), true,
+  "Malformed URL escape must fail closed");
+assert.equal((await stagingGate(makeRequest("/blogpost/admin", "Bearer " + secret),
+  configured)).status, 401);
+assert.equal((await stagingGate(makeRequest("/blogpost/admin", "Basic invalid@@@"),
+  configured)).status, 401);
+assert.equal((await stagingGate(makeRequest("/blogpost/admin", "Basic " + btoa("wrong:" + secret)),
+  configured)).status, 401);
+assert.equal((await stagingGate(makeRequest("/blogpost/admin", "Basic " + btoa("fundlenz-staging:wrong")),
+  configured)).status, 401);
+assert.equal((await stagingGate(makeRequest("/blogpost/admin", null), {
   FUNDLENZ_STAGING_GATE_PASSWORD: "short",
 })).status, 503);
-const challenge = await stagingGate(makeRequest(), pass);
-assert.equal(challenge.status, 401);
-assert.match(challenge.headers.get("WWW-Authenticate"), /^Basic realm=/);
-assert.equal(challenge.headers.get("X-Robots-Tag"), "noindex, nofollow, noarchive");
-assert.equal((await stagingGate(makeRequest("Bearer " + secret), pass)).status, 401);
-assert.equal((await stagingGate(makeRequest("Basic invalid@@@"), pass)).status, 401);
-assert.equal((await stagingGate(makeRequest("Basic " + btoa("wrong:" + secret)), pass)).status, 401);
-assert.equal((await stagingGate(makeRequest("Basic " + btoa("fundlenz-staging:wrong")), pass)).status, 401);
-for (const path of [url, url.replace("/blogpost/admin", "/_next/static/chunks/foo.js"),
-  url.replace("/blogpost/admin", "/api/blog/admin/login"),
-  url.replace("/blogpost/admin", "/")]) {
-  assert.equal((await stagingGate(makeRequest(authorizedHeader, path), pass)), null,
-    "Correct credentials should be accepted for " + path);
-  assert.equal((await stagingGate(makeRequest(null, path), pass)).status, 401,
-    "Every path must deny unauthenticated requests: " + path);
-}
-const forwarded = forwardWithoutBasicHeader(makeRequest(authorizedHeader));
+
+const forwarded = forwardWithoutBasicHeader(makeRequest("/about", authorizedHeader));
 assert.equal(forwarded.headers.has("Authorization"), false);
-assert.equal(forwarded.url, url);
+assert.equal(forwarded.url, host + "/about");
 
-
-const assetRequests = [];
-const applicationRequests = [];
-const mockEnv = {
-  ...pass,
+const assets = [];
+const appRoutes = [];
+const env = {
+  ...configured,
   ASSETS: {
     async fetch(request) {
-      assetRequests.push({ path: new URL(request.url).pathname, auth: request.headers.has("Authorization") });
-      return new Response("sample JS", { status: 200, headers: { "Content-Type": "application/javascript" } });
+      assets.push({ path: new URL(request.url).pathname,
+        auth: request.headers.has("Authorization") });
+      return new Response("sample JS", { status: 200,
+        headers: { "Content-Type": "application/javascript" } });
     },
   },
 };
-async function mockApplication(request) {
-  applicationRequests.push({ path: new URL(request.url).pathname, auth: request.headers.has("Authorization") });
+async function app(request) {
+  appRoutes.push({ path: new URL(request.url).pathname,
+    auth: request.headers.has("Authorization") });
   return new Response("app", { status: 200 });
 }
-const chunkUrl = url.replace("/blogpost/admin", "/_next/static/chunks/test-client.js");
-const chunk = await serveStagingRequest(makeRequest(authorizedHeader, chunkUrl), mockEnv, mockApplication);
-assert.equal(chunk.status, 200);
-assert.equal(chunk.headers.get("Content-Type"), "application/javascript");
-assert.equal(assetRequests.length, 1, "Authenticated JS chunk must reach Cloudflare assets");
-assert.equal(applicationRequests.length, 0, "JS chunk must not be handled by Vinext server");
-assert.equal(assetRequests[0].auth, false, "HTTP Basic secret must not reach asset binding");
-assert.equal((await serveStagingRequest(makeRequest(null, chunkUrl), mockEnv, mockApplication)).status, 401,
-  "Unauthenticated clients must not fetch JS");
-assert.equal(assetRequests.length, 1, "Unauthorized JS request must not reach assets");
-const stylesheet = await serveStagingRequest(makeRequest(authorizedHeader,
-  url.replace("/blogpost/admin", "/_next/static/css/style.css")), mockEnv, mockApplication);
+const assetPath = "/_next/static/chunks/test-client.js";
+const script = await serveStagingRequest(makeRequest(assetPath), env, app);
+assert.equal(script.status, 200);
+assert.equal(script.headers.get("Content-Type"), "application/javascript");
+assert.equal(assets.length, 1, "Public JS must be served without the browser login");
+assert.equal(assets[0].auth, false);
+assert.equal(appRoutes.length, 0, "Static scripts must not go through the application");
+const stylesheet = await serveStagingRequest(makeRequest("/_next/static/css/style.css"),
+  env, app);
 assert.equal(stylesheet.status, 200);
-assert.equal(assetRequests.length, 2);
-const admin = await serveStagingRequest(makeRequest(authorizedHeader), mockEnv, mockApplication);
-assert.equal(admin.status, 200);
-assert.equal(applicationRequests.length, 1, "App routes must reach the Vinext handler");
-assert.equal(applicationRequests[0].auth, false, "HTTP Basic password must not enter the app");
-assert.equal((await serveStagingRequest(makeRequest(authorizedHeader, chunkUrl),
-  pass, mockApplication)).status, 503, "No asset binding must fail closed");
-assert.equal((await serveStagingRequest(makeRequest(), mockEnv, mockApplication)).status, 401);
+assert.equal(assets.length, 2);
+const about = await serveStagingRequest(makeRequest("/about"), env, app);
+assert.equal(about.status, 200);
+assert.equal(appRoutes.at(-1).path, "/about");
+const homepage = await serveStagingRequest(makeRequest("/"), {}, app);
+assert.equal(homepage.status, 200, "Public homepage must not depend on secret setup");
+assert.equal((await serveStagingRequest(makeRequest("/blogpost/admin"), env, app)).status, 401);
+assert.equal((await serveStagingRequest(makeRequest("/api/blog/admin/session"), env, app)).status, 401);
+const authenticatedAdmin = await serveStagingRequest(makeRequest("/blogpost/admin", authorizedHeader),
+  env, app);
+assert.equal(authenticatedAdmin.status, 200);
+assert.equal(appRoutes.at(-1).auth, false, "Basic password must never reach application");
+assert.equal((await serveStagingRequest(makeRequest(assetPath), {}, app)).status, 503,
+  "Static assets without the ASSETS binding must fail closed");
+assert.equal((await serveStagingRequest(makeRequest("/about", authorizedHeader),
+  env, app)).status, 200);
+assert.equal(appRoutes.at(-1).auth, false, "Basic credentials must be stripped even on public pages");
 
-console.log("PASS: staging gate fails closed, challenges unauthorized traffic on every route, and strips credentials; authenticated JS/CSS are served correctly");
+console.log("PASS: public staging preview needs no browser login; admin remains protected; static assets and credential stripping work");
