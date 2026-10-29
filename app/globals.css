@@ -512,18 +512,29 @@ h1,h2,h3,p { margin: 0; } h1,h2,h3 { line-height: 1.25; letter-spacing: -.025em;
   align-items: center;
   justify-content: center;
   flex: none;
-  border: 1px solid #537080;
-  border-radius: 7px;
-  background: #ffffff0a;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
   color: #dce8f5;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
-.fundlenz-mobile-menu-trigger:hover { border-color: #8adacc; background: #ffffff12; }
+.fundlenz-mobile-menu-trigger:hover { color: #8adacc; background: transparent; }
+.fundlenz-mobile-menu-trigger:focus-visible {
+  border-radius: 5px;
+  outline: 2px solid #8adacc;
+  outline-offset: 2px;
+}
 .fundlenz-drawer-creator,
 .fundlenz-drawer-mobile-links { display: none; }
 @media screen and (max-width: 800px) {
   .fundlenz-drawer-creator,
   .fundlenz-drawer-mobile-links { display: block; }
+  .fundlenz-drawer-creator {
+    margin: 0 0 28px !important;
+    line-height: 1.7;
+  }
   .portfolio-lab .masthead .projects-desktop-trigger,
   .fincalc-header .projects-desktop-trigger { display: none !important; }
   .portfolio-lab .masthead .fundlenz-mobile-menu-trigger,
