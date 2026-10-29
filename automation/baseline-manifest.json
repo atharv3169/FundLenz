@@ -18,6 +18,12 @@
       "scope": "application"
     },
     {
+      "path": "app/about/page.tsx",
+      "bytes": 7509,
+      "sha256": "26cacce5702e8c801af58df390f6fcf9e602c32b70a19936ea8b92c56085e327",
+      "scope": "application"
+    },
+    {
       "path": "app/catalogue-global/page.tsx",
       "bytes": 425,
       "sha256": "938446c0ac02d97d1e5f03a5da3270297f5996cc881e19442433ac779a3fc374",
@@ -90,6 +96,12 @@
       "scope": "hosting_configuration"
     },
     {
+      "path": "app/upcoming-projects/page.tsx",
+      "bytes": 5539,
+      "sha256": "0327a63254205527a4cdc1fd312c6d2f3c0671716d7e0afa80c55f872d5c976c",
+      "scope": "application"
+    },
+    {
       "path": "cloudflare-env.d.ts",
       "bytes": 99,
       "sha256": "8b0eca84aa3364cc7ccc43cc3af6beb88dd34ebd410de08690bf094ce39fbcb0",
@@ -109,8 +121,8 @@
     },
     {
       "path": "components/fundlens.tsx",
-      "bytes": 53988,
-      "sha256": "2c7675be0b13f55dc652bb444a4396fbdce0c7b0b95bb472219c5cae94a5f335",
+      "bytes": 54719,
+      "sha256": "643332528c513ae59692bcbc51f8923ff316bf15c69b8a4ed787e1a52730d3c5",
       "scope": "application"
     },
     {
