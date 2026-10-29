@@ -411,3 +411,79 @@ h1,h2,h3,p { margin: 0; } h1,h2,h3 { line-height: 1.25; letter-spacing: -.025em;
 .legal-page-card a:not(.legal-home-link) { color: #087f8c; text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 580px) { .legal-page { padding: 22px 0 20px; } .legal-page-card { padding: 22px 18px; } .legal-home-link { margin-bottom: 20px; } }
 @media print { .legal-footer { display: none; } }
+
+/* Shared desktop masthead controls for Portfolio Lab and FinCalc. */
+.masthead .masthead-action {
+  display: inline-flex;
+  min-height: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border: 1px solid #537080;
+  border-radius: 7px;
+  background: #ffffff0a;
+  color: #f1f7fa;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  white-space: nowrap;
+  box-shadow: none;
+}
+.masthead .masthead-action:hover { background: #ffffff10; border-color: #8adacc; }
+@media (min-width: 801px) and (max-width: 1320px) {
+  .masthead-right { gap: clamp(8px, 1.1vw, 15px); }
+  .masthead { padding-left: 25px; padding-right: 25px; }
+}
+@media (min-width: 801px) and (max-width: 1100px) {
+  .fincalc-header .project-credit { display: none; }
+}
+/* FinCalc uses the same logo, navigation controls and palette as the lab.
+   On small screens use a compact two-action navigation to avoid overflow. */
+@media screen and (max-width: 800px) {
+  .fincalc-header {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) max-content max-content;
+    align-items: center;
+    column-gap: 6px;
+    height: auto;
+    min-height: 60px;
+    padding: 9px 12px;
+  }
+  .fincalc-header .brand {
+    min-width: 0;
+    font-size: clamp(1.25rem, 5.7vw, 1.5rem);
+    letter-spacing: -.035em;
+    white-space: nowrap;
+  }
+  .fincalc-header .brand-divider,
+  .fincalc-header .brand small { display: none; }
+  .fincalc-header .brand-mark { width: 34px; height: 34px; border-radius: 9px; margin-right: 8px; }
+  .fincalc-header .brand-mark svg { width: 22px; height: 22px; }
+  .fincalc-header .masthead-right { display: contents; }
+  .fincalc-header .project-credit,
+  .fincalc-header .masthead-right .catalog-nav-link:not(.lab-blog-link):not(.masthead-action) {
+    display: none;
+  }
+  .fincalc-header .lab-blog-link { grid-column: 2; }
+  .fincalc-header .masthead-action { grid-column: 3; }
+  .fincalc-header .lab-blog-link,
+  .fincalc-header .masthead-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    height: 44px;
+    padding: 8px 9px;
+    font-size: 12px;
+    line-height: 1.1;
+    white-space: nowrap;
+    justify-self: end;
+  }
+}
+@media screen and (max-width: 380px) {
+  .fincalc-header { grid-template-columns: minmax(0,1fr) max-content; }
+  .fincalc-header .lab-blog-link { display: none; }
+  .fincalc-header .masthead-action { grid-column: 2; }
+}
