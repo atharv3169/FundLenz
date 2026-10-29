@@ -1,9 +1,10 @@
-/* Portfolio Lab mobile masthead.
+/* Site-wide FundLenz mobile masthead.
    One row: FundLenz brand | Catalogue | Blog | hamburger.
    Project navigation and the creator credit remain in the drawer. */
 @media screen and (max-width: 800px) {
-  .labShell:global(.portfolio-lab) > :global(.masthead) {
+  .siteHeader:global(.masthead) {
     display: grid;
+    height: auto;
     grid-template-columns: max-content minmax(0, 1.5fr) minmax(0, .85fr) 44px;
     grid-template-areas: "brand catalogue blog menu";
     column-gap: 12px;
@@ -12,11 +13,26 @@
     min-height: 60px;
     align-items: center;
   }
-  .labShell:global(.portfolio-lab) :global(.masthead .brand) {
+  .siteHeader:global(.masthead) :global(.brand) {
     grid-area: brand;
     min-width: 0;
+    justify-self: start;
+    font-size: clamp(1.25rem, 5.7vw, 1.5rem);
+    letter-spacing: -.035em;
+    white-space: nowrap;
   }
-  .labShell:global(.portfolio-lab) :global(.masthead .catalogue-main-link) {
+  .siteHeader:global(.masthead) :global(.brand-mark) {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    margin-right: 8px;
+    border-radius: 9px;
+  }
+  .siteHeader:global(.masthead) :global(.brand-mark svg) { width: 22px; height: 22px; }
+  .siteHeader:global(.masthead) :global(.masthead-right) { display: contents; }
+  .siteHeader:global(.masthead) :global(.project-credit) { display: none; }
+  .siteHeader:global(.masthead) :global(.catalog-nav-link) { background: #ffffff05; text-align: center; }
+  .siteHeader:global(.masthead) :global(.catalogue-main-link) {
     grid-area: catalogue;
     position: relative;
     display: inline-flex;
@@ -32,7 +48,7 @@
     line-height: 1.1;
     white-space: nowrap;
   }
-  .labShell:global(.portfolio-lab) :global(.masthead .lab-blog-link) {
+  .siteHeader:global(.masthead) :global(.lab-blog-link) {
     grid-area: blog;
     position: relative;
     display: inline-flex !important;
@@ -50,16 +66,16 @@
   }
   /* Border is 35px high, while a transparent 5px vertical extension
      keeps an effective 45px tap target without changing desktop styles. */
-  .labShell:global(.portfolio-lab) :global(.masthead .catalogue-main-link)::after,
-  .labShell:global(.portfolio-lab) :global(.masthead .lab-blog-link)::after {
+  .siteHeader:global(.masthead) :global(.catalogue-main-link)::after,
+  .siteHeader:global(.masthead) :global(.lab-blog-link)::after {
     content: "";
     position: absolute;
     inset: -5px 0;
   }
-  .labShell:global(.portfolio-lab) :global(.masthead .projects-desktop-trigger) {
+  .siteHeader:global(.masthead) :global(.projects-desktop-trigger) {
     display: none !important;
   }
-  .labShell:global(.portfolio-lab) :global(.masthead .fundlenz-mobile-menu-trigger) {
+  .siteHeader:global(.masthead) :global(.fundlenz-mobile-menu-trigger) {
     grid-area: menu;
     justify-self: end;
     display: inline-flex;
@@ -67,31 +83,31 @@
 }
 /* Give the label text room on narrower handsets without changing its size. */
 @media screen and (min-width: 361px) and (max-width: 380px) {
-  .labShell:global(.portfolio-lab) > :global(.masthead) {
+  .siteHeader:global(.masthead) {
     column-gap: 8px;
   }
 }
 @media screen and (max-width: 360px) {
-  .labShell:global(.portfolio-lab) > :global(.masthead) {
+  .siteHeader:global(.masthead) {
     grid-template-columns: max-content minmax(0, 1.5fr) minmax(0, .8fr) 44px;
     column-gap: 5px;
     padding-left: 8px;
     padding-right: 8px;
   }
-  .labShell:global(.portfolio-lab) :global(.masthead .brand) {
+  .siteHeader:global(.masthead) :global(.brand) {
     font-size: 18px;
   }
-  .labShell:global(.portfolio-lab) :global(.masthead .brand-mark) {
+  .siteHeader:global(.masthead) :global(.brand-mark) {
     width: 29px;
     height: 29px;
     margin-right: 5px;
   }
-  .labShell:global(.portfolio-lab) :global(.masthead .catalogue-main-link) {
+  .siteHeader:global(.masthead) :global(.catalogue-main-link) {
     padding-left: 6px;
     padding-right: 6px;
     font-size: 11px;
   }
-  .labShell:global(.portfolio-lab) :global(.masthead .lab-blog-link) {
+  .siteHeader:global(.masthead) :global(.lab-blog-link) {
     padding-left: 6px;
     padding-right: 6px;
     font-size: 11px;

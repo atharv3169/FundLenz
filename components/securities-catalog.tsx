@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { useFilterPage } from "@/hooks/use-filter-page";
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { ArrowUpRight, CircleHelp, Download, Globe2, LibraryBig, ScanSearch, Search } from "lucide-react";
@@ -33,7 +32,7 @@ export default function SecuritiesCatalog() {
   const open = (r: Security | null) => { setDetail(r); const url = new URL(window.location.href); if (r) url.searchParams.set("security",r.id); else url.searchParams.delete("security"); window.history.pushState({},"",url); };
   const exportResults = () => { const csv = toCSV([["id","name","type","symbol","isin","cusip","exchange","source_country","currency","maturity","disclosed_coupon_pct","snapshot","source_urls"],...results.map(r => [r.id,r.name,r.type,r.symbol,r.isin,r.cusip,r.exchange,r.country,r.currency,r.maturity,r.coupon,r.asOf,catalog?.sources.filter(s => r.sourceIds.includes(s.id)).map(s => s.url).join("; ")])]); const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"})); const a=document.createElement("a"); a.href=url;a.download="fundlenz-securities.csv";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000); };
   return <div className="app-shell">
-    <header className="masthead"><Link className="brand" href="/" prefetch={false} aria-label="FundLenz portfolio lab"><span className="brand-mark"><ScanSearch size={25} strokeWidth={1.7}/></span>Fund<span>Lenz</span><span className="brand-divider"/><small>SECURITIES CATALOGUE</small></Link><div className="masthead-right"><Link className="catalog-nav-link" href="/" prefetch={false}>Portfolio lab</Link><span className="project-credit">A project by <strong>Atharva Sahu</strong></span></div></header>
+    
     <main className="workspace catalog-workspace"><nav className="catalog-market-tabs" aria-label="Catalogue market"><a href="/catalogue-global"><Globe2 size={16}/>International</a><a href="/catalogue-india">India</a><a href="/catalogue-securities" aria-current="page">Stocks &amp; bonds</a></nav>
       <p className="small-note" title="Published catalogue update date, not the as-of date of each individual security">Last catalogue update {catalogueUpdateLabel ?? "not yet recorded"}. Individual security snapshot dates differ.</p>
       <div className="catalog-heading"><div><p className="eyebrow">INDIVIDUAL SECURITIES · OFFICIAL SOURCE DATA</p><h1>Explore beyond the fund.</h1><p>Find exchange-listed securities and bonds identified in issuer disclosures.</p></div><Button variant="outline" onClick={()=>setCoverage(!coverage)}><LibraryBig size={16}/>Data coverage</Button></div>

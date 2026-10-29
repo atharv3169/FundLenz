@@ -1,10 +1,9 @@
 "use client";
-import Link from "next/link";
 import { catalogueSourceCheckLabel, catalogueUpdateLabel } from "@/lib/site-metadata";
 import { useFilterPage } from "@/hooks/use-filter-page";
 
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
-import { ArrowUpRight, Check, CheckCircle2, CircleHelp, Download, Globe2, LibraryBig, ScanSearch, Search, X } from "lucide-react";
+import { ArrowUpRight, Check, CheckCircle2, CircleHelp, Download, Globe2, LibraryBig, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { getGlobalHoldingsIndex, getGlobalPortfolio, globalSelection, type GlobalHoldingsIndex, type GlobalPortfolio, type GlobalPortfolioSummary } from "@/lib/global-portfolios";
@@ -107,7 +106,7 @@ export default function GlobalCatalog() {
   const clear = () => { setQuery(""); setMarket(""); setKind(""); setTheme(""); setCoverage(""); setAsset(""); setProduct(""); setDomicile(""); };
   const stats = catalog?.stats;
   return <div className="app-shell catalog-shell">
-    <header className="masthead"><Link className="brand" href="/" prefetch={false} aria-label="FundLenz portfolio lab"><span className="brand-mark"><ScanSearch size={25} strokeWidth={1.7} /></span>Fund<span>Lenz</span><span className="brand-divider" /><small>FUND CATALOGUE</small></Link><div className="masthead-right"><Link className="catalog-nav-link" href="/" prefetch={false}>Portfolio lab</Link><Link className="catalog-nav-link" href="/blogpost" prefetch={false}>Blog</Link><span className="project-credit">A project by <strong>Atharva Sahu</strong></span></div></header>
+    
     <main className="workspace catalog-workspace">
       <nav className="catalog-market-tabs" aria-label="Catalogue market"><a href="/catalogue-global" aria-current="page"><Globe2 size={16} /> International</a><a href="/catalogue-india">India</a><a href="/catalogue-securities">Stocks & bonds</a></nav><p className="small-note">{catalogueUpdateLabel ? <>Last catalogue update {catalogueUpdateLabel}. </> : null}Original source-check baseline {catalogueSourceCheckLabel}. Record dates differ. <a className="text-link" href="/data/freshness.json" target="_blank" rel="noreferrer">View freshness checks</a></p>
       <div className="catalog-heading"><div><p className="eyebrow">GLOBAL FUND DISCOVERY · OFFICIAL SOURCES</p><h1>A wider world of funds.</h1><p>Explore overseas ETFs, registered fund series and issuer share classes.</p></div><Button variant="outline" onClick={() => setCoverageOpen(v => !v)}><LibraryBig size={16} /> Data coverage</Button></div>
