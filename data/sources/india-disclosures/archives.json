@@ -1,0 +1,37 @@
+[
+  {
+    "file": "september-2026-01.zip",
+    "sha256": "c74545817aaa8bdabe316bc6b6820fb32ae1be6feecc77bc908ab674d36113e2",
+    "bytes": 2380953
+  },
+  {
+    "file": "september-2026-02.zip",
+    "sha256": "c01a64977d598e0593589dcf852d0b309c710fec106b1f6ce22a82d4cd310843",
+    "bytes": 15808600
+  },
+  {
+    "file": "september-2026-03.zip",
+    "sha256": "e13abf3f4f87900d7d60caee2c03f092d30be93bdaf807162b416dc63e1b8a3d",
+    "bytes": 10336357
+  },
+  {
+    "file": "september-2026-04.zip",
+    "sha256": "6ae6d7974e1050c999743d4313ebcd565721e7103b7c4ac03f882319966277b8",
+    "bytes": 8973137
+  },
+  {
+    "file": "september-2026-05.zip",
+    "sha256": "bfe4237ddfc13563fe60a25fcb704ad2ea0338736202bb45c761038ea77b4f24",
+    "bytes": 25875471
+  },
+  {
+    "file": "september-2026-06.zip",
+    "sha256": "b16ba0a563c7b2b998c6f2ceb0df4efd2eb8600ccaf02714557c641b65174b67",
+    "bytes": 9949356
+  },
+  {
+    "file": "september-2026-07.zip",
+    "sha256": "f460063ce002fac83870788ac640f9278b483d66394669d5bc5a1f8dfaea4ff4",
+    "bytes": 4917546
+  }
+]

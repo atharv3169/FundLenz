@@ -33,6 +33,9 @@ def parse(download, catalogue):
 
 def parse_bytes(raw, download, catalogue):
     """Pure adapter shared by the offline builder and isolated daily validator."""
+    if download.get("format") == "ishares_ucits_csv":
+        from ucits_holdings import parse_ucits
+        return parse_ucits(raw, download, catalogue)
     assert hashlib.sha256(raw).hexdigest() == download["sha256"], "Source checksum mismatch"
     rows = list(csv.reader(io.StringIO(raw.decode("utf-8-sig"))))
     position = next(i for i, row in enumerate(rows) if "Asset Class" in row and "Weight (%)" in row)

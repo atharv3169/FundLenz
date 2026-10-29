@@ -1,0 +1,22 @@
+Fund Holdings as of,"21/Oct/2026"
+
+Ticker,Name,Sector,Asset Class,Market Value,Weight (%),Notional Value,Shares,Price,Location,Exchange,Market Currency
+"ASELS.E","ASELSAN ELEKTRONIK SANAYI VE TICAR","Industrials","Equity","19,658,963.58","17.95","19,658,963.58","2,820,315.00","6.97","Turkey","Istanbul Stock Exchange","TRY"
+"TUPRS.E","TURKIYE PETROL RAFINERILERI A","Energy","Equity","17,262,200.78","15.76","17,262,200.78","2,383,409.00","7.24","Turkey","Istanbul Stock Exchange","TRY"
+"BIMAS.E","BIM BIRLESIK MAGAZALAR A","Consumer Staples","Equity","16,150,920.50","14.74","16,150,920.50","2,078,127.00","7.77","Turkey","Istanbul Stock Exchange","TRY"
+"AKBNK.E","AKBANK A","Financials","Equity","10,457,250.47","9.55","10,457,250.47","7,718,758.00","1.35","Turkey","Istanbul Stock Exchange","TRY"
+"THYAO.E","TURK HAVA YOLLARI AO A","Industrials","Equity","7,295,893.11","6.66","7,295,893.11","1,365,626.00","5.34","Turkey","Istanbul Stock Exchange","TRY"
+"KCHOL.E","KOC HOLDING A","Industrials","Equity","7,071,238.95","6.46","7,071,238.95","1,725,271.00","4.10","Turkey","Istanbul Stock Exchange","TRY"
+"YKBNK.E","YAPI VE KREDI BANKASI A","Financials","Equity","6,137,601.90","5.60","6,137,601.90","8,359,070.00","0.73","Turkey","Istanbul Stock Exchange","TRY"
+"EREGL.E","EREGLI DEMIR VE CELIK FABRIKALARI","Materials","Equity","6,050,986.00","5.52","6,050,986.00","8,218,538.00","0.74","Turkey","Istanbul Stock Exchange","TRY"
+"ISCTR.E","TURKIYE IS BANKASI C","Financials","Equity","5,616,680.55","5.13","5,616,680.55","21,647,132.00","0.26","Turkey","Istanbul Stock Exchange","TRY"
+"TCELL.E","TURKCELL ILETISIM HIZMETLERI A","Communication","Equity","5,212,066.35","4.76","5,212,066.35","2,721,357.00","1.92","Turkey","Istanbul Stock Exchange","TRY"
+"SAHOL.E","HACI OMER SABANCI HOLDING A","Financials","Equity","5,078,969.77","4.64","5,078,969.77","2,857,936.00","1.78","Turkey","Istanbul Stock Exchange","TRY"
+"ASTOR.E","ASTOR ENERJI A.S.","Industrials","Equity","3,312,875.18","3.02","3,312,875.18","1,049,331.00","3.16","Turkey","Istanbul Stock Exchange","TRY"
+"TRY","TRY CASH","Cash and/or Derivatives","Cash","170,843.62","0.16","170,843.62","8,474,185.00","2.02","Turkey","-","TRY"
+"USD","USD CASH","Cash and/or Derivatives","Cash","39,146.18","0.04","39,146.18","39,146.00","100.00","United States","-","USD"
+"MLIFT","CASH COLLATERAL TRY MLIFT","Cash and/or Derivatives","Cash Collateral and Margins","27,115.84","0.02","27,115.84","1,345,000.00","2.02","Turkey","-","TRY"
+"GBP","GBP CASH","Cash and/or Derivatives","Cash","852.61","0.00","852.61","637.00","133.84","United Kingdom","-","GBP"
+"EUR","EUR CASH","Cash and/or Derivatives","Cash","499.83","0.00","499.83","445.00","112.24","European Union","-","EUR"
+"A5Z6","BIST 30 FUTURES DEC 26","Cash and/or Derivatives","Futures","0.00","0.00","185,811.06","60.00","309.69","-","Istanbul Stock Exchange","TRY"
+

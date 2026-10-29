@@ -208,7 +208,7 @@ def validate(root, run, output):
               "source_counts": dict(checks), "unit_counts": dict(counts), "source_checks": acquisition["source_checks"],
               "model_tasks": model_results, "model_findings": findings, "changes": units, "resolutions": resolutions,
               "open_issue_count": len(state["issues"]["issues"]), "critical_errors": critical,
-              "coverage": {"automatic_adapters": ["AMFI existing-plan NAV tuples", "38 existing iShares complete portfolios"],
+              "coverage": {"automatic_adapters": ["AMFI existing-plan NAV tuples and verified new scheme identities", "Reviewed US and Irish iShares complete portfolio endpoints"],
                            "monitoring_only": "Other Indian holdings, fund/share-class directories and stock/bond reference records. No lifecycle updates or inferred prices/yields.",
                            "retained_example": "US example file retains its previous common-period snapshot; global ETF portfolios update independently.",
                            "model_scope": "Bounded excerpts and sample units; deterministic adapters inspect complete supported files."}}

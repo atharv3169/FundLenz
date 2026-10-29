@@ -1,0 +1,17 @@
+Fund Holdings as of,"21/Oct/2026"
+
+Ticker,Name,Sector,Asset Class,Market Value,Weight (%),Notional Value,Shares,Par Value,Price,Location,Exchange,Duration,Maturity,Coupon (%),Market Currency,Effective Date
+"BTPS","ITALY (REPUBLIC OF)","Treasury","Fixed Income","2,198,111.94","14.40","2,198,111.94","2,138,000.00","2,138,000.00","102.16","Italy","-","1.77","01/Sept/2028","4.75","EUR","22/Jan/2013"
+"BTPS","ITALY (REPUBLIC OF) RegS","Treasury","Fixed Income","2,027,491.29","13.28","2,027,491.29","2,053,000.00","2,053,000.00","98.32","Italy","-","1.25","01/Feb/2028","2.00","EUR","01/Feb/2018"
+"BTPS","ITALY (REPUBLIC OF) RegS","Treasury","Fixed Income","1,878,186.19","12.30","1,878,186.19","1,886,000.00","1,886,000.00","98.50","Italy","-","2.01","01/Dec/2028","2.80","EUR","01/Aug/2018"
+"BTPS","ITALY (REPUBLIC OF) RegS","Treasury","Fixed Income","1,554,595.74","10.18","1,554,595.74","1,552,000.00","1,552,000.00","99.98","Italy","-","1.40","01/Apr/2028","3.40","EUR","30/Nov/2022"
+"BTPS","ITALY (REPUBLIC OF) RegS","Treasury","Fixed Income","1,522,684.23","9.97","1,522,684.23","1,542,000.00","1,542,000.00","98.42","Italy","-","1.32","28/Feb/2028","2.20","EUR","29/Jan/2026"
+"BTPS","ITALY (REPUBLIC OF) RegS","Treasury","Fixed Income","1,494,352.78","9.79","1,494,352.78","1,475,000.00","1,475,000.00","100.48","Italy","-","1.70","01/Aug/2028","3.80","EUR","01/Jun/2023"
+"BTPS","ITALY (REPUBLIC OF) RegS","Treasury","Fixed Income","1,374,474.85","9.00","1,374,474.85","1,434,000.00","1,434,000.00","95.82","Italy","-","1.38","15/Mar/2028","0.25","EUR","18/Jan/2021"
+"BTPS","ITALY (REPUBLIC OF) RegS","Treasury","Fixed Income","1,333,698.26","8.74","1,333,698.26","1,339,000.00","1,339,000.00","98.68","Italy","-","1.59","15/Jun/2028","2.65","EUR","17/Mar/2025"
+"BTPS","ITALY (REPUBLIC OF) RegS","Treasury","Fixed Income","1,285,610.52","8.42","1,285,610.52","1,350,000.00","1,350,000.00","95.10","Italy","-","1.70","15/Jul/2028","0.50","EUR","17/May/2021"
+"BTPS","ITALY (REPUBLIC OF)","Treasury","Fixed Income","566,969.63","3.71","566,969.63","571,000.00","571,000.00","98.85","Italy","-","1.94","30/Oct/2028","3.00","EUR","28/Aug/2026"
+"ICSEALD","BLK LEAF FUND AGENCY ACC T0 EUR","Cash and/or Derivatives","Money Market","18,610.17","0.12","18,610.17","169.00","169.00","110.10","Ireland","-","0.14","-","2.43","EUR","25/Apr/2013"
+"EUR","EUR CASH","Cash and/or Derivatives","Cash","11,420.88","0.07","11,420.88","11,421.00","11,421.00","100.00","European Union","-","0.00","-","0.00","EUR","01/Jan/1989"
+"GBP","GBP CASH","Cash and/or Derivatives","Cash","52.09","0.00","52.09","44.00","44.00","119.24","United Kingdom","-","0.00","-","0.00","GBP","01/Jan/1989"
+

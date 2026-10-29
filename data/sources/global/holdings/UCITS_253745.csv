@@ -1,0 +1,21 @@
+Fund Holdings as of,"21/Oct/2026"
+
+Ticker,Name,Sector,Asset Class,Market Value,Weight (%),Notional Value,Shares,Par Value,Price,Location,Exchange,Duration,Maturity,Coupon (%),Market Currency,Effective Date
+"TNOTE","TREASURY NOTE","Treasury","Fixed Income","450,220,860.10","8.80","450,220,860.10","460,776,000.00","460,776,000.00","96.87","United States","-","6.74","15/Feb/2035","4.63","USD","18/Feb/2025"
+"TNOTE","TREASURY NOTE (OLD)","Treasury","Fixed Income","445,974,645.09","8.71","445,974,645.09","462,976,000.00","462,976,000.00","94.44","United States","-","7.51","15/May/2036","4.38","USD","15/May/2026"
+"TNOTE","TREASURY NOTE","Treasury","Fixed Income","444,541,562.64","8.69","444,541,562.64","461,242,000.00","461,242,000.00","94.54","United States","-","6.57","15/Nov/2034","4.25","USD","15/Nov/2024"
+"TNOTE","TREASURY NOTE","Treasury","Fixed Income","443,494,373.93","8.67","443,494,373.93","461,840,000.00","461,840,000.00","94.19","United States","-","6.90","15/May/2035","4.25","USD","15/May/2025"
+"TNOTE","TREASURY NOTE","Treasury","Fixed Income","440,838,364.32","8.61","440,838,364.32","451,709,000.00","451,709,000.00","95.70","United States","-","6.21","15/May/2034","4.38","USD","15/May/2024"
+"TNOTE","TREASURY NOTE","Treasury","Fixed Income","437,650,228.86","8.55","437,650,228.86","461,803,000.00","461,803,000.00","94.00","United States","-","7.15","15/Aug/2035","4.25","USD","15/Aug/2025"
+"TNOTE","TREASURY NOTE","Treasury","Fixed Income","432,641,268.63","8.45","432,641,268.63","461,514,000.00","461,514,000.00","92.02","United States","-","7.29","15/Nov/2035","4.00","USD","17/Nov/2025"
+"TNOTE","TREASURY NOTE (2OLD)","Treasury","Fixed Income","431,970,992.50","8.44","431,970,992.50","461,996,000.00","461,996,000.00","92.75","United States","-","7.51","15/Feb/2036","4.13","USD","17/Feb/2026"
+"TNOTE","TREASURY NOTE","Treasury","Fixed Income","429,534,820.11","8.39","429,534,820.11","455,354,000.00","455,354,000.00","93.60","United States","-","6.17","15/Feb/2034","4.00","USD","15/Feb/2024"
+"TNOTE","TREASURY NOTE","Treasury","Fixed Income","423,697,726.37","8.28","423,697,726.37","455,405,000.00","455,405,000.00","92.33","United States","-","6.55","15/Aug/2034","3.88","USD","15/Aug/2024"
+"TNOTE","TREASURY NOTE","Treasury","Fixed Income","417,956,783.32","8.17","417,956,783.32","423,235,000.00","423,235,000.00","96.81","United States","-","5.84","15/Nov/2033","4.50","USD","15/Nov/2023"
+"TNOTE","TREASURY NOTE (OTR)","Treasury","Fixed Income","287,028,409.95","5.61","287,028,409.95","295,720,000.00","295,720,000.00","96.22","United States","-","7.69","15/Aug/2036","4.63","USD","17/Aug/2026"
+"TBOND","TREASURY BOND","Treasury","Fixed Income","30,102,676.83","0.59","30,102,676.83","30,886,000.00","30,886,000.00","96.64","United States","-","7.42","15/Feb/2036","4.50","USD","15/Feb/2006"
+"USD","USD CASH","Cash and/or Derivatives","Cash","788,880.45","0.02","788,880.45","788,880.00","788,880.00","100.00","United States","-","0.00","-","0.00","USD","01/Jan/1989"
+"GBP","GBP CASH","Cash and/or Derivatives","Cash","613,049.64","0.01","613,049.64","458,047.00","458,047.00","133.84","United Kingdom","-","0.00","-","0.00","GBP","01/Jan/1989"
+"-","BLK ICS USD LEAF AGENCY DIST","Cash and/or Derivatives","Money Market","594,963.40","0.01","594,963.40","5,948.00","5,948.00","100.02","Ireland","-","0.13","-","3.92","USD","24/Jul/2019"
+"EUR","EUR CASH","Cash and/or Derivatives","Cash","21,840.67","0.00","21,840.67","19,459.00","19,459.00","112.24","European Union","-","0.00","-","0.00","EUR","01/Jan/1989"
+
