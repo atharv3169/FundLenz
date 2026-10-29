@@ -1,9 +1,1 @@
-{
-  "base_commit": "9e6ee225a4f4bd9a179cf0b7057b34c5d8aa9180",
-  "dataset_sha256": "622e73174458078c00eba05585643ab89900bb069014d56d5cf19b9670f6f2bd",
-  "financial_data_changed": true,
-  "lastCatalogueUpdateDate": "2026-10-24",
-  "run_id": "manual-catalogue-expansion-2026-10-24",
-  "schema_version": 1,
-  "manual_release": "automation/manual-releases/catalogue-expansion-2026-10.json"
-}
+{"base_commit":"e3356396553bace9b3ca769a64e9d6ab1f032d14","dataset_sha256":"8a335aa0964cdc8eb6daa10e140d3da982ca1aefed578bbea8b44eb2b051f1c7","financial_data_changed":true,"lastCatalogueUpdateDate":"2026-10-29","manual_release":"automation/manual-releases/catalogue-expansion-2026-10.json","run_id":"manual-catalogue-expansion-2026-10-29","schema_version":1}
