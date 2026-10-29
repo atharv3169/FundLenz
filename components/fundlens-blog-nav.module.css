@@ -1,5 +1,5 @@
 /* Site-wide FundLenz mobile masthead.
-   One row: FundLenz brand | Catalogue | Blog | hamburger.
+   One row: FundLenz brand | contextual primary | contextual secondary | hamburger.
    Project navigation and the creator credit remain in the drawer. */
 @media screen and (max-width: 800px) {
   .siteHeader:global(.masthead) {
@@ -64,6 +64,12 @@
     line-height: 1.1;
     white-space: nowrap;
   }
+  /* Allow the longer Portfolio Lab label to wrap, without changing
+     the approved mobile font size or the 35px button border height. */
+  .siteHeader:global(.masthead)[data-primary="portfolio"] :global(.catalogue-main-link) {
+    white-space: normal;
+    text-align: center;
+  }
   /* Border is 35px high, while a transparent 5px vertical extension
      keeps an effective 45px tap target without changing desktop styles. */
   .siteHeader:global(.masthead) :global(.catalogue-main-link)::after,
@@ -111,5 +117,13 @@
     padding-left: 6px;
     padding-right: 6px;
     font-size: 11px;
+  }
+}
+
+/* The Blog desktop sequence is Portfolio Lab, Admin, linked creator.
+   Its mobile menu retains the same full drawer used on every page. */
+@media screen and (min-width: 801px) {
+  .siteHeader:global(.masthead)[data-section="blog"] :global(.projects-desktop-trigger) {
+    display: none !important;
   }
 }
