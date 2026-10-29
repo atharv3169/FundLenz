@@ -84,7 +84,7 @@ export function ProjectsDrawer() {
             onClick={close} />
           <div id="fundlenz-projects-panel" ref={dialog} role="dialog" aria-modal="true"
             aria-labelledby="fundlenz-projects-heading"
-            className="absolute inset-y-0 right-0 flex w-[min(380px,90vw)] flex-col overflow-y-auto border-l border-[#385d6c] bg-[#102c40] px-6 py-7 text-white shadow-2xl">
+            className="absolute inset-y-0 right-0 flex w-[min(380px,90vw)] flex-col overflow-y-auto bg-[#102c40] px-6 py-7 text-white shadow-2xl">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
                 <p className="fundlenz-drawer-creator mb-5 text-[13px] leading-6 text-[#b6ccd5]">
@@ -98,7 +98,7 @@ export function ProjectsDrawer() {
               </div>
               <button type="button" data-close-projects aria-label="Close projects menu"
                 onClick={close}
-                className="inline-flex min-h-9 min-w-9 shrink-0 items-center justify-center rounded-[7px] border border-[#456778] text-[#dce7ec] hover:bg-[#25495a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc]">
+                className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center border-0 bg-transparent text-[#dce7ec] hover:text-[#8adacc] focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc]">
                 <X size={19} aria-hidden="true" />
               </button>
             </div>
@@ -133,7 +133,7 @@ export function ProjectsDrawer() {
                 Blog <ArrowRight size={16} aria-hidden="true" />
               </Link>
             </nav>
-            <div className="mt-auto border-t border-[#355569] pt-5 text-[13px] leading-6 text-[#9db4c1]">
+            <div className="fundlenz-drawer-footer mt-auto border-t border-[#355569] pt-5 text-[13px] leading-6 text-[#9db4c1]">
               More finance projects may be added here as they are developed.
             </div>
           </div>
