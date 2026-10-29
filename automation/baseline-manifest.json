@@ -7926,6 +7926,18 @@
       "scope": "hosting_configuration"
     },
     {
+      "path": "scripts/blog-staging-gate-core.mjs",
+      "bytes": 4720,
+      "sha256": "b6d3eb9fc4b8f66867d5de0c5fae26b13f52f6fc4640bbb5377ab5388ed77bdc",
+      "scope": "application"
+    },
+    {
+      "path": "scripts/build-blog-staging.mjs",
+      "bytes": 6660,
+      "sha256": "75178f7c7003669d3a62b13d21d2537ca4edc5bb28ae26bf89536096f5645643",
+      "scope": "application"
+    },
+    {
       "path": "scripts/data/build_catalog.py",
       "bytes": 4827,
       "sha256": "1382f1d91fba2cc5f4611125406bd31513df0e549b1111f773ec93531f9fdb86",
@@ -7989,6 +8001,12 @@
       "path": "scripts/verify-all.mjs",
       "bytes": 970,
       "sha256": "a0c5ccd24ecb974538f9920c4cc9a1f28db8bc58f307076ffe375069454db5f5",
+      "scope": "application"
+    },
+    {
+      "path": "scripts/verify-blog-staging-gate.mjs",
+      "bytes": 5399,
+      "sha256": "5f554e3b0cff014de59017ed608cf1274c51434883de3ba3afc3ff6695405e55",
       "scope": "application"
     },
     {
