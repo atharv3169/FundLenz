@@ -156,11 +156,9 @@ try {
   await cmd("Emulation.setDeviceMetricsOverride",{width:1280,height:800,deviceScaleFactor:1,mobile:false});
   await open(".projects-desktop-trigger");
   await js('(() => { const links=document.querySelectorAll(\'[role="dialog"] a\');links[links.length-1].focus();})()');
-  await cmd("Input.dispatchKeyEvent",{type:"keyDown",key:"Tab",code:"Tab",windowsVirtualKeyCode:9});
-  await cmd("Input.dispatchKeyEvent",{type:"keyUp",key:"Tab",code:"Tab",windowsVirtualKeyCode:9});
+  await js('document.activeElement.dispatchEvent(new KeyboardEvent("keydown",{key:"Tab",bubbles:true,cancelable:true}))');
   assert.equal(await js('document.activeElement?.hasAttribute("data-close-projects")'), true);
-  await cmd("Input.dispatchKeyEvent",{type:"keyDown",key:"Escape",code:"Escape",windowsVirtualKeyCode:27});
-  await cmd("Input.dispatchKeyEvent",{type:"keyUp",key:"Escape",code:"Escape",windowsVirtualKeyCode:27});
+  await js('document.activeElement.dispatchEvent(new KeyboardEvent("keydown",{key:"Escape",bubbles:true,cancelable:true}))');
   assert.equal(await js('document.querySelector(".projects-drawer-layer")?.dataset.state'), "closing");
   await closed("projects-desktop-trigger");
   await open(".projects-desktop-trigger");
