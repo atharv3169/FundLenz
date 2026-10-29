@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import blogNavStyles from "./fundlens-blog-nav.module.css";
+import { ProjectsDrawer } from "./projects-drawer";
 import { catalogueUpdateLabel } from "@/lib/site-metadata";
 import { LEGAL_CAPTURE_EVENT, LEGAL_LAB_KEY, LEGAL_SOURCE_KEY, validLegalSource } from "@/lib/legal-navigation-state";
 import { flushSync } from "react-dom";
@@ -194,7 +195,7 @@ export default function FundLenz() {
   }, []);
 
   return <div className={`app-shell portfolio-lab ${blogNavStyles.labShell}`} aria-busy={loadingOfficial}>
-    <header className="masthead"><a className="brand" href="#" aria-label="FundLenz home" onClick={e => { e.preventDefault(); setTab("overview"); }}><span className="brand-mark"><ScanSearch size={25} strokeWidth={1.7} /></span>Fund<span>Lenz</span><span className="brand-divider" /><small>PORTFOLIO LAB</small></a><div className="masthead-right"><a className="catalog-nav-link" href="/catalogue-global">Catalogue</a><Link className="catalog-nav-link lab-blog-link" href="/blogpost">Blog</Link><span className="project-credit">A project by <strong>Atharva Sahu</strong></span></div></header>
+    <header className="masthead"><a className="brand" href="#" aria-label="FundLenz home" onClick={e => { e.preventDefault(); setTab("overview"); }}><span className="brand-mark"><ScanSearch size={25} strokeWidth={1.7} /></span>Fund<span>Lenz</span><span className="brand-divider" /><small>PORTFOLIO LAB</small></a><div className="masthead-right"><a className="catalog-nav-link" href="/catalogue-global">Catalogue</a><Link className="catalog-nav-link lab-blog-link" href="/blogpost">Blog</Link><ProjectsDrawer /><span className="project-credit inline-flex items-center gap-1.5 whitespace-nowrap">A project by <Link href="/about" className="font-medium text-[#dce7ec] underline-offset-4 hover:text-[#8adacc] hover:underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc]">Atharva Sahu</Link><Link href="/about" aria-label="About Atharva Sahu" title="About the creator" className="inline-flex h-4 w-3 items-center justify-center align-middle text-[12px] font-medium italic leading-none text-[#c4d6df] transition-colors hover:text-[#8adacc] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc]">i</Link></span></div></header>
     <div className="workspace">
       <div className="intro"><div><div className="eyebrow"><span className="live-dot" /> LOOK THROUGH THE FUND. UNDERSTAND THE PORTFOLIO.</div><h1>See what you really hold.</h1><p>Uncover shared stocks. Explore concentration. Test the what-ifs.</p></div><div className="intro-meta"><span className={`mode-badge ${data.mode !== "demo" ? "imported" : ""}`}><FlaskConical size={14} />{data.mode === "demo" ? "Illustrative data" : data.mode === "official" ? "Official fund holdings" : "User-imported data"}</span><span>Snapshot · {snapshotLabel}</span><span className="catalogue-update-label"
   title="Date of the most recent published, independently verified catalogue data change. Individual fund disclosure dates may be older.">
@@ -269,7 +270,7 @@ export default function FundLenz() {
           </Tabs>
         </main>
       </div>
-      <footer className="site-footer"><span><ScanSearch size={16} />FundLenz <span>·</span> Make the holdings visible.</span><a className="footer-contact" href="mailto:info@fundlenz.com">info@fundlenz.com</a><span>FundLenz is a free educational portfolio lab. It does not provide investment advice or recommend investments.</span></footer>
+      <footer className="site-footer"><span><ScanSearch size={16} />FundLenz <span>·</span> Make the holdings visible.</span><Link className="footer-contact" href="/about">About the creator</Link><a className="footer-contact" href="mailto:info@fundlenz.com">info@fundlenz.com</a><span>FundLenz is a free educational portfolio lab. It does not provide investment advice or recommend investments.</span></footer>
     </div>
     <input className="hidden" ref={fileRef} type="file" accept=".csv,text/csv" aria-label="Import holdings CSV file" onChange={e => { void loadFile(e.target.files?.[0]); e.target.value = ""; }} />
     <input className="hidden" ref={sessionRef} type="file" accept=".json,application/json" aria-label="Restore FundLenz session file" onChange={e => { void loadFile(e.target.files?.[0], true); e.target.value = ""; }} />

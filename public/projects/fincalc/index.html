@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>FinCalc — Financial Mathematics</title>
+  <meta name="description" content="An educational financial calculator for compound interest, loan payments, CAGR and present value.">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <main class="shell">
+    <div class="topline"><span class="dot" aria-hidden="true"></span> AN INDEPENDENT FINANCIAL TOOLS PROJECT</div>
+    <div class="headline">
+      <div><h1>Fin<span>Calc</span><span class="period">.</span></h1>
+        <p>Financial mathematics, made practical.</p></div>
+      <div class="source-label">FORMULA-BASED · EDUCATIONAL</div>
+    </div>
+    <div class="workspace">
+      <nav class="tool-list" aria-label="Choose calculator">
+        <span class="tool-heading">CALCULATORS</span>
+        <button type="button" data-mode="compound" aria-current="page"><span>01</span> Compound interest</button>
+        <button type="button" data-mode="emi"><span>02</span> Loan EMI &amp; schedule</button>
+        <button type="button" data-mode="cagr"><span>03</span> Investment CAGR</button>
+        <button type="button" data-mode="pv"><span>04</span> Present value</button>
+        <div class="nav-note">Run calculations in your browser. Nothing is sent to a server.</div>
+      </nav>
+      <div class="calculator">
+        <section class="panel input-panel" aria-labelledby="tool-title">
+          <div class="section-tag">01 / FINANCIAL CALCULATOR</div>
+          <h2 id="tool-title">Compound interest</h2>
+          <p id="tool-description" class="description"></p>
+          <form id="calc-form" novalidate>
+            <div id="fields" class="fields"></div>
+            <div class="form-actions"><button type="submit" class="primary">Calculate <span aria-hidden="true">→</span></button>
+              <button type="button" class="reset" id="reset">Reset</button></div>
+          </form>
+          <p id="error" class="error" role="alert" hidden></p>
+        </section>
+        <section class="panel result-panel" aria-labelledby="result-title" aria-live="polite">
+          <div class="result-top"><div class="section-tag">YOUR RESULT</div><span id="result-state" class="status">READY</span></div>
+          <h2 id="result-title">Future value</h2>
+          <p class="result-value" id="result-value">—</p>
+          <p id="result-support" class="result-support">Enter your values and calculate to see the result.</p>
+          <div id="result-extra" class="result-extra"></div>
+          <button id="download-schedule" type="button" class="download" hidden>↓ Download amortization CSV</button>
+          <div class="result-divider"></div>
+          <div class="method-note"><strong>How to read this</strong><p id="method">Results follow fixed-rate mathematical formulas; they are not forecasts.</p></div>
+        </section>
+      </div>
+    </div>
+    <section class="bottom">
+      <div><span class="section-tag">SAVED IN THIS TAB ONLY</span><h2>Calculation history</h2>
+        <p>Previous results are kept in memory until you close or reload the page.</p></div>
+      <button type="button" id="download-history" class="download" disabled>↓ Export history CSV</button>
+    </section>
+    <div class="history" id="history" aria-live="polite">No calculations yet.</div>
+    <footer>FinCalc by Atharva Sahu · Based on the separate
+      <a href="https://github.com/atharv3169/FinCalc" target="_blank" rel="noopener noreferrer">FinCalc GitHub project</a>.
+      Values are rounded to two decimals for display and CSV exports; the original Python CLI uses Decimal precision.
+      Fixed-rate illustrations exclude taxes, fees, inflation and changes in rates. Not financial advice.
+    </footer>
+  </main>
+</body>
+</html>
