@@ -142,6 +142,7 @@ try {
   await until(async () => await count() === 0);
 
   async function open(selector) {
+    await until(() => js('Boolean(document.querySelector(' + JSON.stringify(selector) + '))'));
     await js('document.querySelector(' + JSON.stringify(selector) + ').click()');
     await until(() => js('Boolean(document.querySelector(\'[role="dialog"]\'))'));
     assert.equal(await js('document.body.style.overflow'), "hidden");
@@ -175,9 +176,7 @@ try {
   await open(".projects-desktop-trigger");
   await js('document.querySelector(\'[aria-label="Close projects menu"]\').click()');
   await closed("projects-desktop-trigger");
-  await open(".projects-desktop-trigger");
-  await js('document.querySelector(\'[role="dialog"] a[href="/fincalc"]\').click()');
-  await closed("projects-desktop-trigger", false); // Destination route owns focus after navigation.
+
   phase = "mobile drawer";
   await cmd("Emulation.setDeviceMetricsOverride",{width:375,height:760,deviceScaleFactor:1,mobile:true});
   await open(".fundlenz-mobile-menu-trigger");
@@ -189,6 +188,12 @@ try {
   await open(".fundlenz-mobile-menu-trigger");
   await js('document.querySelector(\'[aria-label="Close projects menu"]\').click()');
   await closed("fundlenz-mobile-menu-trigger");
+  // Navigation may change the URL/page; verify it last rather than interrupting mobile QA.
+  phase = "navigation link close";
+  await cmd("Emulation.setDeviceMetricsOverride",{width:1280,height:800,deviceScaleFactor:1,mobile:false});
+  await open(".projects-desktop-trigger");
+  await js('document.querySelector(\'[role="dialog"] a[href="/fincalc"]\').click()');
+  await closed("projects-desktop-trigger", false);
   console.log("PASS: sector lazy/paged rows, filters, keyboard, drawer close/focus, Escape, backdrop, links, reduced motion");
 } finally {
   socket?.close();
