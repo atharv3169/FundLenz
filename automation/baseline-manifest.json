@@ -48,6 +48,12 @@
       "scope": "application"
     },
     {
+      "path": "app/fincalc/page.tsx",
+      "bytes": 2266,
+      "sha256": "e42f759f1c1b43b281d852681dba5f43dfd7bcf79baf4447b980c9d92ddde250",
+      "scope": "application"
+    },
+    {
       "path": "app/funds/page.tsx",
       "bytes": 283,
       "sha256": "d3a05ebef5cbf4a696228b03ff6c87c1b46ddeb05ec24e1aeff169d9ad3b228e",
@@ -114,6 +120,12 @@
       "scope": "application"
     },
     {
+      "path": "components/fincalc-frame.tsx",
+      "bytes": 1523,
+      "sha256": "07cdf1c1f0c1dd330bc8d9e2f439bb7a9b9a526f15b74347fb61782c65c801ca",
+      "scope": "application"
+    },
+    {
       "path": "components/fund-catalog.tsx",
       "bytes": 28097,
       "sha256": "cd2e151c567a0209347c351057ff38184a8d7e062366e4cfe6720bdfefc6316e",
@@ -121,14 +133,20 @@
     },
     {
       "path": "components/fundlens.tsx",
-      "bytes": 54719,
-      "sha256": "643332528c513ae59692bcbc51f8923ff316bf15c69b8a4ed787e1a52730d3c5",
+      "bytes": 54766,
+      "sha256": "b812a5f6122990727bd00341773af5e04efa28355a2372b2bb71a7f44be8d2fa",
       "scope": "application"
     },
     {
       "path": "components/global-catalog.tsx",
       "bytes": 31748,
       "sha256": "3e445d3e4ae155505c788c4d194755a0902105879a00612fa834e1bd8b3df666",
+      "scope": "application"
+    },
+    {
+      "path": "components/projects-drawer.tsx",
+      "bytes": 6575,
+      "sha256": "c7ea308c16fc3e504fe18f3a88cbdca439aa9081d93bd969edcf40b73e9eca7e",
       "scope": "application"
     },
     {
@@ -1071,6 +1089,12 @@
       "path": "docs/audit-performance-2026-10-06.json",
       "bytes": 1238,
       "sha256": "cf371a3b1d9cea4a86a9ccb5fe6856952fc25412335ce1a59f79530bf7f6d33d",
+      "scope": "application"
+    },
+    {
+      "path": "docs/fincalc-web-integration.md",
+      "bytes": 1415,
+      "sha256": "758ba981ecdba5ef1b233509698499419377a0f6f08e25602bf718bd2de9e927",
       "scope": "application"
     },
     {
@@ -7908,6 +7932,30 @@
       "scope": "application"
     },
     {
+      "path": "public/projects/fincalc/app.mjs",
+      "bytes": 9394,
+      "sha256": "c93d77637491c5a5585eeef448660afe96509400cfb90f53130036d782ffe4b4",
+      "scope": "application"
+    },
+    {
+      "path": "public/projects/fincalc/core.mjs",
+      "bytes": 5454,
+      "sha256": "e2eb75cf740acd72d3617b4061656808460f1d018911db9ce26cf88d1ee797a6",
+      "scope": "application"
+    },
+    {
+      "path": "public/projects/fincalc/index.html",
+      "bytes": 3935,
+      "sha256": "471ad2c48fd2c74662d2e949181323b33e1587bd647dfe56cff1d6ffc4934d1b",
+      "scope": "application"
+    },
+    {
+      "path": "public/projects/fincalc/styles.css",
+      "bytes": 7415,
+      "sha256": "84a510f3935a3b00e56106164a749199ba4c91164d95e7539047abe13daac649",
+      "scope": "application"
+    },
+    {
       "path": "public/robots.txt",
       "bytes": 23,
       "sha256": "16ceb5ee3e0dc13aa9adf31a3ebbe45a1d965b8c2b9f72eaf84e5911e140ed95",
@@ -7927,8 +7975,8 @@
     },
     {
       "path": "scripts/blog-staging-gate-core.mjs",
-      "bytes": 4720,
-      "sha256": "b6d3eb9fc4b8f66867d5de0c5fae26b13f52f6fc4640bbb5377ab5388ed77bdc",
+      "bytes": 4769,
+      "sha256": "0f789f7d57e1056a34f51d53c6f92460ee92f2e648ba99bbc4bc6b384f743106",
       "scope": "application"
     },
     {
@@ -8005,8 +8053,8 @@
     },
     {
       "path": "scripts/verify-blog-staging-gate.mjs",
-      "bytes": 5399,
-      "sha256": "5f554e3b0cff014de59017ed608cf1274c51434883de3ba3afc3ff6695405e55",
+      "bytes": 5711,
+      "sha256": "a02d4e363c7727c397f432e3fb17a34009a22e13b3a1a01ef2f4a8083f2be4ea",
       "scope": "application"
     },
     {
