@@ -5,32 +5,44 @@ const portfolio = readFileSync("components/fundlens.tsx","utf8");
 const securities = readFileSync("components/securities-catalog.tsx","utf8");
 const metadata = readFileSync("lib/site-metadata.ts","utf8");
 const updater = readFileSync("scripts/automation/validate.py","utf8");
+const drawer = readFileSync("components/projects-drawer.tsx", "utf8");
+const calc = readFileSync("app/fincalc/page.tsx", "utf8");
+const globalCss = readFileSync("app/globals.css", "utf8");
 
-const mobile = nav.slice(nav.indexOf("/* FundLenz portfolio masthead ONLY:"));
+const mobile = nav.slice(nav.indexOf("/* Portfolio Lab mobile masthead."));
 assert.match(mobile, /@media screen and \(max-width: 800px\)/);
-assert.match(mobile, /grid-template-areas: "brand blog catalogue";/,
-  "All three controls must share one header row on mobile");
-assert.match(mobile, /grid-template-columns: minmax\(max-content, 1fr\) max-content max-content;/,
-  "Preserve the full intrinsic brand width; make buttons only as wide as necessary");
-assert.match(mobile, /min-height: 44px;/, "Keep accessible 44px button targets");
-assert.match(mobile, /@media screen and \(min-width: 381px\) and \(max-width: 800px\)/,
-  "Wider button treatment must remain scoped to mobile screens with sufficient room");
-assert.match(mobile, /clamp\(70px, 19vw, 88px\) clamp\(108px, 29vw, 130px\)/,
-  "Increase Blog/Catalogue button width toward the red-line reference without changing the logo");
-assert.match(mobile, /width: 100%;\s*justify-self: stretch;/,
-  "Buttons should fill expanded slots rather than keeping their tiny intrinsic widths");
-assert.match(mobile, /minmax\(max-content, 1fr\)/,
-  "Keep original logo width before allocating space to the buttons");
-assert.match(mobile, /font-size: \.75rem;/, "Compact navigation buttons rather than the logo");
+assert.match(mobile, /grid-template-areas: "brand catalogue menu";/,
+  "Mobile brand, Catalogue and menu must occupy a single row in that order");
+assert.match(mobile, /grid-template-columns: minmax\(0, 1fr\) max-content 44px;/,
+  "Keep the brand flexible and give the right-hand menu a 44px touch target");
+assert.match(mobile, /min-height: 44px;/, "Catalogue needs a 44px touch target");
+assert.match(mobile, /:global\(\.masthead \.lab-blog-link\),[\s\S]*?:global\(\.masthead \.projects-desktop-trigger\)[\s\S]*?display: none !important;/,
+  "Hide Blog and the desktop More projects button at mobile widths");
+assert.match(mobile, /:global\(\.masthead \.fundlenz-mobile-menu-trigger\)[\s\S]*?grid-area: menu;/,
+  "Place hamburger immediately to the right of Catalogue");
 assert.match(mobile, /@media screen and \(max-width: 360px\)/,
-  "Narrow phones must get smaller button padding, never smaller branding");
-assert.doesNotMatch(nav, /\.brand-mark|\.brand\s*\{/,
-  "Do not change the logo dimensions or typography");
-assert.match(mobile, /grid-area: blog;/);
-assert.match(mobile, /grid-area: catalogue;/);
+  "Compact layout must accommodate narrow phones");
+assert.match(drawer, /<Menu size=\{22\}/, "Render a three-line hamburger icon");
+assert.match(drawer, /aria-label="Open navigation menu"/,
+  "Hamburger must have an accessible label");
+assert.match(drawer, /A project by <Link href="\/about"/,
+  "Place creator credit/link at top of mobile drawer");
+assert.match(drawer, /href="\/fincalc"/, "Keep FinCalc available in the drawer");
+assert.match(drawer, /href="\/blogpost"/, "Move Blog into the mobile drawer");
+assert.match(drawer, /aria-modal="true"/, "Drawer needs a dialog");
+assert.match(drawer, /event.key === "Escape"/, "Drawer remains keyboard dismissible");
+assert.match(globalCss, /text-decoration-line: underline !important;/,
+  "Creator link must be visibly underlined, not hover-only");
+assert.match(globalCss, /\.masthead \.project-credit a\[href="\/about"\]/);
+assert.match(globalCss, /@media screen and \(max-width: 800px\)[\s\S]*?\.fincalc-header \.masthead-right \.catalogue-main-link/,
+  "FinCalc must share the same mobile Catalogue/menu layout");
+assert.match(calc, /className="catalog-nav-link catalogue-main-link"/,
+  "FinCalc Catalogue button must use the common mobile positioning rule");
 const header = portfolio.slice(portfolio.indexOf('<header className="masthead">'),
   portfolio.indexOf('</header>') + '</header>'.length);
 assert.ok(header.includes('href="/catalogue-global"'), "Catalogue remains present");
+assert.match(header, /className="catalog-nav-link catalogue-main-link"/,
+  "Portfolio Catalogue uses the explicit mobile grid slot");
 assert.ok(header.includes('href="/blogpost"'), "Blog remains present");
 assert.doesNotMatch(header, /View report|header-button|setTab\("report"\)/,
   "Remove the redundant View report header button at ALL widths");
@@ -62,4 +74,4 @@ assert.match(updater, /if catalogue_update_date:[\s\S]*?lastCatalogueUpdateDate=
   "Updater must save the verified date atomically with data");
 assert.doesNotMatch(portfolio, /Snapshot · \{catalogueUpdateLabel\}/,
   "Publication date cannot replace a stale source snapshot date");
-console.log("PASS: single-row mobile brand/Blog/Catalogue, no Report shortcut, report tab and verified dates preserved");
+console.log("PASS: single-row mobile brand/Catalogue/menu, creator link, drawer navigation, no overlap, report tab and verified dates preserved");
