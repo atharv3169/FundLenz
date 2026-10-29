@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Github, Linkedin, Mail, ScanSearch } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, GitBranch, UserRound, Mail, ScanSearch } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Atharva Sahu | Creator of FundLenz",
@@ -70,10 +70,10 @@ export default function AboutPage() {
           <p className="mt-2 text-sm text-[#607987]">Project discussions, feedback, and collaborations are welcome.</p>
           <div className="mt-5 flex flex-wrap gap-3">
             <a href="https://github.com/atharv3169" target="_blank" rel="noopener noreferrer" className={`inline-flex min-h-11 items-center gap-2 rounded-lg border border-[#c8dce3] px-4 py-2 text-sm font-medium text-[#24566a] hover:border-[#087f8c] hover:bg-[#f0f8f8] ${outline}`}>
-              <Github size={17} aria-hidden="true" /> GitHub <ArrowUpRight size={14} aria-hidden="true" />
+              <GitBranch size={17} aria-hidden="true" /> GitHub <ArrowUpRight size={14} aria-hidden="true" />
             </a>
             <a href="https://www.linkedin.com/in/atharvasahu/" target="_blank" rel="noopener noreferrer" className={`inline-flex min-h-11 items-center gap-2 rounded-lg border border-[#c8dce3] px-4 py-2 text-sm font-medium text-[#24566a] hover:border-[#087f8c] hover:bg-[#f0f8f8] ${outline}`}>
-              <Linkedin size={17} aria-hidden="true" /> LinkedIn <ArrowUpRight size={14} aria-hidden="true" />
+              <UserRound size={17} aria-hidden="true" /> LinkedIn <ArrowUpRight size={14} aria-hidden="true" />
             </a>
             <a href="mailto:atharva@fundlenz.com" className={`inline-flex min-h-11 items-center gap-2 rounded-lg bg-[#087f8c] px-4 py-2 text-sm font-medium text-white hover:bg-[#076976] ${outline}`}>
               <Mail size={17} aria-hidden="true" /> atharva@fundlenz.com
