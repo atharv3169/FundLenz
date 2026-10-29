@@ -54,17 +54,38 @@ try {
     ["-lc", "command -v google-chrome || command -v google-chrome-stable || command -v chromium"],
     { encoding: "utf8" }).trim().split("\n")[0];
   assert.ok(binary, "Chromium is required");
-  chrome = spawn(binary, [
-    "--headless=new", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu",
-    "--no-first-run", "--no-default-browser-check", "--remote-debugging-port=0",
-    "--user-data-dir=" + directory, "http://127.0.0.1:41885/",
-  ], { stdio: "ignore" });
   let port = 0;
-  await until(async () => {
-    const value = await readFile(path.join(directory, "DevToolsActivePort"), "utf8");
-    port = Number(value.split("\n")[0]);
-    return port > 0;
-  });
+  for (let attempt = 0; attempt < 2 && !port; attempt++) {
+    const profile = attempt ? path.join(directory, "retry") : directory;
+    let startupError = "";
+    chrome = spawn(binary, [
+      "--headless=new", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu",
+      "--no-first-run", "--no-default-browser-check", "--remote-debugging-port=0",
+      "--user-data-dir=" + profile, "http://127.0.0.1:41885/",
+    ], { stdio: ["ignore", "ignore", "pipe"] });
+    chrome.stderr?.on("data", chunk => {
+      startupError = (startupError + String(chunk)).slice(-2000);
+    });
+    try {
+      await until(async () => {
+        if (chrome.exitCode !== null || chrome.signalCode !== null) {
+          throw Error("Chromium exited: " + chrome.exitCode + "/" + chrome.signalCode);
+        }
+        const value = await readFile(path.join(profile, "DevToolsActivePort"), "utf8");
+        port = Number(value.split("\n")[0]);
+        return port > 0;
+      }, attempt ? 20000 : 10000);
+    } catch (error) {
+      console.error("Chromium startup attempt", attempt + 1,
+        "exit", chrome.exitCode, chrome.signalCode, startupError, String(error));
+      if (chrome.exitCode === null && chrome.signalCode === null) {
+        const gone = new Promise(resolve => chrome.once("exit", resolve));
+        chrome.kill();
+        await Promise.race([gone, sleep(1000)]);
+      }
+      if (attempt === 1) throw error;
+    }
+  }
   let page;
   await until(async () => {
     const pages = await fetch("http://127.0.0.1:" + port + "/json/list").then(r => r.json());
