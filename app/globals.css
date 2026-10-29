@@ -595,3 +595,54 @@ h1,h2,h3,p { margin: 0; } h1,h2,h3 { line-height: 1.25; letter-spacing: -.025em;
 .catalog-return-link:hover { background: #e9f3f5; border-color: #94bec4; color: #144b61; }
 .catalog-return-link:focus-visible { outline: 2px solid #087f8c; outline-offset: 3px; }
 @media (max-width: 800px) { .catalog-return-link { min-height: 42px; margin-bottom: 14px; } }
+
+/* Compact holdings workspace; sector disclosure never changes table filters. */
+.holdings-layout { display: grid; gap: 16px; align-items: start; }
+.holdings-layout > .panel { min-width: 0; }
+.holdings-layout .sector-panel { margin-top: 0; }
+.holdings-layout .panel-title { padding: 16px 16px 8px; flex-wrap: wrap; }
+.sector-hint { padding: 0 16px 10px; font-size: 11px; color: #718694; }
+.sector-group { border-top: 1px solid #edf2f5; }
+.sector-group .sector-row { grid-template-columns: minmax(0,1fr) 44px 57px 14px; gap: 8px; padding: 12px 16px; font-size: 12px; cursor: pointer; list-style: none; }
+.sector-row::-webkit-details-marker { display: none; }
+.sector-row > span { overflow-wrap: anywhere; }
+.sector-row > svg { transition: transform 200ms ease; }
+.sector-row:focus-visible { outline: 2px solid #087f8c; outline-offset: -3px; border-radius: 4px; }
+.sector-group[open] > .sector-row { background: #edf6f6; }
+.sector-group[open] > .sector-row > svg { transform: rotate(90deg); }
+.sector-stocks { list-style: none; margin: 0; padding: 0 16px 8px; background: #f8fbfc; }
+.sector-stocks li { display: flex; justify-content: space-between; align-items: start; gap: 12px; padding: 10px 0; border-bottom: 1px solid #e6eef2; font-size: 11px; }
+.sector-stocks li:last-child { border-bottom: 0; }
+.sector-stocks li > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.sector-stocks strong { font-weight: 550; }
+.sector-stocks small { display: block; color: #748996; margin-top: 2px; font-size: 10px; }
+.sector-stock-value { text-align: right; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+@media (min-width: 1100px) {
+  .holdings-layout { grid-template-columns: minmax(0,1fr) 300px; gap: 14px; }
+  .holdings-table-panel .table-toolbar { padding: 12px; gap: 8px; flex-wrap: wrap; }
+  .holdings-table-panel .search-box { flex: 1 1 170px; width: auto; }
+  .holdings-table-panel .filter-select { flex: 1 1 135px; min-width: 0; gap: 6px; }
+  .holdings-table-panel [data-slot=table-cell] { padding: 9px 10px; font-size: 12px; }
+  .holdings-table-panel [data-slot=table-head] { padding: 8px 10px; font-size: 10px; height: 38px; letter-spacing: .02em; }
+  .holdings-table-panel [data-slot=table-cell]:first-child { white-space: normal; min-width: 130px; }
+  .holdings-table-panel .table-footnote { padding: 12px; font-size: 11px; }
+}
+@keyframes projects-slide-in { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes projects-slide-out { from { transform: translateX(0); } to { transform: translateX(100%); } }
+@keyframes projects-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes projects-backdrop-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes workspace-reveal { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+.projects-drawer-panel { animation: projects-slide-in 280ms cubic-bezier(.22,1,.36,1) both; }
+.projects-drawer-backdrop { animation: projects-backdrop-in 240ms ease both; }
+.projects-drawer-layer[data-state=closing] .projects-drawer-panel { animation: projects-slide-out 240ms ease-in both; }
+.projects-drawer-layer[data-state=closing] .projects-drawer-backdrop { animation: projects-backdrop-out 240ms ease both; }
+.main-panel [data-slot=tabs-content][data-state=active], .sector-group[open] .sector-stocks { animation: workspace-reveal 180ms ease-out; }
+@supports (interpolate-size: allow-keywords) {
+  .sector-group { interpolate-size: allow-keywords; }
+  .sector-group::details-content { block-size: 0; overflow: clip; transition: block-size 220ms ease, content-visibility 220ms; transition-behavior: allow-discrete; }
+  .sector-group[open]::details-content { block-size: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .projects-drawer-panel, .projects-drawer-backdrop, .main-panel [data-slot=tabs-content][data-state=active], .sector-group[open] .sector-stocks { animation: none !important; }
+  .sector-group::details-content, .sector-row > svg, .bar-track > div { transition: none !important; }
+}

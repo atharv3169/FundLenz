@@ -10,6 +10,8 @@ const focusable = 'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"]
 
 export function ProjectsDrawer() {
   const [open, setOpen] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const currentPath = usePathname();
   const isFinCalc = currentPath === "/fincalc";
   const isPortfolioLab = currentPath === "/";
@@ -17,11 +19,26 @@ export function ProjectsDrawer() {
   const mobileTrigger = useRef<HTMLButtonElement>(null);
   const dialog = useRef<HTMLDivElement>(null);
 
-  function close() {
-    setOpen(false);
-    const useMobileTrigger = typeof window !== "undefined" && window.matchMedia("(max-width: 800px)").matches;
-    (useMobileTrigger ? mobileTrigger.current : trigger.current)?.focus();
+  function show() {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setClosing(false);
+    setOpen(true);
   }
+  function close() {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setClosing(true);
+    const delay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 240;
+    closeTimer.current = setTimeout(() => {
+      setOpen(false);
+      setClosing(false);
+      closeTimer.current = null;
+      const useMobileTrigger = window.matchMedia("(max-width: 800px)").matches;
+      (useMobileTrigger ? mobileTrigger.current : trigger.current)?.focus();
+    }, delay);
+  }
+  useEffect(() => () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+  }, []);
   useEffect(() => {
     if (!open) return;
     const previousOverflow = document.body.style.overflow;
@@ -56,9 +73,9 @@ export function ProjectsDrawer() {
       <button
         ref={trigger}
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={show}
         aria-haspopup="dialog"
-        aria-expanded={open}
+        aria-expanded={open && !closing}
         aria-controls="fundlenz-projects-panel"
         className="catalog-nav-link projects-desktop-trigger hidden min-[801px]:inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap transition-colors hover:border-[#8adacc] hover:bg-white/[0.06] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc]"
       >
@@ -68,24 +85,24 @@ export function ProjectsDrawer() {
       <button
         ref={mobileTrigger}
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={show}
         aria-label="Open navigation menu"
         title="Menu"
         aria-haspopup="dialog"
-        aria-expanded={open}
+        aria-expanded={open && !closing}
         aria-controls="fundlenz-projects-panel"
         className="fundlenz-mobile-menu-trigger focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc]"
       >
         <Menu size={22} strokeWidth={1.9} aria-hidden="true" />
       </button>
       {open && createPortal(
-        <div className="fixed inset-0 z-[100]">
+        <div className="projects-drawer-layer fixed inset-0 z-[100]" data-state={closing ? "closing" : "open"}>
           <button type="button" aria-label="Close projects menu" tabIndex={-1}
-            className="absolute inset-0 h-full w-full bg-[#091e2c]/65 backdrop-blur-[2px]"
+            className="projects-drawer-backdrop absolute inset-0 h-full w-full bg-[#091e2c]/65 backdrop-blur-[2px]"
             onClick={close} />
           <div id="fundlenz-projects-panel" ref={dialog} role="dialog" aria-modal="true"
             aria-labelledby="fundlenz-projects-heading"
-            className="absolute inset-y-0 right-0 flex w-[min(380px,90vw)] flex-col overflow-y-auto bg-[#102c40] px-6 py-7 text-white shadow-2xl">
+            className="projects-drawer-panel absolute inset-y-0 right-0 flex w-[min(380px,90vw)] flex-col overflow-y-auto bg-[#102c40] px-6 py-7 text-white shadow-2xl">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
                 <p className="fundlenz-drawer-creator mb-5 text-[13px] leading-6 text-[#b6ccd5]">
