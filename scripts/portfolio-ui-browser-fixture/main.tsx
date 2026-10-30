@@ -1,3 +1,4 @@
+import "../../app/globals.css";
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { ProjectsDrawer } from "../../components/projects-drawer";
@@ -21,7 +22,7 @@ function Fixture() {
       stocks={stocks} color="#087f8c" money={v => "$" + v.toFixed(0)} />
     <SectorExposureGroup sector={{ name: "Healthcare", weight: .04, value: 4000 }}
       stocks={stocks} color="#3c65cf" money={v => "$" + v.toFixed(0)} />
-    <ProjectsDrawer />
+    <div className="portfolio-lab"><header className="masthead"><ProjectsDrawer /></header></div>
   </div>;
 }
 // Keep the fixture mounted when a navigation Link is clicked; React still receives onClick.

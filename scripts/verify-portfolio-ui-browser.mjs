@@ -27,18 +27,12 @@ assert.match(drawer, /data-state=\{closing \? "closing" : entered \? "open" : "e
 assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
 assert.match(css, /\.projects-drawer-layer\[data-state=closing\]/);
 
-const desktopStart = css.indexOf("/* Desktop projects drawer: explicit painted entry state; mobile keyframes remain unchanged. */");
-const desktopEnd = css.indexOf("/* End desktop projects drawer. */");
-assert.ok(desktopStart !== -1 && desktopEnd > desktopStart, "Desktop transition CSS required");
-const reducedMotion = css.match(/@media\(prefers-reduced-motion:reduce\) \{ \*,\*::before,\*::after \{[^}]+\} \}/);
-assert.ok(reducedMotion, "Global reduced-motion safeguard required");
-const animationFixtureCss = css.slice(desktopStart, desktopEnd + 34) + "\n" + reducedMotion[0];
-
 const root = process.cwd();
 const fixture = path.join(root, "scripts/portfolio-ui-browser-fixture");
 const mock = path.join(fixture, "next-mocks.tsx");
 const server = await createServer({
   configFile: false, root: fixture, plugins: [react()],
+  css: { postcss: root },
   resolve: { alias: [
     { find: /^next\/link$/, replacement: mock },
     { find: /^next\/navigation$/, replacement: mock },
@@ -131,9 +125,6 @@ try {
     if (result.exceptionDetails) throw Error(JSON.stringify(result.exceptionDetails));
     return result.result.value;
   }
-  // Exercise actual production desktop-motion rules in Chromium.
-  await js('(() => { const style = document.createElement("style"); style.textContent = ' +
-    JSON.stringify(animationFixtureCss) + '; document.head.appendChild(style); })()');
   const count = () => js('document.querySelectorAll(".sector-stocks li").length');
   phase = "fixture mounting";
   try {
@@ -205,20 +196,21 @@ try {
   assert.ok(laterX < firstMotion.x - 5,
     `Desktop panel must physically slide from ${firstMotion.x} to ${laterX}`);
   await until(() => js('document.querySelector(".projects-drawer-layer")?.dataset.state === "open"'));
-  const focusTrap = await js(`(() => {
-    const dialog=document.querySelector('[role="dialog"]');
-    const controls=[...dialog.querySelectorAll('a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])')];
-    const first=controls[0], last=controls[controls.length-1];
-    last.focus();
-    const before=document.activeElement===last;
-    const event=new KeyboardEvent("keydown",{key:"Tab",bubbles:true,cancelable:true});
-    document.dispatchEvent(event);
-    return {before,prevented:event.defaultPrevented,focusedFirst:document.activeElement===first,
-      first:first?.outerHTML.slice(0,120),last:last?.outerHTML.slice(0,120),
-      active:document.activeElement?.outerHTML.slice(0,120)};
-  })()`);
-  assert.equal(focusTrap.before,true,"Last navigation control must be focusable");
-  assert.equal(focusTrap.focusedFirst,true,"Tab at last navigation control must wrap to first");
+  // Real Tab presses under the complete production stylesheet reproduce the
+  // hidden-mobile-link regression, unlike synthetic keydown-only checks.
+  async function pressTab(shift = false) {
+    await cmd("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab",
+      windowsVirtualKeyCode: 9, modifiers: shift ? 8 : 0 });
+    await cmd("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab",
+      windowsVirtualKeyCode: 9, modifiers: shift ? 8 : 0 });
+  }
+  assert.equal(await js('document.querySelector(".fundlenz-drawer-mobile-links").getClientRects().length'), 0);
+  await pressTab(true);
+  assert.equal(await js('document.activeElement?.getAttribute("href")'), "/fincalc",
+    "Shift+Tab from close must wrap to the last visible desktop link");
+  await pressTab();
+  assert.equal(await js('document.activeElement?.hasAttribute("data-close-projects")'), true,
+    "Tab from FinCalc must wrap to close");
   await js('document.activeElement.dispatchEvent(new KeyboardEvent("keydown",{key:"Escape",bubbles:true,cancelable:true}))');
   assert.equal(await js('document.querySelector(".projects-drawer-layer")?.dataset.state'), "closing");
   const closingMotion = await js(`(() => {
@@ -239,7 +231,41 @@ try {
   phase = "mobile drawer";
   await cmd("Emulation.setDeviceMetricsOverride",{width:375,height:760,deviceScaleFactor:1,mobile:true});
   await open(".fundlenz-mobile-menu-trigger");
+  const mobileTravel = await js(`(() => {
+    const panel = document.querySelector(".projects-drawer-panel");
+    const animation = panel.getAnimations().find(a => a.animationName === "projects-slide-in");
+    if (!animation) return null;
+    animation.pause();
+    animation.currentTime = 0;
+    const start = panel.getBoundingClientRect().x;
+    animation.currentTime = 210;
+    const end = panel.getBoundingClientRect().x;
+    animation.finish();
+    return { start, end };
+  })()`);
+  assert.ok(mobileTravel && mobileTravel.start - mobileTravel.end > 50,
+    "Mobile panel must slide horizontally with production keyframes");
+  await js('document.querySelector(".fundlenz-drawer-creator a").focus()');
+  await pressTab(true);
+  assert.equal(await js('document.activeElement?.getAttribute("href")'), "/blogpost");
+  await pressTab();
+  assert.equal(await js('document.activeElement?.getAttribute("href")'), "/about");
   await js('document.querySelector(".projects-drawer-backdrop").click()');
+  const mobileExit = await js(`(() => {
+    const panel = document.querySelector(".projects-drawer-panel");
+    const animation = panel?.getAnimations().find(a => a.animationName === "projects-slide-out");
+    if (!animation) return null;
+    animation.pause();
+    animation.currentTime = 0;
+    const start = panel.getBoundingClientRect().x;
+    animation.currentTime = 180;
+    const end = panel.getBoundingClientRect().x;
+    animation.finish();
+    return { start, end };
+  })()`);
+  assert.ok(mobileExit && mobileExit.end - mobileExit.start > 50,
+    "Mobile closing must slide horizontally");
+
   await closed("fundlenz-mobile-menu-trigger");
   phase = "reduced motion";
   await cmd("Emulation.setEmulatedMedia",{features:[{name:"prefers-reduced-motion",value:"reduce"}]});
@@ -249,6 +275,12 @@ try {
     "0s", "Reduced-motion setting must disable the desktop transition");
   await js('document.querySelector(\'[aria-label="Close projects menu"]\').click()');
   await closed("fundlenz-mobile-menu-trigger");
+  await cmd("Emulation.setDeviceMetricsOverride",{width:1280,height:800,deviceScaleFactor:1,mobile:false});
+  await open(".projects-desktop-trigger");
+  assert.equal(await js('document.querySelector(".projects-drawer-panel").getAnimations().filter(a => a.playState === "running").length'), 0,
+    "Reduced motion must also disable desktop Web Animations");
+  await js('document.querySelector("[data-close-projects]").click()');
+  await closed("projects-desktop-trigger");
   // Navigation may change the URL/page; verify it last rather than interrupting mobile QA.
   phase = "navigation link close";
   await cmd("Emulation.setDeviceMetricsOverride",{width:1280,height:800,deviceScaleFactor:1,mobile:false});

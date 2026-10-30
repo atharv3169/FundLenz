@@ -107,10 +107,17 @@ export function ProjectsDrawer() {
         close();
       }
       if (event.key !== "Tab" || !dialog.current) return;
-      const controls = [...dialog.current.querySelectorAll<HTMLElement>(focusable)];
+      // Hidden mobile-only links must not become desktop focus boundaries.
+      const controls = [...dialog.current.querySelectorAll<HTMLElement>(focusable)].filter(
+        control => control.tabIndex >= 0 && control.getClientRects().length > 0 &&
+          getComputedStyle(control).visibility !== "hidden" && !control.closest("[inert]"),
+      );
       if (!controls.length) return;
       const first = controls[0], last = controls[controls.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
+      if (!dialog.current.contains(document.activeElement)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      } else if (event.shiftKey && document.activeElement === first) {
         event.preventDefault();
         last.focus();
       } else if (!event.shiftKey && document.activeElement === last) {
