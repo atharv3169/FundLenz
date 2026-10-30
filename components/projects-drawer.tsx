@@ -14,6 +14,8 @@ export function ProjectsDrawer() {
   const [entered, setEntered] = useState(false);
   const closingRef = useRef(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const openingAnimation = useRef<Animation | null>(null);
+  const closingAnimation = useRef<Animation | null>(null);
   const currentPath = usePathname();
   const isFinCalc = currentPath === "/fincalc";
   const isPortfolioLab = currentPath === "/";
@@ -23,6 +25,8 @@ export function ProjectsDrawer() {
 
   function show() {
     if (closeTimer.current) clearTimeout(closeTimer.current);
+    openingAnimation.current?.cancel();
+    closingAnimation.current?.cancel();
     closingRef.current = false;
     setEntered(false);
     setClosing(false);
@@ -32,13 +36,30 @@ export function ProjectsDrawer() {
     if (closingRef.current) return; // Ignore repeated Escape/backdrop/link closes.
     closingRef.current = true;
     if (closeTimer.current) clearTimeout(closeTimer.current);
+    const desktop = window.matchMedia("(min-width: 801px)").matches;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const panel = dialog.current;
+    if (desktop && !reduced && panel) {
+      // Animate from the actual displayed position, even if opening was interrupted.
+      const from = window.getComputedStyle(panel).transform;
+      openingAnimation.current?.cancel();
+      closingAnimation.current = panel.animate(
+        [{ transform: from }, { transform: "translate3d(100%, 0, 0)" }],
+        { duration: 480, easing: "cubic-bezier(.4, 0, .7, 1)", fill: "forwards" },
+      );
+      const backdrop = panel.parentElement?.querySelector<HTMLElement>(".projects-drawer-backdrop");
+      backdrop?.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: 360, easing: "ease-in", fill: "forwards",
+      });
+    }
     setClosing(true);
-    const delay = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ? 0 : window.matchMedia("(min-width: 801px)").matches ? 360 : 240;
+    const delay = reduced ? 0 : desktop ? 480 : 240;
     closeTimer.current = setTimeout(() => {
       setOpen(false);
       setClosing(false);
       closingRef.current = false;
+      closingAnimation.current?.cancel();
+      closingAnimation.current = null;
       closeTimer.current = null;
       const useMobileTrigger = window.matchMedia("(max-width: 800px)").matches;
       (useMobileTrigger ? mobileTrigger.current : trigger.current)?.focus();
@@ -47,17 +68,32 @@ export function ProjectsDrawer() {
   useEffect(() => () => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
   }, []);
-  // Paint the desktop panel outside the viewport before starting its slide transition.
-  // The existing mobile keyframe animation and reduced-motion behavior remain intact.
+  // Animate the actual portal panel so desktop motion does not depend on
+  // CSS transition timing or the mounting frame. Keep reduced-motion opt-out.
   useEffect(() => {
     if (!open) return;
-    let secondFrame = 0;
-    const firstFrame = requestAnimationFrame(() => {
-      secondFrame = requestAnimationFrame(() => setEntered(true));
+    const panel = dialog.current;
+    const desktop = window.matchMedia("(min-width: 801px)").matches;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!panel || !desktop || reduced) {
+      setEntered(true);
+      return;
+    }
+    const opening = panel.animate(
+      [{ transform: "translate3d(100%, 0, 0)" }, { transform: "translate3d(0, 0, 0)" }],
+      { duration: 560, easing: "cubic-bezier(.22, 1, .36, 1)", fill: "forwards" },
+    );
+    openingAnimation.current = opening;
+    const backdrop = panel.parentElement?.querySelector<HTMLElement>(".projects-drawer-backdrop");
+    const fade = backdrop?.animate([{ opacity: 0 }, { opacity: 1 }], {
+      duration: 340, easing: "ease-out", fill: "forwards",
     });
+    opening.onfinish = () => setEntered(true);
     return () => {
-      cancelAnimationFrame(firstFrame);
-      cancelAnimationFrame(secondFrame);
+      opening.onfinish = null;
+      opening.cancel();
+      fade?.cancel();
+      if (openingAnimation.current === opening) openingAnimation.current = null;
     };
   }, [open]);
   useEffect(() => {

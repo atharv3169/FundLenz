@@ -20,6 +20,9 @@ assert.match(sector, /matches\.slice\(0, visibleCount\)/);
 assert.match(sector, /aria-expanded=\{expanded\}/);
 assert.match(drawer, /closingRef\.current/);
 assert.match(drawer, /setEntered\(true\)/);
+assert.match(drawer, /panel\.animate\(/);
+assert.match(drawer, /duration: 560/);
+assert.match(drawer, /duration: 480/);
 assert.match(drawer, /data-state=\{closing \? "closing" : entered \? "open" : "entering"\}/);
 assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
 assert.match(css, /\.projects-drawer-layer\[data-state=closing\]/);
@@ -189,16 +192,19 @@ try {
   phase = "desktop drawer";
   await cmd("Emulation.setDeviceMetricsOverride",{width:1280,height:800,deviceScaleFactor:1,mobile:false});
   await open(".projects-desktop-trigger");
-  await until(() => js('document.querySelector(".projects-drawer-layer")?.dataset.state === "open"'));
-  const desktopMotion = await js(`(() => {
+  // Verify observable horizontal movement, not merely the presence of animation CSS.
+  const firstMotion = await js(`(() => {
     const panel = document.querySelector(".projects-drawer-panel");
-    const styles = getComputedStyle(panel);
-    return {duration: styles.transitionDuration, property: styles.transitionProperty,
-      active: panel.getAnimations().some(a => a.playState === "running")};
+    const animation = panel.getAnimations().find(a => a.effect?.getTiming().duration === 560);
+    return { running: !!animation && animation.playState === "running",
+      x: new DOMMatrixReadOnly(getComputedStyle(panel).transform).m41 };
   })()`);
-  assert.ok(desktopMotion.duration.includes("0.42s"), "Desktop open slide must last 420ms");
-  assert.ok(desktopMotion.property.includes("transform"), "Desktop drawer must transition its position");
-  assert.equal(desktopMotion.active, true, "Desktop drawer must visibly animate on opening");
+  assert.equal(firstMotion.running, true, "The desktop drawer must run a 560ms animation");
+  await sleep(175);
+  const laterX = await js('new DOMMatrixReadOnly(getComputedStyle(document.querySelector(".projects-drawer-panel")).transform).m41');
+  assert.ok(laterX < firstMotion.x - 5,
+    `Desktop panel must physically slide from ${firstMotion.x} to ${laterX}`);
+  await until(() => js('document.querySelector(".projects-drawer-layer")?.dataset.state === "open"'));
   const focusTrap = await js(`(() => {
     const dialog=document.querySelector('[role="dialog"]');
     const controls=[...dialog.querySelectorAll('a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])')];
@@ -215,8 +221,16 @@ try {
   assert.equal(focusTrap.focusedFirst,true,"Tab at last navigation control must wrap to first");
   await js('document.activeElement.dispatchEvent(new KeyboardEvent("keydown",{key:"Escape",bubbles:true,cancelable:true}))');
   assert.equal(await js('document.querySelector(".projects-drawer-layer")?.dataset.state'), "closing");
-  assert.ok((await js('getComputedStyle(document.querySelector(".projects-drawer-panel")).transitionDuration')).includes("0.36s"),
-    "Desktop closing slide must last 360ms");
+  const closingMotion = await js(`(() => {
+    const panel = document.querySelector(".projects-drawer-panel");
+    const animation = panel.getAnimations().find(a => a.effect?.getTiming().duration === 480);
+    return { running: !!animation && animation.playState === "running",
+      x: new DOMMatrixReadOnly(getComputedStyle(panel).transform).m41 };
+  })()`);
+  assert.equal(closingMotion.running, true, "Closing must run the 480ms animation");
+  await sleep(140);
+  const closingX = await js('new DOMMatrixReadOnly(getComputedStyle(document.querySelector(".projects-drawer-panel")).transform).m41');
+  assert.ok(closingX > closingMotion.x + 5, "Closing must physically slide to the right");
   await closed("projects-desktop-trigger");
   await open(".projects-desktop-trigger");
   await js('document.querySelector(\'[aria-label="Close projects menu"]\').click()');
