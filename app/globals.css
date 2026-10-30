@@ -645,6 +645,38 @@ h1,h2,h3,p { margin: 0; } h1,h2,h3 { line-height: 1.25; letter-spacing: -.025em;
   .sector-group::details-content { block-size: 0; overflow: clip; transition: block-size 220ms ease, content-visibility 220ms; transition-behavior: allow-discrete; }
   .sector-group[open]::details-content { block-size: auto; }
 }
+/* Desktop projects drawer: explicit painted entry state; mobile keyframes remain unchanged. */
+@media screen and (min-width: 801px) {
+  .projects-drawer-panel,
+  .projects-drawer-layer[data-state=closing] .projects-drawer-panel {
+    animation: none;
+    transform: translate3d(100%, 0, 0);
+    transition: transform 420ms cubic-bezier(.22, 1, .36, 1);
+    will-change: transform;
+  }
+  .projects-drawer-backdrop,
+  .projects-drawer-layer[data-state=closing] .projects-drawer-backdrop {
+    animation: none;
+    opacity: 0;
+    transition: opacity 340ms ease;
+  }
+  .projects-drawer-layer[data-state=open] .projects-drawer-panel {
+    transform: translate3d(0, 0, 0);
+  }
+  .projects-drawer-layer[data-state=open] .projects-drawer-backdrop {
+    opacity: 1;
+  }
+  .projects-drawer-layer[data-state=closing] .projects-drawer-panel {
+    transform: translate3d(100%, 0, 0);
+    transition-duration: 360ms;
+    transition-timing-function: cubic-bezier(.4, 0, .7, 1);
+  }
+  .projects-drawer-layer[data-state=closing] .projects-drawer-backdrop {
+    opacity: 0;
+    transition-duration: 300ms;
+  }
+}
+/* End desktop projects drawer. */
 @media (prefers-reduced-motion: reduce) {
   .projects-drawer-panel, .projects-drawer-backdrop, .main-panel [data-slot=tabs-content][data-state=active], .sector-group[open] .sector-stocks { animation: none !important; }
   .sector-group::details-content, .sector-row > svg, .bar-track > div { transition: none !important; }
