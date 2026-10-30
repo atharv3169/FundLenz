@@ -19,8 +19,17 @@ assert.match(sector, /expanded \? stocks\.filter/);
 assert.match(sector, /matches\.slice\(0, visibleCount\)/);
 assert.match(sector, /aria-expanded=\{expanded\}/);
 assert.match(drawer, /closingRef\.current/);
+assert.match(drawer, /setEntered\(true\)/);
+assert.match(drawer, /data-state=\{closing \? "closing" : entered \? "open" : "entering"\}/);
 assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
 assert.match(css, /\.projects-drawer-layer\[data-state=closing\]/);
+
+const desktopStart = css.indexOf("/* Desktop projects drawer: explicit painted entry state; mobile keyframes remain unchanged. */");
+const desktopEnd = css.indexOf("/* End desktop projects drawer. */");
+assert.ok(desktopStart !== -1 && desktopEnd > desktopStart, "Desktop transition CSS required");
+const reducedMotion = css.match(/@media\(prefers-reduced-motion:reduce\) \{ \*,\*::before,\*::after \{[^}]+\} \}/);
+assert.ok(reducedMotion, "Global reduced-motion safeguard required");
+const animationFixtureCss = css.slice(desktopStart, desktopEnd + 34) + "\n" + reducedMotion[0];
 
 const root = process.cwd();
 const fixture = path.join(root, "scripts/portfolio-ui-browser-fixture");
@@ -119,6 +128,9 @@ try {
     if (result.exceptionDetails) throw Error(JSON.stringify(result.exceptionDetails));
     return result.result.value;
   }
+  // Exercise actual production desktop-motion rules in Chromium.
+  await js('(() => { const style = document.createElement("style"); style.textContent = ' +
+    JSON.stringify(animationFixtureCss) + '; document.head.appendChild(style); })()');
   const count = () => js('document.querySelectorAll(".sector-stocks li").length');
   phase = "fixture mounting";
   try {
@@ -177,6 +189,16 @@ try {
   phase = "desktop drawer";
   await cmd("Emulation.setDeviceMetricsOverride",{width:1280,height:800,deviceScaleFactor:1,mobile:false});
   await open(".projects-desktop-trigger");
+  await until(() => js('document.querySelector(".projects-drawer-layer")?.dataset.state === "open"'));
+  const desktopMotion = await js(`(() => {
+    const panel = document.querySelector(".projects-drawer-panel");
+    const styles = getComputedStyle(panel);
+    return {duration: styles.transitionDuration, property: styles.transitionProperty,
+      active: panel.getAnimations().some(a => a.playState === "running")};
+  })()`);
+  assert.ok(desktopMotion.duration.includes("0.42s"), "Desktop open slide must last 420ms");
+  assert.ok(desktopMotion.property.includes("transform"), "Desktop drawer must transition its position");
+  assert.equal(desktopMotion.active, true, "Desktop drawer must visibly animate on opening");
   const focusTrap = await js(`(() => {
     const dialog=document.querySelector('[role="dialog"]');
     const controls=[...dialog.querySelectorAll('a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])')];
@@ -193,6 +215,8 @@ try {
   assert.equal(focusTrap.focusedFirst,true,"Tab at last navigation control must wrap to first");
   await js('document.activeElement.dispatchEvent(new KeyboardEvent("keydown",{key:"Escape",bubbles:true,cancelable:true}))');
   assert.equal(await js('document.querySelector(".projects-drawer-layer")?.dataset.state'), "closing");
+  assert.ok((await js('getComputedStyle(document.querySelector(".projects-drawer-panel")).transitionDuration')).includes("0.36s"),
+    "Desktop closing slide must last 360ms");
   await closed("projects-desktop-trigger");
   await open(".projects-desktop-trigger");
   await js('document.querySelector(\'[aria-label="Close projects menu"]\').click()');
@@ -207,6 +231,8 @@ try {
   await cmd("Emulation.setEmulatedMedia",{features:[{name:"prefers-reduced-motion",value:"reduce"}]});
   assert.equal(await js('matchMedia("(prefers-reduced-motion: reduce)").matches'), true);
   await open(".fundlenz-mobile-menu-trigger");
+  assert.equal(await js('getComputedStyle(document.querySelector(".projects-drawer-panel")).transitionDuration'),
+    "0s", "Reduced-motion setting must disable the desktop transition");
   await js('document.querySelector(\'[aria-label="Close projects menu"]\').click()');
   await closed("fundlenz-mobile-menu-trigger");
   // Navigation may change the URL/page; verify it last rather than interrupting mobile QA.

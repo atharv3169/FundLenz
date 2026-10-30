@@ -11,6 +11,7 @@ const focusable = 'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"]
 export function ProjectsDrawer() {
   const [open, setOpen] = useState(false);
   const [closing, setClosing] = useState(false);
+  const [entered, setEntered] = useState(false);
   const closingRef = useRef(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const currentPath = usePathname();
@@ -23,6 +24,7 @@ export function ProjectsDrawer() {
   function show() {
     if (closeTimer.current) clearTimeout(closeTimer.current);
     closingRef.current = false;
+    setEntered(false);
     setClosing(false);
     setOpen(true);
   }
@@ -31,7 +33,8 @@ export function ProjectsDrawer() {
     closingRef.current = true;
     if (closeTimer.current) clearTimeout(closeTimer.current);
     setClosing(true);
-    const delay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 240;
+    const delay = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? 0 : window.matchMedia("(min-width: 801px)").matches ? 360 : 240;
     closeTimer.current = setTimeout(() => {
       setOpen(false);
       setClosing(false);
@@ -44,6 +47,19 @@ export function ProjectsDrawer() {
   useEffect(() => () => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
   }, []);
+  // Paint the desktop panel outside the viewport before starting its slide transition.
+  // The existing mobile keyframe animation and reduced-motion behavior remain intact.
+  useEffect(() => {
+    if (!open) return;
+    let secondFrame = 0;
+    const firstFrame = requestAnimationFrame(() => {
+      secondFrame = requestAnimationFrame(() => setEntered(true));
+    });
+    return () => {
+      cancelAnimationFrame(firstFrame);
+      cancelAnimationFrame(secondFrame);
+    };
+  }, [open]);
   useEffect(() => {
     if (!open) return;
     const previousOverflow = document.body.style.overflow;
@@ -101,7 +117,7 @@ export function ProjectsDrawer() {
         <Menu size={22} strokeWidth={1.9} aria-hidden="true" />
       </button>
       {open && createPortal(
-        <div className="projects-drawer-layer fixed inset-0 z-[100]" data-state={closing ? "closing" : "open"}>
+        <div className="projects-drawer-layer fixed inset-0 z-[100]" data-state={closing ? "closing" : entered ? "open" : "entering"}>
           <button type="button" aria-label="Close projects menu" tabIndex={-1}
             className="projects-drawer-backdrop absolute inset-0 h-full w-full bg-[#091e2c]/65 backdrop-blur-[2px]"
             onClick={close} />
