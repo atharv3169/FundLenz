@@ -56,6 +56,8 @@ async function until(probe, timeout = 15000) {
 }
 try {
   await server.listen();
+  // Compile the full production stylesheet before starting the browser clock.
+  await server.transformRequest("/@fs/" + path.join(root, "app/globals.css"));
   const binary = process.env.CHROMIUM_PATH || execFileSync("bash",
     ["-lc", "command -v google-chrome || command -v google-chrome-stable || command -v chromium"],
     { encoding: "utf8" }).trim().split("\n")[0];
@@ -128,7 +130,7 @@ try {
   const count = () => js('document.querySelectorAll(".sector-stocks li").length');
   phase = "fixture mounting";
   try {
-    await until(() => js('document.querySelectorAll(".sector-group").length === 2'));
+    await until(() => js('document.querySelectorAll(".sector-group").length === 2'), 60000);
   } catch (error) {
     const diagnostic = await js(`({
       body: document.body.innerText.slice(0, 1200),
