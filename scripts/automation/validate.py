@@ -139,6 +139,29 @@ def stage_catalogue_update_date(root, files, acquisition):
     return date
 
 
+
+def compact_audit(report):
+    """Index every decision without duplicating entire portfolios in Git.
+
+    The complete original report remains in the immutable producer artifact.
+    Hashes bind the omitted values and full report to that retained evidence.
+    """
+    index = {**report, "changes": []}
+    for unit in report["changes"]:
+        item = dict(unit)
+        for field in ("previous_verified", "proposed_value"):
+            if field in item:
+                value = encoded(item.pop(field))
+                item[field + "_evidence"] = {"sha256": sha(value), "bytes": len(value)}
+        index["changes"].append(item)
+    index["coverage"] = {**report["coverage"], "full_report": {
+        "artifact": "fundlenz-audit", "path": "result/report.json",
+        "run_id": report["run_id"], "sha256": sha(encoded(report)),
+        "details": "Original values and source bytes are in the producer run artifact; this index retains every decision."}}
+    schema(index, "daily-audit")
+    return index
+
+
 def validate(root, run, output):
     acquisition = read(run / "acquisition.json")
     policy = read(ROOT / "automation/runtime.json")
@@ -221,7 +244,7 @@ def validate(root, run, output):
                    details="Full report and original source bytes are retained in this GitHub Actions run's fundlenz-audit artifact.")
     # Audit-only publication is allowed through the same protected PR gate. These
     # fields never relabel the site-wide source-check date or imply a deployment.
-    files.update({"audit/latest.json": encoded(report), "audit/open-issues.json": encoded(state["issues"]),
+    files.update({"audit/latest.json": encoded(compact_audit(report)), "audit/open-issues.json": encoded(state["issues"]),
                   "audit/automation-state.json": encoded(state), "public/automation-audit/latest.json": encoded(summary),
                   "public/automation-audit/release.json": encoded({"schema_version": 1, "run_id": acquisition["run_id"],
                       "base_commit": acquisition["base_commit"], "dataset_sha256": report["candidate_dataset_sha256"],

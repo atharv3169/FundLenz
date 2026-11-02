@@ -5,6 +5,7 @@ alone is insufficient: protection and the dedicated actor must also verify.
 """
 import base64
 import os
+import urllib.error
 from common import ROOT, dataset_hash, loads, read, require, safe_path, sha, write
 from adapters import allowed_paths
 from github_api import GitHub
@@ -115,7 +116,11 @@ def main():
     base = api.call("/git/commits/" + expected)
     elements = []
     for path, raw in sorted(files.items()):
-        blob = api.call("/git/blobs", "POST", {"content": base64.b64encode(raw).decode(), "encoding": "base64"})
+        try:
+            blob = api.call("/git/blobs", "POST", {"content": base64.b64encode(raw).decode(), "encoding": "base64"})
+        except urllib.error.HTTPError as error:
+            # Identify the failing object without logging source data or credentials.
+            raise RuntimeError(f"GitHub blob upload failed: path={path}, bytes={len(raw)}, HTTP={error.code}") from error
         elements.append({"path": path, "mode": "100644", "type": "blob", "sha": blob["sha"]})
     tree = api.call("/git/trees", "POST", {"base_tree": base["tree"]["sha"], "tree": elements})
     commit = api.call("/git/commits", "POST", {"message": "Update verified catalogue audit " + release["run_id"], "tree": tree["sha"], "parents": [expected]})

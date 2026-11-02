@@ -1,0 +1,23 @@
+name: Recover catalogue publication after large-audit fix
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/catalogue-recovery-20261102.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  recover:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Request fresh source and Gemini validation through normal protected publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh workflow run catalogue-daily.yml --ref main -f automated_daily=false -f force_supported_sources=true -f publish_validated_data=true

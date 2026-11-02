@@ -693,7 +693,7 @@ class PipelineTests(unittest.TestCase):
         gate = (ROOT / "scripts/automation/pr_gate.py").read_text()
         self.assertIn('validate(ROOT, ROOT / "work/run", ROOT / "work/pr-replay")', gate)
         self.assertIn('require(release == supplied', gate)
-        self.assertIn('base64.b64decode(blob["content"]) == expected[f["filename"]]', gate)
+        self.assertIn('require(blob == wanted,', gate)
         # Stage 3: deployed date and exact public financial marker are verified.
         deployment = (ROOT / ".github/workflows/catalogue-deployment.yml").read_text()
         self.assertIn("run: python3 scripts/automation/deployment.py", deployment)
