@@ -61,6 +61,11 @@ class ResilienceTests(unittest.TestCase):
         from common import ROOT, read, encoded, sha
         from validate import compact_audit
         report = read(ROOT / 'audit/latest.json')
+        # Keep the fixture independent of whether production already contains
+        # an audit index from a previous successful publication.
+        report['changes'] = [{'unit': 'portfolio/test', 'decision': 'accepted',
+                              'previous_verified': {'rows': ['old' * 10000]},
+                              'proposed_value': {'rows': ['new' * 10000]}}]
         original = encoded(report)
         index = compact_audit(report)
         self.assertEqual(encoded(report), original)
