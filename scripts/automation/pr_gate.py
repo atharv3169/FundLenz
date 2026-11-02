@@ -30,6 +30,13 @@ def prepare(api, number):
         out.write("run_id=" + str(run["id"]) + "\nhead=" + pr["head"]["sha"] + "\nbase=" + pr["base"]["sha"] + "\n")
 
 
+def verify_blob(api, entry, wanted):
+    require(entry["mode"] == "100644" and entry["type"] == "blob", "Non-regular PR blob")
+    require(entry["size"] == len(wanted), "PR blob size differs from replay")
+    blob = api.call("/git/blobs/" + entry["sha"], raw_limit=len(wanted))
+    require(blob == wanted, "PR bytes differ from replayed output")
+
+
 def check(api):
     state = read(ROOT / "work/pr.json")
     pr = api.call(f"/pulls/{state['number']}")
@@ -45,15 +52,12 @@ def check(api):
     # Identical bytes occasionally produce no Git diff; calculate exact expected set.
     expected = {p: raw for p, raw in files.items() if not (ROOT / p).exists() or (ROOT / p).read_bytes() != raw}
     require({f["filename"] for f in changed} == set(expected), "PR changes files outside sanitized output")
-    import base64
     tree = api.call("/git/trees/" + state["head"] + "?recursive=1")
     require(not tree.get("truncated"), "Truncated tree")
     entries = {e["path"]: e for e in tree["tree"]}
     for f in changed:
         require(f["status"] in {"added", "modified"} and entries[f["filename"]]["mode"] == "100644", "Deletion, rename or symlink forbidden")
-        blob = api.call("/git/blobs/" + entries[f["filename"]]["sha"])
-        require(blob["encoding"] == "base64", "Unexpected blob encoding")
-        require(base64.b64decode(blob["content"]) == expected[f["filename"]], "PR bytes differ from replayed output")
+        verify_blob(api, entries[f["filename"]], expected[f["filename"]])
     # Overlay only reproduced data for source/finance regressions in a later step.
     for path, raw in expected.items():
         if path.startswith(("public/data/", "data/sources/")):

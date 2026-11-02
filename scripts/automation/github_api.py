@@ -19,18 +19,22 @@ class GitHub:
         self.token = token or os.environ.get("GH_TOKEN")
         require(self.token, "Missing narrowly scoped GitHub token")
 
-    def call(self, path, method="GET", data=None):
+    def call(self, path, method="GET", data=None, *, raw_limit=None):
         require(path.startswith("/") and ".." not in path, "Invalid GitHub API path")
+        if raw_limit is not None:
+            require(method == "GET" and re.fullmatch(r"/git/blobs/[0-9a-f]{40}", path), "Raw reads require an immutable blob")
+            require(isinstance(raw_limit, int) and 0 <= raw_limit <= 100 * 1024 * 1024, "Invalid blob size limit")
+        limit = raw_limit if raw_limit is not None else 32 * 1024 * 1024
         request = urllib.request.Request("https://api.github.com/repos/" + self.repo + path,
                                          data=encoded(data) if data is not None else None, method=method,
-                                         headers={"Authorization": "Bearer " + self.token, "Accept": "application/vnd.github+json",
+                                         headers={"Authorization": "Bearer " + self.token, "Accept": "application/vnd.github.raw+json" if raw_limit is not None else "application/vnd.github+json",
                                                   "X-GitHub-Api-Version": "2022-11-28", "Content-Type": "application/json"})
         # Retry read-only transient errors. Never replay a possibly completed
         # write or retry authentication, permission, quota or validation errors.
         for attempt in range(3):
             try:
                 with urllib.request.build_opener(NoRedirect()).open(request, timeout=30) as response:
-                    raw = response.read(32 * 1024 * 1024 + 1)
+                    raw = response.read(limit + 1)
                 break
             except urllib.error.HTTPError as error:
                 if method != "GET" or attempt == 2 or error.code not in {500, 502, 503, 504}:
@@ -39,8 +43,8 @@ class GitHub:
                 if method != "GET" or attempt == 2:
                     raise
             time.sleep(2 ** attempt)
-        require(len(raw) <= 32 * 1024 * 1024, "Oversized API response")
-        return loads(raw) if raw else None
+        require(len(raw) <= limit, "Oversized API response")
+        return raw if raw_limit is not None else (loads(raw) if raw else None)
 
     def all(self, path, key=None):
         items = []

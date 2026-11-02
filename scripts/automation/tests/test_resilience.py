@@ -32,6 +32,48 @@ class ResilienceTests(unittest.TestCase):
                 with self.assertRaises(urllib.error.HTTPError): github_api.GitHub(token='fictional').call('/actions')
             self.assertEqual(opener.open.call_count, count)
 
+    def test_large_raw_blob_and_strict_size_cap(self):
+        raw = b'x' * (34 * 1024 * 1024)
+        opener = mock.Mock()
+        opener.open.return_value = io.BytesIO(raw)
+        with mock.patch.object(github_api.urllib.request, 'build_opener', return_value=opener):
+            api = github_api.GitHub(token='fictional')
+            self.assertEqual(api.call('/git/blobs/' + 'a' * 40, raw_limit=len(raw)), raw)
+            self.assertEqual(opener.open.call_args.args[0].get_header('Accept'), 'application/vnd.github.raw+json')
+            opener.open.return_value = io.BytesIO(b'1234')
+            with self.assertRaisesRegex(ValueError, 'Oversized'):
+                api.call('/git/blobs/' + 'a' * 40, raw_limit=3)
+            for path, limit in [('/contents/a', 4), ('/git/blobs/' + 'a' * 40, 101 * 1024 * 1024)]:
+                with self.assertRaises(ValueError): api.call(path, raw_limit=limit)
+
+    def test_gate_rejects_wrong_bytes_size_and_symlinks(self):
+        from pr_gate import verify_blob
+        api = mock.Mock()
+        api.call.return_value = b'abc'
+        entry = {'mode': '100644', 'type': 'blob', 'size': 3, 'sha': 'a' * 40}
+        verify_blob(api, entry, b'abc')
+        api.call.assert_called_once_with('/git/blobs/' + 'a' * 40, raw_limit=3)
+        with self.assertRaisesRegex(ValueError, 'bytes differ'): verify_blob(api, entry, b'abd')
+        for patch in ({'mode': '120000'}, {'type': 'tree'}, {'size': 4}):
+            with self.assertRaises(ValueError): verify_blob(api, {**entry, **patch}, b'abc')
+
+    def test_audit_index_keeps_all_decisions_and_binds_original_values(self):
+        from common import ROOT, read, encoded, sha
+        from validate import compact_audit
+        report = read(ROOT / 'audit/latest.json')
+        original = encoded(report)
+        index = compact_audit(report)
+        self.assertEqual(encoded(report), original)
+        self.assertEqual(index['coverage']['full_report']['sha256'], sha(original))
+        self.assertEqual(len(index['changes']), len(report['changes']))
+        for before, after in zip(report['changes'], index['changes']):
+            for key, value in before.items():
+                if key in ('previous_verified', 'proposed_value'):
+                    self.assertNotIn(key, after)
+                    self.assertEqual(after[key + '_evidence'], {'sha256': sha(encoded(value)), 'bytes': len(encoded(value))})
+                else: self.assertEqual(after[key], value)
+        self.assertLess(len(encoded(index)), len(original))
+
     def test_model_network_retry_keeps_existing_two_attempt_budget(self):
         policy = {'model_retries': 1, 'model_retry_delay_seconds': 15}
         caller = mock.Mock(side_effect=[TimeoutError(), ({}, {})])
