@@ -38,9 +38,9 @@ class FaultMatrix(unittest.TestCase):
             with self.subTest(code=code), self.assertRaises(urllib.error.HTTPError):
                 bounded_call({"output_instructions": "fixture"}, "fresh_scan",
                              self.policy, caller=broken, wait=delays.append)
-            expected = 2 if code in self.policy["model_retry_http_statuses"] else 1
+            expected = self.policy["model_retries"] + 1 if code in self.policy["model_retry_http_statuses"] else 1
             self.assertEqual(len(calls), expected)
-            self.assertLessEqual(len(delays), 1)
+            self.assertLessEqual(len(delays), self.policy["model_retries"])
             count += 1
         self.assertEqual(count, 12)
 
@@ -59,7 +59,7 @@ class FaultMatrix(unittest.TestCase):
                 raise urllib.error.HTTPError("https://example.invalid", 503, "fixture", {}, None)
             with self.subTest(pattern=pattern), self.assertRaises(Exception):
                 bounded_call({"output_instructions": "fixture"}, "reinvestigation",
-                             self.policy, caller=scripted, wait=lambda _: None)
+                             {**self.policy, "model_retries": 1}, caller=scripted, wait=lambda _: None)
             self.assertEqual(calls, pattern)
 
     def test_fairness_in_108_sources_across_multiple_scheduled_days(self):

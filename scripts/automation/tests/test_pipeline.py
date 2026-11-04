@@ -750,14 +750,14 @@ class PipelineTests(unittest.TestCase):
             return {}, {}
         _, _, attempts = bounded_call({}, "fresh_scan", self.policy, caller=temporary, wait=waits.append)
         self.assertEqual(attempts, 2)
-        self.assertEqual(waits, [15])
+        self.assertEqual(waits, [self.policy["model_retry_delay_seconds"]])
         for status in [401, 403, 429, 503]:
             calls.clear(); waits.clear()
             def always_failed(*args):
                 calls.append(1)
                 raise urllib.error.HTTPError("https://example.invalid", status, "fixture", {}, None)
             with self.assertRaises(urllib.error.HTTPError): bounded_call({}, "fresh_scan", self.policy, caller=always_failed, wait=waits.append)
-            self.assertEqual(len(calls), 2 if status == 503 else 1)
+            self.assertEqual(len(calls), self.policy["model_retries"] + 1 if status == 503 else 1)
 
     def test_source_parser_issue_resolves_only_when_complete_scope_passes(self):
         broken = self.unit("1", "blocked"); broken["unit"] = "source:" + self.source["source_id"]

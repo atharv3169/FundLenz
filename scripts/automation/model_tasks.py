@@ -199,17 +199,18 @@ def main():
     policy = read(ROOT / "automation/runtime.json")
     raws = {s["source_id"]: (root / s["path"]).read_bytes() for s in acquisition["source_checks"] if s.get("path")}
     units, _ = reconcile(ROOT, acquisition, policy, raws)
-    require(policy["max_model_calls"] == 4 and policy["model_retries"] == 1, "Reviewed four-attempt budget changed")
+    require(policy["max_model_calls"] == 8 and policy["model_retries"] == 3, "Reviewed eight-attempt budget changed")
     for task in ["fresh_scan", "reinvestigation"]:
         packet = packets(acquisition, units, task, policy)
         write(root / (task + "-input.json"), packet)
         started = now()
+        retry_events = []
         try:
             if is_no_work_packet(packet):
                 candidate, usage, attempts = trusted_no_work_candidate(packet), {}, 0
                 status = "not_required"
             else:
-                candidate, usage, attempts = bounded_call(packet, task, policy)
+                candidate, usage, attempts = bounded_call(packet, task, policy, events=retry_events)
                 status = "completed"
             write(root / (task + ".json"), candidate)
             report = {"task": task, "status": status, "started_at": started, "completed_at": now(), "usage": usage,
@@ -223,13 +224,29 @@ def main():
                 report["instance_path"] = list(error.path)
             if isinstance(error, urllib.error.HTTPError):
                 report["http_status"] = error.code
+        report["retry_events"] = retry_events
         write(root / (task + "-status.json"), report)
         print(task + ": " + report["status"])
 
 
 
-def bounded_call(packet, task, policy, caller=call_model, wait=time.sleep):
+def bounded_call(packet, task, policy, caller=call_model, wait=time.sleep, events=None):
     current_packet = packet
+    contract_failures = 0
+    events = events if events is not None else []
+
+    def record_retry(error, attempt, delay):
+        # Never print provider bodies, request URLs, keys or source/model text.
+        event = {"task": task, "attempt": attempt, "error_type": type(error).__name__,
+                 "http_status": error.code if isinstance(error, urllib.error.HTTPError) else None,
+                 "next_delay_seconds": delay, "remaining_attempts": policy["model_retries"] + 1 - attempt}
+        events.append(event)
+        print(encoded({"model_retry": event}).decode().strip(), flush=True)
+        if delay:
+            wait(delay)
+
+    def service_delay(attempt):
+        return min(240, policy["model_retry_delay_seconds"] * (2 ** (attempt - 1)))
     for attempt in range(1, policy["model_retries"] + 2):
         try:
             candidate, usage = caller(current_packet, task, policy)
@@ -238,11 +255,13 @@ def bounded_call(packet, task, policy, caller=call_model, wait=time.sleep):
             error.fundlenz_attempts = attempt
             if attempt > policy["model_retries"] or error.code not in policy["model_retry_http_statuses"]:
                 raise
-            wait(policy["model_retry_delay_seconds"])
+            record_retry(error, attempt, service_delay(attempt))
         except ModelContractError as error:
             error.fundlenz_attempts = attempt
-            if attempt > policy["model_retries"]:
+            contract_failures += 1
+            if attempt > policy["model_retries"] or contract_failures > 1:
                 raise
+            record_retry(error, attempt, 0)
             # Correct the same bounded task; do not introduce new sources,
             # change trusted metadata or bypass independent validation.
             current_packet = dict(packet)
@@ -254,7 +273,7 @@ def bounded_call(packet, task, policy, caller=call_model, wait=time.sleep):
             error.fundlenz_attempts = attempt
             if attempt > policy["model_retries"]:
                 raise
-            wait(policy["model_retry_delay_seconds"])
+            record_retry(error, attempt, service_delay(attempt))
     raise ValueError("Model attempt budget exhausted")
 
 
