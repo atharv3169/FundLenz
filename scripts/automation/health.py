@@ -53,7 +53,8 @@ def main():
         opener = urllib.request.build_opener(NoRedirect())
         # A deployment can briefly overlap the watchdog. Allow bounded propagation
         # retries without turning a mismatched release into a success.
-        for attempt in range(3):
+        attempts = 15 if os.environ.get("GITHUB_EVENT_NAME") == "push" else 3
+        for attempt in range(attempts):
             try:
                 probe_exact_origin(opener, origin, os.environ["GITHUB_SHA"], release)
                 for path in ["/", "/blogpost", "/catalogue-india", "/catalogue-global"]:
@@ -65,7 +66,7 @@ def main():
                                     "https://fundlenz.com/blogpost?health=1")
                 break
             except (urllib.error.URLError, TimeoutError, OSError, ValueError) as error:
-                if attempt == 2:
+                if attempt == attempts - 1:
                     report["probe_category"] = safe_probe_problem(error)
                     raise
                 time.sleep(20)
