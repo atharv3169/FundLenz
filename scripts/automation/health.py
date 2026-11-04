@@ -10,7 +10,7 @@ from github_api import GitHub, NoRedirect
 from schedule_guard import is_automatic_run
 
 
-def verify_schedule(runs, at):
+def verify_schedule(runs, at, published_run_id=None):
     scheduled = [r for r in runs if is_automatic_run(r)]
     require(scheduled, "No scheduled catalogue run found")
     latest = max(scheduled, key=lambda r: timestamp(r["created_at"]))
@@ -19,7 +19,17 @@ def verify_schedule(runs, at):
     if latest["status"] != "completed":
         require(age <= 3600, "Daily catalogue run is stuck")
     else:
-        require(latest["conclusion"] == "success", "Latest scheduled catalogue run failed")
+        if latest["conclusion"] != "success":
+            # A successful manual collector alone proves nothing about publication.
+            # Only the exact run/attempt recorded by the protected release on main
+            # may acknowledge recovery; the live release is still probed below.
+            recovered = [r for r in runs if r.get("event") == "workflow_dispatch"
+                         and r.get("head_branch") == "main" and r.get("status") == "completed"
+                         and r.get("conclusion") == "success"
+                         and f"{r['id']}-{r.get('run_attempt', 1)}" == published_run_id
+                         and timestamp(latest["created_at"]) <= timestamp(r["created_at"]) <= at]
+            require(recovered, "Latest scheduled catalogue run failed without a published recovery")
+            return recovered[0]["id"]
     return latest["id"]
 
 
@@ -37,9 +47,9 @@ def main():
     try:
         api = GitHub()
         runs = api.call("/actions/workflows/catalogue-daily.yml/runs?branch=main&per_page=100")["workflow_runs"]
-        report["daily_run_id"] = verify_schedule(runs, dt.datetime.now(dt.timezone.utc))
-        origin = approved_production_origins(read(ROOT / "automation/runtime.json")["production_url"])[0]
         release = read(ROOT / "public/automation-audit/release.json")
+        report["daily_run_id"] = verify_schedule(runs, dt.datetime.now(dt.timezone.utc), release["run_id"])
+        origin = approved_production_origins(read(ROOT / "automation/runtime.json")["production_url"])[0]
         opener = urllib.request.build_opener(NoRedirect())
         # A deployment can briefly overlap the watchdog. Allow bounded propagation
         # retries without turning a mismatched release into a success.
