@@ -122,6 +122,7 @@ The second pass specifically challenged the new code:
 | F78 | Provenance | Reruns obscure the original successful producer attempt | Changed | Immutable attempt metadata/jobs and producer-attempt binding; full collection recovery uses a fresh dispatch. |
 | F79 | Required check | Recording the required gate succeeds but its reply is lost | Changed | Observe the exact trusted head/outcome/workflow check before retrying; a head race records failure. |
 | F80 | Platform | Actions startup/event delivery fails before jobs exist | Boundary | Missing required checks remain blocking; re-trigger a reviewed PR event or fresh dispatch without fabricating a green result. |
+| F81 | Required check | GitHub canonicalises a check display URL | Changed | Receipt identity uses exact head, trusted app and result; a display-only URL is not treated as validation authority. |
 
 ## Verification and simulations
 

@@ -642,6 +642,7 @@ class RequiredCheckAcknowledgementTests(unittest.TestCase):
             if path=='/pulls/7':return {'head':{'sha':'changed' if moved else 'head'},'base':{'sha':'base'}}
             if path=='/check-runs':
                 created.append(dict(data,id=1,app={'slug':'github-actions'}))
+                created[-1]['details_url']='https://github.com/fictional/repo/runs/987'
                 raise TimeoutError('fictional lost check acknowledgement')
             raise AssertionError(path)
         api.call.side_effect=call;api.all.side_effect=lambda *_:created
