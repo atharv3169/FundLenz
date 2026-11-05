@@ -97,7 +97,7 @@ The second pass specifically challenged the new code:
 | F53 | GitHub | Uploading a blob/tree/commit loses the acknowledgement | Changed | Only object creation may replay automatically; no branch or PR is moved by an orphan object. |
 | F54 | GitHub | A ref-creation acknowledgement is lost | Changed | Observe the exact existing ref before retrying; conflicting refs are never overwritten. |
 | F55 | GitHub | A PR-creation acknowledgement is lost | Changed | Find the exact actor/head/base PR before retrying; no blind duplicate creation. |
-| F56 | GitHub | Publisher job is rerun after a partial upload | Changed | Reuse the exact artifact tree and original parent, then resume the same branch/PR. |
+| F56 | GitHub | Publisher job is rerun after a partial upload | Changed | Reuse the exact artifact tree and original parent, read and verify previously uploaded objects on publisher reruns, then resume the same branch/PR. |
 | F57 | GitHub | Publisher job is rerun after its PR merged | Changed | Recognise the exact merged publication without creating another PR. |
 | F58 | GitHub | A same-named branch has different bytes or ancestry | Changed | Reject; never reset, force-push or overwrite it. |
 | F59 | GitHub | Publication was closed without merging or duplicated manually | Boundary | Retain for explicit review; do not reopen or silently choose a different PR. |
@@ -123,16 +123,20 @@ The second pass specifically challenged the new code:
 | F79 | Required check | Recording the required gate succeeds but its reply is lost | Changed | Observe the exact trusted head/outcome/workflow check before retrying; a head race records failure. |
 | F80 | Platform | Actions startup/event delivery fails before jobs exist | Boundary | Missing required checks remain blocking; re-trigger a reviewed PR event or fresh dispatch without fabricating a green result. |
 | F81 | Required check | GitHub canonicalises a check display URL | Changed | Receipt identity uses exact head, trusted app and result; a display-only URL is not treated as validation authority. |
+| F82 | Publication | A new commit or ref is temporarily refused or not yet readable | Changed | Confirm exact commit/tree/parent visibility, observe refs before retries, and apply bounded cooldowns with safe refusal categories. |
+| F83 | Publication | A Git tree overlay omits inherited code/configuration | Changed | Compare all unchanged file modes/types/hashes against the base before creating the publication ref. |
 
 ## Verification and simulations
 
-- `python3 -m unittest discover -s scripts/automation/tests`: 164 test methods, including the existing adversarial validator cases and new hardening regressions.
+- `python3 -m unittest discover -s scripts/automation/tests`: 170 test methods, including the existing adversarial validator cases and new hardening regressions.
 - `test_unattended_hardening.py`: 625 deterministic mixtures of success, 503, timeout, contract failure and authentication failure; plus 32 combinations of lost ref/PR acknowledgements, repeated publisher calls and merged states. These 657 simulated sequences do not make network calls or spend Gemini quota.
 - Fault tests also cover atomic-write failure, dripping responses, cooldown parsing, expired/missing state, weekly-source recovery, stale checkouts, future state times, malformed issuer/provider shapes, exact PR/tree reuse, required-check/app identity, legacy status interactions, lost merge responses and stale served data.
 - Fourteen Node scheduler/deployment tests, nineteen JSON contract checks, reviewed-file integrity, TypeScript no-emit and all six finance/catalogue suites are included in acceptance. The finance suites currently count 1,285,765 checks plus directory assertions.
 - Production acceptance uses the ordinary trusted main workflow, mandatory live Gemini reviews, independent exact-byte replay, protected data PR merge, and the Cloudflare/served-data observer. Unit tests alone are not evidence that a later unattended timer fired.
 
 During maintenance acceptance, an initial trusted-data-review run stopped with `startup_failure` before creating jobs; the reopened PR event completed the review normally. Required checks remain authoritative even when event delivery is delayed.
+
+The first hardening live run passed collection and both Gemini tasks but ref creation returned HTTP 422. Subsequent isolated publisher-token probes succeeded for current main, an unchanged child and a harmless audit overlay. The original refusal category was not captured; it is not attributed to a credential failure. Follow-up safeguards check exact tree preservation and commit readability before ref creation, retain safe refusal diagnostics and use bounded cooldowns.
 
 Current run/PR evidence is available in the repository's [Actions history](https://github.com/atharv3169/FundLenz/actions) and associated maintenance/data PRs. This document intentionally separates simulated cases from live platform execution.
 

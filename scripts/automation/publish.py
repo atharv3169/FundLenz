@@ -6,10 +6,11 @@ alone is insufficient: protection and the dedicated actor must also verify.
 import base64
 import os
 import re
+import time
 import hashlib
 import urllib.parse
 import urllib.error
-from common import ROOT, dataset_hash, loads, read, require, safe_path, sha, write
+from common import ROOT, retry_after_seconds, dataset_hash, loads, read, require, safe_path, sha, write
 from adapters import allowed_paths
 from github_api import GitHub
 
@@ -109,7 +110,7 @@ def optional_get(api, path):
         return None
 
 
-def reconcile_write(write_call, observe, matches, attempts=3):
+def reconcile_write(write_call, observe, matches, attempts=3, wait=time.sleep):
     """Recover ambiguous ref/PR writes by observing, never by blindly replaying."""
     for attempt in range(attempts):
         try:
@@ -117,20 +118,58 @@ def reconcile_write(write_call, observe, matches, attempts=3):
             require(matches(result), "Publication write returned an unexpected identity")
             return result
         except (urllib.error.URLError, TimeoutError, ConnectionError) as error:
-            # HTTPError is also URLError; authentication/permissions are permanent.
-            if isinstance(error, urllib.error.HTTPError) and error.code not in {409, 422, 500, 502, 503, 504}:
-                raise
+            # Observe before another visible write. Known permanent refusals
+            # never gain retries; temporary/unknown ref validation has a cooldown.
+            category = getattr(error, "fundlenz_details", {}).get("category")
+            cooldown = retry_after_seconds(getattr(error, "headers", {}), 120)
+            if isinstance(error, urllib.error.HTTPError):
+                throttled = error.code in {403, 429} and cooldown is not None
+                if error.code not in {409, 422, 500, 502, 503, 504} and not throttled:
+                    raise
+                if category in {"workflow_permission_required", "invalid_request", "protection_refusal"}:
+                    raise
             found = observe()
             if found is not None:
                 require(matches(found), "Ambiguous write conflicts with existing publication")
                 return found
             if attempt + 1 == attempts:
                 raise
+            if (getattr(error, "headers", {}) or {}).get("Retry-After") is not None and cooldown is None:
+                raise
+            delay = (60 * (attempt + 1)) if category == "provider_throttle" else [5, 15][min(attempt, 1)]
+            wait(max(delay, cooldown or 0))
     raise ValueError("Publication write recovery exhausted")
 
 
 def git_blob_sha(raw):
     return hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+
+
+def verify_tree_overlay(api, base_tree, candidate_tree, elements, attempts=3, wait=time.sleep):
+    before = api.call("/git/trees/" + base_tree + "?recursive=1")
+    after = None
+    for attempt in range(attempts):
+        after = optional_get(api, "/git/trees/" + candidate_tree + "?recursive=1")
+        if after is not None: break
+        if attempt + 1 < attempts: wait([5, 15][min(attempt, 1)])
+    require(after is not None, "Created publication tree is not readable; no branch created")
+    require(not before.get("truncated") and not after.get("truncated"), "Truncated publication tree metadata")
+    def entries(tree):
+        return {e["path"]: (e["sha"], e["mode"], e["type"]) for e in tree["tree"] if e["type"] != "tree"}
+    wanted = entries(before)
+    wanted.update({e["path"]: (e["sha"], e["mode"], e["type"]) for e in elements})
+    require(entries(after) == wanted, "Publication tree changed or omitted files outside the exact overlay")
+
+
+def verify_created_commit(api, commit, tree, parent, attempts=3, wait=time.sleep):
+    for attempt in range(attempts):
+        observed = optional_get(api, "/git/commits/" + commit)
+        if observed is not None:
+            require(observed["tree"]["sha"] == tree and [p["sha"] for p in observed["parents"]] == [parent],
+                    "Created publication commit differs from exact tree/parent")
+            return
+        if attempt + 1 < attempts: wait([5, 15][min(attempt, 1)])
+    raise ValueError("Created publication commit is not readable; no branch created")
 
 
 def publish_candidate(api, release, files, policy, actor):
@@ -149,11 +188,33 @@ def publish_candidate(api, release, files, policy, actor):
     if existing is None:
         protection_gate(api.call("/branches/main"), policy, expected)
         strict_protection(api)
-        for item in elements:
+        print(f"Publishing exact artifact: {len(elements)} changed files.", flush=True)
+        for number, item in enumerate(elements, 1):
             raw = changed[item["path"]]
-            blob = api.call("/git/blobs", "POST", {"content": base64.b64encode(raw).decode(), "encoding": "base64"})
+            try:
+                # A publisher-only rerun can reuse content-addressed objects
+                # uploaded before a ref/PR failure without spending write quota.
+                reused = False
+                if int(os.environ.get("GITHUB_RUN_ATTEMPT", "1")) > 1:
+                    try:
+                        retained = api.call("/git/blobs/" + item["sha"], raw_limit=len(raw))
+                        require(retained == raw, "Retained publication object differs from exact artifact")
+                        reused = True
+                    except urllib.error.HTTPError as error:
+                        if error.code != 404: raise
+                if reused:
+                    if number % 25 == 0 or number == len(elements):
+                        print(f"Reused verified objects: {number}/{len(elements)}", flush=True)
+                    continue
+                blob = api.call("/git/blobs", "POST", {"content": base64.b64encode(raw).decode(), "encoding": "base64"})
+            except Exception as error:
+                error.add_note(f"Publication object: {item['path']}; bytes={len(raw)}")
+                raise
             require(blob["sha"] == item["sha"], "GitHub uploaded blob hash mismatch")
+            if number % 25 == 0 or number == len(elements):
+                print(f"Uploaded verified objects: {number}/{len(elements)}", flush=True)
     tree = api.call("/git/trees", "POST", {"base_tree": base["tree"]["sha"], "tree": elements})
+    verify_tree_overlay(api, base["tree"]["sha"], tree["sha"], elements)
     if existing is not None:
         require(existing.get("object", {}).get("type") == "commit", "Publication ref is not a commit")
         commit = api.call("/git/commits/" + existing["object"]["sha"])
@@ -164,6 +225,8 @@ def publish_candidate(api, release, files, policy, actor):
         commit = api.call("/git/commits", "POST", {"message": "Update verified catalogue audit " + run,
                           "tree": tree["sha"], "parents": [expected]})
         require(commit.get("author") and commit.get("committer"), "Unattributed publishing commit")
+        print("Created publication commit: " + commit["sha"] + "; tree=" + tree["sha"], flush=True)
+        verify_created_commit(api, commit["sha"], tree["sha"], expected)
         protection_gate(api.call("/branches/main"), policy, expected)
         reconcile_write(lambda: api.call("/git/refs", "POST", {"ref": "refs/heads/" + branch, "sha": commit["sha"]}),
                         lambda: optional_get(api, ref_path),
