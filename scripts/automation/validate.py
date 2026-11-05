@@ -171,6 +171,12 @@ def validate(root, run, output):
     findings, model_results, critical = [], [], []
     completed_at = acquisition["completed_at"]
     investigation_after = acquisition["previous_state"].get("investigation_after", "")
+    # Both requests were built from the same original adapter decisions. Freeze
+    # that context before Task A can block a unit; otherwise bounded trimming
+    # could reconstruct a different Task B packet during independent replay.
+    from model_tasks import packets, is_no_work_packet, trusted_no_work_candidate
+    trusted_packets = {task: packets(acquisition, units, task, policy, run)
+                       for task in ["fresh_scan", "reinvestigation"]}
     for task in ["fresh_scan", "reinvestigation"]:
         status_path = run / (task + "-status.json")
         status = read(status_path) if status_path.exists() else {"status": "failed", "error_type": "TaskMissing"}
@@ -178,8 +184,7 @@ def validate(root, run, output):
             completed_at = max(completed_at, status["completed_at"], key=timestamp)
         try:
             # Reconstruct model input from trusted bytes, not an artifact's proposed context.
-            from model_tasks import packets, is_no_work_packet, trusted_no_work_candidate
-            packet = packets(acquisition, units, task, policy, run)
+            packet = trusted_packets[task]
             if status["status"] == "not_required":
                 require(is_no_work_packet(packet) and status.get("attempts") == 0,
                         "Fake empty-work bypass of required Gemini investigation")
@@ -259,7 +264,7 @@ def validate(root, run, output):
     release = {"schema_version": 1, "run_id": acquisition["run_id"], "base_commit": acquisition["base_commit"],
                "base_dataset_sha256": acquisition["base_dataset_sha256"], "candidate_dataset_sha256": report["candidate_dataset_sha256"],
                "files": manifest(files), "data_changes": catalogue_update_date is not None,
-               "publication_enabled": publication_allowed}
+               "publication_enabled": publication_allowed, "validation_passed": not critical}
     write(output / "release.json", release)
     summary_text = (f"### FundLenz daily check: {report['status']}\n\n"
                     f"Mode: **{policy['mode']}**. Publication permitted for this run: **{publication_allowed}**. Financial production files have not been published by this job.\n\n"

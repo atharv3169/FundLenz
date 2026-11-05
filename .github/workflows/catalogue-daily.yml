@@ -24,6 +24,7 @@ permissions:
 
 concurrency:
   group: fundlenz-catalogue-daily
+  queue: max
   cancel-in-progress: false
 
 jobs:
@@ -77,10 +78,20 @@ jobs:
           run-id: ${{ steps.state.outputs.run_id }}
           github-token: ${{ github.token }}
           path: work/state
+      - name: Check current main before source requests
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FUNDLENZ_PREFLIGHT_STAGE: before_sources
+        run: python3 scripts/automation/preflight.py
       - name: Acquire approved official sources
         env:
           FUNDLENZ_FORCE_SUPPORTED: ${{ inputs.force_supported_sources || false }}
         run: python3 scripts/automation/acquire.py
+      - name: Check current main before paid model requests
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FUNDLENZ_PREFLIGHT_STAGE: before_model
+        run: python3 scripts/automation/preflight.py
       - name: Run the two bounded Gemini tasks
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -99,7 +110,7 @@ jobs:
         if: always()
         run: cat work/result/summary.md >> "$GITHUB_STEP_SUMMARY"
       - name: Retain persistent state
-        if: always()
+        if: always() && github.run_attempt == 1
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: fundlenz-state
@@ -107,7 +118,7 @@ jobs:
           retention-days: 90
           if-no-files-found: error
       - name: Retain complete audit and source evidence
-        if: always()
+        if: always() && github.run_attempt == 1
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: fundlenz-audit

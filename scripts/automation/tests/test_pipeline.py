@@ -481,14 +481,16 @@ class PipelineTests(unittest.TestCase):
                                      "repo": {"full_name": self.repo}, "sha": "b" * 40},
                             "base": {"sha": base, "ref": "main"},
                             "user": {"login": "publisher"},
-                            "body": "FundLenz-Run: 12345\nFundLenz-Base: " + base}
+                            "body": "FundLenz-Run: 12345\nFundLenz-Attempt: 1\nFundLenz-Base: " + base}
+                if path == "/actions/runs/12345/attempts/1":
+                    return {"id":12345,"head_sha":base,"run_attempt":1}
                 if path == "/actions/runs/12345":
                     return {"id": 12345, "path": ".github/workflows/catalogue-daily.yml",
                             "head_branch": "main", "head_repository": {"full_name": self.repo},
                             "head_sha": base, "event": self.event}
                 raise AssertionError(path)
             def all(self, path, key):
-                return [{"name": "Collect and validate", "conclusion": self.result}]
+                return [{"name": "Collect and validate", "conclusion": self.result, "status":"completed", "run_attempt":1}]
         saved = {k: os.environ.get(k) for k in ["FUNDLENZ_PUBLISHER_LOGIN", "TRUSTED_BASE"]}
         try:
             os.environ["FUNDLENZ_PUBLISHER_LOGIN"] = "publisher"
@@ -658,7 +660,7 @@ class PipelineTests(unittest.TestCase):
                 effective_publication_enabled(enabled, {"FUNDLENZ_RELEASE_ALLOWED": invalid})
         # The privileged publisher independently requires opt-in from the
         # exact-byte validated artifact, not merely the workflow job condition.
-        require_publishable_release({"publication_enabled": True})
+        require_publishable_release({"publication_enabled": True, "validation_passed": True})
         for candidate in [None, {}, {"publication_enabled": False},
                           {"publication_enabled": "true"}, {"publication_enabled": 1}]:
             with self.subTest(candidate=candidate), self.assertRaisesRegex(ValueError, "Audit-only release"):

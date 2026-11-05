@@ -11,8 +11,15 @@ import re
 import time
 import urllib.request
 import urllib.error
-from common import ROOT, dataset_hash, loads, read, require, write
+from common import ROOT, bounded_read, sha, dataset_hash, loads, read, require, write
 from github_api import GitHub, NoRedirect
+
+
+PUBLIC_HEADERS = {
+    "Cache-Control": "no-cache", "Accept": "application/json", "Accept-Encoding": "identity",
+    "User-Agent": ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                   "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"),
+}
 
 
 def verify_live_catalogue(release, observed, published_metadata=None):
@@ -58,21 +65,44 @@ def probe_exact_origin(opener, origin, commit, release):
     # Cloudflare returns 403 to Python-urllib's default User-Agent, while a
     # normal unauthenticated browser-style GET returns 200 with the exact
     # public release and date. No cookies, tokens or security-rule exceptions.
-    headers = {
-        "Cache-Control": "no-cache",
-        "Accept": "application/json",
-        "User-Agent": ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                       "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"),
-    }
+    headers = PUBLIC_HEADERS
     url = origin + "/automation-audit/release.json?commit=" + commit
+    deadline = time.monotonic() + 40
     with opener.open(urllib.request.Request(url, headers=headers), timeout=20) as response:
-        observed = loads(response.read(16385))
+        observed = loads(bounded_read(response, 16384, deadline))
     metadata = None
     if release["financial_data_changed"]:
         url = origin + "/data/site-metadata.json?commit=" + commit
+        deadline = time.monotonic() + 40
         with opener.open(urllib.request.Request(url, headers=headers), timeout=20) as response:
-            metadata = loads(response.read(16385))
+            metadata = loads(bounded_read(response, 16384, deadline))
     verify_live_catalogue(release, observed, metadata)
+
+
+def verify_public_assets(opener, origin, commit, root):
+    """Check actual data bytes as well as markers; bounded representative CDN probes.
+
+    All adapter outputs are checked by exact PR replay. This additional hosting
+    check covers the NAV catalogue, holdings index and up to three accepted
+    portfolio assets; it does not claim to redownload the entire catalogue.
+    """
+    paths = ["public/data/catalog.json", "public/data/global/holdings-index.json"]
+    audit = read(root / "audit/latest.json")
+    holdings = sorted({u["unit"].removeprefix("holdings:") for u in audit["changes"]
+                       if u["decision"] == "accepted" and u["unit"].startswith("holdings:")})
+    if holdings:
+        paths += ["public/data/global/holdings/" + holdings[i] + ".json"
+                  for i in sorted({0, len(holdings)//2, len(holdings)-1})]
+    for path in paths:
+        from common import safe_path
+        expected = safe_path(root, path).read_bytes()
+        require(len(expected) <= 32 * 1024 * 1024, "Public asset exceeds probe budget")
+        request = urllib.request.Request(origin + "/" + path.removeprefix("public/") + "?commit=" + commit,
+                                        headers=PUBLIC_HEADERS)
+        deadline = time.monotonic() + 40
+        with opener.open(request, timeout=20) as response:
+            actual = bounded_read(response, len(expected), deadline)
+        require(sha(actual) == sha(expected), "Served financial asset differs from protected data")
 
 
 def safe_probe_problem(error):
@@ -118,14 +148,20 @@ def main():
     errors = {}
     try:
         while time.monotonic() < deadline:
-            checks = api.all("/commits/" + commit + "/check-runs", "check_runs")
-            builds = [c for c in checks if c["name"] == "Workers Builds: fundlenz"]
+            try:
+                checks = api.all("/commits/" + commit + "/check-runs", "check_runs")
+            except (urllib.error.URLError, TimeoutError, ConnectionError) as error:
+                errors["github_build_status"] = safe_probe_problem(error)
+                checks = []
+            builds = [c for c in checks if c["name"] == "Workers Builds: fundlenz"
+                      and c.get("app", {}).get("slug") == "cloudflare-workers-and-pages"]
             latest = max(builds, key=lambda c: c["id"]) if builds else None
             if latest and latest["status"] == "completed":
                 require(latest["conclusion"] == "success", "Cloudflare deployment check failed")
                 for origin in origins:
                     try:
                         probe_exact_origin(opener, origin, commit, release)
+                        verify_public_assets(opener, origin, commit, ROOT)
                     except (urllib.error.HTTPError, urllib.error.URLError,
                             TimeoutError, OSError, ValueError) as error:
                         errors[origin] = safe_probe_problem(error)

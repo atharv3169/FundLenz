@@ -96,13 +96,14 @@ class DeploymentConfirmationTests(unittest.TestCase):
         class FakeAPI:
             def all(self, *_):
                 return [{"name": "Workers Builds: fundlenz", "id": 42, "status":"completed",
-                         "conclusion":"success", "html_url":"https://github.com/example/build"}]
+                         "conclusion":"success", "app":{"slug":"cloudflare-workers-and-pages"}, "html_url":"https://github.com/example/build"}]
         clock = [0.0]
         with tempfile.TemporaryDirectory() as d:
             root = self.temp_repo(d, marker)
             with mock.patch.object(deployment, "ROOT", root), \
                  mock.patch.object(deployment, "dataset_hash", return_value=self.SHA), \
                  mock.patch.object(deployment, "GitHub", return_value=FakeAPI()), \
+                 mock.patch.object(deployment, "verify_public_assets"), \
                  mock.patch.object(deployment.urllib.request,"build_opener",return_value=opener), \
                  mock.patch.object(deployment.time,"monotonic",side_effect=lambda:clock[0]), \
                  mock.patch.object(deployment.time,"sleep",

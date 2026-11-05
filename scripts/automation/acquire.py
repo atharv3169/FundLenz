@@ -5,6 +5,7 @@ import ipaddress
 import os
 import socket
 import math
+import time
 import re
 from zoneinfo import ZoneInfo
 import threading
@@ -12,7 +13,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
-from common import ROOT, clean_error, dataset_hash, now, read, require, run_id, sha, timestamp, write
+from common import ROOT, bounded_read, clean_error, dataset_hash, now, read, require, run_id, sha, timestamp, write
 
 
 class ApprovedRedirect(urllib.request.HTTPRedirectHandler):
@@ -49,6 +50,7 @@ def validate_registry(registry):
 def retrieve(source, policy):
     # A document fragment is a browser anchor, not part of an HTTP request.
     # Preserve it in the evidence URL but validate/fetch the exact network URL.
+    deadline = time.monotonic() + policy["source_timeout_seconds"] * 2
     request_url = urllib.parse.urldefrag(source["url"])[0]
     allowed = set([request_url, *source.get("approved_redirects", [])])
     validate_url(request_url, allowed)
@@ -59,14 +61,14 @@ def retrieve(source, policy):
         require(response.status == 200, "Unexpected response status")
         require(response.geturl() in allowed, "Unapproved final URL")
         require(response.headers.get("Content-Encoding", "identity") == "identity", "Unexpected compression")
-        raw = response.read(policy["max_source_bytes"] + 1)
+        raw = bounded_read(response, policy["max_source_bytes"], deadline)
         require(0 < len(raw) <= policy["max_source_bytes"], "Empty/oversized source")
         if response.headers.get("Content-Length"):
             require(int(response.headers["Content-Length"]) == len(raw), "Truncated source body")
         return raw, response.geturl(), response.headers.get("Content-Type", ""), response.headers.get("Last-Modified")
 
 
-def due_sources(registry, state, issues, at, limit, force_supported=False):
+def due_sources(registry, state, issues, at, limit, force_supported=False, pending_source_ids=()):
     issue_urls = {i["source_url"] for i in issues["issues"]}
     due, later = [], []
     for source in registry:
@@ -74,8 +76,13 @@ def due_sources(registry, state, issues, at, limit, force_supported=False):
         last = previous.get("last_attempt_at")
         local = ZoneInfo("Asia/Kolkata")
         elapsed_days = (timestamp(at).astimezone(local).date() - timestamp(last).astimezone(local).date()).days if last else None
+        require(elapsed_days is None or elapsed_days >= 0, "Source attempt is in the future")
         is_due = not last or elapsed_days >= math.ceil(source["cadence_hours"] / 24)
         is_due = is_due or (force_supported and source["adapter"] != "monitor")
+        # An unpublished attempt must not suppress a supported source for a
+        # weekly cadence. Retry next local day, never a second daily budget.
+        is_due = is_due or (source["id"] in pending_source_ids and source["adapter"] != "monitor"
+                            and (elapsed_days is None or elapsed_days >= 1))
         if source["url"] in issue_urls:
             is_due = is_due or not last or elapsed_days >= 1
         (due if is_due else later).append(source)
@@ -96,8 +103,12 @@ def main():
     state_path = ROOT / "work/state/state.json"
     state = read(state_path) if state_path.exists() else {"sources": {}, "issues": read(ROOT / "audit/open-issues.json"), "applied_runs": []}
     started = now()
+    from restore_state import validate_state, unpublished_sources
+    validate_state(state, started)
+    committed = read(ROOT / "audit/automation-state.json") if (ROOT / "audit/automation-state.json").exists() else {}
+    pending = unpublished_sources(state, committed)
     selected, budget, later = due_sources(registry, state["sources"], state["issues"], started, policy["max_sources_per_run"],
-                                        os.environ.get("FUNDLENZ_FORCE_SUPPORTED") == "true")
+                                        os.environ.get("FUNDLENZ_FORCE_SUPPORTED") == "true", pending)
     host_locks = {urllib.parse.urlsplit(s["url"]).hostname: threading.Lock() for s in selected}
     byte_lock, used = threading.Lock(), [0]
 

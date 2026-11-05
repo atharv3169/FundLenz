@@ -1,11 +1,12 @@
 """Two bounded Gemini requests. No shell tools, browsing tools or write credentials."""
 import os
+import http.client
 import copy
 import time
 import re
 import urllib.error
 import urllib.request
-from common import ROOT, clean_error, encoded, loads, now, read, require, schema, sha, write
+from common import ROOT, bounded_read, retry_after_seconds, clean_error, encoded, loads, now, read, require, schema, sha, write
 from adapters import reconcile
 
 
@@ -76,6 +77,44 @@ def candidate_from_review(review, packet, task, policy):
                  "proposals": copy.deepcopy(review["proposals"]), "summary": review["summary"]}
     verify_candidate_envelope(candidate, packet, task, policy)
     return candidate
+
+
+def task_system(task):
+    name = "gemini-daily-scan.md" if task == "fresh_scan" else "gemini-reinvestigation.md"
+    return (ROOT / "automation/gemini-system-prompt.md").read_text() + "\n" + (ROOT / "automation" / name).read_text()
+
+
+def model_input_bytes(packet, task):
+    return len(task_system(task).encode()) + len(encoded({"review_schema": model_review_schema(), "inputs": packet}))
+
+
+def fit_packet(packet, task, policy):
+    """Trim context deterministically, never fabricate evidence or skip review.
+
+    The full source/issue history remains in the audit. The independent replay
+    executes the same selection and recomputes the exact bounded packet.
+    """
+    packet = copy.deepcopy(packet)
+    limit = policy["max_model_input_bytes_per_task"] - 1000  # corrective-retry headroom
+    original_sources = len(packet["sources"])
+    while model_input_bytes(packet, task) > limit:
+        if packet["sample_adapter_decisions"]:
+            packet["sample_adapter_decisions"].pop()
+        elif any(s["excerpt"] for s in packet["sources"]):
+            for source in packet["sources"]:
+                source.update(excerpt="", excerpt_is_complete_source=False, excerpt_omitted_for_budget=True)
+        elif len(packet["issues"]) > 1:
+            packet["issues"].pop()
+        elif len(packet["sources"]) > 1:
+            packet["sources"].pop()
+            urls = {s["source_url"] for s in packet["sources"]}
+            packet["issues"] = [i for i in packet["issues"] if i["source_url"] in urls]
+        else:
+            raise ValueError("Minimum honest model packet exceeds reviewed input budget")
+        packet["scope"].update(sample_units=len(packet["sample_adapter_decisions"]),
+                                issues_in_this_task=len(packet["issues"]),
+                                sources_omitted_for_model_budget=original_sources-len(packet["sources"]))
+    return packet
 
 
 def packets(acquisition, units, task, policy, run=None):
@@ -157,7 +196,7 @@ def packets(acquisition, units, task, policy, run=None):
                 "If proposing a supported NAV change use atomic_group nav:<AMFI code>, record_id <AMFI code>, field nav, new_candidate {nav,navDate}; "
                 "New AMFI identities are admitted only by the trusted new_plan adapter, never inferred from names. Do not propose replacement identities or fabricate holdings. Omit a proposal when the supplied deterministic result has no evidenced problem; "
                 "otherwise report unresolved observations. Sources outside this packet were not inspected by this task."}
-    return packet
+    return fit_packet(packet, task, policy)
 
 
 
@@ -188,8 +227,7 @@ def trusted_no_work_candidate(packet):
 def call_model(packet, task, policy):
     key = os.environ.get("GEMINI_API_KEY")
     require(key, "Missing GEMINI_API_KEY")
-    prompt_name = "gemini-daily-scan.md" if task == "fresh_scan" else "gemini-reinvestigation.md"
-    system = (ROOT / "automation/gemini-system-prompt.md").read_text() + "\n" + (ROOT / "automation" / prompt_name).read_text()
+    system = task_system(task)
     contract = model_review_schema()
     user = encoded({"review_schema": contract, "inputs": packet}).decode()
     require(len(system.encode()) + len(user.encode()) <= policy["max_model_input_bytes_per_task"], "Model input budget exhausted")
@@ -202,32 +240,43 @@ def call_model(packet, task, policy):
     class NoRedirect(urllib.request.HTTPRedirectHandler):
         def redirect_request(self, *args, **kwargs):
             return None
+    deadline = time.monotonic() + policy["model_timeout_seconds"]
     with urllib.request.build_opener(NoRedirect()).open(request, timeout=policy["model_timeout_seconds"]) as response:
-        raw = response.read(policy["max_model_response_bytes"] + 1)
+        raw = bounded_read(response, policy["max_model_response_bytes"], deadline)
     require(len(raw) <= policy["max_model_response_bytes"], "Oversized model response")
-    body = loads(raw)
-    candidates = body.get("candidates", [])
-    diagnostic = {"finish_reasons": [c.get("finishReason") for c in candidates],
-                  "part_keys": [[sorted(p) for p in c.get("content", {}).get("parts", [])] for c in candidates],
-                  "usage": body.get("usageMetadata", {}), "response_sha256": sha(raw)}
-    write(ROOT / "work/run" / (task + "-transport.json"), diagnostic)
-    final_text = "".join(p.get("text", "") for c in candidates for p in c.get("content", {}).get("parts", [])
-                         if isinstance(p.get("text"), str) and not p.get("thought", False))
-    (ROOT / "work/run" / (task + "-raw-text.txt")).write_text(final_text.replace(key, "[REDACTED]"))
+    write(ROOT / "work/run" / (task + "-provider-response.json"),
+          {"response_sha256": sha(raw), "raw_response": raw.decode("utf-8", errors="replace").replace(key, "[REDACTED]")})
     try:
-        review = loads(response_text(body))
+        body = loads(raw)
+        final_text = response_text(body)
+        candidates = body["candidates"]
+        diagnostic = {"finish_reasons": [c.get("finishReason") for c in candidates],
+                      "part_keys": [[sorted(p) for p in c["content"]["parts"]] for c in candidates],
+                      "response_sha256": sha(raw)}
+        write(ROOT / "work/run" / (task + "-transport.json"), diagnostic)
+        (ROOT / "work/run" / (task + "-raw-text.txt")).write_text(final_text.replace(key, "[REDACTED]"))
+        review = loads(final_text)
         candidate = candidate_from_review(review, packet, task, policy)
-    except ValueError as error:
-        # Bad JSON, truncated answers and incomplete ledgers get one corrective
-        # retry. Never treat them as valid observations or silently fill gaps.
-        raise ModelContractError(str(error)[:240]) from None
-    return candidate, body.get("usageMetadata", {})
+        # Usage is provider bookkeeping, not arbitrary text for public logs.
+        usage = body.get("usageMetadata", {})
+        require(isinstance(usage, dict), "Malformed provider usage metadata")
+        usage = {k: usage[k] for k in ("promptTokenCount", "candidatesTokenCount", "totalTokenCount", "thoughtsTokenCount")
+                 if type(usage.get(k)) is int and usage[k] >= 0}
+    except (ValueError, TypeError, KeyError, AttributeError) as error:
+        reason = str(error)[:200] if isinstance(error, ValueError) else type(error).__name__
+        raise ModelContractError("Invalid model response: " + reason) from None
+    return candidate, usage
 
 
 def response_text(body):
+    require(isinstance(body, dict), "Malformed model response object")
     candidates = body.get("candidates", [])
+    require(isinstance(candidates, list) and all(isinstance(c, dict) for c in candidates), "Malformed model candidates")
     require(len(candidates) == 1 and candidates[0].get("finishReason") == "STOP", "Incomplete model response")
-    parts = candidates[0].get("content", {}).get("parts", [])
+    content = candidates[0].get("content", {})
+    require(isinstance(content, dict), "Malformed model content")
+    parts = content.get("parts", [])
+    require(isinstance(parts, list) and all(isinstance(p, dict) for p in parts), "Malformed model parts")
     # Official Gemini text parts may carry thoughtSignature metadata. It is not
     # candidate data, a permission, or something to execute. Thought parts are
     # excluded; every final text value still undergoes the full strict contract.
@@ -300,7 +349,10 @@ def bounded_call(packet, task, policy, caller=call_model, wait=time.sleep, event
             error.fundlenz_attempts = attempt
             if attempt > policy["model_retries"] or error.code not in policy["model_retry_http_statuses"]:
                 raise
-            record_retry(error, attempt, service_delay(attempt))
+            cooldown = retry_after_seconds(error.headers, 240)
+            if error.headers.get("Retry-After") is not None and cooldown is None:
+                raise
+            record_retry(error, attempt, max(service_delay(attempt), cooldown or 0))
         except ModelContractError as error:
             error.fundlenz_attempts = attempt
             contract_failures += 1
@@ -314,7 +366,7 @@ def bounded_call(packet, task, policy, caller=call_model, wait=time.sleep, event
                 " CORRECTIVE RETRY: Your previous response was rejected: " + str(error)[:120] +
                 ". Return fewer or zero proposals and exactly one reviewed_sources row for EVERY inputs.sources entry. "
                 "Copy source_id and source_sha256 exactly. Use only review_schema keys. Return complete valid JSON and never invent evidence.")
-        except (urllib.error.URLError, TimeoutError, ConnectionError) as error:
+        except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.IncompleteRead) as error:
             error.fundlenz_attempts = attempt
             if attempt > policy["model_retries"]:
                 raise
