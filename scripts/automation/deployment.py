@@ -144,7 +144,9 @@ def main():
     origins = approved_production_origins(policy["production_url"])
     api = GitHub()
     opener = urllib.request.build_opener(NoRedirect())
-    deadline = time.monotonic() + 600
+    # Live acceptance observed an 18-minute Cloudflare build on a large data PR.
+    # Allow queue/build time while retaining a finite failure deadline.
+    deadline = time.monotonic() + 1800
     errors = {}
     try:
         while time.monotonic() < deadline:

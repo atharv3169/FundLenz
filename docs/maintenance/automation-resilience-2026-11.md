@@ -126,6 +126,8 @@ The second pass specifically challenged the new code:
 | F82 | Publication | A new commit or ref is temporarily refused or not yet readable | Changed | Confirm exact commit/tree/parent visibility, observe refs before retries, and apply bounded cooldowns with safe refusal categories. |
 | F83 | Publication | A Git tree overlay omits inherited code/configuration | Changed | Compare all unchanged file modes/types/hashes against the base before creating the publication ref. |
 
+| F84 | Hosting | A successful queued/large Cloudflare build takes more than ten minutes | Changed | Observe for at most 30 minutes inside a 40-minute job; still require trusted build success and exact live financial bytes. Live acceptance observed an 18-minute build and confirmed the release after it finished. |
+
 ## Verification and simulations
 
 - `python3 -m unittest discover -s scripts/automation/tests`: 170 test methods, including the existing adversarial validator cases and new hardening regressions.
