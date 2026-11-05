@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/automation/health.py'
+      - 'scripts/automation/schedule_guard.py'
       - '.github/workflows/production-health.yml'
       - 'automation/runtime.json'
   schedule:

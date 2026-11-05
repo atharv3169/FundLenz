@@ -3,7 +3,7 @@ import datetime as dt
 import os
 from urllib.parse import quote
 from zoneinfo import ZoneInfo
-from common import read, require, timestamp
+from common import ROOT, read, require, timestamp
 from github_api import GitHub
 
 EXTERNAL_RUN_NAME = "FundLenz daily catalogue (external scheduler)"
@@ -33,11 +33,12 @@ def automatic_request(event_name, inputs, ref):
     return automatic
 
 
-def decide(at, runs, jobs_for_run, current_id, repository):
+def decide(at, runs, jobs_for_run, current_id, repository, published_run_id=None):
     local = at.astimezone(IST)
     require((local.hour, local.minute) >= (9, 17),
             "Automatic trigger arrived before the 09:17 IST collection window; no source or model calls")
     require(len(runs) < 100, "Daily run history exceeds guard budget; inspect before proceeding")
+    attempts = []
     for run in runs:
         if str(run["id"]) == str(current_id) or not is_automatic_run(run):
             continue
@@ -53,13 +54,37 @@ def decide(at, runs, jobs_for_run, current_id, repository):
             require(started <= at, "Future collector timestamp")
             if started.astimezone(IST).date() != local.date():
                 continue
-            # Workflow-level concurrency serializes the native and external
-            # triggers. A failed/cancelled attempt is not silently retried with
-            # another model budget. Operators retain the ordinary manual path.
-            require(run.get("status") == "completed" and run.get("conclusion") == "success"
-                    and job.get("conclusion") == "success",
-                    "Today's automatic attempt failed or is incomplete; inspect it and use explicit manual recovery")
-            return False, f"Automatic collection already completed today in run {run['id']}; no duplicate calls."
+            attempts.append((started, run, job))
+    if attempts:
+        started, previous, job = max(attempts, key=lambda item: item[0])
+        # Do not let an older success mask a newer failure or active collector.
+        if (previous.get("status") == "completed" and previous.get("conclusion") == "success"
+                and job.get("conclusion") == "success"):
+            return False, f"Automatic collection already completed today in run {previous['id']}; no duplicate calls."
+        # The protected release is the authority, not a successful audit-only
+        # dispatch. A recovery must follow the failed collector and finish before
+        # this decision, with the exact published run attempt and a successful job.
+        for recovery in runs:
+            if (recovery.get("event") != "workflow_dispatch" or is_automatic_run(recovery)
+                    or recovery.get("head_branch") != "main"
+                    or recovery.get("head_repository", {}).get("full_name") != repository
+                    or recovery.get("status") != "completed" or recovery.get("conclusion") != "success"
+                    or f"{recovery['id']}-{recovery.get('run_attempt', 1)}" != published_run_id):
+                continue
+            created = timestamp(recovery["created_at"])
+            if not (previous.get("status") == "completed" and job.get("completed_at")
+                    and started <= timestamp(job["completed_at"]) <= created <= at
+                    and created.astimezone(IST).date() == local.date()):
+                continue
+            recovered_jobs = [j for j in jobs_for_run(recovery["id"]) if j.get("name") == COLLECT_JOB_NAME]
+            require(len(recovered_jobs) == 1, "Ambiguous recovery collector history")
+            recovered = recovered_jobs[0]
+            require(recovered.get("status") == "completed" and recovered.get("conclusion") == "success"
+                    and recovered.get("started_at") and recovered.get("completed_at")
+                    and created <= timestamp(recovered["started_at"]) <= timestamp(recovered["completed_at"]) <= at,
+                    "Published recovery collector is incomplete or invalid")
+            return False, f"Today's automatic failure was recovered and published by run {recovery['id']}; no duplicate calls."
+        raise ValueError("Today's automatic attempt failed or is incomplete; inspect it and use explicit manual recovery")
     return True, "First automatic collector attempt for this India-local day."
 
 
@@ -81,7 +106,8 @@ def main():
                 "Daily run history is incomplete; inspect before proceeding")
         runs = history["workflow_runs"]
         allowed, reason = decide(at, runs, lambda run_id: api.all(
-            f"/actions/runs/{run_id}/jobs?filter=latest", "jobs"), os.environ["GITHUB_RUN_ID"], api.repo)
+            f"/actions/runs/{run_id}/jobs?filter=latest", "jobs"), os.environ["GITHUB_RUN_ID"], api.repo,
+            read(ROOT / "public/automation-audit/release.json")["run_id"])
     with open(os.environ["GITHUB_OUTPUT"], "a") as out:
         out.write("run_collect=" + str(allowed).lower() + "\n")
     print(reason)
