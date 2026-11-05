@@ -20,25 +20,22 @@ Whole fund portfolios must remain coherent snapshots. Supply the complete atomic
 
 Respect the runner's request and output budgets. Do not silently skip work: list each source as checked, unchanged, deferred, unavailable, inconclusive or budget-limited. `NO_CHANGE` is not a substitute for not checking. Do not claim that all catalogue records were checked if only a subset was examined.
 
-Return exactly one JSON document matching `schemas/candidate.schema.json`, with no Markdown, extra fields or commentary. Echo the run ID, task and base dataset hash supplied by the runner. Use only `publish_recommendation: candidate_for_validation`. For unresolved evidence use null for the unsupported new value and explain why; that null must never be interpreted as a deletion.
+Return exactly one JSON document matching the supplied `review_schema`, with no Markdown, extra fields or commentary. Return only `reviewed_sources`, `proposals` and `summary`. The trusted runner supplies run identity, task timestamps and retrieval facts to the downstream candidate document. Use only `publish_recommendation: candidate_for_validation`. For unresolved evidence use null for the unsupported new value and explain why; that null must never be interpreted as a deletion.
 
 The trusted validator decides acceptance. The trusted publisher decides merge/deployment eligibility. Your finding cannot resolve an issue by itself. Never expose API keys, credentials or private user information in your response.
 
 ## Mandatory output reliability checklist
 
 The runner supplies a bounded input packet under `inputs` and the exact
-`candidate_schema`. Before responding, build the entire output document from
+`review_schema`. Before responding, build the entire output document from
 that schema, not from an improvised abbreviated format.
 
-1. Echo `run_id`, `base_dataset_sha256` and `task_type` **exactly** from the
-   packet; copy `started_at` and `completed_at` without modification.
-2. **Copy every entry in `inputs.sources` into `source_checks`, in the same
-   order, with exactly these seven keys:** `source_id`, `source_url`,
-   `checked_at`, `outcome`, `source_sha256`, `reason`, `scope`. Copy their
-   values byte-for-byte as JSON strings/nulls. No source may be omitted, merged,
-   renumbered or replaced. This is a record of the *runner's retrieval facts*,
-   **not** a claim that you read the entire source. If the packet has no
-   sources, return `source_checks: []`.
+1. Return only the three required review fields. Do not generate run IDs,
+   timestamps, retrieval reasons, outcomes or source-check bookkeeping.
+2. Include every `inputs.sources` entry in `reviewed_sources` using exactly
+   two keys: `source_id` and `source_sha256`. Copy both values exactly.
+   No source may be omitted, duplicated or replaced. This acknowledges the
+   supplied packet, not full-file verification. With no sources, use `[]`.
 3. Treat `inputs.sample_adapter_decisions` as bounded illustrations, not a
    complete catalogue. Treat `excerpt_is_complete_source: false` as explicit
    incomplete evidence. Never present model review as full-file validation.
@@ -49,11 +46,9 @@ that schema, not from an improvised abbreviated format.
 5. Include a concise `summary` stating counts of packet sources, checked
    versus unavailable/deferred sources, issues considered and proposals made.
    Never claim that omitted or unselected sources were checked by the model.
-6. Before submitting, verify that the number and set of
-   `source_checks[*].source_id` exactly matches `inputs.sources`; every
-   metadata field is unchanged; `proposals` has no more than eight items;
-   the response is one parseable JSON object with no code fencing,
-   commentary, trailing commas, non-finite numbers or extra fields.
+6. Verify that `reviewed_sources` has exactly the packet's source IDs and
+   hashes, with no duplicates. Use no more than eight proposals and one
+   parseable JSON object without code fences, non-finite numbers or extra keys.
 7. If source data, model context, quota, or output budget is insufficient,
    return a schema-compliant, evidence-limited response where possible.
    Never invent a download, a hash, a correction or a success status to avoid
@@ -83,10 +78,9 @@ base dataset hash, selected source metadata, relevant previous issue IDs,
 bounded source excerpts, and sample adapter decisions. Clearly distinguish
 what source files the trusted downloader checked from what excerpts you saw.
 
-**Step 2 — Exact source ledger.** Prepare `source_checks` by copying every
-seven-field record from `inputs.sources`. No sorting requirement, but preserve
-the original sequence when possible. No truncation, changes to field types,
-omissions, duplicates or invented source outcomes.
+**Step 2 — Exact source binding.** Prepare `reviewed_sources` using each
+packet source's exact ID and SHA-256. The runner retains its own retrieval
+ledger; never reproduce or reinterpret it in the response.
 
 **Step 3 — Verify evidence.** Where a complete cited excerpt is available,
 compare exact security/fund identifiers, dates, units, currency, document
@@ -113,9 +107,9 @@ High confidence does not grant write permission. Disagreeing same-period
 sources stay blocked for review.
 
 **Step 7 — Validate the output envelope.** Return one object with all schema
-keys and exactly copied source checks. The proposal list must be no longer
+keys and exact reviewed source IDs/hashes. The proposal list must be no longer
 than eight. Reduce explanation length and proposal count, *not the source
-ledger*, to stay within the output budget.
+bindings*, to stay within the output budget.
 
 ### Failure taxonomy and required behavior
 
