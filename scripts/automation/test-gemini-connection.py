@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """One bounded Gemini connectivity request; never reads or writes catalogue data."""
 import json
+import time
+from common import bounded_read
 import os
 from pathlib import Path
 import sys
@@ -38,7 +40,7 @@ def validate_response(raw):
         return {"status": "passed", "model": MODEL,
                 "checks": ["credential accepted", "generation completed", "JSON response validated"],
                 "total_tokens": usage.get("totalTokenCount") if type(usage.get("totalTokenCount")) is int else None,
-                "catalogue_modified": False, "scheduled_updates_enabled": False}
+                "catalogue_modified": False, "schedule_modified": False}
     except (ValueError, KeyError, TypeError, AttributeError, IndexError):
         raise ConnectionCheckError("Gemini responded, but the fixed connection-test response was invalid or incomplete.") from None
 
@@ -54,8 +56,9 @@ def run(key, opener=None):
                                      headers={"Content-Type": "application/json", "x-goog-api-key": key.strip()})
     opener = opener or urllib.request.build_opener(NoRedirect())
     try:
+        deadline = time.monotonic() + 40
         with opener.open(request, timeout=40) as response:
-            return validate_response(response.read(MAX_RESPONSE_BYTES + 1))
+            return validate_response(bounded_read(response, MAX_RESPONSE_BYTES, deadline))
     except urllib.error.HTTPError as error:
         messages = {
             400: "Gemini rejected the request or key. Check the API key type and model availability in AI Studio.",
@@ -74,7 +77,7 @@ def run(key, opener=None):
 def main():
     try:
         result = run(os.environ.get("GEMINI_API_KEY", ""))
-        message = "Gemini connection test passed. Catalogue data was not modified. Daily updates are not enabled."
+        message = "Gemini connection test passed. Catalogue data was not modified. Scheduling was not changed."
         status = 0
     except ConnectionCheckError as error:
         result = {"status": "failed", "message": str(error), "catalogue_modified": False}

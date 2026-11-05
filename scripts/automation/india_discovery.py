@@ -3,6 +3,8 @@ import copy
 import datetime as dt
 import hashlib
 import re
+from common import timestamp
+from zoneinfo import ZoneInfo
 
 
 def valid_isin(value):
@@ -32,7 +34,7 @@ def new_plan_candidates(catalogue, rows, source, decision):
             if isin:
                 isin_owners.setdefault(isin, set()).add((row["amc"], row["name"]))
     results = []
-    checked = dt.date.fromisoformat(source["checked_at"][:10])
+    checked = timestamp(source["checked_at"]).astimezone(ZoneInfo("Asia/Kolkata")).date()
     for code in sorted(rows.keys() - known):
         row = rows[code]; proposed = None; date = None
         try:

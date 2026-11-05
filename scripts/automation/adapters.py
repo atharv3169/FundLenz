@@ -5,13 +5,15 @@ fields and lifecycle changes stay blocked. Fresh AMFI identities have a separate
 checksum-verified admission adapter.
 """
 import copy
+import csv
 import datetime as dt
 import importlib.util
 import math
 import re
 import sys
 from decimal import Decimal
-from common import ROOT, encoded, read, require, sha
+from common import ROOT, encoded, read, require, sha, timestamp
+from zoneinfo import ZoneInfo
 
 sys.path.insert(0, str(ROOT / "scripts/data"))
 spec = importlib.util.spec_from_file_location("global_builder", ROOT / "scripts/data/build_global_holdings.py")
@@ -87,7 +89,7 @@ def nav_candidates(catalogue, raw, source, policy):
             numeric = Decimal(row["raw_nav"])
             require(numeric.is_finite() and numeric >= 0, "NAV must be finite and nonnegative")
             date = dt.datetime.strptime(row["raw_date"], "%d-%b-%Y").date().isoformat()
-            require(date <= source["checked_at"][:10], "Future NAV date")
+            require(date <= timestamp(source["checked_at"]).astimezone(ZoneInfo("Asia/Kolkata")).date().isoformat(), "Future NAV date")
             proposed = {"nav": float(numeric), "navDate": date}
             require(math.isfinite(proposed["nav"]), "NAV outside finite float range")
             outcome = chronology(plan["navDate"], date, old["nav"], proposed["nav"])
@@ -118,6 +120,10 @@ def holdings_candidate(old, catalogue, download, raw, source, policy):
     require(raw.endswith((b"\n\n", b"\r\n\r\n")), "Issuer CSV end-of-file separator absent; possible truncation")
     desc = dict(download, sha256=source["source_sha256"], checkedAt=source["checked_at"], bytes=len(raw), status="downloaded")
     portfolio, summary, report = global_builder.parse_bytes(raw, desc, catalogue)
+    # A finite Decimal can still overflow when an issuer adapter converts it
+    # to float. Contain non-JSON/non-finite results at this source boundary.
+    for document in (portfolio, summary, report):
+        encoded(document)
     require(len(portfolio["holdings"]) >= len(old["holdings"]) * policy["holdings_min_row_ratio"],
             "Holding-row count fell by over half; source completeness needs review")
     outcome = chronology(old["date"], portfolio["date"], old["holdings"], portfolio["holdings"])
@@ -150,7 +156,7 @@ def reconcile(root, acquisition, policy, raw_sources):
                 extras[change["unit"]] = (summary, report, desc)
             else:
                 raise ValueError("Unsupported adapter")
-        except (ValueError, AssertionError, KeyError, StopIteration, UnicodeError, ArithmeticError) as error:
+        except (ValueError, AssertionError, KeyError, StopIteration, UnicodeError, ArithmeticError, TypeError, IndexError, csv.Error) as error:
             units.append(decision("source:" + source["source_id"], source, None, None, None, None,
                                   "blocked", "Adapter rejected input: " + str(error)[:500], "complete source"))
     # Require stable classifications across all resulting portfolios. A conflicting

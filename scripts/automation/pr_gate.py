@@ -22,10 +22,18 @@ def prepare(api, number):
     require(run["path"] == ".github/workflows/catalogue-daily.yml" and run["head_branch"] == "main"
             and run["head_repository"]["full_name"] == api.repo and run["event"] in {"schedule", "workflow_dispatch"}, "Untrusted artifact producer")
     require(run["head_sha"] == pr["base"]["sha"] == os.environ["TRUSTED_BASE"], "Candidate base is stale")
-    jobs = api.all(f"/actions/runs/{run['id']}/jobs", "jobs")
-    require(any(j["name"] == "Collect and validate" and j["conclusion"] == "success" for j in jobs),
+    attempt = re.search(r"^FundLenz-Attempt: ([1-9][0-9]*)$", pr.get("body") or "", re.M)
+    require(attempt, "Missing immutable producer attempt")
+    producer = api.call(f"/actions/runs/{run['id']}/attempts/{attempt[1]}")
+    require(producer["id"] == run["id"] and producer["head_sha"] == run["head_sha"]
+            and producer["run_attempt"] == int(attempt[1]),
+            "Producer attempt differs from trusted base")
+    jobs = api.all(f"/actions/runs/{run['id']}/attempts/{attempt[1]}/jobs", "jobs")
+    collectors = [j for j in jobs if j["name"] == "Collect and validate"]
+    require(len(collectors) == 1 and collectors[0].get("status") == "completed"
+            and collectors[0]["conclusion"] == "success" and collectors[0].get("run_attempt") == int(attempt[1]),
             "Automated publication requires a successful collection and validation job")
-    write(ROOT / "work/pr.json", {"number": number, "base": pr["base"]["sha"], "head": pr["head"]["sha"], "run_id": str(run["id"]), "actor": expected_actor, "automated": True})
+    write(ROOT / "work/pr.json", {"number": number, "base": pr["base"]["sha"], "head": pr["head"]["sha"], "run_id": str(run["id"]), "producer_attempt": int(attempt[1]), "actor": expected_actor, "automated": True})
     with open(os.environ["GITHUB_OUTPUT"], "a") as out:
         out.write("run_id=" + str(run["id"]) + "\nhead=" + pr["head"]["sha"] + "\nbase=" + pr["base"]["sha"] + "\n")
 
@@ -46,7 +54,8 @@ def check(api):
     validate(ROOT, ROOT / "work/run", ROOT / "work/pr-replay")
     release, files = verify_release(ROOT / "work/pr-replay")
     supplied, _ = verify_release(ROOT / "work/result")
-    require(release == supplied and release["base_commit"] == state["base"], "Artifact replay mismatch")
+    require(release == supplied and release["base_commit"] == state["base"]
+            and release["run_id"] == f"{state['run_id']}-{state['producer_attempt']}", "Artifact replay/producer-attempt mismatch")
     changed = api.all(f"/pulls/{state['number']}/files")
     require(len(changed) == pr["changed_files"], "Truncated PR diff")
     # Identical bytes occasionally produce no Git diff; calculate exact expected set.

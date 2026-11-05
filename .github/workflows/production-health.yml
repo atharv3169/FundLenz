@@ -7,6 +7,10 @@ on:
       - 'scripts/automation/schedule_guard.py'
       - '.github/workflows/production-health.yml'
       - 'automation/runtime.json'
+  workflow_run:
+    workflows: ["FundLenz daily catalogue", "FundLenz data deployment confirmation"]
+    branches: [main]
+    types: [completed]
   schedule:
     - cron: '23 7,19 * * *'
   workflow_dispatch:
@@ -15,11 +19,12 @@ permissions:
   actions: read
 concurrency:
   group: fundlenz-production-health
+  queue: max
   cancel-in-progress: false
 jobs:
   health:
     runs-on: ubuntu-24.04
-    timeout-minutes: 8
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:

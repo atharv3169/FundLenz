@@ -5,6 +5,9 @@ alone is insufficient: protection and the dedicated actor must also verify.
 """
 import base64
 import os
+import re
+import hashlib
+import urllib.parse
 import urllib.error
 from common import ROOT, dataset_hash, loads, read, require, safe_path, sha, write
 from adapters import allowed_paths
@@ -24,6 +27,7 @@ def strict_protection(api):
     require(protection.get("enforce_admins", {}).get("enabled") is True, "Protection must apply to administrators")
     require(protection.get("required_pull_request_reviews") is not None, "Require a pull request for main")
     require(not protection.get("allow_force_pushes", {}).get("enabled") and not protection.get("allow_deletions", {}).get("enabled"), "Force-push/deletion protection required")
+    return protection
 
 
 def verify_release(result, root=ROOT):
@@ -92,8 +96,107 @@ def verify_release(result, root=ROOT):
 
 def require_publishable_release(release):
     """Block audit-only artifacts even if a future job is misconfigured."""
-    require(release.get("publication_enabled") is True,
+    require(release.get("publication_enabled") is True and release.get("validation_passed") is True,
             "Audit-only release cannot create a catalogue data PR")
+
+
+def optional_get(api, path):
+    try:
+        return api.call(path)
+    except urllib.error.HTTPError as error:
+        if error.code != 404:
+            raise
+        return None
+
+
+def reconcile_write(write_call, observe, matches, attempts=3):
+    """Recover ambiguous ref/PR writes by observing, never by blindly replaying."""
+    for attempt in range(attempts):
+        try:
+            result = write_call()
+            require(matches(result), "Publication write returned an unexpected identity")
+            return result
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as error:
+            # HTTPError is also URLError; authentication/permissions are permanent.
+            if isinstance(error, urllib.error.HTTPError) and error.code not in {409, 422, 500, 502, 503, 504}:
+                raise
+            found = observe()
+            if found is not None:
+                require(matches(found), "Ambiguous write conflicts with existing publication")
+                return found
+            if attempt + 1 == attempts:
+                raise
+    raise ValueError("Publication write recovery exhausted")
+
+
+def git_blob_sha(raw):
+    return hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+
+
+def publish_candidate(api, release, files, policy, actor):
+    expected, run = release["base_commit"], release["run_id"]
+    require(re.fullmatch(r"[0-9a-f]{40}", expected) and re.fullmatch(r"[0-9]+-[0-9]+", run),
+            "Invalid publication identity")
+    branch = "automation/catalogue-" + run
+    ref_path = "/git/ref/heads/" + branch
+    existing = optional_get(api, ref_path)
+    base = api.call("/git/commits/" + expected)
+    # Do not re-upload files already identical to the checked-out trusted base.
+    changed = {p: raw for p, raw in files.items() if not (ROOT / p).exists() or (ROOT / p).read_bytes() != raw}
+    require(changed, "Publication contains no changed files")
+    elements = [{"path": p, "mode": "100644", "type": "blob", "sha": git_blob_sha(raw)}
+                for p, raw in sorted(changed.items())]
+    if existing is None:
+        protection_gate(api.call("/branches/main"), policy, expected)
+        strict_protection(api)
+        for item in elements:
+            raw = changed[item["path"]]
+            blob = api.call("/git/blobs", "POST", {"content": base64.b64encode(raw).decode(), "encoding": "base64"})
+            require(blob["sha"] == item["sha"], "GitHub uploaded blob hash mismatch")
+    tree = api.call("/git/trees", "POST", {"base_tree": base["tree"]["sha"], "tree": elements})
+    if existing is not None:
+        require(existing.get("object", {}).get("type") == "commit", "Publication ref is not a commit")
+        commit = api.call("/git/commits/" + existing["object"]["sha"])
+        require(commit["tree"]["sha"] == tree["sha"] and
+                [parent["sha"] for parent in commit["parents"]] == [expected],
+                "Existing publication differs from this exact artifact/base; no overwrite")
+    else:
+        commit = api.call("/git/commits", "POST", {"message": "Update verified catalogue audit " + run,
+                          "tree": tree["sha"], "parents": [expected]})
+        require(commit.get("author") and commit.get("committer"), "Unattributed publishing commit")
+        protection_gate(api.call("/branches/main"), policy, expected)
+        reconcile_write(lambda: api.call("/git/refs", "POST", {"ref": "refs/heads/" + branch, "sha": commit["sha"]}),
+                        lambda: optional_get(api, ref_path),
+                        lambda ref: ref.get("object", {}).get("sha") == commit["sha"])
+
+    def find_pr():
+        owner = api.repo.split("/")[0]
+        query = urllib.parse.urlencode({"state": "all", "head": owner + ":" + branch, "base": "main"})
+        matches = api.all("/pulls?" + query)
+        require(len(matches) <= 1, "Ambiguous publication PRs; no duplicate creation")
+        return matches[0] if matches else None
+
+    def exact_pr(pr):
+        return (pr.get("user", {}).get("login") == actor and pr.get("head", {}).get("sha") == commit["sha"]
+                and pr.get("head", {}).get("repo", {}).get("full_name") == api.repo
+                and pr.get("base", {}).get("ref") == "main" and not pr.get("draft"))
+
+    pr = find_pr()
+    if pr is None:
+        protection_gate(api.call("/branches/main"), policy, expected)
+        strict_protection(api)
+        body = {"title": "Catalogue validation " + run, "head": branch, "base": "main",
+                "body": "Automated data-only candidate. Required checks independently reproduce the source-backed output.\n\n"
+                        "FundLenz-Run: " + run.split("-")[0] + "\nFundLenz-Attempt: " + run.split("-")[1] + "\nFundLenz-Base: " + expected}
+        pr = reconcile_write(lambda: api.call("/pulls", "POST", body), find_pr, exact_pr)
+    require(exact_pr(pr), "Publication PR identity/head mismatch")
+    merged = bool(pr.get("merged_at"))
+    require(pr["state"] == "open" or merged, "Publication was closed without merging; explicit review required")
+    if not merged:
+        protection_gate(api.call("/branches/main"), policy, expected)
+    return {"run_id": run, "pr_number": pr["number"], "head": commit["sha"], "base": expected,
+            "merge_complete": merged, "commit": pr.get("merge_commit_sha") if merged else None,
+            "deployment_complete": False, "url": pr["html_url"]}
 
 
 def main():
@@ -101,40 +204,19 @@ def main():
     if not (policy["publication_enabled"] and read(ROOT / "automation/policy.json")["publication_enabled"]):
         print("Publication disabled: dry-run evidence only. No branch or PR created.")
         return
-    require(os.environ.get("FUNDLENZ_PUBLISHER_LOGIN"), "Dedicated publisher identity not configured")
+    actor = os.environ.get("FUNDLENZ_PUBLISHER_LOGIN")
+    require(actor, "Dedicated publisher identity not configured")
     require(os.environ.get("FUNDLENZ_PUBLISH_TOKEN"), "Dedicated publisher token not configured")
     api = GitHub(os.environ["FUNDLENZ_PUBLISH_TOKEN"])
     release, files = verify_release(ROOT / "work/result")
     require_publishable_release(release)
+    require(release["run_id"].split("-")[0] == os.environ["GITHUB_RUN_ID"], "Artifact belongs to another producer run")
+    # publish_candidate rechecks protection before any new ref or PR. Existing
+    # publications must match the exact artifact tree and original parent.
     expected = release["base_commit"]
-    protection_gate(api.call("/branches/main"), policy, expected)
-    strict_protection(api)
-    # Keep this privileged job lightweight: verify the approved artifact's
-    # exact bytes, dataset hash, authorized paths, source base and publication
-    # permission above. The independent source/Gemini validation replay happens
-    # once in the protected PR data gate before any merge (pr_gate.py).
-    base = api.call("/git/commits/" + expected)
-    elements = []
-    for path, raw in sorted(files.items()):
-        try:
-            blob = api.call("/git/blobs", "POST", {"content": base64.b64encode(raw).decode(), "encoding": "base64"})
-        except urllib.error.HTTPError as error:
-            # Identify the failing object without logging source data or credentials.
-            raise RuntimeError(f"GitHub blob upload failed: path={path}, bytes={len(raw)}, HTTP={error.code}") from error
-        elements.append({"path": path, "mode": "100644", "type": "blob", "sha": blob["sha"]})
-    tree = api.call("/git/trees", "POST", {"base_tree": base["tree"]["sha"], "tree": elements})
-    commit = api.call("/git/commits", "POST", {"message": "Update verified catalogue audit " + release["run_id"], "tree": tree["sha"], "parents": [expected]})
-    require(commit.get("author") and commit.get("committer"), "Unattributed publishing commit")
-    protection_gate(api.call("/branches/main"), policy, expected)
-    branch = "automation/catalogue-" + release["run_id"]
-    api.call("/git/refs", "POST", {"ref": "refs/heads/" + branch, "sha": commit["sha"]})
-    pr = api.call("/pulls", "POST", {"title": "Catalogue validation " + release["run_id"], "head": branch, "base": "main",
-                   "body": "Automated data-only candidate. Required checks independently reproduce the source-backed output.\n\n"
-                           "FundLenz-Run: " + os.environ["GITHUB_RUN_ID"] + "\nFundLenz-Base: " + expected})
-    require(pr["user"]["login"] == os.environ["FUNDLENZ_PUBLISHER_LOGIN"], "Unexpected publishing actor; do not merge")
-    write(ROOT / "work/publication.json", {"run_id": release["run_id"], "pr_number": pr["number"], "head": commit["sha"],
-                                            "base": expected, "merge_complete": False, "deployment_complete": False})
-    print("Data-only PR created: " + pr["html_url"] + "; waiting for independent exact-head checks.")
+    publication = publish_candidate(api, release, files, policy, actor)
+    write(ROOT / "work/publication.json", publication)
+    print("Exact data publication " + ("already merged: " if publication["merge_complete"] else "ready for independent checks: ") + publication["url"])
 
 
 if __name__ == "__main__":

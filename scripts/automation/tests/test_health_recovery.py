@@ -46,12 +46,14 @@ class HealthDeploymentWaitTests(unittest.TestCase):
         opener.open.return_value.__enter__.return_value.status = 200
         results = [ValueError('Old deployment')] * failures + ([None] if success else [])
         def config(path):
-            return {'run_id': '10-1'} if path.name == 'release.json' else {'production_url': 'https://fundlenz.com'}
+            if path.name == 'release.json': return {'run_id': '10-1'}
+            if path.name == 'latest.json': return {'run_id': '10-1', 'status': 'PARTIAL', 'completed_at': at.isoformat()}
+            return {'production_url': 'https://fundlenz.com'}
         with mock.patch.dict(os.environ, {'GITHUB_EVENT_NAME': event, 'GITHUB_SHA': 'a' * 40}, clear=True), \
              mock.patch.object(health, 'GitHub', return_value=api), mock.patch.object(health, 'read', side_effect=config), \
              mock.patch.object(health.urllib.request, 'build_opener', return_value=opener), \
              mock.patch.object(health, 'probe_exact_origin', side_effect=results) as probe, \
-             mock.patch.object(health, 'verify_redirect'), mock.patch.object(health.time, 'sleep') as sleep, \
+             mock.patch.object(health, 'verify_public_assets'), mock.patch.object(health, 'verify_redirect'), mock.patch.object(health.time, 'sleep') as sleep, \
              mock.patch.object(health, 'write') as write:
             if success:
                 health.main()

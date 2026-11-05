@@ -4,6 +4,9 @@ import hashlib
 import json
 import math
 import os
+import tempfile
+import time
+import email.utils
 import re
 from pathlib import Path
 
@@ -44,7 +47,18 @@ def encoded(value):
 def write(path, value):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(encoded(value))
+    # A killed process must not leave a half-written state/report behind.
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(dir=path.parent, prefix="." + path.name + ".", delete=False) as out:
+            temporary = Path(out.name)
+            out.write(encoded(value))
+            out.flush()
+            os.fsync(out.fileno())
+        os.replace(temporary, path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
 
 
 def sha(raw):
@@ -116,3 +130,44 @@ def run_id():
     result = os.environ.get("GITHUB_RUN_ID", "local") + "-" + os.environ.get("GITHUB_RUN_ATTEMPT", "1")
     require(re.fullmatch(r"[a-zA-Z0-9_-]{1,100}", result), "Invalid run ID")
     return result
+
+
+def bounded_read(response, limit, deadline, clock=None):
+    """Bound bytes and total body time, including a peer that keeps dripping data.
+
+    read1 returns available bytes instead of waiting to fill a large read. Socket
+    timeouts still bound a single blocked read; the deadline is checked between
+    chunks and after EOF. Callers set the deadline before opening the request.
+    """
+    clock = clock or time.monotonic
+    parts, size = [], 0
+    reader = getattr(response, "read1", response.read)
+    while True:
+        if clock() >= deadline:
+            raise TimeoutError("Response exceeded total time budget")
+        chunk = reader(min(65536, limit + 1 - size))
+        require(isinstance(chunk, bytes), "Unexpected response body type")
+        if clock() >= deadline:
+            raise TimeoutError("Response exceeded total time budget")
+        size += len(chunk)
+        require(size <= limit, "Oversized response body")
+        if not chunk:
+            return b"".join(parts)
+        parts.append(chunk)
+
+
+def retry_after_seconds(headers, maximum, at=None):
+    """Respect provider cooldowns; never clamp a long cooldown into an early retry."""
+    value = (headers or {}).get("Retry-After")
+    if value is None:
+        return None
+    try:
+        if str(value).strip().isdigit():
+            delay = int(value)
+        else:
+            parsed = email.utils.parsedate_to_datetime(str(value))
+            require(parsed.tzinfo is not None, "Unzoned cooldown")
+            delay = max(0, math.ceil(parsed.timestamp() - (time.time() if at is None else at)))
+        return max(0, delay) if 0 <= delay <= maximum else None
+    except (ValueError, TypeError, OverflowError):
+        return None

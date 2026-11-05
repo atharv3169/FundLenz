@@ -1,6 +1,7 @@
 """Model observations cannot overwrite runner-owned provenance (Nov 5 regression)."""
 import copy
 import json
+import io
 import sys
 import unittest
 from pathlib import Path
@@ -75,7 +76,7 @@ class ModelReviewTests(unittest.TestCase):
     def test_transport_uses_review_contract_and_invalid_response_retries(self):
         body = {'candidates': [{'finishReason': 'STOP', 'content': {'parts': [{'text': json.dumps(self.review)}]}}]}
         response = mock.MagicMock()
-        response.__enter__.return_value.read.return_value = json.dumps(body).encode()
+        response.__enter__.return_value.read1.side_effect = io.BytesIO(json.dumps(body).encode()).read1
         opener = mock.Mock()
         opener.open.return_value = response
         with mock.patch.dict('os.environ', {'GEMINI_API_KEY': 'fictional-test-key'}), \
@@ -88,7 +89,7 @@ class ModelReviewTests(unittest.TestCase):
             self.assertIn('review_schema', user)
             self.assertNotIn('candidate_schema', user)
             body['candidates'][0]['content']['parts'][0]['text'] = '{"proposals": []}'
-            response.__enter__.return_value.read.return_value = json.dumps(body).encode()
+            response.__enter__.return_value.read1.side_effect = io.BytesIO(json.dumps(body).encode()).read1
             with self.assertRaises(ModelContractError):
                 call_model(self.packet, 'reinvestigation', self.policy)
 
