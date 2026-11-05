@@ -215,10 +215,10 @@ class PublicationServer:
     tree='b'*40
     head='c'*40
     def __init__(self):
-        self.ref=None; self.pr=None; self.count=Counter(); self.lose=set(); self.corrupt=False
+        self.ref=None; self.pr=None; self.count=Counter(); self.lose=set(); self.corrupt=False;self.blobs={}
         self.protection={'required_status_checks':{'strict':True},'enforce_admins':{'enabled':True},
                          'required_pull_request_reviews':{},'allow_force_pushes':{'enabled':False},'allow_deletions':{'enabled':False}}
-    def call(self,path,method='GET',data=None):
+    def call(self,path,method='GET',data=None,raw_limit=None):
         self.count[(method,path)]+=1
         if path.startswith('/git/ref/heads/'):
             if self.ref is None: raise http_error(404)
@@ -230,9 +230,13 @@ class PublicationServer:
         if path=='/git/commits/'+self.base: return {'tree':{'sha':'d'*40}}
         if path=='/git/commits/'+self.head:
             return {'sha':self.head,'tree':{'sha':'e'*40 if self.corrupt else self.tree},'parents':[{'sha':self.base}]}
+        if path.startswith('/git/blobs/'):
+            if path.split('/')[-1] not in self.blobs:raise http_error(404)
+            return self.blobs[path.split('/')[-1]]
         if path=='/git/blobs':
             import base64
-            return {'sha':publish.git_blob_sha(base64.b64decode(data['content']))}
+            raw=base64.b64decode(data['content']);sha=publish.git_blob_sha(raw);self.blobs[sha]=raw
+            return {'sha':sha}
         if path=='/git/trees':
             self.elements=data['tree'];return {'sha':self.tree}
         if path=='/git/trees/'+'d'*40+'?recursive=1':
@@ -690,6 +694,31 @@ class RealRefusalRegressionTests(unittest.TestCase):
         raw=json.dumps({'message':'fictional-private-token workflow permission missing'}).encode()
         result=github_api.safe_error_details(raw,422)
         self.assertEqual(result['category'],'workflow_permission_required');self.assertNotIn('fictional-private-token',str(result))
+
+
+
+class PartialObjectRecoveryTests(unittest.TestCase):
+    def test_partial_upload_resume_reuses_bytes_before_ref_creation(self):
+        class Server(PublicationServer):
+            refuse=True
+            def call(self,path,method='GET',data=None,raw_limit=None):
+                if path=='/git/refs' and self.refuse:raise http_error(403)
+                return super().call(path,method,data,raw_limit)
+        server=Server()
+        with tempfile.TemporaryDirectory() as d,mock.patch.object(publish,'ROOT',Path(d)):
+            def run():return publish.publish_candidate(server,{'run_id':'123-1','base_commit':server.base},
+                                  {'audit/latest.json':b'fictional exact bytes'},{'required_check':'FundLenz data gate'},'publisher')
+            with mock.patch.dict(os.environ,{'GITHUB_RUN_ATTEMPT':'1'}),self.assertRaises(urllib.error.HTTPError):run()
+            server.refuse=False
+            with mock.patch.dict(os.environ,{'GITHUB_RUN_ATTEMPT':'2'}):result=run()
+            self.assertEqual(result['pr_number'],1)
+            self.assertEqual(server.count[('POST','/git/blobs')],1)
+            self.assertEqual(server.count[('POST','/pulls')],1)
+
+    def test_new_tree_metadata_can_become_readable_before_the_bounded_deadline(self):
+        api=mock.Mock();api.call.side_effect=[{'tree':[]},http_error(404),{'tree':[]}];wait=[]
+        publish.verify_tree_overlay(api,'base','new',[],wait=wait.append)
+        self.assertEqual(wait,[5])
 
 
 if __name__ == '__main__':

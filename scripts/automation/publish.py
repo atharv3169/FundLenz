@@ -145,9 +145,14 @@ def git_blob_sha(raw):
     return hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
 
 
-def verify_tree_overlay(api, base_tree, candidate_tree, elements):
+def verify_tree_overlay(api, base_tree, candidate_tree, elements, attempts=3, wait=time.sleep):
     before = api.call("/git/trees/" + base_tree + "?recursive=1")
-    after = api.call("/git/trees/" + candidate_tree + "?recursive=1")
+    after = None
+    for attempt in range(attempts):
+        after = optional_get(api, "/git/trees/" + candidate_tree + "?recursive=1")
+        if after is not None: break
+        if attempt + 1 < attempts: wait([5, 15][min(attempt, 1)])
+    require(after is not None, "Created publication tree is not readable; no branch created")
     require(not before.get("truncated") and not after.get("truncated"), "Truncated publication tree metadata")
     def entries(tree):
         return {e["path"]: (e["sha"], e["mode"], e["type"]) for e in tree["tree"] if e["type"] != "tree"}
@@ -187,6 +192,20 @@ def publish_candidate(api, release, files, policy, actor):
         for number, item in enumerate(elements, 1):
             raw = changed[item["path"]]
             try:
+                # A publisher-only rerun can reuse content-addressed objects
+                # uploaded before a ref/PR failure without spending write quota.
+                reused = False
+                if int(os.environ.get("GITHUB_RUN_ATTEMPT", "1")) > 1:
+                    try:
+                        retained = api.call("/git/blobs/" + item["sha"], raw_limit=len(raw))
+                        require(retained == raw, "Retained publication object differs from exact artifact")
+                        reused = True
+                    except urllib.error.HTTPError as error:
+                        if error.code != 404: raise
+                if reused:
+                    if number % 25 == 0 or number == len(elements):
+                        print(f"Reused verified objects: {number}/{len(elements)}", flush=True)
+                    continue
                 blob = api.call("/git/blobs", "POST", {"content": base64.b64encode(raw).decode(), "encoding": "base64"})
             except Exception as error:
                 error.add_note(f"Publication object: {item['path']}; bytes={len(raw)}")
