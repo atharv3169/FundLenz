@@ -23,7 +23,7 @@ def safe_error_details(raw, status):
             category = "reference_or_object_exists"
         elif "object does not exist" in message or "valid sha" in message:
             category = "missing_or_invalid_git_object"
-        elif "rule" in message or "protected" in message:
+        elif any(word in message for word in ("rule", "protected", "protection", "secret")):
             category = "protection_refusal"
         else:
             category = "unclassified_refusal"

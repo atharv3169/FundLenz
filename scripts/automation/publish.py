@@ -206,6 +206,7 @@ def publish_candidate(api, release, files, policy, actor):
         commit = api.call("/git/commits", "POST", {"message": "Update verified catalogue audit " + run,
                           "tree": tree["sha"], "parents": [expected]})
         require(commit.get("author") and commit.get("committer"), "Unattributed publishing commit")
+        print("Created publication commit: " + commit["sha"] + "; tree=" + tree["sha"], flush=True)
         verify_created_commit(api, commit["sha"], tree["sha"], expected)
         protection_gate(api.call("/branches/main"), policy, expected)
         reconcile_write(lambda: api.call("/git/refs", "POST", {"ref": "refs/heads/" + branch, "sha": commit["sha"]}),
