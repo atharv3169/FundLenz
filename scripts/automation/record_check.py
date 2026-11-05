@@ -15,9 +15,11 @@ def record_result(api, state, job_status, run_id):
                'output': {'title': 'Source replay and data-only diff' if state.get('automated') else 'Ordinary reviewed-code route',
                           'summary': 'Trusted base code validates the exact candidate head. Automated data requires source replay and finance regression checks. Code changes use release integrity and normal review.'}}
 
+    # GitHub canonicalises details_url to its check-run URL. It is display
+    # metadata, not authority; exact head/app/result remain mandatory.
     def matches(check):
         return (isinstance(check, dict) and check.get('app', {}).get('slug') == 'github-actions'
-                and all(check.get(k) == request[k] for k in ('name','head_sha','status','conclusion','details_url')))
+                and all(check.get(k) == request[k] for k in ('name','head_sha','status','conclusion')))
 
     def observe():
         checks = api.all('/commits/' + state['head'] + '/check-runs', 'check_runs')

@@ -1,0 +1,90 @@
+name: FundLenz publication refusal diagnostic
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publication-diagnostic.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Probe publisher refs using protected main content only
+        env:
+          FUNDLENZ_PUBLISH_TOKEN: ${{ secrets.FUNDLENZ_PUBLISH_TOKEN }}
+        run: |
+          python3 - <<'PY'
+          import json, os, sys, urllib.error
+          sys.path.insert(0, 'scripts/automation')
+          from common import ROOT, require, write
+          from github_api import GitHub
+          api = GitHub(os.environ['FUNDLENZ_PUBLISH_TOKEN'])
+          base = os.environ['GITHUB_SHA']
+          require(api.call('/branches/main')['commit']['sha'] == base, 'Diagnostic checkout is stale')
+          report = {'base': base, 'main_modified': False, 'gemini_called': False, 'probes': []}
+          def classify(error):
+              try:
+                  body = json.loads(error.read(16384))
+                  errors = body.get('errors', [])
+                  text = ' '.join([str(body.get('message', ''))] + [str(e.get('message', '')) for e in errors if isinstance(e, dict)]).lower()
+                  if 'workflow' in text and ('scope' in text or 'permission' in text): category = 'workflow_permission_required'
+                  elif 'already exists' in text: category = 'reference_exists'
+                  elif 'object does not exist' in text or 'valid sha' in text: category = 'missing_or_invalid_git_object'
+                  elif any(w in text for w in ['spam', 'abuse', 'rate limit']): category = 'provider_throttle'
+                  elif 'rule' in text or 'protected' in text: category = 'ref_protection_rule'
+                  elif 'reference update failed' in text: category = 'reference_update_refused'
+                  else: category = 'unclassified_refusal'
+                  safe = []
+                  for e in errors:
+                      if isinstance(e, dict) and e.get('resource') in ['Reference','Commit','Tree','Blob'] and e.get('field') in ['ref','sha','tree','parents'] and e.get('code') in ['invalid','already_exists','custom','missing','unprocessable']:
+                          safe.append({k:e[k] for k in ['resource','field','code']})
+                  return {'category':category, 'validation':safe[:5]}
+              except Exception:
+                  return {'category':'unclassified_refusal','validation':[]}
+          def probe(label, sha):
+              name = 'automation/publication-probe-' + os.environ['GITHUB_RUN_ID'] + '-' + label
+              result = {'kind':label,'commit':sha,'ref':name}
+              try:
+                  ref = api.call('/git/refs','POST',{'ref':'refs/heads/'+name,'sha':sha})
+                  require(ref['object']['sha'] == sha, 'Diagnostic ref changed identity')
+                  result['status'] = 'created'
+              except urllib.error.HTTPError as error:
+                  result.update(status='refused',http_status=error.code,details=classify(error))
+              report['probes'].append(result)
+              print(json.dumps(result))
+              write(ROOT/'work/publication-diagnostic.json',report)
+          probe('main', base)
+          root = api.call('/git/commits/'+base)
+          child = api.call('/git/commits','POST',{'message':'Diagnostic: unchanged protected-main tree','tree':root['tree']['sha'],'parents':[base]})
+          observed = api.call('/git/commits/'+child['sha'])
+          require(observed['tree']['sha'] == root['tree']['sha'] and [p['sha'] for p in observed['parents']] == [base], 'Diagnostic child changed content')
+          probe('unchanged-child',child['sha'])
+          baseline = api.call('/git/trees/'+root['tree']['sha']+'?recursive=1')
+          marker = 'audit/publication-probe-' + os.environ['GITHUB_RUN_ID'] + '.json'
+          blob = api.call('/git/blobs','POST',{'content':'{"diagnostic":true,"financial_data_changed":false}','encoding':'utf-8'})
+          overlay = api.call('/git/trees','POST',{'base_tree':root['tree']['sha'],'tree':[{'path':marker,'mode':'100644','type':'blob','sha':blob['sha']}]})
+          candidate = api.call('/git/trees/'+overlay['sha']+'?recursive=1')
+          require(not baseline.get('truncated') and not candidate.get('truncated'),'Diagnostic tree response truncated')
+          before = {e['path']:(e['sha'],e['mode'],e['type']) for e in baseline['tree'] if e['type'] != 'tree'}
+          after = {e['path']:(e['sha'],e['mode'],e['type']) for e in candidate['tree'] if e['type'] != 'tree' and e['path'] != marker}
+          report['overlay_preserves_main_files'] = before == after
+          write(ROOT/'work/publication-diagnostic.json',report)
+          require(before == after, 'Tree overlay changed or omitted protected main files')
+          changed = api.call('/git/commits','POST',{'message':'Diagnostic: nonfinancial audit marker only','tree':overlay['sha'],'parents':[base]})
+          probe('audit-overlay',changed['sha'])
+          write(ROOT/'work/publication-diagnostic.json',report)
+          if any(p['status'] != 'created' for p in report['probes']):
+              raise SystemExit('Publisher ref diagnostic refused; see safe categories in artifact')
+          PY
+      - if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: publication-diagnostic
+          path: work/publication-diagnostic.json
+          retention-days: 7
+          if-no-files-found: warn
