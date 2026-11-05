@@ -64,6 +64,19 @@ jobs:
           observed = api.call('/git/commits/'+child['sha'])
           require(observed['tree']['sha'] == root['tree']['sha'] and [p['sha'] for p in observed['parents']] == [base], 'Diagnostic child changed content')
           probe('unchanged-child',child['sha'])
+          baseline = api.call('/git/trees/'+root['tree']['sha']+'?recursive=1')
+          marker = 'audit/publication-probe-' + os.environ['GITHUB_RUN_ID'] + '.json'
+          blob = api.call('/git/blobs','POST',{'content':'{"diagnostic":true,"financial_data_changed":false}','encoding':'utf-8'})
+          overlay = api.call('/git/trees','POST',{'base_tree':root['tree']['sha'],'tree':[{'path':marker,'mode':'100644','type':'blob','sha':blob['sha']}]})
+          candidate = api.call('/git/trees/'+overlay['sha']+'?recursive=1')
+          require(not baseline.get('truncated') and not candidate.get('truncated'),'Diagnostic tree response truncated')
+          before = {e['path']:(e['sha'],e['mode'],e['type']) for e in baseline['tree'] if e['type'] != 'tree'}
+          after = {e['path']:(e['sha'],e['mode'],e['type']) for e in candidate['tree'] if e['type'] != 'tree' and e['path'] != marker}
+          report['overlay_preserves_main_files'] = before == after
+          write(ROOT/'work/publication-diagnostic.json',report)
+          require(before == after, 'Tree overlay changed or omitted protected main files')
+          changed = api.call('/git/commits','POST',{'message':'Diagnostic: nonfinancial audit marker only','tree':overlay['sha'],'parents':[base]})
+          probe('audit-overlay',changed['sha'])
           write(ROOT/'work/publication-diagnostic.json',report)
           if any(p['status'] != 'created' for p in report['probes']):
               raise SystemExit('Publisher ref diagnostic refused; see safe categories in artifact')
