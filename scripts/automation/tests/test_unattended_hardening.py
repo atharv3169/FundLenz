@@ -233,7 +233,12 @@ class PublicationServer:
         if path=='/git/blobs':
             import base64
             return {'sha':publish.git_blob_sha(base64.b64decode(data['content']))}
-        if path=='/git/trees': return {'sha':self.tree}
+        if path=='/git/trees':
+            self.elements=data['tree'];return {'sha':self.tree}
+        if path=='/git/trees/'+'d'*40+'?recursive=1':
+            return {'tree':[{'path':'audit/latest.json','mode':'100644','type':'blob','sha':'f'*40}]}
+        if path=='/git/trees/'+self.tree+'?recursive=1':
+            return {'tree':self.elements}
         if path=='/git/commits': return {'sha':self.head,'author':{'name':'fictional'},'committer':{'name':'fictional'}}
         if path=='/git/refs':
             self.ref={'object':{'sha':data['sha'],'type':'commit'}}
@@ -293,7 +298,7 @@ class PublicationHardeningTests(unittest.TestCase):
         for error,count in [(TimeoutError(),3),(http_error(401),1),(http_error(403),1)]:
             create=mock.Mock(side_effect=error)
             with self.subTest(error=type(error).__name__), self.assertRaises(type(error)):
-                publish.reconcile_write(create,lambda:None,lambda _:True)
+                publish.reconcile_write(create,lambda:None,lambda _:True,wait=lambda _:None)
             self.assertEqual(create.call_count,count)
         with self.assertRaisesRegex(ValueError,'conflicts'):
             publish.reconcile_write(mock.Mock(side_effect=TimeoutError()),lambda:{'wrong':True},lambda _:False)
@@ -657,6 +662,34 @@ class RequiredCheckAcknowledgementTests(unittest.TestCase):
         result=self.exercise(moved=True)
         self.assertEqual(result['head_sha'],'head')
         self.assertEqual(result['conclusion'],'failure')
+
+
+
+class RealRefusalRegressionTests(unittest.TestCase):
+    def test_ref_422_has_bounded_cooldown_and_observation_before_retry(self):
+        calls=mock.Mock(side_effect=[http_error(422),{'exact':True}]);observed=mock.Mock(return_value=None);delays=[]
+        result=publish.reconcile_write(calls,observed,lambda v:v.get('exact') is True,wait=delays.append)
+        self.assertEqual(result,{'exact':True});observed.assert_called_once();self.assertEqual(delays,[5])
+        permanent=http_error(422);permanent.fundlenz_details={'category':'invalid_request'}
+        calls=mock.Mock(side_effect=permanent)
+        with self.assertRaises(urllib.error.HTTPError):publish.reconcile_write(calls,lambda:None,lambda _:True,wait=delays.append)
+        self.assertEqual(calls.call_count,1)
+
+    def test_commit_visibility_is_checked_before_ref_creation(self):
+        api=mock.Mock();api.call.side_effect=[http_error(404),{'tree':{'sha':'tree'},'parents':[{'sha':'base'}]}];delays=[]
+        publish.verify_created_commit(api,'commit','tree','base',wait=delays.append)
+        self.assertEqual(delays,[5])
+        api.call.return_value={'tree':{'sha':'wrong'},'parents':[{'sha':'base'}]};api.call.side_effect=None
+        with self.assertRaises(ValueError):publish.verify_created_commit(api,'commit','tree','base',wait=lambda _:None)
+
+    def test_tree_overlay_must_preserve_every_unmodified_file(self):
+        api=mock.Mock();api.call.side_effect=[{'tree':[{'path':'.github/workflows/a.yml','sha':'a','mode':'100644','type':'blob'}]}, {'tree':[]}]
+        with self.assertRaisesRegex(ValueError,'omitted'):publish.verify_tree_overlay(api,'base','new',[])
+
+    def test_safe_error_classification_does_not_emit_private_response_text(self):
+        raw=json.dumps({'message':'fictional-private-token workflow permission missing'}).encode()
+        result=github_api.safe_error_details(raw,422)
+        self.assertEqual(result['category'],'workflow_permission_required');self.assertNotIn('fictional-private-token',str(result))
 
 
 if __name__ == '__main__':

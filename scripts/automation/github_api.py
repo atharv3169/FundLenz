@@ -8,6 +8,40 @@ import urllib.request
 from common import bounded_read, encoded, loads, require, retry_after_seconds
 
 
+def safe_error_details(raw, status):
+    """Keep only fixed categories and known validation fields, never raw text."""
+    try:
+        body = loads(raw)
+        errors = body.get("errors", [])
+        message = " ".join([str(body.get("message", ""))] +
+                           [str(e.get("message", "")) for e in errors if isinstance(e, dict)]).lower()
+        if "workflow" in message and ("scope" in message or "permission" in message):
+            category = "workflow_permission_required"
+        elif any(word in message for word in ("spam", "abuse", "rate limit")):
+            category = "provider_throttle"
+        elif "already exists" in message:
+            category = "reference_or_object_exists"
+        elif "object does not exist" in message or "valid sha" in message:
+            category = "missing_or_invalid_git_object"
+        elif "rule" in message or "protected" in message:
+            category = "protection_refusal"
+        else:
+            category = "unclassified_refusal"
+        details = []
+        for item in errors:
+            if not isinstance(item, dict): continue
+            resource, field, code = (item.get(k) for k in ("resource", "field", "code"))
+            if resource in {"Reference", "PullRequest", "CheckRun", "Commit", "Tree", "Blob"} and field in {
+                    "ref", "sha", "head", "base", "name", "head_sha", "tree", "parents", "encoding", "content"} and code in {
+                    "missing", "missing_field", "invalid", "already_exists", "unprocessable", "custom", "too_large"}:
+                details.append({"resource": resource, "field": field, "code": code})
+        if category == "unclassified_refusal" and any(d["code"] in {"invalid", "missing", "missing_field", "too_large"} for d in details):
+            category = "invalid_request"
+        return {"category": category, "validation": details[:5]}
+    except (ValueError, TypeError, AttributeError):
+        return {"category": "unclassified_refusal", "validation": []}
+
+
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, *args, **kwargs):
         return None
@@ -48,6 +82,12 @@ class GitHub:
                     raw = bounded_read(response, limit, deadline)
                 break
             except urllib.error.HTTPError as error:
+                try:
+                    detail = safe_error_details(error.read(16384), error.code)
+                except Exception:
+                    detail = {"category": "unclassified_refusal", "validation": []}
+                error.fundlenz_details = detail
+                error.add_note("GitHub refusal category: " + str(detail))
                 cooldown = retry_after_seconds(error.headers, 60)
                 throttled = error.code in {403, 429} and cooldown is not None
                 if not retryable or attempt == 2 or (error.code not in {500, 502, 503, 504} and not throttled):
