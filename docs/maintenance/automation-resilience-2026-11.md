@@ -121,6 +121,7 @@ The second pass specifically challenged the new code:
 | F77 | Monitoring | A completed daily/deployment run is not checked until the next cron | Changed | Read-only health workflow also runs on workflow completion; scheduled checks remain. |
 | F78 | Provenance | Reruns obscure the original successful producer attempt | Changed | Immutable attempt metadata/jobs and producer-attempt binding; full collection recovery uses a fresh dispatch. |
 | F79 | Required check | Recording the required gate succeeds but its reply is lost | Changed | Observe the exact trusted head/outcome/workflow check before retrying; a head race records failure. |
+| F80 | Platform | Actions startup/event delivery fails before jobs exist | Boundary | Missing required checks remain blocking; re-trigger a reviewed PR event or fresh dispatch without fabricating a green result. |
 
 ## Verification and simulations
 
@@ -129,6 +130,8 @@ The second pass specifically challenged the new code:
 - Fault tests also cover atomic-write failure, dripping responses, cooldown parsing, expired/missing state, weekly-source recovery, stale checkouts, future state times, malformed issuer/provider shapes, exact PR/tree reuse, required-check/app identity, legacy status interactions, lost merge responses and stale served data.
 - Fourteen Node scheduler/deployment tests, nineteen JSON contract checks, reviewed-file integrity, TypeScript no-emit and all six finance/catalogue suites are included in acceptance. The finance suites currently count 1,285,765 checks plus directory assertions.
 - Production acceptance uses the ordinary trusted main workflow, mandatory live Gemini reviews, independent exact-byte replay, protected data PR merge, and the Cloudflare/served-data observer. Unit tests alone are not evidence that a later unattended timer fired.
+
+During maintenance acceptance, an initial trusted-data-review run stopped with `startup_failure` before creating jobs; the reopened PR event completed the review normally. Required checks remain authoritative even when event delivery is delayed.
 
 Current run/PR evidence is available in the repository's [Actions history](https://github.com/atharv3169/FundLenz/actions) and associated maintenance/data PRs. This document intentionally separates simulated cases from live platform execution.
 
