@@ -1,4 +1,4 @@
-name: Recover catalogue publication after large-audit fix
+name: Recover or verify catalogue automation
 
 on:
   push:
@@ -16,7 +16,16 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     steps:
+      # A code push checks the automatic duplicate/recovery guard. Explicit
+      # workflow_dispatch retains the full manual recovery route.
+      - name: Verify automatic guard after deployment
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh workflow run catalogue-daily.yml --ref main -f automated_daily=true -f force_supported_sources=false -f publish_validated_data=true
       - name: Request fresh source and Gemini validation through normal protected publication
+        if: github.event_name == 'workflow_dispatch'
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
