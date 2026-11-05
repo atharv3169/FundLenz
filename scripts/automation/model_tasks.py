@@ -33,6 +33,51 @@ def verify_candidate_envelope(candidate, packet, task, policy):
 
 
 
+def model_review_schema():
+    """Wire contract: the model authors observations, never retrieval bookkeeping."""
+    candidate = read(ROOT / "automation/schemas/candidate.schema.json")
+    source = candidate["properties"]["source_checks"]["items"]["properties"]
+    return {"type": "object", "additionalProperties": False,
+            "required": ["reviewed_sources", "proposals", "summary"],
+            "properties": {
+                "reviewed_sources": {"type": "array", "maxItems": 12,
+                    "items": {"type": "object", "additionalProperties": False,
+                              "required": ["source_id", "source_sha256"],
+                              "properties": {k: source[k] for k in ("source_id", "source_sha256")}}},
+                "proposals": dict(candidate["properties"]["proposals"], maxItems=8),
+                "summary": candidate["properties"]["summary"]}}
+
+
+def candidate_from_review(review, packet, task, policy):
+    """Bind a strictly validated review to this invocation's immutable source facts.
+
+    No legacy full-envelope fallback or correction of model-owned fields. The
+    independent validator still verifies the resulting candidate and proposals.
+    """
+    import jsonschema
+    try:
+        jsonschema.Draft7Validator(model_review_schema()).validate(review)
+    except jsonschema.ValidationError as error:
+        raise ValueError(f"Model review contract failed at {str(list(error.path))[:180]} ({error.validator})") from None
+    expected = [{k: source[k] for k in ("source_id", "source_sha256")}
+                for source in packet["sources"]]
+    actual = review["reviewed_sources"]
+    require(len({row["source_id"] for row in expected}) == len(expected),
+            "Duplicate trusted source ID")
+    require(len(actual) == len(expected) and
+            sorted(actual, key=lambda row: row["source_id"]) ==
+            sorted(expected, key=lambda row: row["source_id"]),
+            "Model source coverage or hash mismatch")
+    require(packet["task_type"] == task, "Model packet task mismatch")
+    keys = ("source_id", "source_url", "checked_at", "outcome", "source_sha256", "reason", "scope")
+    candidate = {"schema_version": 1,
+                 **{k: packet[k] for k in ("run_id", "base_dataset_sha256", "task_type", "started_at", "completed_at")},
+                 "source_checks": [{k: source[k] for k in keys} for source in packet["sources"]],
+                 "proposals": copy.deepcopy(review["proposals"]), "summary": review["summary"]}
+    verify_candidate_envelope(candidate, packet, task, policy)
+    return candidate
+
+
 def packets(acquisition, units, task, policy, run=None):
     run = run or ROOT / "work/run"
     issues = acquisition["previous_state"]["issues"]["issues"]
@@ -106,7 +151,7 @@ def packets(acquisition, units, task, policy, run=None):
                         "unavailable_sources_excluded_from_model": sum(
                             s["outcome"] == "unavailable" and bool(s["checked_at"])
                             for s in acquisition["source_checks"])},
-              "output_instructions": "Return the exact candidate schema. Copy supplied source-check metadata, not inferred values. "
+              "output_instructions": "Return the exact review_schema. Include every source ID and hash in reviewed_sources. The runner owns retrieval metadata. "
                 "Review only supplied excerpts; do not claim full-file model verification. Do not invent values when a sample hash replaces a value. "
                 "At most 8 proposals. For unresolved issues return null new_candidate, finding unresolved, and their exact issue_id. "
                 "If proposing a supported NAV change use atomic_group nav:<AMFI code>, record_id <AMFI code>, field nav, new_candidate {nav,navDate}; "
@@ -145,8 +190,8 @@ def call_model(packet, task, policy):
     require(key, "Missing GEMINI_API_KEY")
     prompt_name = "gemini-daily-scan.md" if task == "fresh_scan" else "gemini-reinvestigation.md"
     system = (ROOT / "automation/gemini-system-prompt.md").read_text() + "\n" + (ROOT / "automation" / prompt_name).read_text()
-    contract = read(ROOT / "automation/schemas/candidate.schema.json")
-    user = encoded({"candidate_schema": contract, "inputs": packet}).decode()
+    contract = model_review_schema()
+    user = encoded({"review_schema": contract, "inputs": packet}).decode()
     require(len(system.encode()) + len(user.encode()) <= policy["max_model_input_bytes_per_task"], "Model input budget exhausted")
     payload = {"systemInstruction": {"parts": [{"text": system}]},
                "contents": [{"role": "user", "parts": [{"text": user}]}],
@@ -170,8 +215,8 @@ def call_model(packet, task, policy):
                          if isinstance(p.get("text"), str) and not p.get("thought", False))
     (ROOT / "work/run" / (task + "-raw-text.txt")).write_text(final_text.replace(key, "[REDACTED]"))
     try:
-        candidate = loads(response_text(body))
-        verify_candidate_envelope(candidate, packet, task, policy)
+        review = loads(response_text(body))
+        candidate = candidate_from_review(review, packet, task, policy)
     except ValueError as error:
         # Bad JSON, truncated answers and incomplete ledgers get one corrective
         # retry. Never treat them as valid observations or silently fill gaps.
@@ -267,8 +312,8 @@ def bounded_call(packet, task, policy, caller=call_model, wait=time.sleep, event
             current_packet = dict(packet)
             current_packet["output_instructions"] = packet["output_instructions"] + (
                 " CORRECTIVE RETRY: Your previous response was rejected: " + str(error)[:120] +
-                ". Return fewer or zero proposals and exactly one source_checks row for EVERY inputs.sources entry. "
-                "Copy all seven metadata fields unchanged. Return complete valid JSON and never invent evidence.")
+                ". Return fewer or zero proposals and exactly one reviewed_sources row for EVERY inputs.sources entry. "
+                "Copy source_id and source_sha256 exactly. Use only review_schema keys. Return complete valid JSON and never invent evidence.")
         except (urllib.error.URLError, TimeoutError, ConnectionError) as error:
             error.fundlenz_attempts = attempt
             if attempt > policy["model_retries"]:

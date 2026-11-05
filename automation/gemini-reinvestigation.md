@@ -1,6 +1,6 @@
 # Task B — independently re-investigate flagged data
 
-Apply `gemini-system-prompt.md` without modification. Set `task_type` to `reinvestigation`.
+Apply `gemini-system-prompt.md` without modification. Use `task_type: reinvestigation` in any proposals.
 
 Inputs: current run/base hash; persistent open issues; each previous candidate, last verified value, warning reason and attempts; authoritative source packets; exact identity and snapshot context. Read unresolved issues from all prior runs, not just yesterday's overwritten report.
 
@@ -23,8 +23,8 @@ If the queue is empty, return an empty proposals array and an honest task summar
 - The packet may contain up to eight selected issues, but the persistent
   queue can be much larger. Review only `inputs.issues`; don't invent
   results for unselected issues or imply the entire backlog is resolved.
-- Echo **every** source in `inputs.sources` as exact seven-field metadata
-  in `source_checks`. This ledger must have exactly the same set of source
+- Echo **every** source in `inputs.sources` with exactly `source_id` and `source_sha256`
+  in `reviewed_sources`. This list must have exactly the same set of source
   IDs as the packet even if no correction can be proposed. The trusted runner
   intentionally excludes failed/unavailable downloads from Gemini's source
   packet; those failures and associated issues remain in persistent audit
@@ -41,8 +41,8 @@ If the queue is empty, return an empty proposals array and an honest task summar
   empty-investigation summary. When one issue cannot be resolved, keep it
   unresolved; do not repeat earlier values merely to satisfy the schema.
 - Self-check that the JSON includes **all required fields** and all source
-  checks, not just the sources mentioned by proposals. Never omit a source
-  ledger entry in order to shorten an answer.
+  bindings, not just the sources mentioned by proposals. Never omit a source
+  binding in order to shorten an answer.
 
 
 - **No verified source bytes means no verified source hash.** An unavailable
