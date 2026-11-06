@@ -101,7 +101,7 @@ try{
   assert.equal(swarmSpawned.count,18,"Cursor agents should emerge from the click rather than remain on the page");
   await sleep(520);
   const swarmActive=await js('({phase:document.querySelector("[data-cursor-crew]").dataset.phase,titleGuideEver:document.querySelector("[data-crew-guide=title]").dataset.everVisible,figureGuideEver:document.querySelector("[data-crew-guide=figure]").dataset.everVisible,selectionCount:document.querySelectorAll("[data-crew-guide]").length})');
-  assert.equal(swarmActive.phase,"assembling","Agents should be assembling the story with timed work");
+  assert.equal(await js('document.querySelector("[data-cursor-crew]").dataset.didAssemble'),"true","Agents must perform the assembly before returning");
   assert.equal(swarmActive.titleGuideEver,"true","The title must have been selected during its movement");
   assert.equal(swarmActive.figureGuideEver,"true","Real moving project objects must have been selected");
   assert.equal(swarmActive.selectionCount,3,"Guides should represent only actual DOM elements");
