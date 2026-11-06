@@ -1134,3 +1134,30 @@
   0%{opacity:1;clip-path:inset(0 0 0 0);filter:blur(0);}
   100%{opacity:0;clip-path:inset(0 100% 0 0);filter:blur(2px);}
 }
+
+
+/* Prevent the truck, data graphics and headline from physically passing
+   through each other. The original scene moves down *before* resizing;
+   undo moves it back to the right *after* the text column has reopened. */
+@media(min-width:1024px) and (prefers-reduced-motion:no-preference){
+ .portfolioShell [data-choreography="entering"].storyIsOpen
+   .storyWorkspace>.storyStage .storyIllustration{
+   animation:crewStowIllustration 1140ms cubic-bezier(.25,.7,.2,1) both!important;
+ }
+ .portfolioShell [data-choreography="exiting"]:not(.storyIsOpen)
+   .storyWorkspace>.storyStage .storyIllustration{
+   animation:crewRestoreIllustration 1140ms cubic-bezier(.25,.7,.2,1) both!important;
+ }
+}
+@keyframes crewStowIllustration{
+  0%{top:0;right:0;width:58%;height:100%;opacity:1;}
+  18%{top:78%;right:0;width:58%;height:22%;opacity:.6;}
+  53%{top:69%;right:0;width:84%;height:31%;opacity:.8;}
+  100%{top:61%;right:0;width:100%;height:39%;opacity:.81;}
+}
+@keyframes crewRestoreIllustration{
+  0%{top:61%;right:0;width:100%;height:39%;opacity:.81;}
+  53%{top:69%;right:0;width:84%;height:31%;opacity:.8;}
+  82%{top:78%;right:0;width:58%;height:22%;opacity:.6;}
+  100%{top:0;right:0;width:58%;height:100%;opacity:1;}
+}
