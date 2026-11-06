@@ -42,7 +42,7 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
    scheduled.current.push(setTimeout(()=>{
      setOpen(next);
      if(!next)toggleRef.current?.focus({preventScroll:true});
-   },next?320:570));
+   },next?320:820));
    scheduled.current.push(setTimeout(()=>{
      phaseRef.current="idle";
      setChoreography("idle");
