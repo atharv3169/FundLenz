@@ -189,7 +189,7 @@
    ------------------------------------------------------------- */
 .storyWorkspace{
   display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(0,0fr);
+  grid-template-columns:minmax(0,100fr) minmax(0,0fr);
   width:100%;
   height:calc(100svh - 76px);
   min-height:690px;
