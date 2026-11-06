@@ -182,3 +182,342 @@
 
 
 
+
+
+/* -------------------------------------------------------------
+   PROJECT STORY WORKSPACE · desktop spatial morph, not accordion
+   ------------------------------------------------------------- */
+.storyWorkspace{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,0fr);
+  width:100%;
+  height:calc(100svh - 76px);
+  min-height:690px;
+  overflow:hidden;
+  transition:grid-template-columns 950ms cubic-bezier(.22,1,.36,1);
+}
+.storyWorkspace>.storyStage{
+  height:100%;
+  min-height:100%;
+  min-width:0;
+  grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr);
+  transition:grid-template-columns 950ms cubic-bezier(.22,1,.36,1);
+}
+.storyWorkspace>.storyStage .storyCopy{
+  min-width:0;
+  transition:padding 950ms cubic-bezier(.22,1,.36,1);
+}
+.storyWorkspace>.storyStage .storyCopy h3{
+  transition:font-size 850ms cubic-bezier(.22,1,.36,1),margin 850ms ease;
+}
+.storyWorkspace>.storyStage .storyIllustration{
+  transition:width 950ms cubic-bezier(.22,1,.36,1),
+    height 950ms cubic-bezier(.22,1,.36,1),
+    top 950ms cubic-bezier(.22,1,.36,1),
+    right 950ms cubic-bezier(.22,1,.36,1),
+    opacity 700ms ease,
+    mask-image 700ms ease;
+}
+.storyWorkspace>.storyStage .storyIntro,
+.storyWorkspace>.storyStage .storyNumbers{
+  overflow:hidden;
+  max-height:290px;
+  transition:max-height 580ms cubic-bezier(.22,1,.36,1),
+     opacity 300ms ease,
+     margin 580ms ease,
+     padding 580ms ease,
+     border-color 300ms ease;
+}
+.storyWorkspace>.storyStage .storyHook{
+  transition:font-size 850ms cubic-bezier(.22,1,.36,1),margin 850ms ease;
+}
+.storyWorkspace>.storyStage .stageBottom{
+  transition:opacity 250ms ease;
+}
+.storyWorkspace>.longStory{
+  min-width:0;
+  width:100%;
+  height:100%;
+  max-width:none;
+  position:relative;
+  scroll-margin-top:0;
+  display:block;
+  visibility:hidden;
+  opacity:0;
+  padding:0;
+  margin:0;
+  border:0;
+  overflow:hidden;
+  overscroll-behavior:contain;
+  transform:translate3d(56px,0,0);
+  animation:none;
+  transition:opacity 510ms ease,transform 750ms cubic-bezier(.16,1,.3,1),visibility 0s linear 850ms;
+  background:linear-gradient(145deg,#182522,#111b1d 60%,#0a1219);
+}
+.storyPanelHeader{
+  position:sticky;
+  top:0;
+  z-index:5;
+  min-height:66px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px clamp(22px,3vw,50px);
+  gap:18px;
+  border-bottom:1px solid #3a5146;
+  background:#14211fef;
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+}
+.storyPanelHeader>span{
+  display:inline-flex;
+  align-items:center;
+  gap:11px;
+  color:#c6dad1;
+  font-size:10px;
+  letter-spacing:.13em;
+  font-weight:600;
+  line-height:1.5;
+}
+.storyPanelHeader>span i{
+  display:block;
+  width:7px;
+  height:7px;
+  flex:none;
+  border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 18px var(--accent);
+}
+.storyPanelHeader>span b{color:#587467;font-weight:400;}
+.storyPanelHeader button{
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  gap:11px;
+  padding:10px 14px;
+  flex:none;
+  border:1px solid #577368;
+  border-radius:3px;
+  color:#d7e9db;
+  font-size:11px;
+  background:#23382f;
+  transition:background 200ms ease,transform 200ms ease;
+}
+.storyPanelHeader button:hover{background:#365646;transform:translateY(-2px);}
+.storyPanelBody{padding:clamp(34px,4vw,72px) clamp(25px,4vw,78px) 65px;}
+.storyPanelBody .longStoryLead h4{font-size:clamp(39px,4.3vw,71px);margin-top:19px;}
+.storyPanelBody .longStoryLead p{font-size:14px;line-height:1.8;max-width:660px;}
+.storyPanelBody .storyChapterList{margin:38px auto 55px;}
+.storyPanelBody .chapter{grid-template-columns:42px minmax(0,1fr);gap:18px;padding:26px 0 30px;}
+.storyPanelBody .chapter h5{font-size:clamp(24px,2.5vw,40px);margin-bottom:15px;line-height:1.16;}
+.storyPanelBody .chapter p{font-size:14px;line-height:1.88;max-width:730px;}
+.storyPanelBody .miniStage{margin:15px 0 50px;padding-top:30px;}
+.storyPanelBody .miniHead{flex-direction:column;align-items:flex-start;gap:10px;}
+.storyPanelBody .toolLayout{grid-template-columns:1fr;gap:35px;}
+.storyPanelBody .toolIntro h4{font-size:clamp(33px,3.1vw,52px);}
+.storyPanelBody .toolIntro>p{max-width:690px;}
+.storyPanelBody .toolResults{max-width:800px;}
+.storyPanelBody .tagsLine{grid-template-columns:1fr;gap:16px;}
+.readerFooter{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:22px;
+  padding:28px 0 0;
+  margin-top:44px;
+  border-top:1px solid #4c6659;
+}
+.readerFooter a,.readerFooter .storyClose{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  font-size:12px;
+  color:#d3e9d8;
+  margin:0;
+  background:transparent;
+  border:0;
+  border-bottom:1px solid #81a991;
+  padding:11px 2px;
+}
+.readerFooter .storyClose{margin-left:auto;}
+.readerFooter>span{font-size:10px;color:#839e94;letter-spacing:.12em;}
+.readerFooter a:hover,.readerFooter button:hover{color:white;}
+
+/* The stage physically contracts; the illustration migrates to its
+   lower portion as the reading panel expands from the right. */
+.storyIsOpen>.storyWorkspace{
+  grid-template-columns:minmax(0,35fr) minmax(0,65fr);
+}
+.storyIsOpen .storyWorkspace>.storyStage{
+  grid-template-columns:minmax(0,1fr) minmax(0,0fr);
+}
+.storyIsOpen .storyWorkspace>.storyStage .storyCopy{
+  padding:clamp(26px,3.3vw,48px) clamp(19px,2.4vw,39px) 22px;
+  max-width:100%;
+  align-self:start;
+}
+.storyIsOpen .storyEyebrow{gap:10px;}
+.storyIsOpen .storyEyebrow span:last-child{font-size:8px;letter-spacing:.07em;line-height:1.4;}
+.storyIsOpen .storyYears{margin-top:15px!important;font-size:9px;letter-spacing:.075em;}
+.storyIsOpen .storyCopy h3{
+  font-size:clamp(26px,3.2vw,51px);
+  line-height:1.04;
+  margin-top:15px;
+  overflow-wrap:anywhere;
+}
+.storyIsOpen .storyCopy .storyHook{
+  font-size:clamp(15px,1.45vw,20px);
+  line-height:1.3;
+  margin-top:16px!important;
+}
+.storyIsOpen .storyCopy .storyIntro,
+.storyIsOpen .storyCopy .storyNumbers{
+  opacity:0;
+  max-height:0;
+  margin-top:0!important;
+  padding-top:0;
+  padding-bottom:0;
+  border-color:transparent;
+}
+.storyIsOpen .storyActions{margin-top:18px;}
+.storyIsOpen .storyRead{gap:11px;min-height:43px;padding:10px 13px;font-size:11px;}
+.storyIsOpen .storyActions>.storyVisit,
+.storyIsOpen .storyActions>.storyUpcoming{
+  position:absolute;
+  visibility:hidden;
+  opacity:0;
+  pointer-events:none;
+}
+.storyIsOpen .storyWorkspace>.storyStage .storyIllustration{
+  top:47%;
+  right:0;
+  bottom:auto;
+  width:100%;
+  height:52%;
+  opacity:.89;
+  mask-image:linear-gradient(180deg,transparent,#000 13%,#000 87%,transparent);
+}
+.storyIsOpen .storyWorkspace>.storyStage .stageBottom{opacity:0;pointer-events:none;}
+.storyIsOpen .storyWorkspace>.longStory{
+  visibility:visible;
+  opacity:1;
+  transform:translate3d(0,0,0);
+  overflow-y:auto;
+  scrollbar-width:thin;
+  scrollbar-color:#668674 #142420;
+  transition:opacity 520ms ease 210ms,transform 780ms cubic-bezier(.16,1,.3,1) 130ms,visibility 0s;
+}
+.storyIsOpen .figMicro{font-size:8px;letter-spacing:.11em;}
+.storyIsOpen .fundHeroNumber{font-size:clamp(65px,8vw,112px);}
+.storyIsOpen .fundHeroNumber span{font-size:9px;letter-spacing:.07em;}
+.storyIsOpen .fundSourceRow{width:88%;}
+.storyIsOpen .fundSourceRow span{font-size:8px;padding:8px;}
+.storyIsOpen .figStat{top:10%;right:5%;}
+.storyIsOpen .figStat strong{font-size:32px;}
+.storyIsOpen .figStat span{max-width:90px;}
+.storyIsOpen .finTerminal{width:87%;}
+.storyIsOpen .finTerminal pre{font-size:10px;padding:16px;}
+.storyIsOpen .finTerminal pre strong{font-size:26px;}
+.storyIsOpen .dcfModelBars{height:155px;gap:7px;}
+.storyIsOpen .dcfModelVisual{width:87%;}
+.storyIsOpen .dcfCalcRow strong{font-size:13px;}
+.storyIsOpen .dcfValueLine b{font-size:18px;}
+.storyIsOpen .studySheet{min-height:310px;padding:19px;width:75%;}
+.storyIsOpen .studySheet h3{font-size:28px!important;margin:21px 0!important;}
+.storyIsOpen .studyTaskChecked,.storyIsOpen .studyTaskUnchecked{padding:9px 0;font-size:10px;}
+.storyIsOpen .studyTimer{height:85px;width:85px;font-size:19px;}
+.storyIsOpen .synkRoom{width:96%;}
+
+/* Mid-sized screens open a compact hero with the reader below.
+   The art still repositions and the overview compresses first. */
+@media(max-width:960px){
+ .storyWorkspace{display:block;height:auto;min-height:0;overflow:visible;transition:none;}
+ .storyWorkspace>.storyStage{height:max-content;min-height:calc(100svh - 76px);interpolate-size:allow-keywords;transition:height 850ms cubic-bezier(.22,1,.36,1),min-height 850ms cubic-bezier(.22,1,.36,1);}
+
+ .storyWorkspace>.longStory{display:none;height:auto;overflow:hidden;visibility:hidden;opacity:0;}
+ .storyIsOpen>.storyWorkspace{display:block;}
+ .storyIsOpen .storyWorkspace>.storyStage{
+   display:block;
+   position:relative;
+   height:315px;
+   min-height:315px;
+   max-height:315px;
+   overflow:hidden;
+   transition:min-height 800ms cubic-bezier(.22,1,.36,1),height 800ms cubic-bezier(.22,1,.36,1);
+ }
+ .storyIsOpen .storyWorkspace>.storyStage .storyCopy{
+   position:relative;
+   z-index:3;
+   width:min(65%,475px);
+   max-width:65%;
+   padding:24px 20px 20px 28px;
+ }
+ .storyIsOpen .storyCopy h3{font-size:clamp(29px,4.9vw,48px);line-height:1.07;}
+ .storyIsOpen .storyCopy .storyHook{font-size:14px;}
+ .storyIsOpen .storyWorkspace>.storyStage .storyIllustration{
+   position:absolute;
+   top:0;right:-8%;bottom:auto;
+   width:62%;height:100%;max-height:none;min-height:0;margin:0;
+   opacity:.83;
+   mask-image:linear-gradient(90deg,transparent,#000 30%);
+ }
+ .storyIsOpen .storyWorkspace>.longStory{
+   display:block;
+   position:relative;
+   height:auto;
+   min-height:0;
+   overflow:visible;
+   visibility:visible;
+   opacity:1;
+   transform:none;
+   animation:readerMobileReveal 580ms cubic-bezier(.16,1,.3,1) both;
+   border-top:1px solid #4a675a;
+ }
+ .storyPanelHeader{top:66px;}
+ .storyPanelBody{padding:44px clamp(25px,5vw,55px) 55px;}
+ .storyPanelBody .toolLayout{grid-template-columns:repeat(2,minmax(0,1fr));}
+ .storyPanelBody .chapter{grid-template-columns:60px minmax(0,1fr);}
+ .storyIsOpen .storyWorkspace>.storyStage .stageBottom{display:none;}
+}
+@media(max-width:600px){
+ .storyIsOpen .storyWorkspace>.storyStage{height:265px;min-height:265px;max-height:265px;}
+ .storyIsOpen .storyWorkspace>.storyStage .storyCopy{width:69%;max-width:69%;padding:24px 13px 15px 20px;}
+ .storyIsOpen .storyEyebrow span:last-child{display:none;}
+ .storyIsOpen .storyYears{display:none;}
+ .storyIsOpen .storyCopy h3{font-size:clamp(28px,6.8vw,40px);margin-top:14px;line-height:1.08;}
+ .storyIsOpen .storyCopy .storyHook{display:none;}
+ .storyIsOpen .storyActions{margin-top:20px;}
+ .storyIsOpen .storyRead{font-size:10px;padding:9px 11px;gap:8px;}
+ .storyIsOpen .storyWorkspace>.storyStage .storyIllustration{
+   top:0;right:-20%;width:82%;height:100%;opacity:.7;
+   mask-image:linear-gradient(90deg,transparent 3%,#000 36%);
+ }
+ .storyPanelHeader{min-height:62px;padding:11px 19px;}
+ .storyPanelHeader>span{font-size:9px;letter-spacing:.07em;gap:7px;max-width:67%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+ .storyPanelHeader button{padding:10px 12px;}
+ .storyPanelHeader button span{display:none;}
+ .storyPanelBody{padding:40px 22px 54px;}
+ .storyPanelBody .longStoryLead h4{font-size:clamp(39px,10vw,58px);}
+ .storyPanelBody .chapter{grid-template-columns:1fr;gap:9px;}
+ .storyPanelBody .chapter h5{font-size:29px;}
+ .storyPanelBody .chapter p{font-size:14px;}
+ .storyPanelBody .toolLayout{grid-template-columns:1fr;}
+ .storyPanelBody .tagsLine{grid-template-columns:1fr;}
+ .readerFooter{align-items:flex-start;flex-direction:column;gap:17px;}
+ .readerFooter .storyClose{margin-left:0;}
+}
+@keyframes readerMobileReveal{
+ from{opacity:0;transform:translateY(28px)}
+ to{opacity:1;transform:translateY(0)}
+}
+@media(prefers-reduced-motion:reduce){
+ .storyWorkspace,
+ .storyWorkspace *,
+ .storyWorkspace *::before,
+ .storyWorkspace *::after{
+   animation:none!important;
+   transition:none!important;
+   scroll-behavior:auto!important;
+ }
+}

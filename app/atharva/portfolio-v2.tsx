@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState, type CSSProperties } from "react";
-import { ArrowDown, ArrowRight, ArrowUpRight, ChevronDown, GitBranch, Mail, Menu, X, ArrowUp } from "lucide-react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, GitBranch, Mail, Menu, X } from "lucide-react";
 import { stories, learning, interests, type Story } from "./stories-data";
 import { HeroWave, SceneFigure } from "./scenes";
 import { MiniTools } from "./mini-tools";
@@ -8,42 +8,113 @@ import s from "./portfolio-v2.module.css";
 
 function StorySection({story,index}:{story:Story;index:number}){
  const [open,setOpen]=useState(false);
+ const sectionRef=useRef<HTMLElement>(null);
+ const panelRef=useRef<HTMLDivElement>(null);
+ const toggleRef=useRef<HTMLButtonElement>(null);
+ const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
+
+ const changeMode=(next:boolean)=>{
+   if(next)panelRef.current?.scrollTo({top:0,behavior:"instant"});
+   setOpen(next);
+   const reduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+   sectionRef.current?.scrollIntoView({behavior:reduced?"instant":"smooth",block:"start"});
+   if(!next)toggleRef.current?.focus({preventScroll:true});
+ };
+
  useEffect(()=>{
    if(!open)return;
-   const frame=requestAnimationFrame(()=>{
-     const reduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-     document.getElementById("full-"+story.id)?.scrollIntoView({behavior:reduced?"auto":"smooth",block:"start"});
-   });
-   return()=>cancelAnimationFrame(frame);
- },[open,story.id]);
- const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
- return <section id={"story-"+story.id} className={s.storySection} style={{"--accent":story.accent} as CSSProperties} data-story={story.id}>
-  <div className={s.storyStage} data-reveal>
-   <div className={s.storyCopy}>
-    <div className={s.storyEyebrow}><span className={s.storyIndex}>{String(index+1).padStart(2,"0")}</span><span>{story.eyebrow}</span></div>
-    <p className={s.storyYears}>{story.type}{story.year&&<><i> / </i> {story.year}</>}</p>
-    <h3>{story.title}<span>.</span></h3>
-    <p className={s.storyHook}>{story.hook}</p>
-    <p className={s.storyIntro}>{story.intro}</p>
-    <div className={s.storyActions}>
-      <button className={s.storyRead} aria-expanded={open} aria-controls={"full-"+story.id} onClick={()=>setOpen(v=>!v)}>{open?"Close the story":"Read full story"}<ChevronDown size={17} className={open?s.chevronOpen:""}/></button>
+   const onKey=(event:KeyboardEvent)=>{
+     if(event.key!=="Escape")return;
+     event.preventDefault();
+     setOpen(false);
+     sectionRef.current?.scrollIntoView({behavior:"instant",block:"start"});
+     toggleRef.current?.focus({preventScroll:true});
+   };
+   window.addEventListener("keydown",onKey);
+   return()=>window.removeEventListener("keydown",onKey);
+ },[open]);
+
+ return <section
+   ref={sectionRef}
+   id={"story-"+story.id}
+   className={s.storySection+(open?" "+s.storyIsOpen:"")}
+   style={{"--accent":story.accent} as CSSProperties}
+   data-story={story.id}
+   data-expanded={open}
+ >
+  <div className={s.storyWorkspace}>
+   <div className={s.storyStage} data-reveal data-role="story-overview">
+    <div className={s.storyCopy}>
+     <div className={s.storyEyebrow}><span className={s.storyIndex}>{String(index+1).padStart(2,"0")}</span><span>{story.eyebrow}</span></div>
+     <p className={s.storyYears}>{story.type}{story.year&&<><i> / </i> {story.year}</>}</p>
+     <h3>{story.title}<span>.</span></h3>
+     <p className={s.storyHook}>{story.hook}</p>
+     <p className={s.storyIntro}>{story.intro}</p>
+     <div className={s.storyActions}>
+      <button
+       ref={toggleRef}
+       type="button"
+       className={s.storyRead}
+       aria-expanded={open}
+       aria-controls={"full-"+story.id}
+       onClick={()=>changeMode(!open)}
+      >
+       {open?"Back to overview":"Read full story"}
+       {open?<ArrowLeft size={17}/>:<ArrowRight size={17}/>}
+      </button>
       {story.visit&&(story.visit.pending?<span className={s.storyUpcoming} title={"Planned URL: "+story.visit.href}>{story.visit.text} · planned URL</span>:<a className={s.storyVisit} href={story.visit.href} target="_blank" rel="noopener noreferrer">{story.visit.text}<ArrowUpRight size={17}/></a>)}
+     </div>
+     <div className={s.storyNumbers}>{story.numbers.map((n,i)=><div key={i}><strong>{n.value}</strong><span>{n.label}</span></div>)}</div>
     </div>
-    <div className={s.storyNumbers}>{story.numbers.map((n,i)=><div key={i}><strong>{n.value}</strong><span>{n.label}</span></div>)}</div>
+    <div className={s.storyIllustration}>
+      <SceneFigure id={story.id}/>
+      <span className={s.storyFigureWatermark}>{String(index+1).padStart(2,"0")}</span>
+    </div>
+    <div className={s.stageBottom}><span>{String(index+1).padStart(2,"0")} / {String(stories.length).padStart(2,"0")} — EXPERIENCE</span><span>SCROLL TO EXPLORE <ArrowDown size={14}/></span></div>
    </div>
-   <div className={s.storyIllustration}><SceneFigure id={story.id}/><span className={s.storyFigureWatermark}>{String(index+1).padStart(2,"0")}</span></div>
-   <div className={s.stageBottom}><span>{String(index+1).padStart(2,"0")} / {String(stories.length).padStart(2,"0")} — EXPERIENCE</span><span>SCROLL TO EXPLORE <ArrowDown size={14}/></span></div>
+
+   <div
+     ref={panelRef}
+     id={"full-"+story.id}
+     className={s.longStory}
+     data-role="story-reader"
+     role="region"
+     aria-label={story.title+" full story"}
+     aria-hidden={!open}
+     inert={!open}
+   >
+    <div className={s.storyPanelHeader}>
+     <span><i/> {String(index+1).padStart(2,"0")} / {String(stories.length).padStart(2,"0")} <b>—</b> {story.title.toUpperCase()}</span>
+     <button type="button" onClick={()=>changeMode(false)} aria-label={"Close "+story.title+" full story"}>
+       <X size={16}/> <span>Close story</span>
+     </button>
+    </div>
+    <div className={s.storyPanelBody}>
+     <div className={s.longStoryLead}>
+      <span className={s.sectionTag}>THE DEEPER STORY / {String(index+1).padStart(2,"0")}</span>
+      <h4>Behind <em>the work.</em></h4>
+      <p>{story.intro}</p>
+     </div>
+     <div className={s.storyChapterList}>
+      {story.chapters.map((chapter,i)=><article key={chapter.title} className={s.chapter}>
+       <span>{String(i+1).padStart(2,"0")}</span>
+       <div><h5>{chapter.title}</h5>{chapter.paragraphs.map((p,j)=><p key={j}>{p}</p>)}</div>
+      </article>)}
+     </div>
+     {hasDemo&&<div className={s.miniStage}>
+      <div className={s.miniHead}><span className={s.sectionTag}>TRY IT YOURSELF / INTERACTIVE</span><p>{story.id==="study"?"A small recreation of the study companion.":"Change the inputs and explore a working miniature of the idea."}</p></div>
+      <MiniTools id={story.id}/>
+     </div>}
+     <div className={s.tagsLine}><span>WHAT IT INVOLVED</span><div>{story.tags.map(tag=><span key={tag}>{tag}</span>)}</div></div>
+     <div className={s.readerFooter}>
+      {story.visit&&!story.visit.pending?<a href={story.visit.href} target="_blank" rel="noopener noreferrer">Visit {story.title} <ArrowUpRight size={17}/></a>:<span>{story.title} / {story.year||"PERSONAL WORK"}</span>}
+      <button className={s.storyClose} type="button" onClick={()=>changeMode(false)}>Back to overview <ArrowLeft size={17}/></button>
+     </div>
+    </div>
+   </div>
   </div>
-  {open&&<div id={"full-"+story.id} className={s.longStory} aria-label={story.title+" full story"}>
-    <div className={s.longStoryLead}><span className={s.sectionTag}>DEEPER / {String(index+1).padStart(2,"0")}</span><h4>The story <em>behind the work.</em></h4><p>What I did, what I found and what I took away.</p></div>
-    <div className={s.storyChapterList}>{story.chapters.map((chapter,i)=><article key={chapter.title} className={s.chapter}><span>{String(i+1).padStart(2,"0")}</span><div><h5>{chapter.title}</h5>{chapter.paragraphs.map((p,j)=><p key={j}>{p}</p>)}</div></article>)}</div>
-    {hasDemo&&<div className={s.miniStage}><div className={s.miniHead}><span className={s.sectionTag}>TRY IT YOURSELF / INTERACTIVE</span><p>{story.id==="study"?"A little piece of the idea, rebuilt to play with.":"A working miniature experiment. Change the inputs to see what happens."}</p></div><MiniTools id={story.id}/></div>}
-    <div className={s.tagsLine}><span>WHAT IT INVOLVED</span><div>{story.tags.map(tag=><span key={tag}>{tag}</span>)}</div></div>
-    <button className={s.storyClose} onClick={()=>{setOpen(false);document.getElementById("story-"+story.id)?.scrollIntoView({behavior:"smooth",block:"start"})}}>Close chapter <ArrowUp size={16}/></button>
-  </div>}
  </section>;
 }
-
 
 export default function PortfolioV2(){
  const [navOpen,setNavOpen]=useState(false);
