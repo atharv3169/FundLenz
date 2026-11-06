@@ -13,7 +13,7 @@ export type MorphSignal = {
 
 type XY = { x: number; y: number };
 type Agent = XY & { vx: number; vy: number };
-type Target = "title" | "figure" | "metrics" | "heading" | "reader-intro" | "chapter" | "chapter-two";
+type Target = "title" | "figure" | "figure-primary" | "figure-secondary" | "metrics" | "heading" | "reader-intro" | "chapter" | "chapter-two";
 type Task = {
   target: Target;
   u: number;
@@ -34,10 +34,10 @@ const TASKS: Task[] = [
   { target:"title",u:1,v:0,begin:.02,finish:.62,shape:"resize",label:"RESIZE" },
   { target:"title",u:0,v:1,begin:.04,finish:.64,shape:"arrow",label:"ALIGN" },
   { target:"title",u:1,v:1,begin:.04,finish:.64,shape:"resize",label:"FIT" },
-  { target:"figure",u:0,v:0,begin:.06,finish:.68,shape:"arrow",label:"DRAG" },
-  { target:"figure",u:1,v:0,begin:.07,finish:.68,shape:"resize",label:"SCALE" },
-  { target:"figure",u:1,v:1,begin:.08,finish:.68,shape:"resize",label:"RESIZE" },
-  { target:"figure",u:0,v:1,begin:.09,finish:.68,shape:"resize",label:"PLACE" },
+  { target:"figure-primary",u:0,v:0,begin:.06,finish:.68,shape:"arrow",label:"DRAG" },
+  { target:"figure-primary",u:1,v:0,begin:.07,finish:.68,shape:"resize",label:"SCALE" },
+  { target:"figure-secondary",u:1,v:1,begin:.08,finish:.68,shape:"resize",label:"RESIZE" },
+  { target:"figure-secondary",u:0,v:1,begin:.09,finish:.68,shape:"resize",label:"PLACE" },
   { target:"metrics",u:.12,v:.25,begin:.1,finish:.64,shape:"arrow",label:"MOVE" },
   { target:"metrics",u:.82,v:.48,begin:.1,finish:.65,shape:"arrow",label:"ALIGN" },
   { target:"heading",u:.04,v:.22,begin:.27,finish:.71,shape:"text",label:"TYPE" },
@@ -60,8 +60,11 @@ const eligible = () =>
 
 function bounds(section: HTMLElement | null, target: Target): DOMRect | null {
   if (!section) return null;
-  const name = "[data-crew-target=" + target + "]";
-  const el = section.querySelector<HTMLElement>(name);
+  const marker=target==="figure-primary"?"[data-crew-object=primary]":
+    target==="figure-secondary"?"[data-crew-object=secondary]":
+    "[data-crew-target="+target+"]";
+  const el=section.querySelector<HTMLElement>(marker)||
+    (target.startsWith("figure-")?section.querySelector<HTMLElement>("[data-crew-target=figure]"):null);
   if (!el) return null;
   const rect = el.getBoundingClientRect();
   return rect.width > 4 && rect.height > 4 ? rect : null;
@@ -140,11 +143,13 @@ export default function CursorCrew({ signal }: { signal: MorphSignal | null }) {
       last = now;
       const t = clamp((now - state.started) / TOTAL_MS, 0, 1);
       const section = document.getElementById("story-" + state.signal.storyId);
-      const title = bounds(section, "title");
-      const figure = bounds(section, "figure");
-      const heading = bounds(section, "heading");
-      const rects: Record<Target, DOMRect | null> = {
-        title,figure,
+      const title=bounds(section,"title");
+      const figure=bounds(section,"figure");
+      const primary=bounds(section,"figure-primary");
+      const secondary=bounds(section,"figure-secondary");
+      const heading=bounds(section,"heading");
+      const rects:Record<Target,DOMRect|null>={
+        title,figure,"figure-primary":primary,"figure-secondary":secondary,
         metrics:bounds(section,"metrics"),
         heading,
         "reader-intro":bounds(section,"reader-intro"),
@@ -157,7 +162,7 @@ export default function CursorCrew({ signal }: { signal: MorphSignal | null }) {
       layer.dataset.phase = t < .085 ? "emerging" : returning ? "returning" : state.signal.opening ? "assembling" : "dismantling";
       layer.dataset.working = returning ? "false" : "true";
       guide(titleGuide,title,state.signal.opening?t>.12&&t<.78:t>.30&&t<.80);
-      guide(artGuide,figure,state.signal.opening?t>.16&&t<.79:t>.31&&t<.80);
+      guide(artGuide,t<.50?primary:secondary,state.signal.opening?t>.16&&t<.79:t>.31&&t<.80);
       guide(textGuide,heading,state.signal.opening?t>.38&&t<.79:t>.09&&t<.38);
 
       const updated: Agent[] = agents.current;
