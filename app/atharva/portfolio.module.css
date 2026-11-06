@@ -53,7 +53,7 @@
 .heroCoreCircle {width:110px;height:110px;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 30% 25%,#3b4e4b,#172025 60%,#0c131a 100%);border:1px solid #afded359;box-shadow:0 0 95px #91cbb624,0 0 0 20px #b5e9d009;font-size:37px;font-weight:650;letter-spacing:-.18em;transform:rotate(-8deg);}
 .heroCoreCircle span {color:#b5d8b9;padding:0 8px;}
 .heroCore>span {font-size:8px;letter-spacing:.24em;color:#839a9d;white-space:nowrap;}
-.ambientOrb {position:absolute;display:flex;align-items:center;flex-direction:column;gap:6px;transform:translate(-50%,-50%);animation:ambientDrift 9s ease-in-out infinite;}
+.ambientOrb {position:absolute;display:flex;align-items:center;flex-direction:column;gap:6px;transform:translate(-50%,-50%);animation:ambientOrbitDrift 9s ease-in-out infinite;}
 .ambientPoint {width:16px;height:16px;border-radius:50%;background:var(--orb-color);box-shadow:0 0 0 7px #ffffff0a,0 0 34px var(--orb-color);margin-bottom:6px;border:4px solid #142025;}
 .ambientLabel {font-size:9px;font-weight:700;letter-spacing:.19em;color:#e1e7e8;}
 .ambientSecondary {font-size:10px;color:#72828b;white-space:nowrap;}
@@ -164,7 +164,7 @@
 .projectArtwork {height:250px;position:relative;overflow:hidden;border-bottom:1px solid #283540;background:radial-gradient(ellipse at 50% 120%,#253e42,#0c1117 68%);}
 .projectArtwork:before {content:"";position:absolute;inset:0;background-image:linear-gradient(#ffffff07 1px,transparent 1px),linear-gradient(90deg,#ffffff07 1px,transparent 1px);background-size:38px 38px;mask-image:linear-gradient(transparent,black 35%,transparent);}
 .fundArtwork {position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;}
-.circleOne,.circleTwo,.circleThree {position:absolute;border:1px solid #b3e6ca88;border-radius:50%;width:225px;height:225px;animation:orbitRotate 30s linear infinite;}
+.circleOne,.circleTwo,.circleThree {position:absolute;border:1px solid #b3e6ca88;border-radius:50%;left:50%;top:50%;width:225px;height:225px;animation:orbitRotate 30s linear infinite;}
 .circleTwo {height:170px;width:290px;transform:rotate(52deg);border-color:#e3c18d66;animation-duration:24s;}
 .circleThree {height:130px;width:330px;transform:rotate(-38deg);border-style:dashed;border-color:#8ec7df6c;animation-duration:21s;}
 .fundArtwork strong {position:relative;z-index:2;font-size:64px;font-weight:350;letter-spacing:-.1em;line-height:1.1;}
@@ -266,6 +266,7 @@
 .portfolioShell [data-reveal][data-visible="true"] {opacity:1;transform:translateY(0);}
 @keyframes heroEnter {from{opacity:0;transform:translateY(35px)}to{opacity:1;transform:translateY(0)}}
 @keyframes dotPulse {0%,100%{opacity:.7;filter:brightness(.85)}50%{opacity:1;filter:brightness(1.35)}}
+@keyframes ambientOrbitDrift {0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,calc(-50% - 12px))}}
 @keyframes ambientDrift {0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
 @keyframes orbitRotate {from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
 @keyframes lineTrace {0%{stroke-dashoffset:1400}50%,100%{stroke-dashoffset:0}}
