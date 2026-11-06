@@ -2,7 +2,7 @@
 
 Open **More projects → DCF Atlas** or go directly to **/dcf-atlas**. This is a native FundLenz route. It uses the existing header and securities directory; models, imports and simulations run in the browser. No forecast writes to the catalogue, invokes Gemini, sends files to a server or requires a subscription.
 
-![DCF Atlas operating valuation desk](atlas/desktop.webp)
+![Four-column DCF Atlas overview: the FY2028 cash-flow insight and the matching forecast row](atlas/desktop.webp)
 
 ## Try a complete valuation
 
@@ -12,7 +12,7 @@ Open **More projects → DCF Atlas** or go directly to **/dcf-atlas**. This is a
 4. In **Risk & reverse DCF**, solve for the growth, margin or discount rate required by a target price. Run up to 5,000 correlated trials, inspect exclusions and download the samples. Separately estimate an investor IRR with an explicit purchase price, distributions and exit price.
 5. Save a named case. **Research library → Model screener** can filter complete models by gap and terminal contribution, sort results and export the subset. **Reports & files** exports the formula-linked Excel workbook, printable PDF memorandum, offline HTML, model JSON and CSVs.
 
-[Mobile layout](atlas/mobile.webp) · [Sensitivity surface](atlas/sensitivity.webp)
+[Open the responsive preview](https://feature-dcf-atlas-desk-fundlenz.atharvsahu711.workers.dev/dcf-atlas) · [Sensitivity surface](atlas/sensitivity.webp)
 
 ## Data and methods
 

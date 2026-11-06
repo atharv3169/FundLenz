@@ -133,11 +133,9 @@ try {
       await page
         .getByRole('heading', { name: 'Cash bridge · FY2027' })
         .waitFor();
-      const cashCard = grid
-        .locator('.ao-trace')
-        .filter({
-          has: page.getByRole('heading', { name: 'Cash-flow outlook' }),
-        });
+      const cashCard = grid.locator('.ao-trace').filter({
+        has: page.getByRole('heading', { name: 'Cash-flow outlook' }),
+      });
       await cashCard
         .getByRole('button', { name: 'Free cash flow', exact: true })
         .click();
@@ -154,8 +152,17 @@ try {
         name: 'First-year growth',
         exact: true,
       });
+      assert.equal(
+        await page
+          .getByRole('slider', {
+            name: 'Capital expenditure / revenue',
+            exact: true,
+          })
+          .inputValue(),
+        '5.4',
+      );
       await input.focus();
-      await input.press('ArrowRight');
+      await input.press('End');
       assert.notEqual(
         await page.locator('.a-kpi strong').first().innerText(),
         '$38.30',

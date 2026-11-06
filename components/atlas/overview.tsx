@@ -132,7 +132,7 @@ export function Overview() {
                       m.inputs[k] ?? 0,
                     )}
                     max={Math.max(k === 'capex' ? 45 : 70, m.inputs[k] ?? 0)}
-                    step=".25"
+                    step=".01"
                     value={m.inputs[k] ?? 0}
                     onChange={(e) =>
                       edit(
