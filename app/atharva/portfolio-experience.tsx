@@ -43,7 +43,7 @@ function LineArtwork({ compact = false }: {compact?: boolean}) {
   );
 }
 
-function AnimatedNumber({ value, suffix = "" }: {value:number;suffix?:string}) {
+function AnimatedNumber({ value, suffix = "", prefix = "" }: {value:number;suffix?:string;prefix?:string}) {
   const target = useRef<HTMLSpanElement>(null);
   const [n, setN] = useState(0);
   useEffect(() => {
@@ -67,7 +67,7 @@ function AnimatedNumber({ value, suffix = "" }: {value:number;suffix?:string}) {
     observer.observe(el);
     return()=>{observer.disconnect();cancelAnimationFrame(raf);};
   },[value]);
-  return <span ref={target} className={s.tabular}>{n.toLocaleString("en-IN")}{suffix}</span>;
+  return <span ref={target} className={s.tabular}>{prefix}{n.toLocaleString("en-IN")}{suffix}</span>;
 }
 
 function AmbientOrb({label,secondary,x,y,accent,delay=0}: {label:string;secondary:string;x:string;y:string;accent:string;delay?:number}) {
@@ -291,7 +291,7 @@ export default function PortfolioExperience() {
         <p>That curiosity turned into mutual-fund research, then FundLenz, then more experiments with financial modelling and Python. I&apos;m still learning, still building, and very interested in doing more of this professionally.</p>
       </div>
       <div className={s.metricRow} data-reveal>
-        <div><strong><AnimatedNumber value={20} suffix="~"/></strong><span>months in finance & accounts</span></div>
+        <div><strong><AnimatedNumber value={20} prefix="~"/></strong><span>months in finance & accounts</span></div>
         <div><strong><AnimatedNumber value={70}/></strong><span>mutual fund schemes researched</span></div>
         <div><strong><AnimatedNumber value={30}/></strong><span>automated FinCalc tests</span></div>
         <div><strong><AnimatedNumber value={8} suffix=".0"/></strong><span>IELTS overall band</span></div>
