@@ -78,7 +78,7 @@ numbers:[{value:"3D",label:"virtual spaces in the company's concept"},{value:"AI
 chapters:[
 {title:"What interested me",paragraphs:["SYNK publicly describes a platform where people can join virtual spaces as avatars, move between conversations and meet at online events. It's an interesting experiment in making online interaction feel more natural.","I've included my SYNK internship here because it is part of my experience history, but I couldn't retrieve the specific role title or dates from my public LinkedIn profile during this update. I don't want to make up day-to-day duties or credit myself with the company's products."]},
 {title:"A connection to the rest of my work",paragraphs:["The broader idea—building an interface that people can actually explore—connects to what I enjoy in financial technology as well. The moving scene is my own abstract visual interpretation of the publicly described platform, not an internal SYNK project."]}
-],tags:["Digital experiences","3D spaces","Avatars","Interaction design"],visit:{href:"https://www.synk.today/",text:"Explore SYNK"}
+],tags:["Digital experiences","3D spaces","Avatars","Interaction design"],visit:{href:"https://www.linkedin.com/company/synktoday/",text:"SYNK company profile"}
 },
 
 ];
