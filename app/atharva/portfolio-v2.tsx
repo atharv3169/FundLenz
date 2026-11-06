@@ -9,16 +9,19 @@ import s from "./portfolio-v2.module.css";
 function StorySection({story,index}:{story:Story;index:number}){
  const [open,setOpen]=useState(false);
  const sectionRef=useRef<HTMLElement>(null);
- const panelRef=useRef<HTMLDivElement>(null);
  const toggleRef=useRef<HTMLButtonElement>(null);
  const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
 
  const changeMode=(next:boolean)=>{
-   if(next)panelRef.current?.scrollTo({top:0,behavior:"instant"});
-   setOpen(next);
-   const reduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-   sectionRef.current?.scrollIntoView({behavior:reduced?"instant":"smooth",block:"start"});
-   if(!next)toggleRef.current?.focus({preventScroll:true});
+   // Keep one scroll context. Do not launch a competing smooth scroll
+   // while the spatial layout is animating.
+   sectionRef.current?.scrollIntoView({behavior:"instant",block:"start"});
+   if(next){
+     requestAnimationFrame(()=>setOpen(true));
+   } else {
+     setOpen(false);
+     toggleRef.current?.focus({preventScroll:true});
+   }
  };
 
  useEffect(()=>{
@@ -26,8 +29,8 @@ function StorySection({story,index}:{story:Story;index:number}){
    const onKey=(event:KeyboardEvent)=>{
      if(event.key!=="Escape")return;
      event.preventDefault();
-     setOpen(false);
      sectionRef.current?.scrollIntoView({behavior:"instant",block:"start"});
+     setOpen(false);
      toggleRef.current?.focus({preventScroll:true});
    };
    window.addEventListener("keydown",onKey);
@@ -38,7 +41,7 @@ function StorySection({story,index}:{story:Story;index:number}){
    ref={sectionRef}
    id={"story-"+story.id}
    className={s.storySection+(open?" "+s.storyIsOpen:"")}
-   style={{"--accent":story.accent} as CSSProperties}
+   style={{"--accent":story.accent,"--previous-accent":stories[index-1]?.accent||story.accent,"--next-accent":stories[index+1]?.accent||story.accent} as CSSProperties}
    data-story={story.id}
    data-expanded={open}
  >
@@ -70,11 +73,9 @@ function StorySection({story,index}:{story:Story;index:number}){
       <SceneFigure id={story.id}/>
       <span className={s.storyFigureWatermark}>{String(index+1).padStart(2,"0")}</span>
     </div>
-    <div className={s.stageBottom}><span>{String(index+1).padStart(2,"0")} / {String(stories.length).padStart(2,"0")} — EXPERIENCE</span><span>SCROLL TO EXPLORE <ArrowDown size={14}/></span></div>
    </div>
 
    <div
-     ref={panelRef}
      id={"full-"+story.id}
      className={s.longStory}
      data-role="story-reader"
@@ -106,10 +107,9 @@ function StorySection({story,index}:{story:Story;index:number}){
       <MiniTools id={story.id}/>
      </div>}
      <div className={s.tagsLine}><span>WHAT IT INVOLVED</span><div>{story.tags.map(tag=><span key={tag}>{tag}</span>)}</div></div>
-     <div className={s.readerFooter}>
-      {story.visit&&!story.visit.pending?<a href={story.visit.href} target="_blank" rel="noopener noreferrer">Visit {story.title} <ArrowUpRight size={17}/></a>:<span>{story.title} / {story.year||"PERSONAL WORK"}</span>}
-      <button className={s.storyClose} type="button" onClick={()=>changeMode(false)}>Back to overview <ArrowLeft size={17}/></button>
-     </div>
+     {story.visit&&!story.visit.pending&&<div className={s.readerFooter}>
+      <a href={story.visit.href} target="_blank" rel="noopener noreferrer">Visit {story.title} <ArrowUpRight size={17}/></a>
+     </div>}
     </div>
    </div>
   </div>
