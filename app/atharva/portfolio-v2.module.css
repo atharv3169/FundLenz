@@ -988,3 +988,23 @@
     align-self:start;
   }
 }
+
+
+/* Stable desktop text width throughout the spatial morph. The artwork is
+   absolutely positioned, so the nested stage grid is unnecessary and was
+   briefly collapsing the headline into a one-letter-wide column. */
+@media(min-width:1024px){
+ .portfolioShell .storyWorkspace>.storyStage{
+   display:block;
+ }
+ .portfolioShell .storyWorkspace>.storyStage .storyCopy{
+   width:49%;
+   max-width:none;
+   min-width:0;
+   transition:width 1500ms cubic-bezier(.22,.68,.18,1),padding 1500ms cubic-bezier(.22,.68,.18,1);
+ }
+ .portfolioShell .storyIsOpen>.storyWorkspace>.storyStage .storyCopy{
+   width:100%;
+   max-width:none;
+ }
+}
