@@ -48,15 +48,13 @@ chapters:[
 ],tags:["DCF","FCF forecasting","Valuation","WACC","Sensitivity"],visit:{href:"https://fundlenz.com/dcf-atlas",text:"DCF Atlas",pending:true}
 },
 {
-id:"crowd",title:"Crowd-monitoring system",type:"Computer vision · IoT · engineering",year:"2025 – 2026",eyebrow:"06 / ENGINEERING OUTSIDE A TEXTBOOK",hook:"A camera, a microcontroller and a practical safety problem.",intro:"Our group project explored camera-based crowd detection linked to ESP32 alerts, with technical and commercial feasibility work alongside the prototype.",accent:"#dab6e5",
+id:"crowd",title:"Crowd-monitoring system",type:"Computer vision · machine learning",year:"2025 – 2026",eyebrow:"06 / ENGINEERING OUTSIDE A TEXTBOOK",hook:"How can computer vision recognise a crowd before it becomes a problem?",intro:"Our final-year project explored camera-based crowd monitoring, machine-learning-assisted detection and a system for raising alerts when conditions needed attention.",accent:"#dab6e5",
 numbers:[{value:"15+",label:"evaluation scenarios in project work"},{value:"2026",label:"published patent application"}],
 chapters:[
-{title:"Turning an idea into a system",paragraphs:["The project brought together person detection and background processing, cloud or IoT communication, and ESP32-connected displays and warning indicators. We investigated whether a system could recognise crowd buildup and respond with useful alerts.","I contributed to research, feasibility and cost-benefit work, including a projected development cost around ₹35,000 and discussion of scalability and practical deployment constraints."]},
-{title:"The result and the limits",paragraphs:["The project received First Place / Best Project recognition. I am named as a co-inventor on published Indian patent application 202621086685 A.","It is a published application, not a patent grant. The animated monitoring scene on this page is a conceptual visualisation, not real camera output or evidence of deployment."]}
-],tags:["Computer vision","ESP32","IoT","Research","Feasibility"]
+{title:"Turning an idea into a system",paragraphs:["We worked on a computer vision approach to recognising people and crowd build-up from camera input, then relating that information to warning and monitoring logic. The interesting part for me was making the detection meaningful: a model's output is only useful if it leads to a clear response.","My contribution included research, feasibility and cost-benefit work. Our project material considered a development budget around ₹35,000, more than 15 evaluation scenarios and how the idea could scale beyond a classroom prototype."]},
+{title:"The result and the limits",paragraphs:["The project received First Place / Best Project recognition. I am named as a co-inventor on Indian patent application 202621086685 A, published in September 2026.","The application is published, not granted, and the animation on this page illustrates the detection-to-alert concept rather than actual footage or evidence of a commercial deployment."]}
+],tags:["Computer vision","Machine learning","Crowd detection","Alert logic","Feasibility"]
 },
-
-
 {
 id:"study",title:"Study Buddy",type:"Hackathon project · group build",year:"2024",eyebrow:"07 / BUILDING UNDER PRESSURE",hook:"One place for notes, tasks and a little more focus.",intro:"We built a study companion during a hackathon and came second. The best part was making the pieces feel like one useful product.",accent:"#c6d8a7",
 numbers:[{value:"2nd place",label:"interdepartmental hackathon"},{value:"3 ideas",label:"notes · tasks · focus"}],
@@ -73,14 +71,13 @@ chapters:[
 ],tags:["Arduino","ESP32","Sensors","Embedded systems","Testing"]
 },
 {
-id:"synk",title:"SYNK",type:"Internship · virtual experiences",year:"",eyebrow:"09 / INTERACTION & DIGITAL SPACES",hook:"What if online networking felt more like entering a real room?",intro:"SYNK explores AI-generated virtual environments, 3D spaces and avatar-based gatherings with proximity voice chat.",accent:"#b7c3ef",
-numbers:[{value:"3D",label:"virtual spaces in the company's concept"},{value:"AI",label:"environment-generation theme"}],
+id:"synk",title:"SYNK",type:"Financial Planning and Analysis Intern · Remote",year:"May – Aug 2026",eyebrow:"09 / FINANCIAL PLANNING & ANALYSIS",hook:"A subscription isn't just a price. It's a whole business decision.",intro:"At SYNK I worked on monetisation planning, subscription pricing, paywall implementation and revenue projections. I also explored longer-term financial scenarios, including potential M&A opportunities.",accent:"#b7c3ef",
+numbers:[{value:"4 months",label:"remote finance internship"},{value:"FP&A",label:"pricing · forecasts · strategy"}],
 chapters:[
-{title:"What interested me",paragraphs:["SYNK publicly describes a platform where people can join virtual spaces as avatars, move between conversations and meet at online events. It's an interesting experiment in making online interaction feel more natural.","My SYNK experience brought a very different idea into the mix: an online space you can move through, rather than a list of video-call tiles. The company explores AI-generated environments, virtual events and proximity-based conversations. I am keeping this account focused on the ideas I encountered, not claiming ownership of the company’s product."]},
-{title:"A connection to the rest of my work",paragraphs:["The broader idea—building an interface that people can actually explore—connects to what I enjoy in financial technology as well. The moving scene is my own abstract visual interpretation of the publicly described platform, not an internal SYNK project."]}
-],tags:["Digital experiences","3D spaces","Avatars","Interaction design"],visit:{href:"https://www.linkedin.com/company/synktoday/",text:"SYNK company profile"}
-},
-
+{title:"Putting numbers behind monetisation",paragraphs:["I joined SYNK remotely as a Financial Planning and Analysis Intern from May to August 2026. My work focused on the financial planning around monetisation: subscription pricing, paywall implementation and the revenue projections tied to those choices.","What interested me was how sensitive a model can be to small decisions. Pricing, conversion and the way a paywall is introduced all feed into the revenue story. I worked on building scenarios so we could examine different paths rather than relying on a single forecast."]},
+{title:"Looking beyond the next few months",paragraphs:["I also analysed the company's longer-term financial strategy, including possible M&A opportunities. It pushed me to think beyond an immediate subscription decision and consider how the business might fund growth, structure its future and evaluate strategic choices.","This was an FP&A role. The moving figure here is a conceptual illustration of pricing and revenue scenarios, not SYNK's private financial data or an actual company forecast."]}
+],tags:["Financial planning and analysis","Subscription pricing","Paywall implementation","Revenue projections","Scenario modelling","M&A research"],visit:{href:"https://www.linkedin.com/company/synktoday/",text:"SYNK company profile"}
+}
 ];
 
 export const learning=[
