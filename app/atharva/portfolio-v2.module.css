@@ -1020,3 +1020,117 @@
    transition:padding 1500ms cubic-bezier(.22,.68,.18,1);
  }
 }
+
+
+/* Reference-paced cursor-built stories (desktop). Open: select → drag
+   existing overview → compose right text → return. Reverse: erase
+   right copy first → restore left composition → return to pointer.
+   This is a live, interactive page, not an overlay reconstruction. */
+@media(min-width:1024px) and (prefers-reduced-motion:no-preference){
+ .portfolioShell .storyWorkspace{
+   transition:grid-template-columns 1140ms cubic-bezier(.22,.66,.18,1);
+ }
+ .portfolioShell .storyWorkspace>.storyStage .storyCopy{
+   transition:padding 1140ms cubic-bezier(.22,.66,.18,1);
+ }
+ .portfolioShell .storyWorkspace>.storyStage .storyCopy h3{
+   transition:font-size 1140ms cubic-bezier(.22,.66,.18,1),margin 1140ms cubic-bezier(.22,.66,.18,1);
+ }
+ .portfolioShell .storyWorkspace>.storyStage .storyHook{
+   transition:font-size 1140ms cubic-bezier(.22,.66,.18,1),margin 1140ms cubic-bezier(.22,.66,.18,1);
+ }
+ .portfolioShell .storyWorkspace>.storyStage .storyIllustration{
+   transition:top 1140ms cubic-bezier(.22,.66,.18,1),
+     right 1140ms cubic-bezier(.22,.66,.18,1),
+     width 1140ms cubic-bezier(.22,.66,.18,1),
+     height 1140ms cubic-bezier(.22,.66,.18,1),
+     opacity 940ms ease;
+ }
+ .portfolioShell .storyWorkspace>.longStory{
+   transition:opacity 340ms ease,visibility 0s linear 1140ms!important;
+ }
+ .portfolioShell .storyIsOpen .storyWorkspace>.longStory{
+   transition:opacity 460ms ease 70ms,visibility 0s!important;
+ }
+ /* Avoid unrelated prior animations re-running when a finished
+    sequence changes from "entering" to "idle". */
+ .portfolioShell .storyIsOpen .storyPanelBody .longStoryLead>*,
+ .portfolioShell .storyIsOpen .storyPanelBody .chapter,
+ .portfolioShell .storyIsOpen .storyPanelBody .miniStage,
+ .portfolioShell .storyIsOpen .storyPanelBody .tagsLine,
+ .portfolioShell .storyIsOpen .storyPanelBody .readerFooter{
+   animation:none!important;
+ }
+ .portfolioShell [data-choreography="entering"].storyIsOpen
+   .storyPanelBody .longStoryLead>.sectionTag{
+   animation:storyInkArrive 390ms ease 190ms both!important;
+ }
+ .portfolioShell [data-choreography="entering"].storyIsOpen
+   .storyPanelBody .longStoryLead h4{
+   animation:storyTypedHeading 520ms steps(24,end) 350ms both!important;
+ }
+ .portfolioShell [data-choreography="entering"].storyIsOpen
+   .storyPanelBody .longStoryLead>p{
+   animation:storyInkArrive 530ms cubic-bezier(.16,1,.3,1) 600ms both!important;
+ }
+ .portfolioShell [data-choreography="entering"].storyIsOpen
+   .storyPanelBody .chapter:nth-child(1){
+   animation:storyTypedParagraph 590ms steps(26,end) 780ms both!important;
+ }
+ .portfolioShell [data-choreography="entering"].storyIsOpen
+   .storyPanelBody .chapter:nth-child(2){
+   animation:storyTypedParagraph 580ms steps(26,end) 900ms both!important;
+ }
+ .portfolioShell [data-choreography="entering"].storyIsOpen
+   .storyPanelBody .chapter:nth-child(n+3){
+   animation:storyInkArrive 560ms ease 1050ms both!important;
+ }
+ .portfolioShell [data-choreography="entering"].storyIsOpen
+   .storyPanelBody .miniStage,
+ .portfolioShell [data-choreography="entering"].storyIsOpen
+   .storyPanelBody .tagsLine,
+ .portfolioShell [data-choreography="entering"].storyIsOpen
+   .storyPanelBody .readerFooter{
+   animation:storyInkArrive 550ms ease 1170ms both!important;
+ }
+ /* Right-hand content is selected/erased before geometry resets. */
+ .portfolioShell [data-choreography="exiting"].storyIsOpen
+   .storyPanelBody .chapter,
+ .portfolioShell [data-choreography="exiting"].storyIsOpen
+   .storyPanelBody .miniStage,
+ .portfolioShell [data-choreography="exiting"].storyIsOpen
+   .storyPanelBody .tagsLine,
+ .portfolioShell [data-choreography="exiting"].storyIsOpen
+   .storyPanelBody .readerFooter{
+   animation:storyErase 330ms steps(16,end) both!important;
+ }
+ .portfolioShell [data-choreography="exiting"].storyIsOpen
+   .storyPanelBody .longStoryLead>p{
+   animation:storyErase 340ms steps(16,end) 100ms both!important;
+ }
+ .portfolioShell [data-choreography="exiting"].storyIsOpen
+   .storyPanelBody .longStoryLead h4{
+   animation:storyErase 360ms steps(20,end) 160ms both!important;
+ }
+ .portfolioShell [data-choreography="exiting"].storyIsOpen
+   .storyPanelBody .longStoryLead>.sectionTag{
+   animation:storyErase 300ms steps(12,end) 200ms both!important;
+ }
+}
+@keyframes storyInkArrive{
+  0%{opacity:.12;filter:blur(2.4px);transform:translate3d(-9px,4px,0);}
+  48%{opacity:.42;filter:blur(1.2px);transform:translate3d(-4px,2px,0);}
+  100%{opacity:1;filter:blur(0);transform:translate3d(0,0,0);}
+}
+@keyframes storyTypedHeading{
+  0%{opacity:.2;clip-path:inset(0 99% 0 0);filter:blur(1.2px);}
+  100%{opacity:1;clip-path:inset(0 0 0 0);filter:blur(0);}
+}
+@keyframes storyTypedParagraph{
+  0%{opacity:.16;clip-path:inset(0 95% 0 0);filter:blur(1px);}
+  100%{opacity:1;clip-path:inset(0 0 0 0);filter:blur(0);}
+}
+@keyframes storyErase{
+  0%{opacity:1;clip-path:inset(0 0 0 0);filter:blur(0);}
+  100%{opacity:0;clip-path:inset(0 100% 0 0);filter:blur(2px);}
+}
