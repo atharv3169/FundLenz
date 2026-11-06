@@ -521,3 +521,188 @@
    scroll-behavior:auto!important;
  }
 }
+
+
+/* Portfolio refinement: shared-page scrolling, deliberate transitions,
+   editorial spacing and seamless per-project colour handoffs. */
+.portfolioShell{overflow:clip;overflow-anchor:none;}
+.portfolioShell .storySection,
+.portfolioShell .storySection:nth-of-type(2n){
+  border-bottom:0;
+  overflow-anchor:none;
+  background:linear-gradient(180deg,
+    color-mix(in srgb,var(--previous-accent) 8%,#0c1218) 0%,
+    color-mix(in srgb,var(--accent) 10%,#0c1218) 48%,
+    color-mix(in srgb,var(--next-accent) 8%,#0c1218) 100%);
+}
+.storyWorkspace{min-height:calc(100svh - 76px);transition:grid-template-columns 1140ms cubic-bezier(.34,.02,.2,1);}
+.storyWorkspace>.storyStage .storyCopy{
+  padding-top:clamp(45px,5.5svh,75px);
+  padding-bottom:clamp(35px,5svh,67px);
+  transition:padding 1120ms cubic-bezier(.34,.02,.2,1);
+}
+.storyCopy h3{font-size:clamp(49px,5.1vw,88px);line-height:1.01;}
+.storyYears{margin-top:27px!important;}
+.storyHook{font-size:clamp(20px,2.05vw,32px);margin-top:22px!important;}
+.storyIntro{margin-top:14px!important;font-size:14px;}
+.storyActions{margin-top:23px;}
+.storyNumbers{margin-top:28px;padding-top:16px;}
+.storyWorkspace>.storyStage .storyCopy h3{transition:font-size 1110ms cubic-bezier(.34,.02,.2,1),margin 1110ms ease;}
+.storyWorkspace>.storyStage .storyHook{transition:font-size 1110ms cubic-bezier(.34,.02,.2,1),margin 1110ms ease;}
+.storyWorkspace>.storyStage .storyIllustration{
+  transition:width 1120ms cubic-bezier(.34,.02,.2,1),
+    height 1120ms cubic-bezier(.34,.02,.2,1),
+    top 1120ms cubic-bezier(.34,.02,.2,1),
+    right 1120ms cubic-bezier(.34,.02,.2,1),
+    opacity 850ms ease;
+}
+.storyWorkspace>.longStory{transition:opacity 700ms ease,transform 980ms cubic-bezier(.21,1,.33,1),visibility 0s linear 1120ms;}
+.storyIsOpen>.storyWorkspace{
+  height:auto;
+  min-height:calc(100svh - 76px);
+  align-items:stretch;
+  overflow:visible;
+}
+.storyIsOpen .storyWorkspace>.storyStage{
+  position:sticky;
+  top:76px;
+  align-self:start;
+  height:calc(100svh - 76px);
+  min-height:0;
+  max-height:none;
+  overflow:hidden;
+}
+.storyIsOpen .storyWorkspace>.storyStage .storyCopy{
+  padding:clamp(24px,3.1vw,43px) clamp(17px,2.1vw,34px) 12px;
+}
+.storyIsOpen .storyCopy h3{font-size:clamp(27px,2.85vw,46px);line-height:1.05;}
+.storyIsOpen .storyCopy .storyHook{font-size:clamp(14px,1.24vw,18px);margin-top:12px!important;}
+.storyIsOpen .storyActions{margin-top:14px;}
+.storyIsOpen .storyWorkspace>.storyStage .storyIllustration{
+  top:31%;height:69%;
+  mask-image:linear-gradient(180deg,transparent 0%,#000 12%,#000 97%);
+  pointer-events:none;
+}
+.storyIsOpen .storyWorkspace>.longStory{
+  height:auto;
+  min-height:calc(100svh - 76px);
+  overflow:visible;
+  overscroll-behavior:auto;
+  align-self:stretch;
+  scrollbar-width:auto;
+  transform:translate3d(0,0,0);
+  transition:opacity 730ms ease 240ms,transform 1080ms cubic-bezier(.21,1,.33,1) 120ms,visibility 0s;
+}
+.storyPanelHeader{top:76px;}
+.storyPanelBody{padding-top:clamp(27px,3.2vw,51px);padding-bottom:39px;}
+.storyPanelBody .longStoryLead h4{font-size:clamp(37px,3.7vw,61px);}
+.storyPanelBody .longStoryLead p{margin-top:12px!important;}
+.storyPanelBody .storyChapterList{margin:30px auto 42px;}
+.storyPanelBody .chapter{padding:22px 0 26px;}
+.storyPanelBody .chapter h5{font-size:clamp(23px,2.2vw,36px);margin-bottom:12px;}
+.storyPanelBody .chapter p{margin-top:12px!important;}
+.storyPanelBody .miniStage{padding-top:26px;margin-bottom:35px;}
+.storyPanelBody .tagsLine{margin-top:31px;}
+.readerFooter{margin-top:26px;padding-top:13px;}
+/* Reduce unusually large standalone headlines and blank vertical areas. */
+.about,.skillsSection,.interestsSection{
+  padding-top:clamp(76px,8.4vw,132px);
+  padding-bottom:clamp(76px,8.4vw,132px);
+}
+.about h2,.skillsSection h2{font-size:clamp(43px,5.8vw,87px);}
+.aboutColumns{margin-top:45px;}
+.workIntro{
+  min-height:clamp(510px,65svh,745px);
+  padding-top:clamp(82px,9vw,145px);
+  padding-bottom:clamp(82px,9vw,145px);
+}
+.workIntro h2{font-size:clamp(61px,8.7vw,133px);}
+.contact h2{font-size:clamp(50px,6.8vw,103px);}
+.storyPanelBody .toolIntro h4{font-size:clamp(31px,2.8vw,48px);}
+/* FP&A illustration: no internal SYNK forecasts or subscription prices. */
+.synkFinanceScene{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  width:100%;height:100%;overflow:hidden;isolation:isolate;
+  background:radial-gradient(circle at 55% 52%,#30334b,#131a25 73%);
+}
+.synkFinanceBoard{
+  width:82%;max-width:720px;
+  border:1px solid #929fc252;
+  background:linear-gradient(145deg,#243247,#1d2838 55%,#1b2730);
+  box-shadow:0 24px 85px #0007,0 0 110px #c1bfe82d;
+  padding:clamp(18px,2.2vw,32px);
+  transform:perspective(1100px) rotateY(-4deg);
+  animation:synkFloat 9s ease-in-out infinite;
+}
+.synkFinanceTop,.synkForecastLegend,.synkStrategyFooter{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.synkFinanceTop{font-size:10px;letter-spacing:.13em;color:#d8ddf0;padding-bottom:22px;}
+.synkFinanceLive{display:flex;align-items:center;gap:7px;color:#acd3ca;white-space:nowrap;}
+.synkFinanceLive i{display:block;width:6px;height:6px;border-radius:50%;background:#a7e5cd;animation:softPulse 3s ease-in-out infinite;}
+.synkPricing{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+.synkPricingLever{padding:16px 12px;border:1px solid #788bb44c;background:#2b3b4e99;min-width:0;}
+.synkPricingLever>span{display:block;color:#aeb9d5;font-size:8px;letter-spacing:.1em;}
+.synkPricingLever strong{display:block;margin-top:9px;color:#e0e6ee;font-size:clamp(12px,1.3vw,18px);font-weight:500;}
+.synkPricingLever>div{display:flex;align-items:center;gap:5px;margin-top:18px;}
+.synkPricingLever i{height:5px;border-radius:3px;width:30%;background:#7a8eb0;animation:softPulse 4s ease-in-out infinite alternate;}
+.synkPricingLever i:last-child{width:18%;opacity:.46;animation-delay:-1s;}
+.synkPriceDot{display:block;width:9px;height:9px;border-radius:50%;background:#bfe5d3;box-shadow:0 0 14px #9de0cc;}
+.synkForecastSvg{display:block;width:100%;margin:21px 0 0;overflow:visible;}
+.synkScenarioTop,.synkScenarioMid,.synkScenarioLow{stroke-dasharray:920;stroke-dashoffset:920;animation:synkDraw 7s ease-in-out infinite alternate;}
+.synkScenarioMid{animation-delay:-1.5s;}.synkScenarioLow{animation-delay:-2.7s;}
+.synkScenarioPulse{animation:softPulse 3s ease-in-out infinite alternate;}
+.synkForecastLegend{justify-content:flex-start;gap:21px;font-size:9px;letter-spacing:.1em;color:#bcc5d6;}
+.synkForecastLegend span{display:flex;align-items:center;gap:7px;white-space:nowrap;}
+.synkForecastLegend i{display:block;width:6px;height:6px;border-radius:50%;background:#c4ecdd;}
+.synkForecastLegend span:nth-child(2) i{background:#b7bdf6;}.synkForecastLegend span:nth-child(3) i{background:#d7bca5;}
+.synkStrategyFooter{border-top:1px solid #b5c4e62c;margin-top:22px;padding-top:16px;color:#9bb4ce;font-size:9px;letter-spacing:.12em;flex-wrap:wrap;}
+@keyframes synkFloat{0%,100%{transform:perspective(1100px) rotateY(-4deg) translateY(0)}50%{transform:perspective(1100px) rotateY(-1deg) translateY(-10px)}}
+@keyframes synkDraw{0%{stroke-dashoffset:920;opacity:.65}85%,100%{stroke-dashoffset:0;opacity:1}}
+.storyIsOpen .synkFinanceBoard{width:91%;padding:17px;}
+.storyIsOpen .synkFinanceTop{font-size:8px;}
+.storyIsOpen .synkPricingLever{padding:10px 7px;}
+.storyIsOpen .synkPricingLever>span{font-size:7px;}
+.storyIsOpen .synkPricingLever strong{font-size:11px;}
+.storyIsOpen .synkStrategyFooter{font-size:7px;}
+@media(max-width:960px){
+ .storyWorkspace{height:auto;}
+ .storyIsOpen>.storyWorkspace{height:auto;min-height:0;display:block;overflow:visible;}
+ .storyIsOpen .storyWorkspace>.storyStage{
+   position:relative;top:auto;align-self:auto;
+   height:315px;min-height:315px;max-height:315px;
+ }
+ .storyIsOpen .storyWorkspace>.longStory{
+   display:block;height:auto;min-height:0;overflow:visible;
+   transform:none;
+ }
+ .storyPanelHeader{top:66px;}
+ .storyWorkspace>.storyStage .storyCopy{padding-top:65px;padding-bottom:20px;}
+ .storyCopy h3{font-size:clamp(45px,7.8vw,70px);}
+ .storyIllustration{margin-bottom:35px;}
+ .synkFinanceBoard{width:88%;padding:19px;}
+ .synkFinanceTop{font-size:9px;}
+}
+@media(max-width:600px){
+ .storyWorkspace>.storyStage .storyCopy{padding-top:45px;padding-bottom:12px;}
+ .storyCopy h3{font-size:clamp(42px,10.3vw,60px);}
+ .storyHook{font-size:clamp(21px,5.8vw,27px);}
+ .storyActions{margin-top:21px;}
+ .storyNumbers{margin-top:23px;}
+ .storyIllustration{height:clamp(320px,45svh,480px);min-height:320px;margin-bottom:18px;}
+ .storyIsOpen .storyWorkspace>.storyStage{height:265px;min-height:265px;max-height:265px;}
+ .storyIsOpen .storyWorkspace>.storyStage .storyCopy{padding:22px 13px 13px 20px;}
+ .storyIsOpen .storyWorkspace>.storyStage .storyIllustration{top:0;height:100%;}
+ .storyPanelBody{padding-top:30px;}
+ .synkFinanceBoard{width:91%;padding:14px;}
+ .synkFinanceTop{font-size:7px;}
+ .synkPricingLever{padding:8px 5px;}
+ .synkPricingLever>span{font-size:6px;}
+ .synkPricingLever strong{font-size:10px;}
+ .synkForecastLegend{gap:10px;font-size:7px;}
+ .synkStrategyFooter{font-size:7px;}
+}
+@media(prefers-reduced-motion:reduce){
+ .synkFinanceBoard,.synkScenarioTop,.synkScenarioMid,.synkScenarioLow,.synkFinanceLive i,.synkPricingLever i{
+  animation:none!important;
+ }
+ .synkScenarioTop,.synkScenarioMid,.synkScenarioLow{stroke-dashoffset:0!important;}
+}
