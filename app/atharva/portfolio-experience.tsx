@@ -108,6 +108,7 @@ function HeroVisual() {
 
 function GraphPanel() {
   const [selectedId, setSelectedId] = useState("fundlenz");
+  const [detailExpanded,setDetailExpanded] = useState(false);
   const [filter, setFilter] = useState<"all" | Category>("all");
   const [mode, setMode] = useState<"map" | "list">("map");
   const [zoom, setZoom] = useState(1);
@@ -141,7 +142,7 @@ function GraphPanel() {
     });
   };
   const stopDrag=()=>{drag.current=null;};
-  const jump=(id:string)=>{setSelectedId(id);setFilter("all");};
+  const jump=(id:string)=>{setSelectedId(id);setDetailExpanded(false);setFilter("all");};
   return (
     <section id="explore" className={s.exploreSection} aria-labelledby="explore-title">
       <div className={s.sectionHeading} data-reveal>
@@ -198,7 +199,7 @@ function GraphPanel() {
                 <button onClick={()=>{setZoom(1);setPan({x:0,y:0});}} aria-label="Reset map"><Maximize2 size={15}/></button>
               </div>
             </> : <div className={s.graphList}>
-              {filtered.map(item=><button key={item.id} className={selectedId===item.id?s.graphListActive:""} onClick={()=>setSelectedId(item.id)}>
+              {filtered.map(item=><button key={item.id} className={selectedId===item.id?s.graphListActive:""} onClick={()=>{setSelectedId(item.id);setDetailExpanded(false);}}>
                 <i style={{background:item.color}}/><span><strong>{item.label}</strong><small>{item.short}</small></span><span className={s.listYear}>{item.year}</span><ArrowUpRight size={15}/></button>)}
             </div>}
           </div>
@@ -214,9 +215,13 @@ function GraphPanel() {
             <p>{selected.description}</p>
             {selected.metric && <div className={s.detailMetric}><strong>{selected.metric}</strong><span>{selected.metricLabel}</span></div>}
             <div className={s.detailTags}>{selected.tags.slice(0,5).map(t=><span key={t}>{t}</span>)}</div>
-            <button className={s.detailRead} onClick={()=>{const target=document.getElementById("case-"+selected.id)||document.getElementById("stories");target?.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth",block:"center"});}}>
-              More about this <ArrowRight size={16}/>
+            <button className={s.detailRead} onClick={()=>setDetailExpanded(v=>!v)} aria-expanded={detailExpanded} aria-controls="ath-selected-chapter">
+              {detailExpanded?"Close chapter":"Read full chapter"} <ChevronDown size={16} className={detailExpanded?s.chevronUp:""}/>
             </button>
+            {detailExpanded && <div id="ath-selected-chapter" className={s.detailExpanded}>
+              {selected.details.map((paragraph,i)=><p key={i}>{paragraph}</p>)}
+              {selected.link && <a href={selected.link} target="_blank" rel="noopener noreferrer" className={s.inlineLink}>{selected.linkLabel||"Explore the project"} <ArrowUpRight size={14}/></a>}
+            </div>}
           </aside>
         </div>
         <div className={s.explorerFooter}><span><span className={s.tinyDot}/> An evolving map, not a fixed career path.</span><span>BUILT TO EXPLORE, NOT JUST SCROLL</span></div>
