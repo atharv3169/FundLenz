@@ -1,0 +1,37 @@
+name: Atharva portfolio verification
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'app/atharva/**'
+      - '.github/workflows/atharva-portfolio-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  portfolio:
+    name: Lint, typecheck and production build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Prepare package manager
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.25.0 --activate
+      - name: Install exact dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Lint portfolio code
+        run: pnpm exec eslint app/atharva --max-warnings 0
+      - name: Typecheck application
+        run: pnpm typecheck
+      - name: Build Cloudflare application
+        run: pnpm build
