@@ -208,8 +208,12 @@ try {
   }
   assert.equal(await js('document.querySelector(".fundlenz-drawer-mobile-links").getClientRects().length'), 0);
   await pressTab(true);
-  assert.equal(await js('document.activeElement?.getAttribute("href")'), "/fincalc",
-    "Shift+Tab from close must wrap to the last visible desktop link");
+  const visibleProjectLinks = await js(`Array.from(document.querySelector('[role="dialog"] a[href="/fincalc"]').closest('nav').querySelectorAll('a[href]'))
+    .filter(link => link.getClientRects().length > 0).map(link => link.getAttribute('href'))`);
+  assert.ok(visibleProjectLinks.includes("/fincalc") && visibleProjectLinks.includes("/dcf-atlas"),
+    "FinCalc and the native DCF Atlas route must both be reachable in the desktop drawer");
+  assert.equal(await js('document.activeElement?.getAttribute("href")'), visibleProjectLinks.at(-1),
+    "Shift+Tab from close must wrap to the last visible desktop project link");
   await pressTab();
   assert.equal(await js('document.activeElement?.hasAttribute("data-close-projects")'), true,
     "Tab from FinCalc must wrap to close");
