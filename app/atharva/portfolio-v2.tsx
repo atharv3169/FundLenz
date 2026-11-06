@@ -113,11 +113,11 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
     <div className={s.storyPanelBody}>
      <div className={s.longStoryLead} data-crew-target="lead">
       <span className={s.sectionTag}>THE DEEPER STORY / {String(index+1).padStart(2,"0")}</span>
-      <h4>Behind <em>the work.</em></h4>
-      <p>{story.intro}</p>
+      <h4 data-crew-target="heading">Behind <em>the work.</em></h4>
+      <p data-crew-target="reader-intro">{story.intro}</p>
      </div>
      <div className={s.storyChapterList}>
-      {story.chapters.map((chapter,i)=><article key={chapter.title} className={s.chapter} data-crew-target={i===0?"chapter":undefined}>
+      {story.chapters.map((chapter,i)=><article key={chapter.title} className={s.chapter} data-crew-target={i===0?"chapter":i===1?"chapter-two":undefined}>
        <span>{String(i+1).padStart(2,"0")}</span>
        <div><h5>{chapter.title}</h5>{chapter.paragraphs.map((p,j)=><p key={j}>{p}</p>)}</div>
       </article>)}
