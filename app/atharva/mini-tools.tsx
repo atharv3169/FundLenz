@@ -34,5 +34,29 @@ export function FundDemo(){
    <p className={m.resultFoot}>{top?top[0]+" is the largest combined holding at "+pct(top[1]*100)+".":"Increase an allocation to explore exposure."} Shared names are combined by weight.</p></div>
  </div>;
 }
+
+export function FinCalcDemo(){
+ const [principal,setPrincipal]=useState(100000),[rate,setRate]=useState(12),[months,setMonths]=useState(12);
+ const p=integer(principal,1000,1e9),r=Math.max(0,Math.min(60,rate))/1200,n=integer(months,1,600);
+ const emi=r===0?p/n:p*r/(1-Math.pow(1+r,-n));
+ const total=emi*n;
+ let balance=p;
+ const schedule=Array.from({length:Math.min(n,72)},(_,idx)=>{
+  balance=Math.max(0,balance*(1+r)-emi);
+  return {month:idx+1,balance};
+ });
+ return <div className={m.toolLayout}>
+  <div className={m.toolIntro}><span className={m.miniEyebrow}>INTERACTIVE / FIXED-RATE EMI</span><h4>Understand<br/><em>the payment.</em></h4><p>Change the loan amount, rate and term. Assumes fixed annual nominal interest compounded monthly, with equal payments.</p>
+  <div className={m.numberGrid}>
+  <NumberField label="Loan amount" value={principal} onChange={setPrincipal} min={1000} max={1e9} step={1000} unit="₹"/>
+  <NumberField label="Annual rate" value={rate} onChange={setRate} min={0} max={60} step={.25} unit="%"/>
+  <NumberField label="Term" value={months} onChange={setMonths} min={1} max={600} unit="months"/>
+  </div><button className={m.ghostAction} onClick={()=>{setPrincipal(100000);setRate(12);setMonths(12)}}><RotateCcw size={14}/> Reset</button></div>
+  <div className={m.toolResults}><span className={m.miniEyebrow}>MONTHLY INSTALMENT</span><div className={m.resultBig}><strong>₹{money(emi)}</strong><small>Monthly EMI</small></div>
+  <div className={m.metricPair}><div><strong>₹{money(total)}</strong><small>Total repayment</small></div><div><strong>₹{money(total-p)}</strong><small>Total interest</small></div></div>
+  <div className={m.amortization}><div className={m.amortizationBars}>{schedule.map(point=><i key={point.month} title={"Month "+point.month+": "+money(point.balance)} style={{height:Math.max(2,point.balance/p*100)+"%"}}/>)}</div><span>REMAINING BALANCE · FIRST {schedule.length} MONTHS</span></div></div>
+ </div>;
+}
 /* NEXT */
+
 
