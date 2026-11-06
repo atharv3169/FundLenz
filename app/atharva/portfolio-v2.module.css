@@ -971,3 +971,11 @@
   .storyIsOpen .storyPanelBody .miniStage,
   .storyIsOpen .storyPanelBody .tagsLine{animation:none!important;}
 }
+
+@media(min-width:961px){
+ .portfolioShell .storyIsOpen>.storyWorkspace>.storyStage{
+  position:sticky;
+  top:76px;
+  align-self:start;
+ }
+}
