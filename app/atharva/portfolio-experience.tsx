@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Check, ChevronDown, Code2, Compass, ExternalLink, Github, Mail, Maximize2, Minus, Move, Plus, RotateCcw, ScanLine, Sparkles, X } from "lucide-react";
+import { ArrowDown, ArrowRight, ArrowUpRight, ChevronDown, Code2, Compass, ExternalLink, Github, Mail, Maximize2, Minus, Move, Plus, ScanLine, Sparkles, X } from "lucide-react";
 import { connections, items, learning, skillClouds, work, type Category, type PortfolioItem } from "./content";
 import s from "./portfolio.module.css";
 
@@ -211,7 +211,7 @@ function GraphPanel() {
             <p>{selected.description}</p>
             {selected.metric && <div className={s.detailMetric}><strong>{selected.metric}</strong><span>{selected.metricLabel}</span></div>}
             <div className={s.detailTags}>{selected.tags.slice(0,5).map(t=><span key={t}>{t}</span>)}</div>
-            <button className={s.detailRead} onClick={()=>document.getElementById("case-"+selected.id)?.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth",block:"center"}) || document.getElementById("stories")?.scrollIntoView({behavior:"smooth"})}>
+            <button className={s.detailRead} onClick={()=>{const target=document.getElementById("case-"+selected.id)||document.getElementById("stories");target?.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth",block:"center"});}}>
               More about this <ArrowRight size={16}/>
             </button>
           </aside>
