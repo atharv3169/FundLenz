@@ -156,9 +156,9 @@ export default function CursorCrew({ signal }: { signal: MorphSignal | null }) {
       const returning = t >= .80;
       layer.dataset.phase = t < .085 ? "emerging" : returning ? "returning" : state.signal.opening ? "assembling" : "dismantling";
       layer.dataset.working = returning ? "false" : "true";
-      guide(titleGuide,title,state.signal.opening?t>.15&&t<.60:t>.35&&t<.77);
-      guide(artGuide,figure,state.signal.opening?t>.19&&t<.65:t>.33&&t<.78);
-      guide(textGuide,heading,state.signal.opening?t>.40&&t<.78:t>.12&&t<.37);
+      guide(titleGuide,title,state.signal.opening?t>.12&&t<.78:t>.30&&t<.80);
+      guide(artGuide,figure,state.signal.opening?t>.16&&t<.79:t>.31&&t<.80);
+      guide(textGuide,heading,state.signal.opening?t>.38&&t<.79:t>.09&&t<.38);
 
       const updated: Agent[] = agents.current;
       nodes.forEach((node, i) => {
