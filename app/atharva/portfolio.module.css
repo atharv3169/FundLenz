@@ -151,6 +151,9 @@
 .detailTags {display:flex;gap:7px;flex-wrap:wrap;margin-top:24px;}
 .detailTags span {font-size:10px;padding:6px 8px;border:1px solid #3b4d51;color:#a7c0bc;border-radius:3px;}
 .detailRead {display:flex;justify-content:space-between;align-items:center;width:100%;padding:13px 0;margin-top:auto;border:0;border-top:1px solid #35434a;background:none;font-size:12px;font-weight:650;color:#dbebdf!important;}
+.detailExpanded {max-height:340px;overflow:auto;margin-top:16px;padding:4px 5px 8px 0;scrollbar-color:#64776e #152025;animation:fadeUp .3s ease both;}
+.detailExpanded p {font-size:12px;line-height:1.8;color:#bdcac6;letter-spacing:0;margin-bottom:15px;}
+.detailExpanded a {margin-bottom:12px;}
 .detailRead svg {transition:transform .2s;}
 .detailRead:hover svg {transform:translateX(5px);}
 .explorerFooter {display:flex;justify-content:space-between;gap:15px;padding:15px 23px;border-top:1px solid #28343f;font-size:9px;color:#72848a;letter-spacing:.12em;}
