@@ -1,0 +1,32 @@
+.portfolioShell{--bg:#080b10;--ink:#eef2ec;--muted:#a4b0b2;--gold:#d8bc91;position:relative;isolation:isolate;overflow:hidden;background:var(--bg);color:var(--ink);min-height:100vh;font-family:Inter,"Segoe UI",Arial,sans-serif;line-height:1.55;letter-spacing:-.02em;}
+.portfolioShell *, .portfolioShell *::before,.portfolioShell *::after{box-sizing:border-box;}
+.portfolioShell h1,.portfolioShell h2,.portfolioShell h3,.portfolioShell h4,.portfolioShell h5{font-weight:500;line-height:1.06;letter-spacing:-.064em;margin:0;}
+.portfolioShell p{margin:0;}.portfolioShell a{text-decoration:none;color:inherit}.portfolioShell button{font:inherit;cursor:pointer}.portfolioShell button:focus-visible,.portfolioShell a:focus-visible,.portfolioShell input:focus-visible,.portfolioShell textarea:focus-visible{outline:2px solid #d2eacc;outline-offset:4px}.portfolioShell ::selection{background:#d1e6cf;color:#111b18}
+.portfolioShell em{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-style:italic;letter-spacing:-.06em;color:#d8bb8c;}
+.progressBar{position:fixed;top:0;left:0;height:2px;width:100%;transform-origin:left;background:#c9e8ca;z-index:200;pointer-events:none;}
+.siteNav{position:sticky;top:0;z-index:80;height:76px;display:flex;align-items:center;gap:40px;padding:0 clamp(24px,5vw,92px);border-bottom:1px solid #ffffff16;background:#080b10db;backdrop-filter:blur(20px);}
+.mark{font-size:25px;font-weight:750;letter-spacing:-.15em;line-height:1;white-space:nowrap}.mark span:first-child{font-weight:400;color:#798890}.mark span:last-child{color:#bfdac4;}
+.navDescriptor{font-size:10px;letter-spacing:.17em;color:#859298;white-space:nowrap}.navLinks{display:flex;align-items:center;gap:clamp(15px,2.5vw,36px);margin-left:auto;}
+.navLinks a{color:#cad4d1;font-size:12px;white-space:nowrap;display:inline-flex;gap:8px;align-items:center;transition:color .2s ease;}.navLinks a:hover{color:#fff}.navLinks a:last-child{border:1px solid #4b625a;padding:12px 16px;border-radius:2px;}
+.menuToggle,.mobileNav{display:none;}
+.hero{position:relative;display:flex;align-items:center;min-height:750px;height:calc(100svh - 76px);max-height:1050px;overflow:hidden;background:radial-gradient(ellipse 75% 85% at 65% 50%,#19312f80,transparent 75%),#090d13;border-bottom:1px solid #304038;}
+.heroContent{position:relative;z-index:2;width:min(1150px,100%);padding:70px clamp(25px,8vw,145px);animation:enterUp 1s cubic-bezier(.14,1,.28,1) both;}
+.eyebrow,.sectionTag{display:flex;align-items:center;gap:12px;letter-spacing:.18em;color:#d5bd91;font-weight:650;font-size:11px;}
+.eyebrow{color:#b7c9c4;white-space:nowrap}.eyebrow>i{height:7px;width:7px;display:inline-block;border-radius:50%;background:#b6e9c5;box-shadow:0 0 10px #a4e4b8;flex:none}.eyebrow span{color:#5b786e;}
+.hero h1{font-size:clamp(90px,13.4vw,194px);line-height:.88;letter-spacing:-.105em;margin:30px 0 36px;}.hero h1 em{color:#cfe9d3;}
+.heroMessage{font-size:clamp(26px,2.95vw,45px);line-height:1.22;letter-spacing:-.055em;max-width:870px;}.heroIntro{font-size:15px;line-height:1.9;letter-spacing:0;color:#adbdc0;max-width:520px;margin-top:25px;}
+.heroLink{display:inline-flex;align-items:center;gap:33px;padding:16px 22px;background:#cce6cf;color:#111e18!important;font-size:13px;font-weight:700;margin-top:35px;transition:transform .25s,background .25s;}.heroLink:hover{transform:translateY(-5px);background:#eeffe9;}
+.heroFigure{position:absolute;inset:0 -13% 0 32%;opacity:.75;pointer-events:none;display:flex;align-items:center;justify-content:center;mask-image:linear-gradient(90deg,transparent 0%,#000 26%,#000 100%);}
+.heroWave{width:100%;height:100%;min-width:700px;filter:drop-shadow(0 0 60px #b6ddb42b);}
+.waveDraw{stroke-dasharray:1800;stroke-dashoffset:1800;animation:trace 7s ease-in-out infinite alternate}.waveGhost{stroke-dasharray:1600;stroke-dashoffset:1600;animation:trace 9s ease-in-out 1s infinite alternate}.wavePoint{animation:softPulse 3.5s ease-in-out infinite alternate;}
+.heroFoot,.stageBottom{position:absolute;bottom:24px;left:clamp(25px,8vw,145px);right:clamp(25px,8vw,145px);display:flex;align-items:center;justify-content:space-between;gap:20px;z-index:3;font-size:10px;letter-spacing:.15em;color:#859a9d}.heroFoot>span:last-child,.stageBottom>span:last-child{display:flex;align-items:center;gap:12px;}
+.currencyRibbon{height:67px;background:#10171d;border-bottom:1px solid #36433b;overflow:hidden;display:flex;align-items:center;}
+.currencyRibbon>div{display:flex;width:max-content;animation:ticker 45s linear infinite;}
+.currencyRibbon span{display:block;white-space:nowrap;color:#a5b7b2;font-size:11px;letter-spacing:.22em;font-weight:600;padding-right:60px;word-spacing:20px;}.currencyRibbon b{color:#d2ba93;font-size:19px;font-weight:400;margin:0 17px;}
+.about,.skillsSection,.interestsSection{padding:clamp(105px,11vw,175px) clamp(25px,8vw,145px);max-width:1600px;margin:auto;}
+.about h2,.skillsSection h2{font-size:clamp(45px,6.6vw,100px);margin-top:30px;}.aboutColumns{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,7vw,120px);margin:70px 0 0 18%}.aboutColumns p{font-size:16px;line-height:1.95;color:#b1c0c0;letter-spacing:0;}
+.workIntro{min-height:80svh;position:relative;padding:clamp(100px,13vw,200px) clamp(25px,8vw,145px);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;border-top:1px solid #354139;border-bottom:1px solid #354139;background:radial-gradient(ellipse at 85% 50%,#23332866,transparent 60%),#10161b;}
+.workIntro h2{font-size:clamp(66px,10vw,155px);margin:30px 0;}.workIntro>p{color:#acbab9;font-size:16px;max-width:560px;line-height:1.8;letter-spacing:0;}
+.workCount{position:absolute;right:8%;bottom:13%;font-size:clamp(75px,12vw,180px);letter-spacing:-.09em;font-weight:300;opacity:.18;display:flex;gap:14px;align-items:flex-end;}.workCount span{font-size:10px;letter-spacing:.17em;padding-bottom:22px;}
+.portfolioShell [data-reveal]{opacity:0;transform:translateY(24px);transition:opacity .82s ease,transform 1s cubic-bezier(.16,1,.3,1)}.portfolioShell [data-reveal][data-visible="true"]{opacity:1;transform:translateY(0)}
+/* MORE */
