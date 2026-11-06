@@ -132,6 +132,14 @@ try{
   await js('document.querySelector("#story-study button[aria-expanded]").click()');
   await until(()=>js('Boolean(document.querySelector("#full-study input[aria-label]"))'));
   assert.ok(await js('document.querySelectorAll("#full-study input[type=checkbox]").length')>=3);
+  await js('document.getElementById("story-synk").scrollIntoView({block:"start",behavior:"instant"})');
+  await sleep(800);
+  await shot("desktop-synk-fpa.png");
+  assert.ok(await js('document.querySelector("#story-synk").textContent.includes("paywall implementation")'),"SYNK FP&A work is source-correct");
+  await js('document.querySelector("#story-synk button[aria-expanded]").click()');
+  await sleep(1430);
+  await shot("desktop-synk-fpa-expanded.png");
+  assert.ok(await js('document.querySelector("#full-synk").textContent.includes("potential M&A")'),"SYNK long story contains strategy and M&A work");
   await cmd("Emulation.setDeviceMetricsOverride",{width:390,height:844,deviceScaleFactor:1,mobile:true});
   await js('window.scrollTo({top:0,behavior:"instant"})');await sleep(700);
   await shot("mobile-hero.png");
