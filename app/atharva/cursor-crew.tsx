@@ -47,11 +47,12 @@ export default function CursorCrew({signal}:{signal:MorphSignal|null}){
  const current=useRef<XY[]>([]);
  const choreography=useRef<{signal:MorphSignal;start:number}|null>(null);
  useEffect(()=>{
-  const desktop=window.matchMedia("(min-width: 1024px) and (hover: hover) and (pointer: fine)");
+  const desktop=window.matchMedia("(min-width: 1024px)");
+  const coarse=window.matchMedia("(pointer: coarse)");
   const reduce=window.matchMedia("(prefers-reduced-motion: reduce)");
-  const measure=()=>setEnabled(desktop.matches&&!reduce.matches);
-  measure();desktop.addEventListener("change",measure);reduce.addEventListener("change",measure);
-  return()=>{desktop.removeEventListener("change",measure);reduce.removeEventListener("change",measure);};
+  const measure=()=>setEnabled(desktop.matches&&!coarse.matches&&!reduce.matches);
+  measure();desktop.addEventListener("change",measure);coarse.addEventListener("change",measure);reduce.addEventListener("change",measure);
+  return()=>{desktop.removeEventListener("change",measure);coarse.removeEventListener("change",measure);reduce.removeEventListener("change",measure);};
  },[]);
  useEffect(()=>{if(signal&&enabled)choreography.current={signal,start:performance.now()};},[signal,enabled]);
  useEffect(()=>{
