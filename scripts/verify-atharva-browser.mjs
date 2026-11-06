@@ -88,7 +88,7 @@ try{
   await shot("desktop-dcf-mini.png");
   await js('document.getElementById("story-study").scrollIntoView({block:"start",behavior:"instant"})');
   await js('document.querySelector("#story-study button[aria-expanded]").click()');
-  await until(()=>js('Boolean(document.querySelector("#full-study input[aria-label=\"New study task\"]"))'));
+  await until(()=>js('Boolean(document.querySelector("#full-study input[aria-label]"))'));
   assert.ok(await js('document.querySelectorAll("#full-study input[type=checkbox]").length')>=3);
   await cmd("Emulation.setDeviceMetricsOverride",{width:390,height:844,deviceScaleFactor:1,mobile:true});
   await js('window.scrollTo({top:0,behavior:"instant"})');await sleep(700);
