@@ -4,15 +4,20 @@ import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, GitBranch, Mail, Menu, 
 import { stories, learning, interests, type Story } from "./stories-data";
 import { HeroWave, SceneFigure } from "./scenes";
 import { MiniTools } from "./mini-tools";
+import CursorCrew, { type MorphSignal } from "./cursor-crew";
 import s from "./portfolio-v2.module.css";
 
-function StorySection({story,index}:{story:Story;index:number}){
+function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(change:Omit<MorphSignal,"sequence">)=>void}){
  const [open,setOpen]=useState(false);
  const sectionRef=useRef<HTMLElement>(null);
  const toggleRef=useRef<HTMLButtonElement>(null);
  const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
 
  const changeMode=(next:boolean)=>{
+   const button=toggleRef.current?.getBoundingClientRect();
+   if(window.matchMedia("(min-width: 1024px)").matches&&!window.matchMedia("(pointer: coarse)").matches&&!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+     onMorph({storyId:story.id,opening:next,originX:button?button.left+button.width/2:window.innerWidth/2,originY:button?button.top+button.height/2:window.innerHeight/2});
+   }
    // Keep one scroll context. Do not launch a competing smooth scroll
    // while the spatial layout is animating.
    sectionRef.current?.scrollIntoView({behavior:"instant",block:"start"});
@@ -50,7 +55,7 @@ function StorySection({story,index}:{story:Story;index:number}){
     <div className={s.storyCopy}>
      <div className={s.storyEyebrow}><span className={s.storyIndex}>{String(index+1).padStart(2,"0")}</span><span>{story.eyebrow}</span></div>
      <p className={s.storyYears}>{story.type}{story.year&&<><i> / </i> {story.year}</>}</p>
-     <h3>{story.title}<span>.</span></h3>
+     <h3 data-crew-target="title">{story.title}<span>.</span></h3>
      <p className={s.storyHook}>{story.hook}</p>
      <p className={s.storyIntro}>{story.intro}</p>
      <div className={s.storyActions}>
@@ -69,7 +74,7 @@ function StorySection({story,index}:{story:Story;index:number}){
      </div>
      <div className={s.storyNumbers}>{story.numbers.map((n,i)=><div key={i}><strong>{n.value}</strong><span>{n.label}</span></div>)}</div>
     </div>
-    <div className={s.storyIllustration}>
+    <div className={s.storyIllustration} data-crew-target="figure">
       <SceneFigure id={story.id}/>
       <span className={s.storyFigureWatermark}>{String(index+1).padStart(2,"0")}</span>
     </div>
@@ -91,7 +96,7 @@ function StorySection({story,index}:{story:Story;index:number}){
      </button>
     </div>
     <div className={s.storyPanelBody}>
-     <div className={s.longStoryLead}>
+     <div className={s.longStoryLead} data-crew-target="lead">
       <span className={s.sectionTag}>THE DEEPER STORY / {String(index+1).padStart(2,"0")}</span>
       <h4>Behind <em>the work.</em></h4>
       <p>{story.intro}</p>
@@ -119,14 +124,48 @@ function StorySection({story,index}:{story:Story;index:number}){
 export default function PortfolioV2(){
  const [navOpen,setNavOpen]=useState(false);
  const [progress,setProgress]=useState(0);
+ const [morph,setMorph]=useState<MorphSignal|null>(null);
+ const count=useRef(0);
+ const notifyMorph=(change:Omit<MorphSignal,"sequence">)=>setMorph({...change,sequence:++count.current});
  useEffect(()=>{
   const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.setAttribute("data-visible","true");observer.unobserve(e.target)}}),{rootMargin:"0px 0px -60px 0px",threshold:.06});
   document.querySelectorAll("#atharva-portfolio [data-reveal]").forEach(el=>observer.observe(el));
-  const onScroll=()=>{const max=document.documentElement.scrollHeight-window.innerHeight;setProgress(max>0?window.scrollY/max*100:0)};
+  const sections=Array.from(document.querySelectorAll<HTMLElement>("#atharva-portfolio [data-story]"));
+  const colors=stories.map(story=>{
+    const hex=story.accent.slice(1);
+    return [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16));
+  });
+  const mix=(a:number,b:number,t:number)=>Math.round(a+(b-a)*t);
+  const soften=(x:number)=>{const v=Math.max(0,Math.min(1,x));return v*v*(3-2*v);};
+  const onScroll=()=>{
+    const max=document.documentElement.scrollHeight-window.innerHeight;
+    setProgress(max>0?window.scrollY/max*100:0);
+    const container=document.getElementById("atharva-portfolio");
+    if(!container||!sections.length)return;
+    const y=window.scrollY+window.innerHeight*.5;
+    const anchors=sections.map(el=>{
+      const rect=el.getBoundingClientRect();
+      return rect.top+window.scrollY+rect.height*.5;
+    });
+    let lower=0;
+    while(lower<anchors.length-2&&y>anchors[lower+1])lower++;
+    const upper=Math.min(lower+1,anchors.length-1);
+    const interval=Math.max(1,anchors[upper]-anchors[lower]);
+    const t=soften((y-anchors[lower])/interval);
+    const color=colors[lower].map((ch,i)=>mix(ch,colors[upper][i],t));
+    const start=sections[0].getBoundingClientRect().top+window.scrollY;
+    const last=sections[sections.length-1];
+    const end=last.getBoundingClientRect().bottom+window.scrollY;
+    const alpha=soften((y-start+350)/650)*soften((end-y+350)/650);
+    container.style.setProperty("--ambient-rgb",color.join(" "));
+    container.style.setProperty("--wash-alpha",alpha.toFixed(3));
+  };
   onScroll();window.addEventListener("scroll",onScroll,{passive:true});
   return()=>{observer.disconnect();window.removeEventListener("scroll",onScroll)};
  },[]);
  return <main className={s.portfolioShell} id="atharva-portfolio">
+  <div className={s.ambientWash} aria-hidden="true"/>
+  <CursorCrew signal={morph}/>
   <div className={s.progressBar} style={{transform:"scaleX("+progress/100+")"}} aria-hidden="true"/>
   <nav className={s.siteNav} aria-label="Portfolio navigation">
    <a href="#top" className={s.mark} aria-label="Atharva Sahu, back to top">A<span> / </span>S<span>.</span></a>
@@ -147,7 +186,7 @@ export default function PortfolioV2(){
     <div className={s.aboutColumns} data-reveal><p>Engineering gave me a way of thinking. Working on accounts and machinery-financing decisions at Shyam Construction gave me a reason to use it. I wanted to understand why a business makes one investment instead of another, and what happens when the numbers stop cooperating.</p><p>That curiosity took me into mutual-fund liquidity research, FundLenz, FinCalc and now DCF modelling. I&apos;m interested in corporate finance, investment research and technology that makes complex decisions clearer. There&apos;s still a lot I want to learn.</p></div>
    </section>
    <section className={s.workIntro} id="work"><span className={s.sectionTag}>02 / THE WORK, UP CLOSE</span><h2>Things I&apos;ve<br/><em>actually done.</em></h2><p>Every section is a chapter, not a card. Open any story to go deeper—and try the small working demos built into a few of them.</p><div className={s.workCount}>{String(stories.length).padStart(2,"0")} <span>PROJECTS & EXPERIENCES</span></div></section>
-   {stories.map((story,i)=><StorySection key={story.id} story={story} index={i}/>)}
+   {stories.map((story,i)=><StorySection key={story.id} story={story} index={i} onMorph={notifyMorph}/>)}
 
    <section id="skills" className={s.skillsSection}><div data-reveal><span className={s.sectionTag}>03 / HOW I WORK</span><h2>Tools, methods<br/><em>and things I keep learning.</em></h2><p>Subjects I&apos;ve worked with and programmes I&apos;ve completed. They&apos;re presented as plain text, not interactive buttons or professional licences.</p></div>
     <div className={s.skillsColumns}>{learning.map((group,i)=><div className={s.skillGroup} key={group.title} data-reveal><span>0{i+1}</span><h3>{group.title}</h3><div className={s.skillsText}>{group.skills.map((name,j)=><span key={name}>{name}{j!==group.skills.length-1?<i> / </i>:""}</span>)}</div></div>)}</div>
