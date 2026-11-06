@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import PortfolioExperience from "./portfolio-experience";
+import "./route.css";
 
 export const metadata: Metadata = {
   title: "Atharva Sahu — Finance, Research & Things I Build",
