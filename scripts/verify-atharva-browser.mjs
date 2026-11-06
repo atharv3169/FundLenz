@@ -69,6 +69,8 @@ try{
   assert.equal(await js('document.getElementById("journey")===null'),true,"Timeline removed");
   assert.equal(await js('document.querySelector("#story-shyam a").getAttribute("href")'),"https://shyamconstruction.org/");
   assert.equal(await js('document.querySelector("#story-crowd a")===null'),true,"Crowd has no external arrow");
+  assert.equal(await js('document.querySelector("#story-dcf a")===null'),true,"Upcoming DCF route should not be a broken link");
+  assert.equal(await js('document.body.innerText.includes("CURIOUSITY")'),false,"No typo in hero");
   await shot("desktop-hero.png");
   await js('document.getElementById("story-shyam").scrollIntoView({block:"start",behavior:"instant"})');
   await sleep(500);
@@ -80,11 +82,15 @@ try{
   await js('document.querySelector("#story-fundlenz button[aria-expanded]").click()');
   await until(()=>js('Boolean(document.querySelector("#full-fundlenz input[type=range]"))'));
   assert.ok(await js('document.getElementById("full-fundlenz").textContent.includes("ALPHA")'),"Fund mini tool populated");
+  await js('document.querySelector("#full-fundlenz input[type=range]").scrollIntoView({block:"center",behavior:"instant"})');
+  await sleep(950);
   await shot("desktop-fund-mini.png");
   await js('document.getElementById("story-dcf").scrollIntoView({block:"start",behavior:"instant"})');
   await js('document.querySelector("#story-dcf button[aria-expanded]").click()');
   await until(()=>js('Boolean(document.querySelector("#full-dcf input[type=number]"))'));
   assert.ok(await js('document.getElementById("full-dcf").textContent.includes("ENTERPRISE VALUE")'));
+  await js('document.querySelector("#full-dcf input[type=number]").scrollIntoView({block:"center",behavior:"instant"})');
+  await sleep(950);
   await shot("desktop-dcf-mini.png");
   await js('document.getElementById("story-study").scrollIntoView({block:"start",behavior:"instant"})');
   await js('document.querySelector("#story-study button[aria-expanded]").click()');
@@ -98,7 +104,7 @@ try{
   await js('document.querySelector(\'[aria-label="Open navigation"]\').click()');
   assert.equal(await js('document.querySelector(\'[aria-label="Close navigation"]\').getAttribute("aria-expanded")'),"true");
   await js('document.querySelector(\'[aria-label="Close navigation"]\').click()');
-  await js('document.getElementById("story-crowd").scrollIntoView({block:"start",behavior:"instant"})');await sleep(600);
+  await js('document.getElementById("story-crowd").scrollIntoView({block:"start",behavior:"instant"})');await sleep(950);
   await shot("mobile-crowd.png");
   dims=await js('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})');
   assert.ok(dims.scroll<=dims.client+2,"Mobile story overflow "+JSON.stringify(dims));
