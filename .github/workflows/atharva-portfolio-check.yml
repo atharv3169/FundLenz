@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'app/atharva/**'
+      - 'scripts/atharva-browser-fixture/**'
+      - 'scripts/verify-atharva-browser.mjs'
       - '.github/workflows/atharva-portfolio-check.yml'
   workflow_dispatch:
 
@@ -35,3 +37,13 @@ jobs:
         run: pnpm typecheck
       - name: Build Cloudflare application
         run: pnpm build
+      - name: Exercise portfolio in desktop and mobile Chromium
+        run: pnpm exec node scripts/verify-atharva-browser.mjs
+      - name: Preserve portfolio review screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: atharva-portfolio-visual-review
+          path: work/atharva-screenshots
+          retention-days: 14
+          if-no-files-found: warn
