@@ -85,6 +85,7 @@ function guide(el: HTMLDivElement | null, rect: DOMRect | null, visible: boolean
   el.style.width = (right - left) + "px";
   el.style.height = (bottom - top) + "px";
   el.style.opacity = "1";
+  el.dataset.everVisible="true";
   const badge = el.querySelector<HTMLElement>("[data-dim]");
   if (badge) badge.textContent = Math.round(rect.width) + " × " + Math.round(rect.height);
 }
