@@ -13,7 +13,7 @@ export type MorphSignal = {
 
 type XY = { x: number; y: number };
 type Agent = XY & { vx: number; vy: number };
-type Target = "title" | "figure" | "lead" | "chapter";
+type Target = "title" | "figure" | "metrics" | "heading" | "reader-intro" | "chapter" | "chapter-two";
 type Task = {
   target: Target;
   u: number;
@@ -30,27 +30,27 @@ const COLORS = [
   "#80a8fb", "#e9d893", "#a1d6b8", "#f5a8a1", "#a6c4fc", "#b3e4db",
 ];
 const TASKS: Task[] = [
-  { target: "title", u: 0, v: 0, begin: .10, finish: .53, shape: "arrow", label: "MOVE" },
-  { target: "title", u: 1, v: 0, begin: .12, finish: .56, shape: "resize", label: "SCALE" },
-  { target: "title", u: 0, v: 1, begin: .14, finish: .56, shape: "arrow", label: "ALIGN" },
-  { target: "title", u: 1, v: 1, begin: .16, finish: .54, shape: "resize", label: "FIT" },
-  { target: "figure", u: 0, v: 0, begin: .13, finish: .60, shape: "arrow", label: "DRAG" },
-  { target: "figure", u: 1, v: 0, begin: .15, finish: .62, shape: "resize", label: "WIDTH" },
-  { target: "figure", u: 1, v: 1, begin: .18, finish: .62, shape: "resize", label: "SCALE" },
-  { target: "figure", u: 0, v: 1, begin: .19, finish: .65, shape: "resize", label: "HEIGHT" },
-  { target: "figure", u: .51, v: .21, begin: .21, finish: .61, shape: "arrow", label: "PLACE" },
-  { target: "figure", u: .4, v: .79, begin: .22, finish: .65, shape: "arrow", label: "POSITION" },
-  { target: "lead", u: .04, v: .05, begin: .31, finish: .74, shape: "text", label: "TYPE" },
-  { target: "lead", u: .87, v: .2, begin: .34, finish: .74, shape: "text", label: "WRITE" },
-  { target: "lead", u: .11, v: .88, begin: .36, finish: .75, shape: "arrow", label: "PLACE" },
-  { target: "lead", u: .88, v: .89, begin: .37, finish: .77, shape: "text", label: "TYPE" },
-  { target: "chapter", u: .08, v: .08, begin: .42, finish: .78, shape: "text", label: "WRITE" },
-  { target: "chapter", u: .72, v: .16, begin: .44, finish: .79, shape: "text", label: "ALIGN" },
-  { target: "chapter", u: .12, v: .81, begin: .45, finish: .81, shape: "arrow", label: "PLACE" },
-  { target: "chapter", u: .77, v: .83, begin: .47, finish: .81, shape: "text", label: "TYPE" },
+  { target:"title",u:0,v:0,begin:.02,finish:.62,shape:"arrow",label:"MOVE" },
+  { target:"title",u:1,v:0,begin:.02,finish:.62,shape:"resize",label:"RESIZE" },
+  { target:"title",u:0,v:1,begin:.04,finish:.64,shape:"arrow",label:"ALIGN" },
+  { target:"title",u:1,v:1,begin:.04,finish:.64,shape:"resize",label:"FIT" },
+  { target:"figure",u:0,v:0,begin:.06,finish:.68,shape:"arrow",label:"DRAG" },
+  { target:"figure",u:1,v:0,begin:.07,finish:.68,shape:"resize",label:"SCALE" },
+  { target:"figure",u:1,v:1,begin:.08,finish:.68,shape:"resize",label:"RESIZE" },
+  { target:"figure",u:0,v:1,begin:.09,finish:.68,shape:"resize",label:"PLACE" },
+  { target:"metrics",u:.12,v:.25,begin:.1,finish:.64,shape:"arrow",label:"MOVE" },
+  { target:"metrics",u:.82,v:.48,begin:.1,finish:.65,shape:"arrow",label:"ALIGN" },
+  { target:"heading",u:.04,v:.22,begin:.27,finish:.71,shape:"text",label:"TYPE" },
+  { target:"heading",u:.7,v:.54,begin:.28,finish:.71,shape:"text",label:"PLACE" },
+  { target:"reader-intro",u:.08,v:.38,begin:.3,finish:.73,shape:"text",label:"WRITE" },
+  { target:"reader-intro",u:.85,v:.58,begin:.31,finish:.75,shape:"text",label:"TYPE" },
+  { target:"chapter",u:.06,v:.12,begin:.34,finish:.76,shape:"text",label:"PLACE" },
+  { target:"chapter",u:.72,v:.3,begin:.35,finish:.77,shape:"text",label:"WRITE" },
+  { target:"chapter-two",u:.08,v:.16,begin:.39,finish:.78,shape:"text",label:"TYPE" },
+  { target:"chapter-two",u:.85,v:.4,begin:.4,finish:.79,shape:"text",label:"FINISH" },
 ];
 
-const TOTAL_MS = 3250;
+const TOTAL_MS = 2550;
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 const ease = (v: number) => { const p = clamp(v, 0, 1); return p * p * (3 - 2 * p); };
 const eligible = () =>
@@ -60,7 +60,7 @@ const eligible = () =>
 
 function bounds(section: HTMLElement | null, target: Target): DOMRect | null {
   if (!section) return null;
-  const name = target === "chapter" ? "[data-crew-target=chapter]" : "[data-crew-target=" + target + "]";
+  const name = "[data-crew-target=" + target + "]";
   const el = section.querySelector<HTMLElement>(name);
   if (!el) return null;
   const rect = el.getBoundingClientRect();
@@ -142,36 +142,49 @@ export default function CursorCrew({ signal }: { signal: MorphSignal | null }) {
       const section = document.getElementById("story-" + state.signal.storyId);
       const title = bounds(section, "title");
       const figure = bounds(section, "figure");
-      const lead = bounds(section, "lead");
-      const chapter = bounds(section, "chapter");
-      const rects: Record<Target, DOMRect | null> = { title, figure, lead, chapter };
+      const heading = bounds(section, "heading");
+      const rects: Record<Target, DOMRect | null> = {
+        title,figure,
+        metrics:bounds(section,"metrics"),
+        heading,
+        "reader-intro":bounds(section,"reader-intro"),
+        chapter:bounds(section,"chapter"),
+        "chapter-two":bounds(section,"chapter-two"),
+      };
       const origin = { x: state.signal.originX, y: state.signal.originY };
       const home = hasPointer.current ? pointer.current : origin;
-      const returning = t >= .82;
-      layer.dataset.phase = t < .12 ? "emerging" : returning ? "returning" : "building";
+      const returning = t >= .80;
+      layer.dataset.phase = t < .085 ? "emerging" : returning ? "returning" : state.signal.opening ? "assembling" : "dismantling";
       layer.dataset.working = returning ? "false" : "true";
-      guide(titleGuide, title, t > .20 && t < .55);
-      guide(artGuide, figure, t > .24 && t < .67);
-      guide(textGuide, lead, t > .49 && t < .79 && !!lead);
+      guide(titleGuide,title,state.signal.opening?t>.15&&t<.60:t>.35&&t<.77);
+      guide(artGuide,figure,state.signal.opening?t>.19&&t<.65:t>.33&&t<.78);
+      guide(textGuide,heading,state.signal.opening?t>.40&&t<.78:t>.12&&t<.37);
 
       const updated: Agent[] = agents.current;
       nodes.forEach((node, i) => {
         const task = TASKS[i], a = updated[i];
         const angle = (i / TASKS.length) * Math.PI * 2;
-        const wave = 19 + (i % 4) * 6;
-        const burst = ease(t / .14);
+        const wave = 6 + (i % 4) * 5;
+        const burst = ease(t / .065);
         const spread = {
           x: origin.x + Math.cos(angle * 2.3) * wave * burst,
           y: origin.y + Math.sin(angle * 2.3) * wave * burst,
         };
         const movingTarget = sample(rects[task.target], task) || spread;
-        const formation = ease((t - task.begin) / .24);
+        const leftTask=i<10;
+        const start=state.signal.opening
+          ? (leftTask?.015+(i%4)*.009:.24+(i%4)*.011)
+          : (leftTask?.26+(i%4)*.012:.02+(i%4)*.009);
+        const stop=state.signal.opening
+          ? (leftTask?.67:.79)
+          : (leftTask?.79:.38);
+        const formation=ease((t-start)/.15);
         let target = {
           x: spread.x + (movingTarget.x - spread.x) * formation,
           y: spread.y + (movingTarget.y - spread.y) * formation,
         };
         // After completing its work each agent gathers behind the real pointer.
-        const recall = ease((t - .79) / .195);
+        const recall = ease((t - .795) / .19);
         const trail = (1 - recall) * 13;
         const gather = {
           x: home.x + Math.cos(angle + now * .003) * trail,
@@ -196,20 +209,26 @@ export default function CursorCrew({ signal }: { signal: MorphSignal | null }) {
         }
         const dx = target.x - a.x, dy = target.y - a.y;
         const dist = Math.hypot(dx, dy);
-        const speed = Math.min(returning ? 1400 : 1160, dist * (returning ? 6.2 : 4.7));
+        const speed = Math.min(returning?2600:2300,dist*(returning?9:8.7));
         const desiredX = dist > .01 ? dx / dist * speed : 0;
         const desiredY = dist > .01 ? dy / dist * speed : 0;
-        const force = Math.min(1, dt * (returning ? 12 : 9.2));
-        a.vx += (desiredX - a.vx) * force + avoidX * dt * 5;
-        a.vy += (desiredY - a.vy) * force + avoidY * dt * 5;
+        const force=Math.min(1,dt*(returning?22:18));
+        a.vx+=(desiredX-a.vx)*force+avoidX*dt*1.4;
+        a.vy+=(desiredY-a.vy)*force+avoidY*dt*1.4;
         a.x += a.vx * dt;
         a.y += a.vy * dt;
         node.style.transform = "translate3d(" + a.x.toFixed(1) + "px," + a.y.toFixed(1) + "px,0)";
         // Tool changes are tied to its particular build task.
-        const doingTask = t > task.begin + .12 && t < task.finish && !returning;
-        const role = doingTask ? task.shape : "arrow";
-        if (node.dataset.tool !== role) node.dataset.tool = role;
-        const opacity = ease((t - i * .0025) / .055) * (1 - ease((t - .92) / .077));
+        const doingTask=t>start+.11&&t<stop&&!returning;
+        const role=doingTask?(state.signal.opening?task.shape:leftTask?task.shape:"text"):"arrow";
+        if(node.dataset.tool!==role)node.dataset.tool=role;
+        const label=state.signal.opening?task.label:(leftTask?"RESTORE":"ERASE");
+        if(node.dataset.label!==label){
+          node.dataset.label=label;
+          const badge=node.querySelector("span");if(badge)badge.textContent=label;
+        }
+        node.dataset.active=doingTask&&dist<70?"true":"false";
+        const opacity=ease((t-i*.0017)/.04)*(1-ease((t-.89)/.105));
         node.style.opacity = opacity.toFixed(2);
         const rotating = clamp(a.vx * .012, -15, 15);
         node.style.setProperty("--turn", rotating.toFixed(1) + "deg");
