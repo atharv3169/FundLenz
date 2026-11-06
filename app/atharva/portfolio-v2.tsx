@@ -69,7 +69,16 @@ export default function PortfolioV2(){
    </section>
    <section className={s.workIntro} id="work"><span className={s.sectionTag}>02 / THE WORK, UP CLOSE</span><h2>Things I've<br/><em>actually done.</em></h2><p>Every section is a chapter, not a card. Open any story to go deeper—and try the small working demos built into a few of them.</p><div className={s.workCount}>{String(stories.length).padStart(2,"0")} <span>PROJECTS & EXPERIENCES</span></div></section>
    {stories.map((story,i)=><StorySection key={story.id} story={story} index={i}/>)}
-   /* FOOTERSECTIONS */
+
+   <section id="skills" className={s.skillsSection}><div data-reveal><span className={s.sectionTag}>03 / HOW I WORK</span><h2>Tools, methods<br/><em>and things I keep learning.</em></h2><p>Subjects I've worked with and programmes I've completed. They're presented as plain text, not interactive buttons or professional licences.</p></div>
+    <div className={s.skillsColumns}>{learning.map((group,i)=><div className={s.skillGroup} key={group.title} data-reveal><span>0{i+1}</span><h3>{group.title}</h3><div className={s.skillsText}>{group.skills.map((name,j)=><span key={name}>{name}{j!==group.skills.length-1?<i> / </i>:""}</span>)}</div></div>)}</div>
+    <div className={s.educationLine} data-reveal><div><span>EDUCATION</span><strong>B.Tech · Electronics & Telecommunication Engineering</strong><p>St. Vincent Pallotti College of Engineering & Technology, Nagpur · 2021–2026</p></div><div><span>ENGLISH</span><strong>IELTS Academic · 8.0</strong></div></div>
+   </section>
+   <section className={s.interestsSection}><span className={s.sectionTag}>04 / THINGS THAT KEEP ME CURIOUS</span><div>{interests.map((t,i)=><p key={t} data-reveal><span>{String(i+1).padStart(2,"0")}</span>{t}<i>↗</i></p>)}</div></section>
+   <section id="contact" className={s.contact}><span className={s.sectionTag}>05 / SAY HELLO</span><h2>Got an interesting<br/><em>problem to work on?</em></h2><p>I'm exploring work in finance, research and financial technology. If something here caught your attention, I'd be happy to hear from you.</p><a className={s.emailLink} href="mailto:atharva@fundlenz.com?subject=Hello%20Atharva">Let's talk <ArrowUpRight size={24}/></a>
+    <div className={s.contactLinks}><a href="mailto:atharva@fundlenz.com"><Mail size={17}/> Email <ArrowUpRight size={14}/></a><a href="https://www.linkedin.com/in/atharvasahu/" target="_blank" rel="noopener noreferrer">LinkedIn <ArrowUpRight size={14}/></a><a href="https://github.com/atharv3169" target="_blank" rel="noopener noreferrer"><GitBranch size={17}/> GitHub <ArrowUpRight size={14}/></a></div></section>
+   <footer className={s.footer}><span>© 2026 ATHARVA SAHU</span><span>BUILT WITH CURIOSITY IN NAGPUR</span><a href="#top">BACK TO TOP ↑</a></footer>
+
  </main>;
 }
 
