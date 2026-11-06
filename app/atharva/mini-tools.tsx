@@ -57,6 +57,33 @@ export function FinCalcDemo(){
   <div className={m.amortization}><div className={m.amortizationBars}>{schedule.map(point=><i key={point.month} title={"Month "+point.month+": "+money(point.balance)} style={{height:Math.max(2,point.balance/p*100)+"%"}}/>)}</div><span>REMAINING BALANCE · FIRST {schedule.length} MONTHS</span></div></div>
  </div>;
 }
+
+export function DcfDemo(){
+ const [fcf,setFcf]=useState(100),[growth,setGrowth]=useState(8),[wacc,setWacc]=useState(12),[terminal,setTerminal]=useState(3);
+ const f=Math.max(.01,fcf),g=growth/100,w=wacc/100,t=terminal/100;
+ const valid=w>t&&w>0;
+ const forecast=Array.from({length:5},(_,i)=>f*Math.pow(1+g,i+1));
+ const present=forecast.map((v,i)=>v/Math.pow(1+w,i+1));
+ const pvForecast=present.reduce((a,b)=>a+b,0);
+ const pvTerminal=valid?forecast[4]*(1+t)/(w-t)/Math.pow(1+w,5):0;
+ const enterprise=pvForecast+pvTerminal;
+ return <div className={m.toolLayout}>
+   <div className={m.toolIntro}><span className={m.miniEyebrow}>INTERACTIVE / FIVE-YEAR DCF</span><h4>Change a driver.<br/><em>See value move.</em></h4><p>Illustrative five-year free-cash-flow model with perpetual-growth terminal value. All inputs and figures are hypothetical, in ₹ millions.</p>
+   <div className={m.numberGrid}>
+    <NumberField label="Starting FCF" value={fcf} onChange={setFcf} min={1} max={100000} unit="₹m"/>
+    <NumberField label="FCF growth" value={growth} onChange={setGrowth} min={-40} max={50} step={.5} unit="%"/>
+    <NumberField label="Discount rate" value={wacc} onChange={setWacc} min={1} max={40} step={.5} unit="%"/>
+    <NumberField label="Terminal growth" value={terminal} onChange={setTerminal} min={-2} max={15} step={.5} unit="%"/>
+   </div><button className={m.ghostAction} onClick={()=>{setFcf(100);setGrowth(8);setWacc(12);setTerminal(3)}}><RotateCcw size={14}/> Reset assumptions</button></div>
+   <div className={m.toolResults}><span className={m.miniEyebrow}>ENTERPRISE VALUE / HYPOTHETICAL</span>
+   {valid?<><div className={m.resultBig}><strong>₹{money(enterprise)}m</strong><small>PV of forecast + terminal value</small></div>
+   <div className={m.metricPair}><div><strong>{pct(enterprise?pvTerminal/enterprise*100:0)}</strong><small>Terminal contribution</small></div><div><strong>₹{money(pvForecast)}m</strong><small>Five-year PV</small></div></div>
+   <div className={m.dcfForecast}>{forecast.map((val,i)=><div key={i} className={m.dcfYear}><span>Y{i+1}</span><div><i style={{height:(val/Math.max(1,...forecast)*100)+"%"}}/></div><strong>{money(val)}</strong></div>)}</div>
+   <p className={m.resultFoot}>Enterprise value only; no net-debt or share-count bridge. Not investment advice.</p></>:
+   <p role="alert" className={m.invalidModel}>Discount rate must exceed perpetual growth. Change an input to calculate a valid value.</p>}</div>
+ </div>;
+}
 /* NEXT */
+
 
 
