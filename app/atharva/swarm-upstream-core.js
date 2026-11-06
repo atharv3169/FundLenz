@@ -33,6 +33,7 @@
   const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
   const easeOut = (t) => 1 - Math.pow(1 - t, 3);
 
+  const bump = (it) => { it.v++; };
   const f1 = (n) => Math.round(n * 10) / 10;
 
   function alphaOf(c) {
