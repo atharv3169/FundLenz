@@ -1008,3 +1008,15 @@
    max-width:none;
  }
 }
+
+
+/* Critical layout invariant: the content column never shrinks faster than
+   its parent overview while the cursor swarm is dragging it back. */
+@media(min-width:1024px){
+ .portfolioShell .storyWorkspace>.storyStage .storyCopy,
+ .portfolioShell .storyIsOpen>.storyWorkspace>.storyStage .storyCopy{
+   width:100%;
+   max-width:min(750px,55vw);
+   transition:padding 1500ms cubic-bezier(.22,.68,.18,1);
+ }
+}
