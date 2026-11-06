@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
-import { ArrowDown, ArrowRight, ArrowUpRight, ChevronDown, Code2, Compass, ExternalLink, Github, Mail, Maximize2, Minus, Move, Plus, ScanLine, Sparkles, X } from "lucide-react";
+import { ArrowDown, ArrowRight, ArrowUpRight, ChevronDown, Code2, Compass, ExternalLink, GitBranch, Mail, Maximize2, Minus, Move, Plus, ScanLine, Sparkles, X } from "lucide-react";
 import { connections, items, learning, skillClouds, work, type Category } from "./content";
 import s from "./portfolio.module.css";
 
@@ -352,7 +352,7 @@ export default function PortfolioExperience() {
     <section id="contact" className={s.contactSection}>
       <div className={s.contactGlow}/>
       <div data-reveal><span className={s.kicker}>08 / LET&apos;S CONNECT</span><h2>Got an interesting<br/><em>problem to work on?</em></h2><p>I&apos;m exploring early-career opportunities in finance, financial analysis, research and the technology around them. I&apos;d be glad to hear from you.</p><a className={s.contactCta} href="mailto:atharva@fundlenz.com?subject=Hello%20Atharva">Let&apos;s talk <ArrowUpRight size={22}/></a></div>
-      <div className={s.contactLinks} data-reveal><a href="mailto:atharva@fundlenz.com"><Mail size={17}/> Email <ArrowUpRight size={14}/></a><a href="https://www.linkedin.com/in/atharvasahu/" target="_blank" rel="noreferrer noopener"><ExternalLink size={17}/> LinkedIn <ArrowUpRight size={14}/></a><a href="https://github.com/atharv3169" target="_blank" rel="noreferrer noopener"><Github size={17}/> GitHub <ArrowUpRight size={14}/></a></div>
+      <div className={s.contactLinks} data-reveal><a href="mailto:atharva@fundlenz.com"><Mail size={17}/> Email <ArrowUpRight size={14}/></a><a href="https://www.linkedin.com/in/atharvasahu/" target="_blank" rel="noreferrer noopener"><ExternalLink size={17}/> LinkedIn <ArrowUpRight size={14}/></a><a href="https://github.com/atharv3169" target="_blank" rel="noreferrer noopener"><GitBranch size={17}/> GitHub <ArrowUpRight size={14}/></a></div>
     </section>
     <footer className={s.footer}><span>© 2026 ATHARVA SAHU</span><span>BUILT WITH CURIOSITY IN NAGPUR.</span><a href="#top">BACK TO TOP ↑</a></footer>
   </main>;
