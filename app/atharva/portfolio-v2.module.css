@@ -433,7 +433,8 @@
    The art still repositions and the overview compresses first. */
 @media(max-width:960px){
  .storyWorkspace{display:block;height:auto;min-height:0;overflow:visible;transition:none;}
- .storyWorkspace>.storyStage{height:auto;min-height:calc(100svh - 76px);}
+ .storyWorkspace>.storyStage{height:max-content;min-height:calc(100svh - 76px);interpolate-size:allow-keywords;transition:height 850ms cubic-bezier(.22,1,.36,1),min-height 850ms cubic-bezier(.22,1,.36,1);}
+
  .storyWorkspace>.longStory{display:none;height:auto;overflow:hidden;visibility:hidden;opacity:0;}
  .storyIsOpen>.storyWorkspace{display:block;}
  .storyIsOpen .storyWorkspace>.storyStage{
