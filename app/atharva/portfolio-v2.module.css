@@ -525,7 +525,7 @@
 
 /* Portfolio refinement: shared-page scrolling, deliberate transitions,
    editorial spacing and seamless per-project colour handoffs. */
-.portfolioShell{overflow:clip;}
+.portfolioShell{overflow:clip;overflow-anchor:none;}
 .portfolioShell .storySection,
 .portfolioShell .storySection:nth-of-type(2n){
   border-bottom:0;
