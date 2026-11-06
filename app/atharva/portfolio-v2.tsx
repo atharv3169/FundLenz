@@ -22,7 +22,12 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
 
  const changeMode=(next:boolean,pointer?:{x:number;y:number})=>{
    if(phaseRef.current!=="idle")return;
-   sectionRef.current?.scrollIntoView({behavior:"instant",block:"start"});
+   // When closing from deeper in a story, move back to its beginning
+   // while the cursor crew dismantles the right-hand text. Do not jump.
+   sectionRef.current?.scrollIntoView({
+     behavior:next||!eligible()?"instant":"smooth",
+     block:"start"
+   });
    if(!eligible()){
      setOpen(next);
      if(!next)toggleRef.current?.focus({preventScroll:true});
