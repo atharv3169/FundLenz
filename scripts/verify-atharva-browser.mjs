@@ -138,6 +138,8 @@ try{
   assert.ok(await js('document.querySelector("#story-synk").textContent.includes("paywall implementation")'),"SYNK FP&A work is source-correct");
   await js('document.querySelector("#story-synk button[aria-expanded]").click()');
   await sleep(1430);
+  const synkEntry=await js('({sectionTop:document.getElementById("story-synk").getBoundingClientRect().top,headingTop:document.querySelector("#full-synk [class*=longStoryLead]").getBoundingClientRect().top,readerTop:document.querySelector("#full-synk").getBoundingClientRect().top})');
+  assert.ok(synkEntry.sectionTop>30&&synkEntry.sectionTop<125&&synkEntry.headingTop>140,"Opening a later story must start its reader from the top: "+JSON.stringify(synkEntry));
   await shot("desktop-synk-fpa-expanded.png");
   assert.ok(await js('document.querySelector("#full-synk").textContent.includes("potential M&A")'),"SYNK long story contains strategy and M&A work");
   await cmd("Emulation.setDeviceMetricsOverride",{width:390,height:844,deviceScaleFactor:1,mobile:true});
