@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { Play, Pause, RotateCcw, Plus } from "lucide-react";
 import m from "./portfolio-v2.module.css";
 const integer=(n:number,min:number,max:number)=>Math.min(max,Math.max(min,Number.isFinite(n)?Math.round(n):min));
@@ -18,11 +18,11 @@ export function FundDemo(){
  const [shares,setShares]=useState([40,30,30]);
  const total=shares.reduce((a,b)=>a+b,0);
  const weights=shares.map(v=>total?v/total:0);
- const composition=useMemo(()=>{
+ const composition=(()=>{
    const bag:Record<string,number>={};
    toyFunds.forEach((fund,i)=>Object.entries(fund.holdings).forEach(([name,fraction])=>bag[name]=(bag[name]||0)+fraction*weights[i]));
    return Object.entries(bag).sort((a,b)=>b[1]-a[1]);
- },[weights]);
+ })();
  const hhi=composition.reduce((v,[,w])=>v+w*w,0);
  const effective=hhi?1/hhi:0,top=composition[0];
  return <div className={m.toolLayout}>
@@ -83,7 +83,31 @@ export function DcfDemo(){
    <p role="alert" className={m.invalidModel}>Discount rate must exceed perpetual growth. Change an input to calculate a valid value.</p>}</div>
  </div>;
 }
-/* NEXT */
+
+export function StudyDemo(){
+ const [tasks,setTasks]=useState([{id:1,text:"Review research notes",done:true},{id:2,text:"Revise financial models",done:false},{id:3,text:"Read for 20 minutes",done:false}]);
+ const [entry,setEntry]=useState(""),[note,setNote]=useState("One small task at a time.");
+ const [seconds,setSeconds]=useState(300),[running,setRunning]=useState(false);
+ useEffect(()=>{if(!running||seconds<=0)return;const id=window.setInterval(()=>setSeconds(v=>Math.max(0,v-1)),1000);return()=>window.clearInterval(id)},[running,seconds]);
+ const count=tasks.filter(t=>t.done).length;
+ const timer=String(Math.floor(seconds/60)).padStart(2,"0")+":"+String(seconds%60).padStart(2,"0");
+ return <div className={m.toolLayout}>
+ <div className={m.toolIntro}><span className={m.miniEyebrow}>INTERACTIVE / STUDY BUDDY RECREATION</span><h4>Make a plan.<br/><em>Find your focus.</em></h4><p>Add a task, mark it done or jot down a note. This is a fresh, session-only demo of the original study idea—nothing is stored or sent anywhere.</p>
+ <form className={m.taskAdd} onSubmit={e=>{e.preventDefault();const val=entry.trim();if(!val)return;setTasks(s=>[...s,{id:Date.now(),text:val.slice(0,85),done:false}]);setEntry("")}}><input aria-label="New study task" maxLength={85} value={entry} onChange={e=>setEntry(e.target.value)} placeholder="Add something to study"/><button type="submit" aria-label="Add task"><Plus size={17}/></button></form>
+ <div className={m.taskList}>{tasks.map(task=><label key={task.id}><input type="checkbox" checked={task.done} onChange={()=>setTasks(old=>old.map(t=>t.id===task.id?{...t,done:!t.done}:t))}/><span className={task.done?m.completedTask:""}>{task.text}</span></label>)}</div><p className={m.resultFoot}>{count} of {tasks.length} complete</p></div>
+ <div className={m.toolResults}><span className={m.miniEyebrow}>FIVE-MINUTE FOCUS MODE</span><div className={m.focusRing} style={{"--focus-progress":(seconds/300*100)+"%"} as CSSProperties}><strong>{timer}</strong><small>FOCUS SESSION</small></div>
+ <div className={m.focusControls}><button onClick={()=>{if(seconds<=0)setSeconds(300);setRunning(!running)}}>{running?<Pause size={16}/>:<Play size={16}/>} {running?"Pause":"Start"}</button><button onClick={()=>{setSeconds(300);setRunning(false)}}><RotateCcw size={16}/> Reset</button></div>
+ <label className={m.noteLabel}>QUICK NOTE<textarea maxLength={600} rows={3} value={note} onChange={e=>setNote(e.target.value)} aria-label="Quick study note"/></label></div>
+ </div>;
+}
+export function MiniTools({id}:{id:string}){
+ if(id==="fundlenz")return <FundDemo/>;
+ if(id==="fincalc")return <FinCalcDemo/>;
+ if(id==="dcf")return <DcfDemo/>;
+ if(id==="study")return <StudyDemo/>;
+ return null;
+}
+
 
 
 
