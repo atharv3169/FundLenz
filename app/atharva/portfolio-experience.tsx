@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { ArrowDown, ArrowRight, ArrowUpRight, ChevronDown, Code2, Compass, ExternalLink, Github, Mail, Maximize2, Minus, Move, Plus, ScanLine, Sparkles, X } from "lucide-react";
-import { connections, items, learning, skillClouds, work, type Category, type PortfolioItem } from "./content";
+import { connections, items, learning, skillClouds, work, type Category } from "./content";
 import s from "./portfolio.module.css";
 
 const filters: { value: "all" | Category; label: string }[] = [
@@ -49,7 +49,10 @@ function AnimatedNumber({ value, suffix = "", prefix = "" }: {value:number;suffi
   useEffect(() => {
     const el = target.current;
     if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {setN(value);return;}
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const reducedFrame = requestAnimationFrame(() => setN(value));
+      return () => cancelAnimationFrame(reducedFrame);
+    }
     let raf=0;
     const observer = new IntersectionObserver((entries) => {
       if (!entries[0]?.isIntersecting) return;
