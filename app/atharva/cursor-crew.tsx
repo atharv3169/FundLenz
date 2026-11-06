@@ -161,6 +161,8 @@ export default function CursorCrew({ signal }: { signal: MorphSignal | null }) {
       const home = hasPointer.current ? pointer.current : origin;
       const returning = t >= .80;
       layer.dataset.phase = t < .085 ? "emerging" : returning ? "returning" : state.signal.opening ? "assembling" : "dismantling";
+      if(layer.dataset.phase==="assembling")layer.dataset.didAssemble="true";
+      if(layer.dataset.phase==="dismantling")layer.dataset.didDismantle="true";
       layer.dataset.working = returning ? "false" : "true";
       guide(titleGuide,title,state.signal.opening?t>.12&&t<.78:t>.30&&t<.80);
       guide(artGuide,t<.50?primary:secondary,state.signal.opening?t>.16&&t<.79:t>.31&&t<.80);
