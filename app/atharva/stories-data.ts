@@ -45,7 +45,7 @@ numbers:[{value:"5 years",label:"forecast in this demo"},{value:"4 inputs",label
 chapters:[
 {title:"The question behind Atlas",paragraphs:["Discounted-cash-flow models can look impressively precise even when they depend on fragile assumptions. I wanted a workspace where changing growth, margins or the discount rate makes the implications obvious.","DCF Atlas is an evolving FundLenz project around multi-year forecasts, scenarios, sensitivity surfaces and explaining how operating results translate into enterprise value."]},
 {title:"Try a simplified version",paragraphs:["The mini-model below forecasts free cash flow for five years, discounts it and adds a perpetual-growth terminal value. All the inputs are hypothetical. It estimates enterprise value only, not a share price, and doesn't include the equity bridge.","The full Atlas route is planned for FundLenz, but it is not yet a production feature."]}
-],tags:["DCF","FCF forecasting","Valuation","WACC","Sensitivity"],visit:{href:"https://fundlenz.com/dcf-atlas",text:"DCF Atlas · upcoming",pending:true}
+],tags:["DCF","FCF forecasting","Valuation","WACC","Sensitivity"],visit:{href:"https://fundlenz.com/dcf-atlas",text:"DCF Atlas",pending:true}
 },
 {
 id:"crowd",title:"Crowd-monitoring system",type:"Computer vision · IoT · engineering",year:"2025 – 2026",eyebrow:"06 / ENGINEERING OUTSIDE A TEXTBOOK",hook:"A camera, a microcontroller and a practical safety problem.",intro:"Our group project explored camera-based crowd detection linked to ESP32 alerts, with technical and commercial feasibility work alongside the prototype.",accent:"#dab6e5",
@@ -73,7 +73,7 @@ chapters:[
 ],tags:["Arduino","ESP32","Sensors","Embedded systems","Testing"]
 },
 {
-id:"synk",title:"SYNK",type:"Internship · virtual experiences",year:"Experience",eyebrow:"09 / INTERACTION & DIGITAL SPACES",hook:"What if online networking felt more like entering a real room?",intro:"SYNK explores AI-generated virtual environments, 3D spaces and avatar-based gatherings with proximity voice chat.",accent:"#b7c3ef",
+id:"synk",title:"SYNK",type:"Internship · virtual experiences",year:"",eyebrow:"09 / INTERACTION & DIGITAL SPACES",hook:"What if online networking felt more like entering a real room?",intro:"SYNK explores AI-generated virtual environments, 3D spaces and avatar-based gatherings with proximity voice chat.",accent:"#b7c3ef",
 numbers:[{value:"3D",label:"virtual spaces in the company's concept"},{value:"AI",label:"environment-generation theme"}],
 chapters:[
 {title:"What interested me",paragraphs:["SYNK publicly describes a platform where people can join virtual spaces as avatars, move between conversations and meet at online events. It's an interesting experiment in making online interaction feel more natural.","My SYNK experience brought a very different idea into the mix: an online space you can move through, rather than a list of video-call tiles. The company explores AI-generated environments, virtual events and proximity-based conversations. I am keeping this account focused on the ideas I encountered, not claiming ownership of the company’s product."]},
