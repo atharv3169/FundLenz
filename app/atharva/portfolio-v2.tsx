@@ -21,7 +21,7 @@ function StorySection({story,index}:{story:Story;index:number}){
   <div className={s.storyStage} data-reveal>
    <div className={s.storyCopy}>
     <div className={s.storyEyebrow}><span className={s.storyIndex}>{String(index+1).padStart(2,"0")}</span><span>{story.eyebrow}</span></div>
-    <p className={s.storyYears}>{story.type} <i> / </i> {story.year}</p>
+    <p className={s.storyYears}>{story.type}{story.year&&<><i> / </i> {story.year}</>}</p>
     <h3>{story.title}<span>.</span></h3>
     <p className={s.storyHook}>{story.hook}</p>
     <p className={s.storyIntro}>{story.intro}</p>
