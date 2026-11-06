@@ -18,7 +18,7 @@
 .heroLink{display:inline-flex;align-items:center;gap:33px;padding:16px 22px;background:#cce6cf;color:#111e18!important;font-size:13px;font-weight:700;margin-top:35px;transition:transform .25s,background .25s;}.heroLink:hover{transform:translateY(-5px);background:#eeffe9;}
 .heroFigure{position:absolute;inset:0 -13% 0 32%;opacity:.75;pointer-events:none;display:flex;align-items:center;justify-content:center;mask-image:linear-gradient(90deg,transparent 0%,#000 26%,#000 100%);}
 .heroWave{width:100%;height:100%;min-width:700px;filter:drop-shadow(0 0 60px #b6ddb42b);}
-.waveDraw{stroke-dasharray:1800;stroke-dashoffset:1800;animation:trace 7s ease-in-out infinite alternate}.waveGhost{stroke-dasharray:1600;stroke-dashoffset:1600;animation:trace 9s ease-in-out 1s infinite alternate}.wavePoint{animation:softPulse 3.5s ease-in-out infinite alternate;}
+.waveDraw{stroke-dasharray:1800;stroke-dashoffset:1800;animation:waveAlive 18s linear infinite}.waveGhost{stroke-dasharray:1600;stroke-dashoffset:1600;animation:waveAlive 23s linear -3s infinite}.wavePoint{animation:softPulse 3.5s ease-in-out infinite alternate;}
 .heroFoot,.stageBottom{position:absolute;bottom:24px;left:clamp(25px,8vw,145px);right:clamp(25px,8vw,145px);display:flex;align-items:center;justify-content:space-between;gap:20px;z-index:3;font-size:10px;letter-spacing:.15em;color:#859a9d}.heroFoot>span:last-child,.stageBottom>span:last-child{display:flex;align-items:center;gap:12px;}
 .currencyRibbon{height:67px;background:#10171d;border-bottom:1px solid #36433b;overflow:hidden;display:flex;align-items:center;}
 .currencyRibbon>div{display:flex;width:max-content;animation:ticker 45s linear infinite;}
@@ -142,7 +142,7 @@
 .footer{padding:22px clamp(25px,5vw,90px);background:#0d1214;display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center;color:#859a92;font-size:10px;letter-spacing:.12em;border-top:1px solid #3a5044;}
 
 @keyframes enterUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}@keyframes expandIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
-@keyframes trace{0%{stroke-dashoffset:1800}70%,100%{stroke-dashoffset:0}}@keyframes ticker{to{transform:translateX(-50%)}}
+@keyframes waveAlive{0%{stroke-dashoffset:0;opacity:.65}50%{stroke-dashoffset:-65;opacity:1}100%{stroke-dashoffset:-130;opacity:.65}}@keyframes ticker{to{transform:translateX(-50%)}}
 @keyframes softPulse{from{opacity:.55;filter:brightness(.83)}to{opacity:1;filter:brightness(1.25)}}@keyframes machineHover{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}@keyframes armTilt{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-6deg)}}
 @keyframes flow{from{stroke-dashoffset:0}to{stroke-dashoffset:-220}}@keyframes flowGlow{0%,100%{opacity:.24;filter:brightness(.8)}50%{opacity:.72;filter:brightness(1.4)}}
 @keyframes barGrow{from{transform:scaleY(.1);opacity:.45}to{transform:scaleY(1);opacity:1}}@keyframes scatterReveal{from{opacity:.25;transform:scale(.8)}to{opacity:.92;transform:scale(1.08)}}@keyframes terminalFloat{0%,100%{transform:perspective(1100px) rotateY(-5deg) rotateX(4deg) translateY(0)}50%{transform:perspective(1100px) rotateY(-2deg) rotateX(2deg) translateY(-11px)}}@keyframes scanDown{0%,100%{transform:translateY(0);opacity:.15}50%{transform:translateY(257px);opacity:1}}@keyframes paperFloat{0%,100%{transform:rotate(-4deg) translateY(0)}50%{transform:rotate(-2deg) translateY(-12px)}}@keyframes avatarBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-17px)}}
