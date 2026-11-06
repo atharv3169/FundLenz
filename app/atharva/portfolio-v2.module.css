@@ -1102,19 +1102,19 @@
    .storyPanelBody .tagsLine,
  .portfolioShell [data-choreography="exiting"].storyIsOpen
    .storyPanelBody .readerFooter{
-   animation:storyErase 330ms steps(16,end) both!important;
+   animation:storyErase 260ms steps(16,end) 350ms both!important;
  }
  .portfolioShell [data-choreography="exiting"].storyIsOpen
    .storyPanelBody .longStoryLead>p{
-   animation:storyErase 340ms steps(16,end) 100ms both!important;
+   animation:storyErase 270ms steps(16,end) 450ms both!important;
  }
  .portfolioShell [data-choreography="exiting"].storyIsOpen
    .storyPanelBody .longStoryLead h4{
-   animation:storyErase 360ms steps(20,end) 160ms both!important;
+   animation:storyErase 280ms steps(20,end) 510ms both!important;
  }
  .portfolioShell [data-choreography="exiting"].storyIsOpen
    .storyPanelBody .longStoryLead>.sectionTag{
-   animation:storyErase 300ms steps(12,end) 200ms both!important;
+   animation:storyErase 200ms steps(12,end) 570ms both!important;
  }
 }
 @keyframes storyInkArrive{
