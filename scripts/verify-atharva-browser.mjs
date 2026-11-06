@@ -42,8 +42,17 @@ try{
   await new Promise((resolve,reject)=>{socket.addEventListener("open",resolve,{once:true});socket.addEventListener("error",reject,{once:true});});
   let index=0;
   const pending=new Map();
+  const recording={mode:null,frames:{opening:[],closing:[]}};
   socket.addEventListener("message",(event)=>{
     const data=JSON.parse(event.data);
+    if(data.method==="Page.screencastFrame"){
+      const mode=recording.mode;
+      if(mode&&recording.frames[mode].length<160)
+        recording.frames[mode].push({at:Date.now(),image:data.params.data});
+      // Ack with a fresh protocol ID; its response does not need a callback.
+      socket.send(JSON.stringify({id:++index,method:"Page.screencastFrameAck",params:{sessionId:data.params.sessionId}}));
+      return;
+    }
     if(!data.id||!pending.has(data.id))return;
     const handlers=pending.get(data.id);pending.delete(data.id);
     if(data.error)handlers.reject(Error(data.error.message));else handlers.resolve(data.result);
@@ -57,6 +66,24 @@ try{
   const shot=async(filename)=>{
     const data=await cmd("Page.captureScreenshot",{format:"png",captureBeyondViewport:false});
     await writeFile(path.join(output,filename),Buffer.from(data.data,"base64"));
+  };
+  const recordStart=async(mode)=>{
+    recording.frames[mode]=[];
+    recording.mode=mode;
+    await cmd("Page.startScreencast",{format:"jpeg",quality:68,everyNthFrame:1,maxWidth:1440,maxHeight:900});
+  };
+  const recordStop=async()=>{
+    const mode=recording.mode;
+    recording.mode=null;
+    await cmd("Page.stopScreencast");
+    if(!mode)return;
+    const frames=recording.frames[mode];
+    const dest=path.join(output,"motion-"+mode);
+    await mkdir(dest,{recursive:true});
+    for(let i=0;i<frames.length;i++)
+      await writeFile(path.join(dest,"frame"+String(i).padStart(4,"0")+".jpg"),Buffer.from(frames[i].image,"base64"));
+    await writeFile(path.join(dest,"timestamps.csv"),"frame,unix_ms\n"+frames.map((f,i)=>i+","+f.at).join("\n"));
+    console.log("Captured "+frames.length+" motion frames for "+mode);
   };
 
   await cmd("Page.enable");await cmd("Runtime.enable");
@@ -88,6 +115,7 @@ try{
   assert.ok(closedBounds.buttonBottom < closedBounds.stageBottom - 15,"Shyam action must not be clipped: "+JSON.stringify(closedBounds));
   const beforeMorph=await js('document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().width');
   assert.ok(beforeMorph>1100,"Overview starts full width");
+  await recordStart("opening");
   await js('document.querySelector("#story-shyam button[aria-expanded]").click()');
   await until(()=>js('document.querySelectorAll("[data-crew-agent]").length===18'));
   await sleep(460);
@@ -126,6 +154,7 @@ try{
   assert.equal(seamless.reader,"rgba(0, 0, 0, 0)","Same transparent story background");
   assert.equal(seamless.border,"0px","No divider line or reader box border");
   await shot("desktop-shyam-expanded.png");
+  await recordStop();
   const startScroll=await js("window.scrollY");
   await cmd("Input.dispatchMouseEvent",{type:"mouseWheel",x:1060,y:510,deltaY:700,deltaX:0});
   await sleep(450);
@@ -133,6 +162,7 @@ try{
   assert.ok(scrolled.documentTop>startScroll+130&&scrolled.readerTop===0&&scrolled.readerOverflow!=="auto","Wheel over story must scroll the whole document: "+JSON.stringify(scrolled));
   await shot("desktop-shyam-page-scroll.png");
   assert.equal(await js('document.querySelectorAll("#full-shyam button").length'),0,"No separate close button or dark header");
+  await recordStart("closing");
   await js('document.querySelector("#story-shyam button[aria-expanded]").click()');
   await sleep(520);
   assert.equal(await js('document.querySelector("[data-cursor-crew]")?.dataset.phase==="dismantling"'),true,"Reverse action must erase right-side story first");
@@ -140,6 +170,7 @@ try{
   assert.ok(returningTitle.width>240,"The headline must remain readable while cursors undo the layout: "+JSON.stringify(returningTitle));
   await shot("desktop-shyam-cursors-return.png");
   await sleep(2540);
+  await recordStop();
   assert.equal(await js('document.querySelector("[data-cursor-crew]")===null'),true,"Agents must gather at pointer and vanish after reversing");
   const reverseMorph=await js('({stage:document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().width,hidden:document.querySelector("#full-shyam").getAttribute("aria-hidden"),inert:document.querySelector("#full-shyam").inert})');
   assert.ok(reverseMorph.stage>1100,"Reverse morph must restore full-width overview: "+JSON.stringify(reverseMorph));
