@@ -175,6 +175,116 @@ try {
     },
   );
   await step(
+    'Overview starts a model, reviews complete worksheets and normalizes personal historical CSVs',
+    async () => {
+      const fresh = await browser.newContext({
+        viewport: { width: 1440, height: 980 },
+        acceptDownloads: true,
+      });
+      try {
+        const p = await fresh.newPage();
+        p.on('pageerror', (e) => errors.push(e.message));
+        await p.goto(url);
+        const action = (name) => p.getByRole('button', { name, exact: true });
+        const identity = p.locator('.a-identity');
+        const dialog = p.getByRole('dialog');
+        const file = (name, text) => ({
+          name,
+          mimeType: 'text/csv',
+          buffer: Buffer.from(text),
+        });
+        const openUpload = async () => {
+          await action('Upload CSV').click();
+          await p.getByRole('dialog', { name: 'Upload CSV' }).waitFor();
+        };
+        await action('Add model').click();
+        await dialog.getByLabel('Company name').fill('Manual case');
+        await dialog.getByLabel('Currency').selectOption('GBP');
+        await action('Create model').click();
+        await p
+          .getByRole('heading', { name: 'Assumptions', exact: true })
+          .waitFor();
+        assert.match(await identity.innerText(), /Manual case/);
+        assert.match(await identity.innerText(), /GBP/);
+        await p
+          .getByRole('navigation', { name: 'Atlas tools' })
+          .getByRole('button', { name: 'Overview', exact: true })
+          .click();
+        await p.getByText('Model needs inputs', { exact: true }).waitFor();
+        await openUpload();
+        const input = p.getByLabel('Upload model CSV');
+        await input.setInputFiles(file('bad.csv', 'x,y\n1,2'));
+        await dialog.getByRole('alert').waitFor();
+        assert.match(await identity.innerText(), /Manual case/);
+        const download = p.waitForEvent('download');
+        await dialog
+          .getByRole('button', { name: /Worked CSV example/ })
+          .click();
+        const example = await download;
+        const exported = await fs.readFile(await example.path(), 'utf8');
+        const actual = file(
+          'case.csv',
+          exported
+            .replace(
+              'model,name,,Meridian Instruments',
+              'model,name,,User worksheet',
+            )
+            .replace('input,revenue,,1240', 'input,revenue,,2480'),
+        );
+        await input.setInputFiles(actual);
+        await dialog
+          .getByText('The imported FCFF model calculates successfully.')
+          .waitFor();
+        await action('Cancel').click();
+        assert.match(await identity.innerText(), /Manual case/);
+        await openUpload();
+        await input.setInputFiles(actual);
+        await action('Apply import').click();
+        await p
+          .getByRole('heading', { name: 'Overview', exact: true })
+          .waitFor();
+        assert.match(await identity.innerText(), /User worksheet/);
+        const firstYear = p
+          .getByRole('region', { name: 'Overview annual forecast' })
+          .getByRole('row')
+          .nth(1);
+        assert.equal(
+          await firstYear.locator('td').first().innerText(),
+          '2,777.6',
+        );
+        await openUpload();
+        await input.setInputFiles(
+          file(
+            'my-company.csv',
+            'FY,Sales,Operating income,Capex\n2024,12,-1,\n2025,16,3,2',
+          ),
+        );
+        await dialog.getByLabel('Company name').fill('My INR company');
+        assert(await action('Apply import').isDisabled());
+        await dialog.getByLabel('Reporting currency').selectOption('INR');
+        await dialog.getByLabel('Amounts in your CSV').selectOption('crores');
+        await dialog.getByText(/Starting revenue: INR 160 million/).waitFor();
+        await action('Apply import').click();
+        await p
+          .getByRole('heading', { name: 'Assumptions', exact: true })
+          .waitFor();
+        assert.match(await identity.innerText(), /My INR company/);
+        assert.equal(
+          await p.getByLabel('Starting revenue', { exact: true }).inputValue(),
+          '160',
+        );
+        assert.equal(
+          await p.getByLabel('First-year growth', { exact: true }).inputValue(),
+          '',
+        );
+        await action('Undo change').click();
+        assert.match(await identity.innerText(), /User worksheet/);
+      } finally {
+        await fresh.close();
+      }
+    },
+  );
+  await step(
     'keyboard command search, annual override, history, undo and redo',
     async () => {
       await page.keyboard.press('Control+k');
@@ -447,6 +557,24 @@ try {
             .getByRole('button', { name: 'Overview', exact: true })
             .tap();
         }
+        const starts = p.getByRole('group', { name: 'Start with your data' });
+        const addBox = await starts
+          .getByRole('button', { name: 'Add model' })
+          .boundingBox();
+        const upload = starts.getByRole('button', { name: 'Upload CSV' });
+        const uploadBox = await upload.boundingBox();
+        assert(
+          addBox &&
+            uploadBox &&
+            addBox.y === uploadBox.y &&
+            uploadBox.x + uploadBox.width <= width + 1,
+        );
+        await upload.tap();
+        await p
+          .getByRole('dialog', { name: 'Upload CSV' })
+          .getByRole('button', { name: 'Choose CSV file' })
+          .waitFor();
+        await p.getByRole('button', { name: 'Close dialog' }).tap();
         const surface = p.locator('[data-chart-inspector="operations"]');
         await surface.locator('[data-point="0:4"]').tap();
         const note = p

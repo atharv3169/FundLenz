@@ -16,6 +16,8 @@ import {
   csv,
   modelCsv,
   readCsv,
+  readUploadCsv,
+  modelFromHistory,
   importCsv,
   snapshot,
   importJson,
@@ -221,6 +223,88 @@ test('snapshots and editable CSV preserve periods, currency, nullable inputs and
   assert.equal(readCsv(csv([['=4+2', -7, "'quoted"]]))[0][0], "'=4+2");
   assert.deepEqual(importCsv(modelCsv(blank())), blank());
   assert.equal(readCsv(forecastCsv(m, base)).length, 6);
+});
+test('own CSV: ordered fiscal history, losses, missing capex and explicit currency scales', () => {
+  const file = readUploadCsv(
+    'Operating income,Fiscal_year,Net sales,Cash capex\r\n(15),FY2025,"1,500",0\r\n3,2024,800,',
+  );
+  assert.equal(file.kind, 'history');
+  assert.deepEqual(
+    file.rows.map((x) => x.year),
+    [2024, 2025],
+  );
+  assert.equal(file.rows[0].capex, null);
+  for (const [unit, revenue] of [
+    ['units', 0.0015],
+    ['thousands', 1.5],
+    ['millions', 1500],
+    ['crores', 15000],
+  ]) {
+    const model = modelFromHistory(
+      file.rows,
+      'Sample Works',
+      'INR',
+      unit,
+      'annual.csv',
+    );
+    close(model.inputs.revenue, revenue);
+    close(model.history[1].ebit, -revenue / 100);
+    assert.equal(model.history[1].capex, 0);
+    assert.equal(model.currency, 'INR');
+    assert.equal(model.year, 2025);
+    assert.equal(model.inputs.price, null);
+    assert.equal(model.inputs.growth, null);
+    assert.equal(evaluate(model).r, null);
+  }
+  const stated = readUploadCsv(
+    'Company,FY,Sales,EBIT,Currency,Scale\nExample,2025,20,2,INR,Crores',
+  );
+  assert.equal(stated.company, 'Example');
+  assert.equal(stated.currency, 'INR');
+  assert.equal(stated.unit, 'crores');
+  assert.throws(
+    () =>
+      readUploadCsv('FY,Revenue,EBIT,Currency\n2024,10,1,USD\n2025,11,1,EUR'),
+    /Mixed currencies/,
+  );
+  assert.throws(
+    () => readUploadCsv('FY,Revenue,EBIT,Ticker\n2024,10,1,ABC\n2025,11,1,XYZ'),
+    /Mixed tickers/,
+  );
+  const zero = readUploadCsv('fy,revenue,ebit\n2024,0,-12');
+  assert.equal(
+    modelFromHistory(zero.rows, 'Pre-sales', 'EUR', 'units', 'pre.csv').inputs
+      .revenue,
+    null,
+  );
+  assert.deepEqual(readUploadCsv(modelCsv(m)), {
+    kind: 'model',
+    model: parseModel(m),
+  });
+});
+test('forecast exports, duplicate or ambiguous periods, invalid data and wrong scales never become actuals', () => {
+  const rows = 'year,sales,ebit,capex\n';
+  for (const file of [
+    rows,
+    rows + '2025,1,1,0\n2025,2,2,1',
+    rows + '2024,10,,',
+    rows + '2025,2,1,-3',
+    rows + 'Q1 2025,4,1,',
+    rows + '2024,2,=3+4,1',
+    rows + '2025,2,1,4,5',
+    'FY,Year,Sales,EBIT\n2025,2024,20,2',
+    forecastCsv(m, base),
+  ])
+    assert.throws(() => readUploadCsv(file));
+  assert.throws(() =>
+    modelFromHistory(
+      [{ year: 2025, sales: 1e12, ebit: 0, capex: null }],
+      'Too big',
+      'USD',
+      'crores',
+      'units.csv',
+    ),
+  );
 });
 test('malformed dates, hostile properties, duplicates, truncated/schema-less CSV and bad overrides fail closed', () => {
   assert.throws(() => parseModel({ ...m, asOf: '2025-02-30' }));

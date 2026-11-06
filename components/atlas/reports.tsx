@@ -1,38 +1,26 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import {
   ArrowDownToLine,
   ClipboardList,
   FileSpreadsheet,
   FileText,
-  FolderInput,
   Printer,
   Save,
-  Upload,
 } from 'lucide-react';
-import {
-  blank,
-  demo,
-  evaluate,
-  fields,
-  keys,
-  type Model,
-} from '@/lib/atlas/model';
+import { evaluate, fields, keys, type Model } from '@/lib/atlas/model';
 import {
   download,
   filename,
   forecastCsv,
-  importCsv,
-  importJson,
   modelCsv,
-  parseModel,
   snapshot,
 } from '@/lib/atlas/files';
 import { equityInputs } from '@/lib/atlas/lab-book';
 import { equityMethod, methods } from '@/lib/atlas/equity';
-import { secFacts } from '@/lib/atlas/research';
+import { ModelImporter } from './model-importer';
 import { useAtlas } from './context';
-import { Card, Dialog, Table, cash, n, pct } from './ui';
+import { Card, Table, cash, n, pct } from './ui';
 export function AuditReport({ m }: { m: Model }) {
   const { r, error } = evaluate(m);
   return (
@@ -295,40 +283,9 @@ const dict = [
   ],
 ];
 export function Reports() {
-  const { m, r, edit, go, notify, save } = useAtlas();
-  const file = useRef<HTMLInputElement>(null),
-    seq = useRef(0);
-  const [pending, setPending] = useState<Model | null>(null),
-    [err, setErr] = useState(''),
-    [cut, setCut] = useState(new Date().toISOString().slice(0, 10)),
-    [q, search] = useState(''),
-    [drag, setDrag] = useState(false),
-    [busy, setBusy] = useState(false),
+  const { m, r, edit, notify, save } = useAtlas();
+  const [q, search] = useState(''),
     [show, setShow] = useState(false);
-  async function read(f: File) {
-    const token = ++seq.current;
-    setErr('');
-    setPending(null);
-    setBusy(true);
-    try {
-      if (f.size > 20_000_000) throw Error('File exceeds 20 MB.');
-      const s = (await f.text()).replace(/^\uFEFF/, '');
-      let v: Model;
-      if (s.trimStart().startsWith('{')) {
-        const raw = JSON.parse(s);
-        v =
-          raw.format === 'fundlenz.atlas'
-            ? importJson(s)
-            : parseModel(secFacts(raw, cut));
-      } else v = importCsv(s);
-      if (seq.current === token) setPending(v);
-    } catch (e) {
-      if (seq.current === token) setErr((e as Error).message);
-    } finally {
-      if (seq.current === token) setBusy(false);
-      if (file.current) file.current.value = '';
-    }
-  }
   function report() {
     const markup = document.getElementById('atlas-print-report')?.innerHTML;
     if (!markup) return;
@@ -343,76 +300,7 @@ export function Reports() {
   return (
     <>
       <Card kicker="01 / Data exchange" title="Import a working model">
-        <p>
-          Upload an Atlas CSV input template or JSON snapshot to reproduce a
-          model. SEC Company Facts JSON imports aligned annual US-GAAP history
-          from 10-K filings available by your cutoff. Files are processed on
-          this device.
-        </p>
-        <div
-          className={'a-drop ' + (drag ? 'over' : '')}
-          onDragOver={(e) => {
-            e.preventDefault();
-            setDrag(true);
-          }}
-          onDragLeave={() => setDrag(false)}
-          onDrop={(e) => {
-            e.preventDefault();
-            setDrag(false);
-            if (e.dataTransfer.files[0]) void read(e.dataTransfer.files[0]);
-          }}
-        >
-          <FolderInput size={28} />
-          <b>{busy ? 'Reading file…' : 'Drop a CSV or JSON file here'}</b>
-          <button className="a-btn" onClick={() => file.current?.click()}>
-            <Upload size={15} /> Choose file
-          </button>
-          <input
-            ref={file}
-            className="a-sr"
-            aria-label="Import model file"
-            type="file"
-            accept=".json,.csv,application/json,text/csv"
-            onChange={(e) => {
-              if (e.target.files?.[0]) void read(e.target.files[0]);
-            }}
-          />
-        </div>
-        <div className="a-tools">
-          <button
-            className="a-link"
-            onClick={() =>
-              download(
-                'atlas-input-template.csv',
-                modelCsv(blank()),
-                'text/csv',
-              )
-            }
-          >
-            Blank input template ↓
-          </button>
-          <button
-            className="a-link"
-            onClick={() =>
-              download('atlas-worked-example.csv', modelCsv(demo()), 'text/csv')
-            }
-          >
-            Worked CSV example ↓
-          </button>
-          <label>
-            SEC filing cutoff{' '}
-            <input
-              type="date"
-              value={cut}
-              onChange={(e) => setCut(e.target.value)}
-            />
-          </label>
-        </div>
-        {err && (
-          <p className="a-note" role="alert">
-            {err}
-          </p>
-        )}
+        <ModelImporter />
       </Card>
       <Card kicker="02 / Output desk" title="Reports & exports">
         <div className="a-exportgrid">
@@ -545,46 +433,6 @@ export function Reports() {
             </details>
           ))}
       </Card>
-      {pending && (
-        <Dialog
-          title="Review import before applying"
-          onClose={() => setPending(null)}
-        >
-          <p>
-            <b>{pending.name}</b> · {pending.currency} · FY{pending.year} ·{' '}
-            {pending.basis}
-          </p>
-          <p>
-            {pending.history.length} historical periods ·{' '}
-            {keys.filter((k) => pending.inputs[k] !== null).length} supplied
-            inputs ·{' '}
-            {keys.filter((k) => pending.inputs[k] !== m.inputs[k]).length} input
-            differences from the active sheet.
-          </p>
-          <p>
-            {evaluate(pending).r
-              ? 'The imported FCFF model calculates successfully.'
-              : 'Incomplete model: ' + evaluate(pending).error}
-          </p>
-          <p className="a-muted">{pending.source}</p>
-          <div className="a-tools">
-            <button
-              className="a-primary"
-              onClick={() => {
-                edit(pending, 'Imported model file');
-                setPending(null);
-                go(evaluate(pending).r ? 'Overview' : 'Assumptions');
-                notify('Imported model. Undo is available.');
-              }}
-            >
-              Apply import
-            </button>
-            <button className="a-btn" onClick={() => setPending(null)}>
-              Cancel
-            </button>
-          </div>
-        </Dialog>
-      )}
     </>
   );
 }

@@ -23,12 +23,14 @@ import {
   LayoutDashboard,
   Menu,
   PanelLeftClose,
+  Plus,
   Redo2,
   Save,
   Search,
   Settings2,
   SlidersHorizontal,
   Undo2,
+  Upload,
   X,
 } from 'lucide-react';
 import { demo, evaluate, fields, keys, type Model } from '@/lib/atlas/model';
@@ -36,6 +38,8 @@ import { parseModel } from '@/lib/atlas/files';
 import { AtlasContext, views, type View, type Saved } from './context';
 import { AtlasArt, Dialog, cash } from './ui';
 import { Assumptions, Forecast } from './model-views';
+import { CreateModelDialog } from './create-model';
+import { ModelImporter } from './model-importer';
 import { Overview } from './overview';
 import { Risk, Scenarios, Sensitivity } from './labs';
 import { Research } from './research-view';
@@ -114,7 +118,9 @@ export function AtlasWorkspace() {
     [message, setMsg] = useState(''),
     [menu, setMenu] = useState(false),
     [collapsed, collapse] = useState(false),
-    [dialog, open] = useState<'search' | 'save' | 'history' | null>(null),
+    [dialog, open] = useState<
+      'search' | 'save' | 'history' | 'create' | 'csv' | null
+    >(null),
     [q, search] = useState(''),
     [label, setLabel] = useState(''),
     [draftOk, setDraftOk] = useState(true);
@@ -420,7 +426,11 @@ export function AtlasWorkspace() {
               </div>
             </aside>
             <div className="a-surface">
-              <div className="a-workhead">
+              <div
+                className={
+                  view === 'Overview' ? 'a-workhead ao-workhead' : 'a-workhead'
+                }
+              >
                 <div>
                   <div className="a-over">
                     Workbench &nbsp; / &nbsp; {String(idx + 1).padStart(2, '0')}
@@ -430,6 +440,28 @@ export function AtlasWorkspace() {
                   </h2>
                   <p>{descriptions[idx]}</p>
                 </div>
+                {view === 'Overview' && (
+                  <div
+                    className="ao-start"
+                    role="group"
+                    aria-label="Start with your data"
+                  >
+                    <button
+                      className="a-btn"
+                      aria-haspopup="dialog"
+                      onClick={() => open('create')}
+                    >
+                      <Plus size={16} aria-hidden="true" /> Add model
+                    </button>
+                    <button
+                      className="a-primary"
+                      aria-haspopup="dialog"
+                      onClick={() => open('csv')}
+                    >
+                      <Upload size={16} aria-hidden="true" /> Upload CSV
+                    </button>
+                  </div>
+                )}
                 <div className="a-tools a-history">
                   <button
                     className="a-icon"
@@ -483,6 +515,12 @@ export function AtlasWorkspace() {
               <X size={14} />
             </button>
           </div>
+        )}
+        {dialog === 'create' && (
+          <CreateModelDialog onClose={() => open(null)} />
+        )}
+        {dialog === 'csv' && (
+          <ModelImporter csvOnly onClose={() => open(null)} />
         )}
         {dialog === 'search' && (
           <Dialog title="Search the workspace" onClose={() => open(null)}>

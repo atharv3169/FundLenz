@@ -920,6 +920,53 @@
   font-size: 12px;
   color: var(--muted);
 }
+.a-importer {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.a-importer > * {
+  min-width: 0;
+}
+.a-importer > p {
+  overflow-wrap: anywhere;
+}
+.atlas-app .a-importer .a-full,
+.atlas-app .a-importer .a-gridform,
+.atlas-app .a-import-confirm .a-primary {
+  margin: 0;
+}
+.atlas-app .a-importer .a-import-help {
+  font-size: 13px;
+}
+.a-import-templates {
+  gap: 4px 15px;
+}
+.atlas-app .a-import-templates .a-link {
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.atlas-app .a-import-local {
+  font-size: 12px;
+  color: var(--muted);
+}
+.a-import-cut {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.a-importer .a-scroll {
+  max-width: 100%;
+}
+.a-importer table {
+  min-width: 0;
+  width: 100%;
+}
+.a-import-confirm {
+  margin-top: 2px;
+}
 .a-drop {
   display: flex;
   gap: 9px;

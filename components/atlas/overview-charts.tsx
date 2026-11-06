@@ -362,8 +362,8 @@ export function ForecastChart({
     span = hi - lo || 1;
   const W = 256,
     H = 118,
-    L = 34,
-    R = 15,
+    L = 40,
+    R = 17,
     T = 10,
     B = 96;
   const x = (i: number) => L + ((W - L - R) * i) / Math.max(1, rows.length - 1),

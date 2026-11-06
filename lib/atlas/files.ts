@@ -204,7 +204,9 @@ export function modelCsv(m: Model) {
   return csv(rows);
 }
 export function importCsv(s: string) {
-  const [hdr, ...rows] = readCsv(s);
+  return worksheetRows(readCsv(s));
+}
+function worksheetRows([hdr, ...rows]: string[][]) {
   if (hdr?.join(',') !== 'section,field,period,value')
     bad('Use the Atlas input template, not a forecast export.');
   const m = blank(),
@@ -253,6 +255,182 @@ export function importCsv(s: string) {
     )
       bad('Missing CSV field: ' + k);
   return parseModel({ ...m, history: [...hs.values()] });
+}
+export type CsvUpload =
+  | { kind: 'model'; model: Model }
+  | {
+      kind: 'history';
+      rows: Historical[];
+      currency?: Model['currency'];
+      unit?: HistoryUnit;
+      company?: string;
+    };
+const historyColumns = {
+  year: ['year', 'fy', 'fiscal year', 'financial year'],
+  sales: ['revenue', 'sales', 'total revenue', 'net sales'],
+  ebit: ['ebit', 'operating income', 'operating profit'],
+  capex: ['capex', 'cash capex', 'capital expenditure', 'capital expenditures'],
+};
+export const historyUnits = {
+  units: ['Whole currency units', 0.000001],
+  thousands: ['Thousands', 0.001],
+  millions: ['Millions', 1],
+  crores: ['Crores', 10],
+} as const;
+export type HistoryUnit = keyof typeof historyUnits;
+export function readUploadCsv(s: string): CsvUpload {
+  const all = readCsv(s);
+  if (all[0]?.[0] === 'section')
+    return { kind: 'model', model: worksheetRows(all) };
+  const [header = [], ...body] = all;
+  const names = header.map((h) =>
+    h.trim().toLowerCase().replace(/[_-]+/g, ' ').replace(/\s+/g, ' '),
+  );
+  if (names.includes('pv fcff') && names.includes('discount factor'))
+    throw Error(
+      'This file is a forecast export. Use an Atlas input worksheet or actual historical financials.',
+    );
+  const index = (k: keyof typeof historyColumns) => {
+    const hits = names.flatMap((v, i) =>
+      historyColumns[k].includes(v) ? [i] : [],
+    );
+    if (hits.length > 1)
+      throw Error(
+        'More than one column matches ' +
+          k +
+          '. Keep one column for each figure.',
+      );
+    return hits[0] ?? -1;
+  };
+  const year = index('year'),
+    sales = index('sales'),
+    ebit = index('ebit'),
+    capex = index('capex');
+  if (year < 0 || sales < 0 || ebit < 0)
+    throw Error(
+      'Use an Atlas input worksheet or a history CSV with fiscal year, revenue and EBIT columns. Capex is optional.',
+    );
+  if (!body.length || body.length > 30)
+    throw Error('Include between 1 and 30 annual rows.');
+  // If a file declares its identity or scale, do not silently combine different companies or currencies.
+  const columnValue = (aliases: string[], what: string) => {
+    const indexes = names.flatMap((h, i) => (aliases.includes(h) ? [i] : []));
+    let first = '';
+    for (const cells of body)
+      for (const i of indexes) {
+        const val = cells[i]?.trim();
+        if (!val) continue;
+        if (first && first.toLowerCase() !== val.toLowerCase())
+          throw Error(
+            'Mixed ' +
+              what +
+              ' in this file. Use one company, currency and unit per CSV.',
+          );
+        first = val;
+      }
+    return first;
+  };
+  const company = columnValue(['company', 'company name'], 'company names');
+  columnValue(['ticker', 'symbol'], 'tickers');
+  const declaredCurrency = columnValue(
+    ['currency', 'reporting currency'],
+    'currencies',
+  ).toUpperCase();
+  const currency = declaredCurrency
+    ? choice(declaredCurrency, ['USD', 'EUR', 'INR', 'GBP'] as const)
+    : undefined;
+  const declaredUnit = columnValue(
+    ['unit', 'units', 'scale'],
+    'units',
+  ).toLowerCase();
+  const scales: Record<string, HistoryUnit> = {
+    units: 'units',
+    unit: 'units',
+    'whole currency units': 'units',
+    thousand: 'thousands',
+    thousands: 'thousands',
+    million: 'millions',
+    millions: 'millions',
+    crore: 'crores',
+    crores: 'crores',
+  };
+  if (declaredUnit && !Object.hasOwn(scales, declaredUnit))
+    throw Error(
+      'Use units, thousands, millions or crores for the file’s scale.',
+    );
+  const unit = declaredUnit ? scales[declaredUnit] : undefined;
+  const seen = new Set<number>();
+  const rows = body.map((cells, i) => {
+    const fail = (msg: string): never => {
+      throw Error('Row ' + (i + 2) + ': ' + msg);
+    };
+    if (cells.length !== header.length)
+      fail('column count does not match the header.');
+    const fy = /^(?:FY\s*)?(\d{4})$/i.exec(cells[year].trim());
+    const y = fy ? Number(fy[1]) : NaN;
+    if (!Number.isInteger(y) || y < 1900 || y > 2200)
+      fail('use a four-digit fiscal year.');
+    if (seen.has(y)) fail('duplicate fiscal year ' + y + '.');
+    seen.add(y);
+    const amount = (column: number, label: string, signed = false) => {
+      let v = cells[column].trim();
+      if (/^\([\d.,]+\)$/.test(v)) v = '-' + v.slice(1, -1);
+      if (/^[+-]?\d{1,3}(?:,\d{3})+(?:\.\d+)?$/.test(v))
+        v = v.replace(/,/g, '');
+      let num: number;
+      try {
+        num = csvNumber(v);
+      } catch {
+        return fail(label + ' must be a number, using a period for decimals.');
+      }
+      if (!signed && num < 0)
+        fail(
+          label === 'Capex'
+            ? 'enter capex as a positive cash outflow.'
+            : 'revenue cannot be negative.',
+        );
+      return num;
+    };
+    return {
+      year: y,
+      sales: amount(sales, 'Revenue'),
+      ebit: amount(ebit, 'EBIT', true),
+      capex: capex < 0 || !cells[capex].trim() ? null : amount(capex, 'Capex'),
+    };
+  });
+  return {
+    kind: 'history',
+    rows: rows.sort((a, b) => a.year - b.year),
+    currency,
+    unit,
+    company: company || undefined,
+  };
+}
+export function modelFromHistory(
+  rows: Historical[],
+  name: string,
+  currency: Model['currency'],
+  unit: HistoryUnit,
+  source: string,
+): Model {
+  const factor = historyUnits[unit][1],
+    m = blank(name.trim());
+  m.currency = currency;
+  m.history = rows
+    .map((h) => ({
+      year: h.year,
+      sales: h.sales * factor,
+      ebit: h.ebit * factor,
+      capex: h.capex === null ? null : h.capex * factor,
+    }))
+    .sort((a, b) => a.year - b.year);
+  const last = m.history.at(-1);
+  if (!last) throw Error('Include at least one historical fiscal year.');
+  m.year = last.year;
+  // A zero-sales period is valid history, but is not a positive FCFF revenue base.
+  m.inputs.revenue = last.sales >= fields.revenue[3] ? last.sales : null;
+  m.source = 'User-provided annual history: ' + source.slice(0, 255);
+  return parseModel(m);
 }
 export function forecastCsv(m: Model, r: Result) {
   return csv([

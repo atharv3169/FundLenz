@@ -4,6 +4,12 @@ Open **More projects → DCF Atlas** or go directly to **/dcf-atlas**. This is a
 
 ![Four-column DCF Atlas overview: the FY2028 cash-flow insight and the matching forecast row](atlas/desktop.webp)
 
+## Start with your own data
+
+Choose **Add model** beside the Overview heading to start a blank worksheet, or **Upload CSV** to review a file. Download the **Worked CSV example** to edit a complete valuation and see your numbers on the charts. The blank Atlas template is also available there.
+
+For annual accounts, upload one row per fiscal year with `Fiscal year,Revenue,EBIT,Capex` (capex is optional and positive). Review the company, reporting currency and units, then choose **Apply import**. Atlas converts the figures to millions, takes starting revenue from the latest eligible fiscal year and opens Assumptions. It does not guess a discount rate, price or forecast. Cancel keeps your current model; Undo restores it after applying.
+
 ## Try a complete valuation
 
 1. Open the fictional Meridian Instruments case. The desktop overview puts cash flow, operations, growth and the cash bridge in one four-chart row. Hover or tap a point for its value and a model-based explanation; with a chart focused, use left/right for the year and up/down for its series. Escape dismisses the insight. The annual forecast and signed bridge figures stay visible below. **Tune forecast drivers** changes all four charts together. Undo restores the prior model.

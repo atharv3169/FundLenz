@@ -3,7 +3,6 @@ import { useDeferredValue, useMemo, useState } from 'react';
 import {
   Search,
   Library,
-  ArrowUpRight,
   Plus,
   BookOpen,
   FolderOpen,
@@ -15,8 +14,9 @@ import {
   type Securities,
   type Security,
 } from '@/lib/securities';
-import { blank, demo, evaluate, type Model } from '@/lib/atlas/model';
+import { demo, evaluate, type Model } from '@/lib/atlas/model';
 import { filings, filingModel } from '@/lib/atlas/research';
+import { CreateModelDialog } from './create-model';
 import { Screener } from './screener';
 import { useAtlas } from './context';
 import { Card, Dialog, Plot, Table, cash, n } from './ui';
@@ -36,9 +36,6 @@ export function Research() {
     [page, setPage] = useState(0),
     [stock, setStock] = useState<Security | null>(null),
     [create, setCreate] = useState(false),
-    [name, setName] = useState(''),
-    [currency, setCurrency] = useState<Model['currency']>('USD'),
-    [sector, setSector] = useState<Model['sector']>('Operating company'),
     [del, setDel] = useState<string | null>(null),
     [at, period] = useState(0);
   const query = useDeferredValue(q.trim().toLowerCase()),
@@ -135,9 +132,6 @@ export function Research() {
             onClick={() => {
               setStock(null);
               setCreate(true);
-              setName('');
-              setCurrency('USD');
-              setSector('Operating company');
             }}
           >
             <Plus size={15} /> New model
@@ -340,9 +334,6 @@ export function Research() {
                       className="a-link"
                       onClick={() => {
                         setStock(s);
-                        setName(s.name.slice(0, 100));
-                        setCurrency('USD');
-                        setSector('Operating company');
                         setCreate(true);
                       }}
                     >
@@ -480,79 +471,7 @@ export function Research() {
         />
       )}
       {create && (
-        <Dialog
-          title={
-            stock ? 'Start from this listing' : 'Start a blank company model'
-          }
-          onClose={() => setCreate(false)}
-        >
-          <p>
-            {stock
-              ? stock.symbol +
-                ' · ' +
-                stock.exchange +
-                ' · identity dated ' +
-                stock.asOf
-              : 'Enter the company identity and the currency used in its accounts.'}{' '}
-            Financial assumptions start empty.
-          </p>
-          <label className="a-full">
-            Company name
-            <input
-              autoFocus
-              value={name}
-              maxLength={100}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </label>
-          <div className="a-gridform">
-            <label>
-              Currency
-              <select
-                value={currency}
-                onChange={(e) =>
-                  setCurrency(e.target.value as Model['currency'])
-                }
-              >
-                {['USD', 'EUR', 'INR', 'GBP'].map((s) => (
-                  <option key={s}>{s}</option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Business type
-              <select
-                value={sector}
-                onChange={(e) => setSector(e.target.value as Model['sector'])}
-              >
-                {['Operating company', 'Bank / insurer', 'REIT'].map((s) => (
-                  <option key={s}>{s}</option>
-                ))}
-              </select>
-            </label>
-          </div>
-          <button
-            className="a-primary"
-            disabled={!name.trim()}
-            onClick={() => {
-              const v = blank(name.trim(), stock?.symbol || '');
-              v.currency = currency;
-              v.sector = sector;
-              if (stock)
-                v.source =
-                  'Identity only: ' +
-                  stock.id +
-                  ' · ' +
-                  stock.sourceIds.join(', ') +
-                  ' · ' +
-                  stock.asOf;
-              setCreate(false);
-              start(v, 'Started manual model');
-            }}
-          >
-            Create model <ArrowUpRight size={14} />
-          </button>
-        </Dialog>
+        <CreateModelDialog stock={stock} onClose={() => setCreate(false)} />
       )}
       {del && (
         <Dialog title="Delete saved snapshot?" onClose={() => setDel(null)}>
