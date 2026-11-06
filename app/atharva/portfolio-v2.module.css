@@ -979,3 +979,12 @@
   align-self:start;
  }
 }
+
+/* The illustrated overview remains visible while the whole document scrolls. */
+@media(min-width:1024px){
+  .portfolioShell .storySection.storyIsOpen>.storyWorkspace>.storyStage{
+    position:sticky;
+    top:76px;
+    align-self:start;
+  }
+}
