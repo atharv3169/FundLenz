@@ -56,15 +56,15 @@ function DcfArt(){
 }
 function CrowdArt(){
  const people=Array.from({length:12},(_,i)=>({x:170+(i%4)*154,y:125+Math.floor(i/4)*125}));
- return <div className={s.crowdScene}><span className={s.figMicro}>COMPUTER VISION / ALERT LOGIC</span>
- <svg className={s.sceneSvg} viewBox="0 0 920 540" role="img" aria-label="Conceptual camera field, detected people and ESP32 alert circuit">
+ return <div className={s.crowdScene}><span className={s.figMicro}>COMPUTER VISION / ML ALERT SYSTEM</span>
+ <svg className={s.sceneSvg} viewBox="0 0 920 540" role="img" aria-label="Conceptual camera field, detected people, machine-learning model and alerts">
  <defs><pattern id="camgrid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#c0a7cc" strokeOpacity=".1"/></pattern></defs>
  <rect x="82" y="70" width="660" height="390" rx="14" fill="#121b26" stroke="#cfa5dd" strokeOpacity=".55" strokeWidth="2"/>
  <rect x="82" y="70" width="660" height="390" rx="14" fill="url(#camgrid)"/>
  {people.map((p,i)=><g key={i} className={s.personGlow} style={{animationDelay:(i%5)*.35+"s"}}><circle cx={p.x} cy={p.y} r="17" fill="#caafcf" opacity=".75"/><path d={"M"+(p.x-24)+" "+(p.y+50)+"Q"+(p.x-23)+" "+(p.y+18)+" "+p.x+" "+(p.y+23)+"Q"+(p.x+23)+" "+(p.y+18)+" "+(p.x+24)+" "+(p.y+50)} stroke="#f1cee8" fill="#7f669d" fillOpacity=".25" strokeWidth="2"/><rect x={p.x-36} y={p.y-25} width="72" height="86" rx="4" fill="none" stroke="#e4c3df" strokeOpacity=".53" strokeDasharray="5 7"/></g>)}
  <path className={s.scanBeam} d="M105 145H717" stroke="#e4a8b5" strokeWidth="3"/>
  <path d="M758 157H835V229H759M758 311H835V384H759" stroke="#b4d4df" strokeWidth="3" strokeDasharray="7 6" className={s.flowingLine}/>
- <rect x="770" y="236" width="95" height="71" rx="6" fill="#1e2a36" stroke="#b3d4db"/><text x="792" y="265" fill="#bfe6e4" fontSize="15">ESP32</text><text x="783" y="285" fill="#a9b6c1" fontSize="10">ALERT IO</text>
+ <rect x="764" y="235" width="110" height="75" rx="6" fill="#1e2a36" stroke="#b3d4db"/><text x="782" y="264" fill="#bfe6e4" fontSize="15">ML MODEL</text><text x="778" y="289" fill="#a9b6c1" fontSize="11">ALERT LOGIC</text>
  </svg><div className={s.crowdStatus}><i/> CAMERA FEED / CONCEPTUAL SCENE</div></div>;
 }
 function StudyArt(){
@@ -82,8 +82,28 @@ function VsArt(){
  </svg><div className={s.figFooter}>SENSOR INPUT → PROCESSING → OUTPUT</div></div>;
 }
 function SynkArt(){
- return <div className={s.synkScene}><span className={s.figMicro}>AI / VIRTUAL EXPERIENCES / PROXIMITY CHAT</span>
- <div className={s.synkRoom}><div className={s.synkFloor}><i/><i/><i/><i/></div>{[0,1,2,3,4].map(i=><div key={i} className={s.synkAvatar} style={{left:(19+(i*17)%74)+"%",top:(20+(i*29)%56)+"%",animationDelay:(i*.5)+"s"}}><span>{["A","B","C","D","E"][i]}</span><b/></div>)}<div className={s.synkChat}>HEY THERE! <span>✦</span></div></div><div className={s.figFooter}>ILLUSTRATIVE VIRTUAL LOUNGE / NOT SYNK PRODUCT UI</div></div>;
+ return <div className={s.synkFinanceScene}>
+  <span className={s.figMicro}>FP&amp;A / SUBSCRIPTIONS / PRICING / STRATEGY</span>
+  <div className={s.synkFinanceBoard}>
+    <div className={s.synkFinanceTop}><span>MONETISATION WORKSPACE</span><span className={s.synkFinanceLive}><i/> SCENARIO LAB</span></div>
+    <div className={s.synkPricing}>
+      <div className={s.synkPricingLever}><span>01 / PRICING</span><strong>Subscription</strong><div><b className={s.synkPriceDot}/><i/><i/></div></div>
+      <div className={s.synkPricingLever}><span>02 / PAYWALL</span><strong>Conversion</strong><div><b className={s.synkPriceDot}/><i/><i/></div></div>
+      <div className={s.synkPricingLever}><span>03 / PROJECTIONS</span><strong>Growth cases</strong><div><b className={s.synkPriceDot}/><i/><i/></div></div>
+    </div>
+    <svg className={s.synkForecastSvg} viewBox="0 0 740 205" role="img" aria-label="Conceptual revenue scenario curves for upside, base and downside cases, not actual SYNK forecasts">
+      {Array.from({length:5},(_,i)=><line key={i} x1="28" x2="714" y1={20+i*41} y2={20+i*41} stroke="#bdc8f0" strokeOpacity=".13" strokeDasharray="3 8"/>)}
+      <path className={s.synkScenarioTop} d="M30 173 C150 170 216 138 313 108 S525 56 714 21" stroke="#c4ecdd" fill="none" strokeWidth="3.2" strokeLinecap="round"/>
+      <path className={s.synkScenarioMid} d="M30 173 C150 167 219 152 312 132 S524 111 714 85" stroke="#b7bdf6" fill="none" strokeWidth="3.2" strokeLinecap="round"/>
+      <path className={s.synkScenarioLow} d="M30 173 C130 176 222 175 313 164 S525 151 714 146" stroke="#d7bca5" fill="none" strokeWidth="2.2" strokeLinecap="round" strokeDasharray="7 9"/>
+      <circle className={s.synkScenarioPulse} cx="714" cy="21" r="5" fill="#c4ecdd"/>
+      <circle className={s.synkScenarioPulse} cx="714" cy="85" r="5" fill="#b7bdf6"/>
+    </svg>
+    <div className={s.synkForecastLegend}><span><i/> UPSIDE</span><span><i/> BASE</span><span><i/> DOWNSIDE</span></div>
+    <div className={s.synkStrategyFooter}><span>REVENUE PLANNING</span><span>LONG-TERM STRATEGY</span><span>M&amp;A OPTIONS</span></div>
+  </div>
+  <div className={s.figFooter}>ORIGINAL SCENARIO ILLUSTRATION / NOT INTERNAL COMPANY DATA</div>
+ </div>;
 }
 export function SceneFigure({id}:{id:StoryId}){
  switch(id){
