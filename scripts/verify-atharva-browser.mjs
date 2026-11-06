@@ -100,9 +100,10 @@ try{
   const swarmSpawned=await js('({count:document.querySelectorAll("[data-crew-agent]").length,phase:document.querySelector("[data-cursor-crew]")?.dataset.phase})');
   assert.equal(swarmSpawned.count,18,"Cursor agents should emerge from the click rather than remain on the page");
   await sleep(520);
-  const swarmActive=await js('({phase:document.querySelector("[data-cursor-crew]").dataset.phase,titleGuide:document.querySelector("[data-crew-guide=title]").style.opacity,figureGuide:document.querySelector("[data-crew-guide=figure]").style.opacity,selectionCount:document.querySelectorAll("[data-crew-guide]").length})');
+  const swarmActive=await js('({phase:document.querySelector("[data-cursor-crew]").dataset.phase,titleGuideEver:document.querySelector("[data-crew-guide=title]").dataset.everVisible,figureGuideEver:document.querySelector("[data-crew-guide=figure]").dataset.everVisible,selectionCount:document.querySelectorAll("[data-crew-guide]").length})');
   assert.equal(swarmActive.phase,"assembling","Agents should be assembling the story with timed work");
-  assert.equal(swarmActive.titleGuide,"1","Title selection frame must track the real heading");
+  assert.equal(swarmActive.titleGuideEver,"true","The title must have been selected during its movement");
+  assert.equal(swarmActive.figureGuideEver,"true","Real moving project objects must have been selected");
   assert.equal(swarmActive.selectionCount,3,"Guides should represent only actual DOM elements");
   await shot("desktop-shyam-cursor-crew-midway.png");
   await shot("desktop-shyam-morph-midway.png");
