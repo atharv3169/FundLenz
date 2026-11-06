@@ -129,6 +129,8 @@ try{
   await js('document.querySelector("#story-shyam button[aria-expanded]").click()');
   await sleep(520);
   assert.equal(await js('document.querySelector("[data-cursor-crew]")?.dataset.phase==="building"'),true,"Reverse action should also send cursor agents to work");
+  const returningTitle=await js('({width:document.querySelector("#story-shyam [data-crew-target=title]").getBoundingClientRect().width,stageWidth:document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().width})');
+  assert.ok(returningTitle.width>240,"The headline must remain readable while cursors undo the layout: "+JSON.stringify(returningTitle));
   await shot("desktop-shyam-cursors-return.png");
   await sleep(3100);
   assert.equal(await js('document.querySelector("[data-cursor-crew]")===null'),true,"Agents must gather at pointer and vanish after reversing");
@@ -186,7 +188,7 @@ try{
   const mobileStory=await js('({stageHeight:document.querySelector("#story-crowd [data-role=story-overview]").getBoundingClientRect().height,readerWidth:document.querySelector("#story-crowd [data-role=story-reader]").getBoundingClientRect().width,hidden:document.querySelector("#full-crowd").getAttribute("aria-hidden")})');
   assert.ok(mobileStory.stageHeight<340&&mobileStory.readerWidth>340&&mobileStory.hidden==="false","Mobile morph must compress the overview and open the reader: "+JSON.stringify(mobileStory));
   await shot("mobile-crowd-expanded.png");
-  await js('document.querySelector("#story-crowd [data-role=story-reader] button").click()');
+  await js('document.querySelector("#story-crowd button[aria-expanded]").click()');
   await sleep(900);
   assert.equal(await js('document.querySelector("#full-crowd").getAttribute("aria-hidden")'),"true","Close restores mobile overview");
   dims=await js('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})');
