@@ -56,4 +56,36 @@ chapters:[
 ],tags:["Computer vision","ESP32","IoT","Research","Feasibility"]
 },
 
+
+{
+id:"study",title:"Study Buddy",type:"Hackathon project · group build",year:"2024",eyebrow:"07 / BUILDING UNDER PRESSURE",hook:"One place for notes, tasks and a little more focus.",intro:"We built a study companion during a hackathon and came second. The best part was making the pieces feel like one useful product.",accent:"#c6d8a7",
+numbers:[{value:"2nd place",label:"interdepartmental hackathon"},{value:"3 ideas",label:"notes · tasks · focus"}],
+chapters:[
+{title:"Keeping it simple",paragraphs:["Studying can mean jumping between a notes app, a task list and a timer. Our idea was to bring those everyday pieces together without making the interface complicated.","We worked together to prototype note management, study organisation and focus modes during a hackathon. The project placed second. I've intentionally left out the college and event name here."]},
+{title:"The bit I liked most",paragraphs:["You don't have unlimited time in a hackathon. We had to agree on what really mattered and focus on building it. I enjoyed watching the separate functions begin to feel like one application.","The interactive Study Buddy below is a fresh mini-recreation of the idea. Add a task, make a note and run a short focus timer. Nothing is sent to a server or saved after leaving the page."]}
+],tags:["Product design","Task planning","Focus","Hackathon"]
+},
+{
+id:"vs",title:"V S Informatics",type:"Embedded & IoT internship",year:"Jan – May 2026",eyebrow:"08 / HANDS-ON TECHNOLOGY",hook:"The moment a stubborn circuit finally works is hard to beat.",intro:"I developed and tested more than 20 embedded and IoT applications with Arduino, ESP32 and sensor-based systems.",accent:"#9cd0d2",
+numbers:[{value:"20+",label:"embedded and IoT applications"},{value:"2026",label:"internship completion"}],
+chapters:[
+{title:"On the workbench",paragraphs:["My documented internship ran from 16 January to 28 May 2026. I worked through sensors, displays, motor control, microcontrollers, ESP32 connectivity and the everyday debugging that links electronics with code.","A circuit can look right and still behave strangely. The internship strengthened my patience with integration, documentation and edge cases—skills I later brought into building finance software."]}
+],tags:["Arduino","ESP32","Sensors","Embedded systems","Testing"]
+},
+{
+id:"synk",title:"SYNK",type:"Internship · virtual experiences",year:"2026",eyebrow:"09 / INTERACTION & DIGITAL SPACES",hook:"What if online networking felt more like entering a real room?",intro:"SYNK explores AI-generated virtual environments, 3D spaces and avatar-based gatherings with proximity voice chat.",accent:"#b7c3ef",
+numbers:[{value:"3D",label:"virtual spaces in the company's concept"},{value:"AI",label:"environment-generation theme"}],
+chapters:[
+{title:"What interested me",paragraphs:["SYNK publicly describes a platform where people can join virtual spaces as avatars, move between conversations and meet at online events. It's an interesting experiment in making online interaction feel more natural.","I've included my SYNK internship here because it is part of my experience history, but I couldn't retrieve the specific role title or dates from my public LinkedIn profile during this update. I don't want to make up day-to-day duties or credit myself with the company's products."]},
+{title:"A connection to the rest of my work",paragraphs:["The broader idea—building an interface that people can actually explore—connects to what I enjoy in financial technology as well. The moving scene is my own abstract visual interpretation of the publicly described platform, not an internal SYNK project."]}
+],tags:["Digital experiences","3D spaces","Avatars","Interaction design"],visit:{href:"https://www.synk.today/",text:"Explore SYNK"}
+},
+
 ];
+
+export const learning=[
+{title:"Finance & research",skills:["Financial modelling","Capital budgeting","Debt financing","Cash-flow analysis","Investment research","Mutual-fund analysis","Portfolio concentration","Risk assessment"]},
+{title:"Tools & engineering",skills:["Python","SQL","Excel","Data validation","Cloudflare","GitHub","Embedded systems","Computer vision"]},
+{title:"Independent learning",skills:["NISM · Investor Education","CFI · Careers in Finance","Bank of America · Investment Banking simulation","HP LIFE · Finance & Cash Flow","Kaggle · Python and SQL","Vista Equity Partners · AI in Action","Simplilearn · AI in Finance"]}
+];
+export const interests=["Portfolio risk","Better financial tools","What models leave out","Business investment decisions","Data that tells a story","How systems connect"];
