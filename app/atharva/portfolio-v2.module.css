@@ -869,3 +869,154 @@
    height:34%;
  }
 }
+
+
+/* ----------------------------------------------------------
+   A single shared canvas: no story panel, header, or hard split.
+   Text is placed into the existing page by the click-only crew.
+   ---------------------------------------------------------- */
+.portfolioShell .storySection>.storyWorkspace{
+  position:relative;
+  isolation:isolate;
+  background:transparent;
+}
+.portfolioShell .storySection>.storyWorkspace::before{
+  content:"";
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 85% 65% at 50% 33%,
+      color-mix(in srgb,var(--accent) 9%,transparent),transparent 85%);
+  mask-image:linear-gradient(180deg,transparent 0%,#000 15%,#000 87%,transparent 100%);
+}
+.portfolioShell .storySection>.storyWorkspace>.storyStage,
+.portfolioShell .storySection>.storyWorkspace>.longStory{
+  position:relative;
+  z-index:1;
+  background:transparent!important;
+  background-color:transparent!important;
+  border:0!important;
+  border-left:0!important;
+  border-right:0!important;
+  box-shadow:none!important;
+}
+.portfolioShell .storySection>.storyWorkspace>.storyStage::before{
+  opacity:0!important;
+  display:none;
+}
+.portfolioShell .storySection .storyIllustration{
+  background:transparent!important;
+}
+.portfolioShell .storySection .storyIllustration>div[class*="Scene"]{
+  background:transparent!important;
+}
+.portfolioShell .storySection .storyWorkspace>.longStory{
+  transform:none!important;
+  transition:opacity 650ms ease,visibility 0s linear 1530ms!important;
+}
+.portfolioShell .storyIsOpen .storyWorkspace>.longStory{
+  transform:none!important;
+  transition:opacity 700ms ease 340ms,visibility 0s!important;
+}
+.portfolioShell .storyPanelBody{
+  background:none!important;
+  padding-top:clamp(50px,5.2vw,87px);
+}
+.portfolioShell .storyPanelBody .longStoryLead h4{
+  margin-top:14px;
+}
+.portfolioShell .storyPanelBody .storyChapterList{
+  margin-top:42px;
+}
+@media(min-width:1024px) and (prefers-reduced-motion:no-preference){
+  /* Real content follows the choreography: label, text, then chapters. */
+  .storyIsOpen .storyPanelBody .longStoryLead>.sectionTag{
+    animation:crewPlaceText 670ms cubic-bezier(.2,.74,.24,1) 290ms both;
+  }
+  .storyIsOpen .storyPanelBody .longStoryLead h4{
+    animation:crewTypeText 780ms steps(15,end) 470ms both;
+  }
+  .storyIsOpen .storyPanelBody .longStoryLead>p{
+    animation:crewPlaceText 670ms cubic-bezier(.2,.74,.24,1) 690ms both;
+  }
+  .storyIsOpen .storyPanelBody .chapter:nth-child(1){
+    animation:crewPlaceText 690ms cubic-bezier(.2,.74,.24,1) 930ms both;
+  }
+  .storyIsOpen .storyPanelBody .chapter:nth-child(2){
+    animation:crewPlaceText 690ms cubic-bezier(.2,.74,.24,1) 1100ms both;
+  }
+  .storyIsOpen .storyPanelBody .chapter:nth-child(n+3){
+    animation:crewPlaceText 690ms cubic-bezier(.2,.74,.24,1) 1210ms both;
+  }
+  .storyIsOpen .storyPanelBody .miniStage,
+  .storyIsOpen .storyPanelBody .tagsLine,
+  .storyIsOpen .storyPanelBody .readerFooter{
+    animation:crewPlaceText 720ms cubic-bezier(.2,.74,.24,1) 1320ms both;
+  }
+}
+@keyframes crewPlaceText{
+  from{opacity:0;transform:translate3d(0,20px,0);filter:blur(3px);}
+  to{opacity:1;transform:translate3d(0,0,0);filter:blur(0);}
+}
+@keyframes crewTypeText{
+  from{opacity:.7;clip-path:inset(0 100% 0 0);filter:blur(1px);}
+  to{opacity:1;clip-path:inset(0 0 0 0);filter:blur(0);}
+}
+@media(max-width:1023px){
+  .portfolioShell .storyPanelBody{padding-top:38px;}
+  .portfolioShell .storySection>.storyWorkspace::before{opacity:.65;}
+}
+@media(prefers-reduced-motion:reduce){
+  .storyIsOpen .storyPanelBody .longStoryLead>*,
+  .storyIsOpen .storyPanelBody .chapter,
+  .storyIsOpen .storyPanelBody .miniStage,
+  .storyIsOpen .storyPanelBody .tagsLine{animation:none!important;}
+}
+
+@media(min-width:961px){
+ .portfolioShell .storyIsOpen>.storyWorkspace>.storyStage{
+  position:sticky;
+  top:76px;
+  align-self:start;
+ }
+}
+
+/* The illustrated overview remains visible while the whole document scrolls. */
+@media(min-width:1024px){
+  .portfolioShell .storySection.storyIsOpen>.storyWorkspace>.storyStage{
+    position:sticky;
+    top:76px;
+    align-self:start;
+  }
+}
+
+
+/* Stable desktop text width throughout the spatial morph. The artwork is
+   absolutely positioned, so the nested stage grid is unnecessary and was
+   briefly collapsing the headline into a one-letter-wide column. */
+@media(min-width:1024px){
+ .portfolioShell .storyWorkspace>.storyStage{
+   display:block;
+ }
+ .portfolioShell .storyWorkspace>.storyStage .storyCopy{
+   width:49%;
+   max-width:none;
+   min-width:0;
+   transition:width 1500ms cubic-bezier(.22,.68,.18,1),padding 1500ms cubic-bezier(.22,.68,.18,1);
+ }
+ .portfolioShell .storyIsOpen>.storyWorkspace>.storyStage .storyCopy{
+   width:100%;
+   max-width:none;
+ }
+}
+
+
+/* Critical layout invariant: the content column never shrinks faster than
+   its parent overview while the cursor swarm is dragging it back. */
+@media(min-width:1024px){
+ .portfolioShell .storyWorkspace>.storyStage .storyCopy,
+ .portfolioShell .storyIsOpen>.storyWorkspace>.storyStage .storyCopy{
+   width:100%;
+   max-width:min(750px,55vw);
+   transition:padding 1500ms cubic-bezier(.22,.68,.18,1);
+ }
+}

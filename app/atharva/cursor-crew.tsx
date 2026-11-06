@@ -1,8 +1,8 @@
 "use client";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
-import styles from "./cursor-crew.module.css";
 
-/** Original, non-blocking choreography. This is not extension code. */
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import s from "./cursor-crew.module.css";
+
 export type MorphSignal = {
   sequence: number;
   storyId: string;
@@ -10,111 +10,235 @@ export type MorphSignal = {
   originX: number;
   originY: number;
 };
-type XY={x:number;y:number};
-const PALETTE=["#b2e6d2","#f3c3a0","#c4b8f6","#94cddd","#ebd39b","#dcabc9","#8ac9ba","#b4bbf0","#e9bdb0","#9ccfd8","#c4d7ad","#dbbce5"];
-const ROLES=["MOVE","ALIGN","RESIZE","FLOW","PLACE","TYPE","FRAME","TUNE","BUILD","FIT","GUIDE","SET"];
-const DURATION=1950;
-const clamp=(x:number,a:number,b:number)=>Math.max(a,Math.min(b,x));
-const smooth=(x:number)=>{const v=clamp(x,0,1);return v*v*(3-2*v);};
-const p=(r:DOMRect|undefined,x:number,y:number):XY|null=>r&&r.width>3&&r.height>3?{x:r.left+r.width*x,y:r.top+r.height*y}:null;
-function destination(i:number,title:DOMRect|undefined,figure:DOMRect|undefined,lead:DOMRect|undefined,panel:DOMRect|undefined):XY|null{
- if(i===0)return p(title,.02,.13);
- if(i===1)return p(title,.95,.81);
- if(i===2)return p(title,.46,.51);
- if(i===3)return p(figure,.05,.08);
- if(i===4)return p(figure,.94,.07);
- if(i===5)return p(figure,.93,.92);
- if(i===6)return p(figure,.06,.91);
- if(i===7)return p(lead,.05,.12);
- if(i===8)return p(lead,.87,.52);
- if(i===9)return p(lead,.2,.85);
- return p(panel,i===10?.08:.92,.07);
+
+type XY = { x: number; y: number };
+type Agent = XY & { vx: number; vy: number };
+type Target = "title" | "figure" | "lead" | "chapter";
+type Task = {
+  target: Target;
+  u: number;
+  v: number;
+  begin: number;
+  finish: number;
+  shape: "arrow" | "resize" | "text";
+  label: string;
+};
+
+const COLORS = [
+  "#f07a50", "#b090ff", "#41c5ff", "#49cfa4", "#ffc970", "#f295af",
+  "#72bde5", "#acdc9c", "#d7a0fb", "#f4b879", "#68d8cc", "#e6a3cd",
+  "#80a8fb", "#e9d893", "#a1d6b8", "#f5a8a1", "#a6c4fc", "#b3e4db",
+];
+const TASKS: Task[] = [
+  { target: "title", u: 0, v: 0, begin: .10, finish: .53, shape: "arrow", label: "MOVE" },
+  { target: "title", u: 1, v: 0, begin: .12, finish: .56, shape: "resize", label: "SCALE" },
+  { target: "title", u: 0, v: 1, begin: .14, finish: .56, shape: "arrow", label: "ALIGN" },
+  { target: "title", u: 1, v: 1, begin: .16, finish: .54, shape: "resize", label: "FIT" },
+  { target: "figure", u: 0, v: 0, begin: .13, finish: .60, shape: "arrow", label: "DRAG" },
+  { target: "figure", u: 1, v: 0, begin: .15, finish: .62, shape: "resize", label: "WIDTH" },
+  { target: "figure", u: 1, v: 1, begin: .18, finish: .62, shape: "resize", label: "SCALE" },
+  { target: "figure", u: 0, v: 1, begin: .19, finish: .65, shape: "resize", label: "HEIGHT" },
+  { target: "figure", u: .51, v: .21, begin: .21, finish: .61, shape: "arrow", label: "PLACE" },
+  { target: "figure", u: .4, v: .79, begin: .22, finish: .65, shape: "arrow", label: "POSITION" },
+  { target: "lead", u: .04, v: .05, begin: .31, finish: .74, shape: "text", label: "TYPE" },
+  { target: "lead", u: .87, v: .2, begin: .34, finish: .74, shape: "text", label: "WRITE" },
+  { target: "lead", u: .11, v: .88, begin: .36, finish: .75, shape: "arrow", label: "PLACE" },
+  { target: "lead", u: .88, v: .89, begin: .37, finish: .77, shape: "text", label: "TYPE" },
+  { target: "chapter", u: .08, v: .08, begin: .42, finish: .78, shape: "text", label: "WRITE" },
+  { target: "chapter", u: .72, v: .16, begin: .44, finish: .79, shape: "text", label: "ALIGN" },
+  { target: "chapter", u: .12, v: .81, begin: .45, finish: .81, shape: "arrow", label: "PLACE" },
+  { target: "chapter", u: .77, v: .83, begin: .47, finish: .81, shape: "text", label: "TYPE" },
+];
+
+const TOTAL_MS = 3250;
+const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
+const ease = (v: number) => { const p = clamp(v, 0, 1); return p * p * (3 - 2 * p); };
+const eligible = () =>
+  window.matchMedia("(min-width: 1024px)").matches &&
+  !window.matchMedia("(pointer: coarse)").matches &&
+  !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function bounds(section: HTMLElement | null, target: Target): DOMRect | null {
+  if (!section) return null;
+  const name = target === "chapter" ? "[data-crew-target=chapter]" : "[data-crew-target=" + target + "]";
+  const el = section.querySelector<HTMLElement>(name);
+  if (!el) return null;
+  const rect = el.getBoundingClientRect();
+  return rect.width > 4 && rect.height > 4 ? rect : null;
 }
-function placeGuide(el:HTMLDivElement|null,r:DOMRect|undefined){
- if(!el||!r){if(el)el.style.opacity="0";return;}
- const l=clamp(r.left,9,window.innerWidth-11),t=clamp(r.top,80,window.innerHeight-11);
- const right=clamp(r.right,13,window.innerWidth-9),bottom=clamp(r.bottom,84,window.innerHeight-9);
- if(right-l<14||bottom-t<14){el.style.opacity="0";return;}
- el.style.transform="translate3d("+l+"px,"+t+"px,0)";
- el.style.width=(right-l)+"px";el.style.height=(bottom-t)+"px";
- el.style.opacity="1";
+function sample(rect: DOMRect | null, task: Task): XY | null {
+  if (!rect) return null;
+  return { x: rect.left + rect.width * task.u, y: rect.top + rect.height * task.v };
 }
-export default function CursorCrew({signal}:{signal:MorphSignal|null}){
- const [enabled,setEnabled]=useState(false);
- const layerRef=useRef<HTMLDivElement|null>(null);
- const mouse=useRef<XY>({x:0,y:0});
- const visited=useRef(false);
- const current=useRef<XY[]>([]);
- const choreography=useRef<{signal:MorphSignal;start:number}|null>(null);
- useEffect(()=>{
-  const desktop=window.matchMedia("(min-width: 1024px)");
-  const coarse=window.matchMedia("(pointer: coarse)");
-  const reduce=window.matchMedia("(prefers-reduced-motion: reduce)");
-  const measure=()=>setEnabled(desktop.matches&&!coarse.matches&&!reduce.matches);
-  measure();desktop.addEventListener("change",measure);coarse.addEventListener("change",measure);reduce.addEventListener("change",measure);
-  return()=>{desktop.removeEventListener("change",measure);coarse.removeEventListener("change",measure);reduce.removeEventListener("change",measure);};
- },[]);
- useEffect(()=>{if(signal&&enabled)choreography.current={signal,start:performance.now()};},[signal,enabled]);
- useEffect(()=>{
-  if(!enabled||!layerRef.current)return;
-  const layer=layerRef.current;
-  const nodes=Array.from(layer.querySelectorAll<HTMLElement>("[data-crew-agent]"));
-  const titleBox=layer.querySelector<HTMLDivElement>("[data-crew-title]");
-  const figureBox=layer.querySelector<HTMLDivElement>("[data-crew-figure]");
-  if(!visited.current)mouse.current={x:window.innerWidth*.52,y:window.innerHeight*.46};
-  if(current.current.length!==ROLES.length){
-   current.current=ROLES.map((_,i)=>({x:mouse.current.x+Math.cos(i*.53)*24,y:mouse.current.y+Math.sin(i*.53)*24}));
-  }
-  const onPointer=(e:PointerEvent)=>{if(e.pointerType==="touch")return;visited.current=true;mouse.current={x:e.clientX,y:e.clientY};};
-  window.addEventListener("pointermove",onPointer,{passive:true});
-  let frame=0,last=performance.now();
-  const update=(now:number)=>{
-   const dt=clamp((now-last)/16.67,.4,2.4);last=now;
-   if(document.hidden){frame=requestAnimationFrame(update);return;}
-   let task=choreography.current;
-   if(task&&now-task.start>DURATION){choreography.current=null;task=null;}
-   const active=!!task;
-   layer.dataset.working=active?"true":"false";
-   let title:DOMRect|undefined,figure:DOMRect|undefined,lead:DOMRect|undefined,panel:DOMRect|undefined;
-   if(task){
-    const scope=document.getElementById("story-"+task.signal.storyId);
-    title=scope?.querySelector<HTMLElement>("[data-crew-target=title]")?.getBoundingClientRect();
-    figure=scope?.querySelector<HTMLElement>("[data-crew-target=figure]")?.getBoundingClientRect();
-    lead=scope?.querySelector<HTMLElement>("[data-crew-target=lead]")?.getBoundingClientRect();
-    panel=scope?.querySelector<HTMLElement>("[data-role=story-reader]")?.getBoundingClientRect();
-    placeGuide(titleBox,title);placeGuide(figureBox,figure);
-   }else{if(titleBox)titleBox.style.opacity="0";if(figureBox)figureBox.style.opacity="0";}
-   nodes.forEach((node,i)=>{
-    const angle=i*Math.PI*2/ROLES.length;
-    const radius=17+(i%4)*7;
-    const idle={x:mouse.current.x+Math.cos(angle+now*.00022)*radius,y:mouse.current.y+Math.sin(angle+now*.00022)*radius};
-    let target=idle;
-    if(task){
-     const progress=clamp((now-task.start)/DURATION,0,1);
-     const approach=smooth((progress-(.055+(i%4)*.052))/(.58+(i%4)*.052));
-     const release=smooth((progress-.79)/.2);
-     const goal=destination(i,title,figure,lead,panel)||idle;
-     const origin={x:task.signal.originX+Math.cos(angle)*15,y:task.signal.originY+Math.sin(angle)*15};
-     target={x:origin.x+(goal.x-origin.x)*approach,y:origin.y+(goal.y-origin.y)*approach};
-     target={x:target.x+(idle.x-target.x)*release,y:target.y+(idle.y-target.y)*release};
-    }
-    const pos=current.current[i];
-    const k=1-Math.pow(1-(active?.21:.08+(i%5)*.005),dt);
-    pos.x+=(target.x-pos.x)*k;pos.y+=(target.y-pos.y)*k;
-    node.style.transform="translate3d("+pos.x.toFixed(1)+"px,"+pos.y.toFixed(1)+"px,0)";
-   });
-   frame=requestAnimationFrame(update);
-  };
-  frame=requestAnimationFrame(update);
-  return()=>{cancelAnimationFrame(frame);window.removeEventListener("pointermove",onPointer);};
- },[enabled]);
- if(!enabled)return null;
- return <div className={styles.layer} ref={layerRef} aria-hidden="true" data-cursor-crew data-working="false">
-  <div className={styles.guide+" "+styles.titleGuide} data-crew-title><i/><i/><i/><i/></div>
-  <div className={styles.guide+" "+styles.figureGuide} data-crew-figure><i/><i/><i/><i/></div>
-  {ROLES.map((label,i)=><div key={i} className={styles.agent} data-crew-agent style={{"--agent-color":PALETTE[i]} as CSSProperties}>
-   <svg viewBox="0 0 24 27" aria-hidden="true"><path d="M3 2 6 22 10 15 18 14Z" fill="var(--agent-color)" stroke="#f5f4eb" strokeWidth="1.4" strokeLinejoin="round"/><path d="m10 15 3.5 7" stroke="#f5f4eb" strokeWidth="2" strokeLinecap="round"/></svg>
-   <span>{label}</span>
-  </div>)}
- </div>;
+function guide(el: HTMLDivElement | null, rect: DOMRect | null, visible: boolean) {
+  if (!el) return;
+  if (!visible || !rect) { el.style.opacity = "0"; return; }
+  const left = clamp(rect.left, 9, innerWidth - 12);
+  const right = clamp(rect.right, 12, innerWidth - 9);
+  const top = clamp(rect.top, 79, innerHeight - 13);
+  const bottom = clamp(rect.bottom, 83, innerHeight - 9);
+  if (right - left < 18 || bottom - top < 18) { el.style.opacity = "0"; return; }
+  el.style.transform = "translate3d(" + left + "px," + top + "px,0)";
+  el.style.width = (right - left) + "px";
+  el.style.height = (bottom - top) + "px";
+  el.style.opacity = "1";
+  const badge = el.querySelector<HTMLElement>("[data-dim]");
+  if (badge) badge.textContent = Math.round(rect.width) + " × " + Math.round(rect.height);
+}
+
+/** A temporary, non-blocking swarm. No cursors exist in the page when idle. */
+export default function CursorCrew({ signal }: { signal: MorphSignal | null }) {
+  const [running, setRunning] = useState(false);
+  const layerRef = useRef<HTMLDivElement | null>(null);
+  const active = useRef<{ signal: MorphSignal; started: number } | null>(null);
+  const agents = useRef<Agent[]>([]);
+  const pointer = useRef<XY>({ x: 0, y: 0 });
+  const hasPointer = useRef(false);
+
+  useEffect(() => {
+    const track = (e: PointerEvent) => {
+      if (e.pointerType === "touch") return;
+      pointer.current = { x: e.clientX, y: e.clientY };
+      hasPointer.current = true;
+    };
+    window.addEventListener("pointermove", track, { passive: true });
+    return () => window.removeEventListener("pointermove", track);
+  }, []);
+
+  useEffect(() => {
+    if (!signal || !eligible()) return;
+    const origin = {
+      x: clamp(signal.originX, 10, innerWidth - 10),
+      y: clamp(signal.originY, 82, innerHeight - 10),
+    };
+    active.current = { signal: { ...signal, ...{ originX: origin.x, originY: origin.y } }, started: performance.now() };
+    if (!hasPointer.current) pointer.current = origin;
+    agents.current = TASKS.map((_, i) => ({
+      x: origin.x + Math.cos(i * 2.4) * (i % 3),
+      y: origin.y + Math.sin(i * 2.4) * (i % 3),
+      vx: 0, vy: 0,
+    }));
+    const frame = requestAnimationFrame(() => setRunning(true));
+    return () => cancelAnimationFrame(frame);
+  }, [signal]);
+
+  useEffect(() => {
+    if (!running || !layerRef.current) return;
+    const layer = layerRef.current;
+    const nodes = Array.from(layer.querySelectorAll<HTMLElement>("[data-crew-agent]"));
+    const titleGuide = layer.querySelector<HTMLDivElement>("[data-crew-guide=title]");
+    const artGuide = layer.querySelector<HTMLDivElement>("[data-crew-guide=figure]");
+    const textGuide = layer.querySelector<HTMLDivElement>("[data-crew-guide=lead]");
+    let frame = 0, last = performance.now();
+
+    const step = (now: number) => {
+      const state = active.current;
+      if (!state) { setRunning(false); return; }
+      if (!eligible()) { active.current = null; setRunning(false); return; }
+      if (document.hidden) { frame = requestAnimationFrame(step); return; }
+      const dt = clamp((now - last) / 1000, .004, .045);
+      last = now;
+      const t = clamp((now - state.started) / TOTAL_MS, 0, 1);
+      const section = document.getElementById("story-" + state.signal.storyId);
+      const title = bounds(section, "title");
+      const figure = bounds(section, "figure");
+      const lead = bounds(section, "lead");
+      const chapter = bounds(section, "chapter");
+      const rects: Record<Target, DOMRect | null> = { title, figure, lead, chapter };
+      const origin = { x: state.signal.originX, y: state.signal.originY };
+      const home = hasPointer.current ? pointer.current : origin;
+      const returning = t >= .82;
+      layer.dataset.phase = t < .12 ? "emerging" : returning ? "returning" : "building";
+      layer.dataset.working = returning ? "false" : "true";
+      guide(titleGuide, title, t > .20 && t < .55);
+      guide(artGuide, figure, t > .24 && t < .67);
+      guide(textGuide, lead, t > .49 && t < .79 && !!lead);
+
+      const updated: Agent[] = agents.current;
+      nodes.forEach((node, i) => {
+        const task = TASKS[i], a = updated[i];
+        const angle = (i / TASKS.length) * Math.PI * 2;
+        const wave = 19 + (i % 4) * 6;
+        const burst = ease(t / .14);
+        const spread = {
+          x: origin.x + Math.cos(angle * 2.3) * wave * burst,
+          y: origin.y + Math.sin(angle * 2.3) * wave * burst,
+        };
+        const movingTarget = sample(rects[task.target], task) || spread;
+        const formation = ease((t - task.begin) / .24);
+        let target = {
+          x: spread.x + (movingTarget.x - spread.x) * formation,
+          y: spread.y + (movingTarget.y - spread.y) * formation,
+        };
+        // After completing its work each agent gathers behind the real pointer.
+        const recall = ease((t - .79) / .195);
+        const trail = (1 - recall) * 13;
+        const gather = {
+          x: home.x + Math.cos(angle + now * .003) * trail,
+          y: home.y + Math.sin(angle + now * .003) * trail,
+        };
+        target = {
+          x: target.x + (gather.x - target.x) * recall,
+          y: target.y + (gather.y - target.y) * recall,
+        };
+
+        // Boids-style collision avoidance + spring steering. The task points
+        // themselves follow the moving DOM, so cursors visibly drag real items.
+        let avoidX = 0, avoidY = 0;
+        for (let j = 0; j < updated.length; j++) {
+          if (j === i) continue;
+          const other = updated[j], dx = a.x - other.x, dy = a.y - other.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 > 4 && d2 < 27 * 27) {
+            const push = (27 - Math.sqrt(d2)) / 27;
+            avoidX += dx * push; avoidY += dy * push;
+          }
+        }
+        const dx = target.x - a.x, dy = target.y - a.y;
+        const dist = Math.hypot(dx, dy);
+        const speed = Math.min(returning ? 1400 : 1160, dist * (returning ? 6.2 : 4.7));
+        const desiredX = dist > .01 ? dx / dist * speed : 0;
+        const desiredY = dist > .01 ? dy / dist * speed : 0;
+        const force = Math.min(1, dt * (returning ? 12 : 9.2));
+        a.vx += (desiredX - a.vx) * force + avoidX * dt * 5;
+        a.vy += (desiredY - a.vy) * force + avoidY * dt * 5;
+        a.x += a.vx * dt;
+        a.y += a.vy * dt;
+        node.style.transform = "translate3d(" + a.x.toFixed(1) + "px," + a.y.toFixed(1) + "px,0)";
+        // Tool changes are tied to its particular build task.
+        const doingTask = t > task.begin + .12 && t < task.finish && !returning;
+        const role = doingTask ? task.shape : "arrow";
+        if (node.dataset.tool !== role) node.dataset.tool = role;
+        const opacity = ease((t - i * .0025) / .055) * (1 - ease((t - .92) / .077));
+        node.style.opacity = opacity.toFixed(2);
+        const rotating = clamp(a.vx * .012, -15, 15);
+        node.style.setProperty("--turn", rotating.toFixed(1) + "deg");
+        node.style.setProperty("--compress", doingTask && dist < 32 ? ".85" : "1");
+      });
+      if (t >= 1) {
+        active.current = null;
+        setRunning(false);
+        return;
+      }
+      frame = requestAnimationFrame(step);
+    };
+    frame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame);
+  }, [running]);
+
+  if (!running) return null;
+  return <div className={s.layer} ref={layerRef} data-cursor-crew data-phase="emerging" data-working="true" aria-hidden="true">
+    <div className={s.selection+" "+s.selectionTitle} data-crew-guide="title"><i/><i/><i/><i/><b data-dim>MOVE</b></div>
+    <div className={s.selection+" "+s.selectionFigure} data-crew-guide="figure"><i/><i/><i/><i/><b data-dim>RESIZE</b></div>
+    <div className={s.selection+" "+s.selectionText} data-crew-guide="lead"><i/><i/><i/><i/><b data-dim>TYPE</b></div>
+    {TASKS.map((task, i) => <div className={s.agent} key={i} data-crew-agent data-tool="arrow" style={{ "--agent-color": COLORS[i] } as CSSProperties}>
+      <svg viewBox="0 0 28 28" className={s.cursorShape} aria-hidden="true">
+        <path className={s.arrow} d="M4 2.5 L6 23 L11 16 L19.4 15 Z" fill="var(--agent-color)" stroke="#f7f9f6" strokeWidth="1.6" strokeLinejoin="round"/>
+        <path className={s.arrow} d="M10.8 16 L14.2 24" fill="none" stroke="#f7f9f6" strokeWidth="2" strokeLinecap="round"/>
+        <path className={s.resize} d="M2.5 14 L9 7.5 V11 H19 V7.5 L25.5 14 L19 20.5 V17 H9 V20.5 Z" fill="var(--agent-color)" stroke="#fff" strokeWidth="1.3" strokeLinejoin="round"/>
+        <path className={s.textBeam} d="M9 4 H11 L14 7 L17 4 H19 M14 7 V21 M9 24 H11 L14 21 L17 24 H19" fill="none" stroke="var(--agent-color)" strokeWidth="2.1" strokeLinecap="round"/>
+      </svg>
+      <span>{task.label}</span>
+    </div>)}
+  </div>;
 }

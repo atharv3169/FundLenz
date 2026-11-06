@@ -13,10 +13,12 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
  const toggleRef=useRef<HTMLButtonElement>(null);
  const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
 
- const changeMode=(next:boolean)=>{
+ const changeMode=(next:boolean, pointer?:{x:number;y:number})=>{
    const button=toggleRef.current?.getBoundingClientRect();
    if(window.matchMedia("(min-width: 1024px)").matches&&!window.matchMedia("(pointer: coarse)").matches&&!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
-     onMorph({storyId:story.id,opening:next,originX:button?button.left+button.width/2:window.innerWidth/2,originY:button?button.top+button.height/2:window.innerHeight/2});
+     onMorph({storyId:story.id,opening:next,
+       originX:pointer&&pointer.x>0?pointer.x:button?button.left+button.width/2:window.innerWidth/2,
+       originY:pointer&&pointer.y>0?pointer.y:button?button.top+button.height/2:window.innerHeight/2});
    }
    // Keep one scroll context. Do not launch a competing smooth scroll
    // while the spatial layout is animating.
@@ -65,7 +67,7 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
        className={s.storyRead}
        aria-expanded={open}
        aria-controls={"full-"+story.id}
-       onClick={()=>changeMode(!open)}
+       onClick={event=>changeMode(!open,{x:event.clientX,y:event.clientY})}
       >
        {open?"Back to overview":"Read full story"}
        {open?<ArrowLeft size={17}/>:<ArrowRight size={17}/>}
@@ -89,12 +91,6 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
      aria-hidden={!open}
      inert={!open}
    >
-    <div className={s.storyPanelHeader}>
-     <span><i/> {String(index+1).padStart(2,"0")} / {String(stories.length).padStart(2,"0")} <b>—</b> {story.title.toUpperCase()}</span>
-     <button type="button" onClick={()=>changeMode(false)} aria-label={"Close "+story.title+" full story"}>
-       <X size={16}/> <span>Close story</span>
-     </button>
-    </div>
     <div className={s.storyPanelBody}>
      <div className={s.longStoryLead} data-crew-target="lead">
       <span className={s.sectionTag}>THE DEEPER STORY / {String(index+1).padStart(2,"0")}</span>
@@ -102,7 +98,7 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
       <p>{story.intro}</p>
      </div>
      <div className={s.storyChapterList}>
-      {story.chapters.map((chapter,i)=><article key={chapter.title} className={s.chapter}>
+      {story.chapters.map((chapter,i)=><article key={chapter.title} className={s.chapter} data-crew-target={i===0?"chapter":undefined}>
        <span>{String(i+1).padStart(2,"0")}</span>
        <div><h5>{chapter.title}</h5>{chapter.paragraphs.map((p,j)=><p key={j}>{p}</p>)}</div>
       </article>)}
