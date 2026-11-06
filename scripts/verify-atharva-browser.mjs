@@ -107,6 +107,8 @@ try{
   assert.ok(storyReaderBg==="rgba(0, 0, 0, 0)"||storyReaderBg==="transparent","No solid story box: "+storyReaderBg);
   const overviewIntro=await js('({opacity:getComputedStyle(document.querySelector("#story-shyam [class*=storyIntro]")).opacity,maxHeight:getComputedStyle(document.querySelector("#story-shyam [class*=storyIntro]")).maxHeight})');
   assert.equal(overviewIntro.opacity,"1","Expanded overview should retain larger supporting text");
+  const expandedSeparation=await js('({metricsBottom:document.querySelector("#story-shyam [class*=storyNumbers]").getBoundingClientRect().bottom,artLabelTop:document.querySelector("#story-shyam [class*=figMicro]").getBoundingClientRect().top})');
+  assert.ok(expandedSeparation.artLabelTop>expandedSeparation.metricsBottom+8,"Artwork must not overlap enlarged numbers and copy: "+JSON.stringify(expandedSeparation));
   await shot("desktop-shyam-expanded.png");
   const startScroll=await js("window.scrollY");
   await cmd("Input.dispatchMouseEvent",{type:"mouseWheel",x:1060,y:510,deltaY:700,deltaX:0});
