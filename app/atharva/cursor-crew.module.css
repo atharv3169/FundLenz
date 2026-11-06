@@ -38,7 +38,10 @@
   transform:translateY(-3px);
   transition:opacity .17s ease,transform .2s ease;
 }
-.layer[data-phase="building"] .agent span{opacity:1;transform:translateY(0);}
+.layer[data-phase="assembling"] .agent[data-active="true"] span,
+.layer[data-phase="dismantling"] .agent[data-active="true"] span{
+ opacity:1;transform:translateY(0);
+}
 .layer[data-phase="returning"] .agent span,
 .layer[data-phase="emerging"] .agent span{opacity:0;}
 .selection{
@@ -70,4 +73,12 @@
 }
 @media(max-width:1023px),(pointer:coarse),(prefers-reduced-motion:reduce){
   .layer{display:none!important;}
+}
+
+/* Task labels appear only when an agent reaches the element it is editing;
+   the rest travel silently, like the reference recording. */
+.agent[data-active="true"] .cursorShape{filter:drop-shadow(0 0 5px var(--agent-color));}
+.layer[data-phase="dismantling"] .selectionText{--guide-color:#e5a3b8bc;}
+.layer[data-phase="dismantling"] .agent[data-active="true"] span{
+ background:#eab7ba;color:#24312e;
 }
