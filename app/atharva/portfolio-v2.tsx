@@ -15,7 +15,7 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
 
  const changeMode=(next:boolean)=>{
    const button=toggleRef.current?.getBoundingClientRect();
-   if(window.matchMedia("(min-width: 1024px) and (pointer: fine) and (hover: hover) and (prefers-reduced-motion: no-preference)").matches){
+   if(window.matchMedia("(min-width: 1024px)").matches&&!window.matchMedia("(pointer: coarse)").matches&&!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
      onMorph({storyId:story.id,opening:next,originX:button?button.left+button.width/2:window.innerWidth/2,originY:button?button.top+button.height/2:window.innerHeight/2});
    }
    // Keep one scroll context. Do not launch a competing smooth scroll
