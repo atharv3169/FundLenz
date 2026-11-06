@@ -40,10 +40,10 @@ export function FinCalcDemo(){
  const p=integer(principal,1000,1e9),r=Math.max(0,Math.min(60,rate))/1200,n=integer(months,1,600);
  const emi=r===0?p/n:p*r/(1-Math.pow(1+r,-n));
  const total=emi*n;
- let balance=p;
  const schedule=Array.from({length:Math.min(n,72)},(_,idx)=>{
-  balance=Math.max(0,balance*(1+r)-emi);
-  return {month:idx+1,balance};
+  const k=idx+1;
+  const balance=r===0?Math.max(0,p-emi*k):Math.max(0,p*Math.pow(1+r,k)-emi*(Math.pow(1+r,k)-1)/r);
+  return {month:k,balance};
  });
  return <div className={m.toolLayout}>
   <div className={m.toolIntro}><span className={m.miniEyebrow}>INTERACTIVE / FIXED-RATE EMI</span><h4>Understand<br/><em>the payment.</em></h4><p>Change the loan amount, rate and term. Assumes fixed annual nominal interest compounded monthly, with equal payments.</p>
