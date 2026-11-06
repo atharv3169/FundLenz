@@ -10,7 +10,7 @@ export function HeroWave(){
    <path className={s.waveDraw} d="M-40 430L40 420L100 445L170 380L250 404L310 318L382 355L470 265L560 294L644 210L710 236L800 122L880 162L1020 65" stroke="url(#hpath)" strokeWidth="3"/>
    <path className={s.waveGhost} d="M-40 470L100 457L180 477L270 414L355 442L470 348L570 374L646 292L720 317L820 215L910 238L1020 170" stroke="#9fd4e2" strokeWidth="1" strokeOpacity=".37"/>
    <circle className={s.wavePoint} cx="800" cy="122" r="6" fill="#dcebbd"/><circle className={s.wavePoint} cx="644" cy="210" r="4" fill="#bfddc5"/>
-   <text x="790" y="100" fill="#c7dfcc" fontSize="12" letterSpacing="3">CURIOUSITY ↗</text>
+   <text x="790" y="100" fill="#c7dfcc" fontSize="12" letterSpacing="3">CURIOSITY ↗</text>
  </svg>;
 }
 function Machine(){
