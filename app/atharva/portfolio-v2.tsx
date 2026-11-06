@@ -8,6 +8,14 @@ import s from "./portfolio-v2.module.css";
 
 function StorySection({story,index}:{story:Story;index:number}){
  const [open,setOpen]=useState(false);
+ useEffect(()=>{
+   if(!open)return;
+   const frame=requestAnimationFrame(()=>{
+     const reduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+     document.getElementById("full-"+story.id)?.scrollIntoView({behavior:reduced?"auto":"smooth",block:"start"});
+   });
+   return()=>cancelAnimationFrame(frame);
+ },[open,story.id]);
  const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
  return <section id={"story-"+story.id} className={s.storySection} style={{"--accent":story.accent} as CSSProperties} data-story={story.id}>
   <div className={s.storyStage} data-reveal>
@@ -19,7 +27,7 @@ function StorySection({story,index}:{story:Story;index:number}){
     <p className={s.storyIntro}>{story.intro}</p>
     <div className={s.storyActions}>
       <button className={s.storyRead} aria-expanded={open} aria-controls={"full-"+story.id} onClick={()=>setOpen(v=>!v)}>{open?"Close the story":"Read full story"}<ChevronDown size={17} className={open?s.chevronOpen:""}/></button>
-      {story.visit&&<a className={s.storyVisit} href={story.visit.href} target="_blank" rel="noopener noreferrer" title={story.visit.pending?"Upcoming FundLenz route":story.visit.text}>{story.visit.text}<ArrowUpRight size={17}/></a>}
+      {story.visit&&(story.visit.pending?<span className={s.storyUpcoming} title={"Planned URL: "+story.visit.href}>{story.visit.text} · planned URL</span>:<a className={s.storyVisit} href={story.visit.href} target="_blank" rel="noopener noreferrer">{story.visit.text}<ArrowUpRight size={17}/></a>)}
     </div>
     <div className={s.storyNumbers}>{story.numbers.map((n,i)=><div key={i}><strong>{n.value}</strong><span>{n.label}</span></div>)}</div>
    </div>
