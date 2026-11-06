@@ -30,4 +30,30 @@ chapters:[
 ],tags:["Mutual funds","Liquidity risk","Empirical analysis","Research methods"],visit:{href:"https://ssrn.com/abstract=7536618",text:"Read SSRN preprint"}
 },
 
+
+{
+id:"fincalc",title:"FinCalc",type:"Python financial mathematics",year:"2026",eyebrow:"04 / FORMULAS YOU CAN CHECK",hook:"I wanted to understand the answer, not just press calculate.",intro:"FinCalc began as a small Python exercise in the maths behind loans and investments. It turned into a project about reproducibility.",accent:"#92cce2",
+numbers:[{value:"30",label:"automated test cases"},{value:"5",label:"finance calculation families"}],
+chapters:[
+{title:"Why build a calculator?",paragraphs:["I wanted a practical way to study compound interest, monthly loan payments, amortisation schedules, present value and CAGR. FinCalc runs from a terminal or command line, can export CSV schedules and uses Python Decimal arithmetic.","The real work was in input validation, edge cases and tests. I wrote 30 automated checks so an answer could be reproduced instead of simply trusted."]},
+{title:"The financial logic",paragraphs:["For a ₹100,000 loan at 12% annual interest over 12 months, the formula returns an EMI of about ₹8,884.88. Change the tenor and the monthly payment falls, but the total interest generally grows.","The browser mini-calculator below uses the same standard fixed-rate EMI formula, recreated here as an educational demonstration. The full FinCalc has additional calculations."]}
+],tags:["Python","EMI","CAGR","Amortisation","Testing"],visit:{href:"https://fundlenz.com/fincalc",text:"Open FinCalc"}
+},
+{
+id:"dcf",title:"DCF Atlas",type:"Valuation workspace · in development",year:"2026 – building",eyebrow:"05 / UNDERSTANDING VALUE",hook:"A single target value can hide a hundred assumptions.",intro:"I'm building a more visual way to explore forecasts, discount rates, terminal values and sensitivity in company valuation.",accent:"#edb79d",
+numbers:[{value:"5 years",label:"forecast in this demo"},{value:"3 drivers",label:"to experiment with"}],
+chapters:[
+{title:"The question behind Atlas",paragraphs:["Discounted-cash-flow models can look impressively precise even when they depend on fragile assumptions. I wanted a workspace where changing growth, margins or the discount rate makes the implications obvious.","DCF Atlas is an evolving FundLenz project around multi-year forecasts, scenarios, sensitivity surfaces and explaining how operating results translate into enterprise value."]},
+{title:"Try a simplified version",paragraphs:["The mini-model below forecasts free cash flow for five years, discounts it and adds a perpetual-growth terminal value. All the inputs are hypothetical. It estimates enterprise value only, not a share price, and doesn't include the equity bridge.","The full Atlas route is planned for FundLenz, but it is not yet a production feature."]}
+],tags:["DCF","FCF forecasting","Valuation","WACC","Sensitivity"],visit:{href:"https://fundlenz.com/dcf-atlas",text:"DCF Atlas · upcoming",pending:true}
+},
+{
+id:"crowd",title:"Crowd-monitoring system",type:"Computer vision · IoT · engineering",year:"2025 – 2026",eyebrow:"06 / ENGINEERING OUTSIDE A TEXTBOOK",hook:"A camera, a microcontroller and a practical safety problem.",intro:"Our group project explored camera-based crowd detection linked to ESP32 alerts, with technical and commercial feasibility work alongside the prototype.",accent:"#dab6e5",
+numbers:[{value:"15+",label:"evaluation scenarios in project work"},{value:"2026",label:"published patent application"}],
+chapters:[
+{title:"Turning an idea into a system",paragraphs:["The project brought together person detection and background processing, cloud or IoT communication, and ESP32-connected displays and warning indicators. We investigated whether a system could recognise crowd buildup and respond with useful alerts.","I contributed to research, feasibility and cost-benefit work, including a projected development cost around ₹35,000 and discussion of scalability and practical deployment constraints."]},
+{title:"The result and the limits",paragraphs:["The project received First Place / Best Project recognition. I am named as a co-inventor on published Indian patent application 202621086685 A.","It is a published application, not a patent grant. The animated monitoring scene on this page is a conceptual visualisation, not real camera output or evidence of deployment."]}
+],tags:["Computer vision","ESP32","IoT","Research","Feasibility"]
+},
+
 ];
