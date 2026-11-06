@@ -44,12 +44,6 @@ function browserEligible(){
    !matchMedia("(pointer: coarse)").matches &&
    !matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
-function waitFor(condition){
- return function*(motion){
-  let elapsed=0;
-  while(!condition()&&elapsed<3.3){elapsed+=(yield);motion.time+=0;}
- };
-}
 // Original prepText/reveal work on an actual styled clone. Keep the React DOM
 // untouched so links, tools and events remain live throughout the animation.
 function stageText(node,history){
@@ -102,12 +96,13 @@ function caretPoint(it){
 /* Advance the upstream generator as a group: same engine stepping model as
  * Swarm Rebuild's Engine.step, but tasks are live portfolio DOM nodes. */
 export function startLiveSwarm({signal,hostClass}){
- if(!browserEligible())return {dispose(){}};
+ if(!browserEligible()){signal.apply?.();signal.finish?.();return {dispose(){}};}
  const section=document.getElementById("story-"+signal.storyId);
  if(!section)return {dispose(){signal.apply?.();signal.finish?.();}};
  const host=document.createElement("div");
  host.className=hostClass;
  host.dataset.swarmEngine="upstream";
+ host.setAttribute("data-cursor-crew","true");
  host.dataset.phase="departing";
  host.setAttribute("aria-hidden","true");
  document.body.appendChild(host);
@@ -119,8 +114,6 @@ export function startLiveSwarm({signal,hostClass}){
  let stopped=false, applied=false, leftReady=0, eraseDone=0, finishedCount=0;
  let raf=0, last=performance.now(),start=last;
  const agents=[],entries=[],cleanup=[];
- let lastApplyTime=0;
- let liveTextStarted=false;
 
  const pointerMove=e=>{
   if(e.pointerType!=="touch"){pointer.x=e.clientX;pointer.y=e.clientY;}
@@ -134,7 +127,6 @@ export function startLiveSwarm({signal,hostClass}){
  const apply=()=>{
   if(applied||stopped)return;
   applied=true;
-  lastApplyTime=performance.now();
   signal.apply?.();
   host.dataset.committed="true";
  };
@@ -148,9 +140,6 @@ export function startLiveSwarm({signal,hostClass}){
   host.remove();
   window.removeEventListener("pointermove",pointerMove);
   signal.finish?.();
- }
- function runCursor(c,task){
-  agents.push({cursor:c,gen:task(c),done:false});
  }
  function returnHome(c){
   return function*(){
@@ -273,16 +262,19 @@ export function startLiveSwarm({signal,hostClass}){
     }
    }
   }
-  host.dataset.phase=signal.opening?"building":"dismantling";
+  host.dataset.phase=signal.opening?"assembling":"dismantling";
   if(applied)host.dataset.phase=signal.opening?"typing":"restoring";
+  if(signal.opening)host.dataset.didAssemble="true";
+  else host.dataset.didDismantle="true";
   const rendered={
    vp:view.vp,
    cursors:agents.map(a=>a.cursor),
    guides:[],editLines:new Set(),rulers:{t:0},
   };
   view.render(rendered);
+  for(const node of view.cursorEls.values())node.setAttribute("data-crew-agent","true");
   // Guard against a missed target when navigating fast or changing viewport.
-  if(!applied&&elapsed>2.1)apply();
+  if(!applied&&elapsed>3.0)apply();
   if(finishedCount===agents.length||elapsed>5.4){
    if(!applied)apply();
    finalize();
