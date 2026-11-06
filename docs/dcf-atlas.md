@@ -6,6 +6,8 @@ Open **More projects → DCF Atlas** or go directly to **/dcf-atlas**. This is a
 
 ## Start with your own data
 
+![Overview with Add model and Upload CSV next to the valuation charts](atlas/start-with-your-data.webp)
+
 Choose **Add model** beside the Overview heading to start a blank worksheet, or **Upload CSV** to review a file. Download the **Worked CSV example** to edit a complete valuation and see your numbers on the charts. The blank Atlas template is also available there.
 
 For annual accounts, upload one row per fiscal year with `Fiscal year,Revenue,EBIT,Capex` (capex is optional and positive). Review the company, reporting currency and units, then choose **Apply import**. Atlas converts the figures to millions, takes starting revenue from the latest eligible fiscal year and opens Assumptions. It does not guess a discount rate, price or forecast. Cancel keeps your current model; Undo restores it after applying.

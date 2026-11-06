@@ -181,6 +181,8 @@ try {
         viewport: { width: 1440, height: 980 },
         acceptDownloads: true,
       });
+      fresh.setDefaultTimeout(10000);
+      fresh.setDefaultNavigationTimeout(30000);
       try {
         const p = await fresh.newPage();
         p.on('pageerror', (e) => errors.push(e.message));
@@ -536,6 +538,8 @@ try {
         hasTouch: true,
         deviceScaleFactor: 1,
       });
+      mobile.setDefaultTimeout(10000);
+      mobile.setDefaultNavigationTimeout(30000);
       const p = await mobile.newPage();
       p.on('pageerror', (e) => errors.push(e.message));
       await p.goto(url);

@@ -449,6 +449,7 @@ export function AtlasWorkspace() {
                     <button
                       className="a-btn"
                       aria-haspopup="dialog"
+                      disabled={!ready}
                       onClick={() => open('create')}
                     >
                       <Plus size={16} aria-hidden="true" /> Add model
@@ -456,6 +457,7 @@ export function AtlasWorkspace() {
                     <button
                       className="a-primary"
                       aria-haspopup="dialog"
+                      disabled={!ready}
                       onClick={() => open('csv')}
                     >
                       <Upload size={16} aria-hidden="true" /> Upload CSV
