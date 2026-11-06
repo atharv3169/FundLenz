@@ -130,7 +130,36 @@ export default function PortfolioV2(){
  useEffect(()=>{
   const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.setAttribute("data-visible","true");observer.unobserve(e.target)}}),{rootMargin:"0px 0px -60px 0px",threshold:.06});
   document.querySelectorAll("#atharva-portfolio [data-reveal]").forEach(el=>observer.observe(el));
-  const onScroll=()=>{const max=document.documentElement.scrollHeight-window.innerHeight;setProgress(max>0?window.scrollY/max*100:0)};
+  const sections=Array.from(document.querySelectorAll<HTMLElement>("#atharva-portfolio [data-story]"));
+  const colors=stories.map(story=>{
+    const hex=story.accent.slice(1);
+    return [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16));
+  });
+  const mix=(a:number,b:number,t:number)=>Math.round(a+(b-a)*t);
+  const soften=(x:number)=>{const v=Math.max(0,Math.min(1,x));return v*v*(3-2*v);};
+  const onScroll=()=>{
+    const max=document.documentElement.scrollHeight-window.innerHeight;
+    setProgress(max>0?window.scrollY/max*100:0);
+    const container=document.getElementById("atharva-portfolio");
+    if(!container||!sections.length)return;
+    const y=window.scrollY+window.innerHeight*.5;
+    const anchors=sections.map(el=>{
+      const rect=el.getBoundingClientRect();
+      return rect.top+window.scrollY+rect.height*.5;
+    });
+    let lower=0;
+    while(lower<anchors.length-2&&y>anchors[lower+1])lower++;
+    const upper=Math.min(lower+1,anchors.length-1);
+    const interval=Math.max(1,anchors[upper]-anchors[lower]);
+    const t=soften((y-anchors[lower])/interval);
+    const color=colors[lower].map((ch,i)=>mix(ch,colors[upper][i],t));
+    const start=sections[0].getBoundingClientRect().top+window.scrollY;
+    const last=sections[sections.length-1];
+    const end=last.getBoundingClientRect().bottom+window.scrollY;
+    const alpha=soften((y-start+350)/650)*soften((end-y+350)/650);
+    container.style.setProperty("--ambient-rgb",color.join(" "));
+    container.style.setProperty("--wash-alpha",alpha.toFixed(3));
+  };
   onScroll();window.addEventListener("scroll",onScroll,{passive:true});
   return()=>{observer.disconnect();window.removeEventListener("scroll",onScroll)};
  },[]);
