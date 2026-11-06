@@ -1,0 +1,60 @@
+name: DCF Atlas valuation and browser checks
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'app/dcf-atlas/**'
+      - 'components/atlas/**'
+      - 'components/projects-drawer.tsx'
+      - 'components/site-header.tsx'
+      - 'lib/atlas/**'
+      - 'scripts/verify-dcf-atlas.mjs'
+      - 'scripts/verify-atlas-browser.mjs'
+      - 'scripts/atlas-reference.py'
+      - 'scripts/verify-all.mjs'
+      - '.github/workflows/dcf-atlas-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  atlas:
+    name: Valuations, reports and native browser journeys
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      WRANGLER_SEND_METRICS: 'false'
+      ATLAS_URL: http://127.0.0.1:8787/dcf-atlas
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.22.1'
+      - name: Install workspace dependencies
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.25.0 --activate
+          pnpm install --frozen-lockfile
+      - name: Check types, Atlas lint and model regressions
+        run: |
+          pnpm typecheck
+          pnpm exec eslint app/dcf-atlas/page.tsx components/atlas lib/atlas --max-warnings=0
+          pnpm verify
+      - name: Build native FundLenz Worker
+        run: pnpm build
+      - name: Exercise the built Worker in Chromium
+        run: |
+          npm install --prefix "$RUNNER_TEMP/atlas-browser" --ignore-scripts --no-audit --no-fund playwright@1.62.1
+          "$RUNNER_TEMP/atlas-browser/node_modules/.bin/playwright" install --with-deps chromium
+          pnpm exec wrangler dev --config dist/server/wrangler.json --ip 127.0.0.1 --port 8787 --local > "$RUNNER_TEMP/atlas-worker.log" 2>&1 &
+          worker=$!
+          trap 'kill "$worker" 2>/dev/null || true' EXIT
+          for i in {1..45}; do
+            if curl --fail --silent --max-time 2 "$ATLAS_URL" -o /dev/null; then break; fi
+            sleep 1
+          done
+          ATLAS_PLAYWRIGHT_MODULE="$RUNNER_TEMP/atlas-browser/node_modules/playwright/index.mjs" node scripts/verify-atlas-browser.mjs

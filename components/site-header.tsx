@@ -27,6 +27,7 @@ export function SiteHeader() {
     ? { href: "/blogpost/admin", label: "Admin" }
     : { href: "/blogpost", label: "Blog" };
   const subtitle = blogPage ? "BLOG"
+    : pathname === "/dcf-atlas" ? "DCF ATLAS"
     : fincalcPage ? "FINCALC"
     : cataloguePage ? (pathname === "/catalogue-securities" ? "SECURITIES CATALOGUE" : "FUND CATALOGUE")
     : homePage ? "PORTFOLIO LAB" : "FUNDLENZ";
