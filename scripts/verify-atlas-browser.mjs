@@ -48,7 +48,7 @@ try {
     return file;
   }
   await step(
-    'FundLenz navigation, hydrated dashboard, chart measure, linked period and live driver',
+    'Four-row overview, linked chart and table insights, hover, keyboard and live drivers',
     async () => {
       const res = await page.goto(url);
       assert.equal(res.status(), 200);
@@ -61,10 +61,95 @@ try {
         path: path.join(out, 'desktop.png'),
         animations: 'disabled',
       });
-      await page.getByLabel('Chart measure').selectOption('Operations');
-      await btn('Next chart period').click();
-      assert.match(await page.locator('.a-readout').innerText(), /FY27/);
-      await page.getByText('Tune forecast drivers', { exact: true }).click();
+      const grid = page.locator('.ao-grid'),
+        ledger = grid.getByRole('region', { name: 'Overview annual forecast' });
+      const chart = (id) => grid.locator('[data-chart-inspector="' + id + '"]');
+      const tip = grid.getByRole('tooltip');
+      assert.equal(await page.getByLabel('Chart measure').count(), 0);
+      assert.equal(await grid.locator('.ao-trace,.ao-bridge').count(), 4);
+      const geometry = await grid.evaluate((el) => ({
+        cols: getComputedStyle(el).gridTemplateColumns.split(' ').length,
+        rows: new Set(
+          Array.from(el.children, (e) =>
+            Math.round(e.getBoundingClientRect().top),
+          ),
+        ).size,
+      }));
+      assert.deepEqual(geometry, { cols: 4, rows: 4 });
+      await chart('cash').locator('[data-point="0:2"]').hover();
+      await tip.filter({ hasText: 'Free cash flow · FY2028' }).waitFor();
+      const selected = ledger
+        .getByRole('row')
+        .filter({ has: page.getByRole('button', { name: 'Inspect FY2028' }) });
+      assert.equal(
+        await selected.getByRole('button').getAttribute('aria-pressed'),
+        'true',
+      );
+      assert(
+        (await tip.innerText()).includes(
+          'USD ' + (await selected.locator('td').nth(4).innerText()) + 'm',
+        ),
+      );
+      assert.match(await tip.innerText(), /converts to free cash flow/);
+      await page
+        .getByRole('region', { name: 'Cash-flow bridge figures for FY2028' })
+        .waitFor();
+      const ops = chart('operations');
+      await ops.locator('[data-point="1:4"]').hover();
+      await tip.filter({ hasText: 'Operating profit · FY2030' }).waitFor();
+      assert.equal(await tip.count(), 1);
+      const bounds = await ops.boundingBox(),
+        pop = await tip.boundingBox();
+      assert(
+        pop.x >= bounds.x - 1 &&
+          pop.x + pop.width <= bounds.x + bounds.width + 1,
+        'edge insight stays inside the chart width',
+      );
+      await page.locator('.a-workhead h2').hover();
+      await tip.waitFor({ state: 'hidden' });
+      const rates = chart('rates');
+      await rates.focus();
+      await rates.press('End');
+      await rates.press('ArrowDown');
+      await tip
+        .filter({ hasText: 'EBIT margin · FY2030' })
+        .filter({ hasText: '22%' })
+        .waitFor();
+      await rates.press('ArrowLeft');
+      await tip.filter({ hasText: 'FY2029' }).waitFor();
+      await rates.press('Escape');
+      await tip.waitFor({ state: 'hidden' });
+      await chart('bridge').locator('[data-bar="2"]').hover();
+      await tip
+        .filter({ hasText: 'Capital expenditure · FY2029' })
+        .filter({ hasText: 'deducted' })
+        .waitFor();
+      await chart('dependence').focus();
+      await chart('dependence').press('End');
+      await tip.filter({ hasText: 'Explicit forecast' }).waitFor();
+      await ledger.getByRole('button', { name: 'Inspect FY2026' }).click();
+      await tip.waitFor({ state: 'hidden' });
+      await btn('Next overview year').click();
+      await page
+        .getByRole('heading', { name: 'Cash bridge · FY2027' })
+        .waitFor();
+      const cashCard = grid
+        .locator('.ao-trace')
+        .filter({
+          has: page.getByRole('heading', { name: 'Cash-flow outlook' }),
+        });
+      await cashCard
+        .getByRole('button', { name: 'Free cash flow', exact: true })
+        .click();
+      assert.equal(
+        await chart('cash').locator('[data-point^="0:"]').count(),
+        0,
+      );
+      await chart('cash').locator('[data-point="1:0"]').hover();
+      await tip.filter({ hasText: 'Present value · FY2026' }).waitFor();
+      await cashCard
+        .getByRole('button', { name: 'Free cash flow', exact: true })
+        .click();
       const input = page.getByRole('slider', {
         name: 'First-year growth',
         exact: true,
@@ -331,6 +416,7 @@ try {
         viewport: { width: 390, height: 844 },
         reducedMotion: 'reduce',
         isMobile: true,
+        hasTouch: true,
         deviceScaleFactor: 1,
       });
       const p = await mobile.newPage();
@@ -344,6 +430,39 @@ try {
       for (const width of [390, 320]) {
         await p.setViewportSize({ width, height: 844 });
         const menu = p.locator('.a-mobilemenu');
+        if (
+          (await menu.getAttribute('aria-expanded')) === 'false' &&
+          !(await p.locator('.ao-grid').isVisible())
+        ) {
+          await menu.tap();
+          await p
+            .getByRole('navigation', { name: 'Atlas tools' })
+            .getByRole('button', { name: 'Overview', exact: true })
+            .tap();
+        }
+        const surface = p.locator('[data-chart-inspector="operations"]');
+        await surface.locator('[data-point="0:4"]').tap();
+        const note = p
+          .getByRole('tooltip')
+          .filter({ hasText: 'Revenue · FY2030' });
+        await note.waitFor();
+        const box = await note.boundingBox();
+        assert(
+          box.x >= -1 && box.x + box.width <= width + 1,
+          'touch insight stays on screen',
+        );
+        await p.getByRole('heading', { name: 'Operating performance' }).tap();
+        await note.waitFor({ state: 'hidden' });
+        assert(
+          await p.evaluate(
+            () => document.documentElement.scrollWidth <= window.innerWidth + 1,
+          ),
+          'overview overflows at ' + width,
+        );
+        await p
+          .getByRole('region', { name: 'Overview annual forecast' })
+          .waitFor();
+
         await menu.click();
         await p
           .getByRole('navigation', { name: 'Atlas tools' })

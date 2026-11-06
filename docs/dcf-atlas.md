@@ -6,7 +6,7 @@ Open **More projects → DCF Atlas** or go directly to **/dcf-atlas**. This is a
 
 ## Try a complete valuation
 
-1. Open the fictional Meridian Instruments case. The overview links the chart's selected year to its operating cash-flow bridge. Expand **Tune forecast drivers** to see the effect of a change. Undo restores the prior model.
+1. Open the fictional Meridian Instruments case. The desktop overview puts cash flow, operations, growth and the cash bridge in one four-chart row. Hover or tap a point for its value and a model-based explanation; with a chart focused, use left/right for the year and up/down for its series. Escape dismisses the insight. The annual forecast and signed bridge figures stay visible below. **Tune forecast drivers** changes all four charts together. Undo restores the prior model.
 2. In **Forecast studio**, override one year of capex; the other years still use the model path. Compare end-of-year and midyear discounting in **Assumptions**.
 3. In **Sensitivity**, compare three pairs of drivers. Inspect a cell, adopt its inputs or download a grid. In **Scenarios**, weight the downside, active and upside cases or compare up to four saved snapshots.
 4. In **Risk & reverse DCF**, solve for the growth, margin or discount rate required by a target price. Run up to 5,000 correlated trials, inspect exclusions and download the samples. Separately estimate an investor IRR with an explicit purchase price, distributions and exit price.

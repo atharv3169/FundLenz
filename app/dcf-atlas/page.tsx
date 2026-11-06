@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { AtlasWorkspace } from '@/components/atlas/workspace';
 import './atlas.css';
+import './overview.css';
 export const metadata: Metadata = {
   title: 'DCF Atlas | FundLenz',
   description:
