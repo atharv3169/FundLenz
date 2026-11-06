@@ -706,3 +706,146 @@
  }
  .synkScenarioTop,.synkScenarioMid,.synkScenarioLow{stroke-dashoffset:0!important;}
 }
+
+
+/* Unified project canvas. A continuous scroll-interpolated ambient tint
+   replaces the old per-story gradient / solid reader / gradient sandwich. */
+.portfolioShell{
+  --ambient-rgb:166 197 180;
+  --wash-alpha:0;
+  overflow:clip;
+}
+.ambientWash{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  opacity:var(--wash-alpha);
+  background:
+    radial-gradient(ellipse 86% 85% at 69% 38%,rgb(var(--ambient-rgb) / .32),transparent 75%),
+    linear-gradient(150deg,#0b1216 0%,rgb(var(--ambient-rgb) / .105) 55%,#0d1519 100%);
+  transition:opacity .25s ease;
+}
+.portfolioShell .storySection,
+.portfolioShell .storySection:nth-of-type(2n){
+  position:relative;
+  isolation:isolate;
+  background:transparent;
+  border:0;
+}
+.portfolioShell .storySection::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 90% 60% at 66% 48%,color-mix(in srgb,var(--accent) 17%,transparent),transparent 72%);
+  mask-image:linear-gradient(180deg,transparent 0%,black 24%,black 74%,transparent 100%);
+}
+.portfolioShell .storySection>.storyWorkspace{position:relative;z-index:1;}
+.portfolioShell .storyWorkspace>.longStory{
+  background:transparent!important;
+  box-shadow:none!important;
+  border:0;
+}
+.portfolioShell .storyIsOpen .storyWorkspace>.longStory{
+  background:transparent!important;
+}
+.portfolioShell .storyPanelHeader{
+  background:rgb(10 19 20 / .68);
+  border-bottom-color:rgb(var(--ambient-rgb) / .27);
+  box-shadow:none;
+}
+.portfolioShell .storyPanelBody{background:transparent;}
+.portfolioShell .storySection .storyStage{
+  background:transparent;
+}
+.portfolioShell .storySection .storyIllustration{
+  mask-image:linear-gradient(90deg,transparent 0%,black 20%,black 100%);
+}
+.portfolioShell .storySection .storyStage::before{
+  opacity:.12;
+}
+.portfolioShell .storySection .storyIllustration>div[class*="Scene"]{
+  background:transparent;
+}
+/* Slightly softer seamless focal areas around the illustrations. */
+.portfolioShell .storySection .storyIllustration::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 74% 75% at 53% 48%,color-mix(in srgb,var(--accent) 8%,transparent),transparent 85%);
+}
+/* More deliberate desktop morph: agents can visibly guide each object. */
+@media(min-width:1024px){
+ .storyWorkspace{
+   transition:grid-template-columns 1560ms cubic-bezier(.22,.68,.18,1);
+ }
+ .storyWorkspace>.storyStage .storyCopy{
+   transition:padding 1520ms cubic-bezier(.22,.68,.18,1);
+ }
+ .storyWorkspace>.storyStage .storyCopy h3{
+   transition:font-size 1510ms cubic-bezier(.22,.68,.18,1),margin 1510ms ease;
+ }
+ .storyWorkspace>.storyStage .storyHook{
+   transition:font-size 1480ms cubic-bezier(.22,.68,.18,1),margin 1480ms ease;
+ }
+ .storyWorkspace>.storyStage .storyIllustration{
+   transition:width 1530ms cubic-bezier(.22,.68,.18,1),
+     height 1530ms cubic-bezier(.22,.68,.18,1),
+     top 1530ms cubic-bezier(.22,.68,.18,1),
+     right 1530ms cubic-bezier(.22,.68,.18,1),
+     opacity 1160ms ease;
+ }
+ .storyWorkspace>.longStory{
+   transition:opacity 1150ms ease,transform 1480ms cubic-bezier(.21,.77,.26,1),visibility 0s linear 1550ms;
+ }
+ .storyIsOpen .storyWorkspace>.longStory{
+   transition:opacity 1120ms ease 220ms,transform 1490ms cubic-bezier(.21,.77,.26,1) 80ms,visibility 0s;
+ }
+ .storyIsOpen .storyWorkspace>.storyStage .storyCopy{
+   padding:clamp(24px,3.1vw,44px) clamp(22px,2.4vw,40px) 16px;
+ }
+ .storyIsOpen .storyCopy h3{
+   font-size:clamp(35px,3.5vw,58px);
+   line-height:1.07;
+   letter-spacing:-.057em;
+ }
+ .storyIsOpen .storyCopy .storyHook{
+   font-size:clamp(16px,1.45vw,23px);
+   margin-top:16px!important;
+   line-height:1.35;
+ }
+ .storyIsOpen .storyCopy .storyIntro{
+   opacity:1;max-height:180px;
+   padding:0;margin-top:15px!important;
+   font-size:13px;line-height:1.75;
+   color:#c0cbc8;letter-spacing:0;
+ }
+ .storyIsOpen .storyCopy .storyNumbers{
+   opacity:1;max-height:120px;
+   margin-top:17px!important;
+   padding-top:15px;
+   border-color:rgb(210 233 222 / .24);
+ }
+ .storyIsOpen .storyNumbers strong{font-size:clamp(19px,1.95vw,30px);}
+ .storyIsOpen .storyNumbers span{font-size:10px;line-height:1.32;}
+ .storyIsOpen .storyActions{margin-top:17px;}
+ .storyIsOpen .storyWorkspace>.storyStage .storyIllustration{
+   top:48%;height:52%;width:100%;
+   opacity:.81;
+   mask-image:linear-gradient(180deg,transparent 0%,black 19%,black 98%);
+ }
+ .storyIsOpen .storyWorkspace>.storyStage .storyIllustration::after{opacity:.6;}
+ .storyPanelBody .longStoryLead h4{font-size:clamp(42px,4.1vw,70px);}
+ .storyPanelBody .longStoryLead p{font-size:15px;line-height:1.86;}
+ .storyPanelBody .chapter h5{font-size:clamp(27px,2.6vw,42px);}
+ .storyPanelBody .chapter p{font-size:15px;line-height:1.91;}
+ .storyPanelBody .tagsLine>div{font-size:15px;}
+}
+@media(min-width:1024px) and (max-height:780px){
+ .storyIsOpen .storyCopy h3{font-size:clamp(31px,3.1vw,49px);}
+ .storyIsOpen .storyCopy .storyIntro{font-size:12px;line-height:1.55;}
+ .storyIsOpen .storyWorkspace>.storyStage .storyIllustration{top:51%;height:49%;}
+ .storyIsOpen .storyCopy .storyNumbers{max-height:85px;padding-top:9px;margin-top:9px!important;}
+ .storyIsOpen .storyNumbers strong{font-size:21px;}
+}
+@media(max-width:960px){
+ /* Only the palette handoff is shared on touch layouts. No cursor changes. */
+ .portfolioShell .storySection .storyIllustration{mask-image:none;}
+ .portfolioShell .storyPanelHeader{background:#14211fe8;}
+}
+@media(prefers-reduced-motion:reduce){
+ .ambientWash{transition:none!important;}
+}
