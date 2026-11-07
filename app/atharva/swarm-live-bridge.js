@@ -25,7 +25,6 @@ const RIGHT=[
  "[data-crew-target=chapter-two] p",
 ];
 const MOVE_TIME=1.24;
-const NORMAL_MIN=2.7;
 function rectOf(node){
  if(!node)return null;
  const r=node.getBoundingClientRect();
