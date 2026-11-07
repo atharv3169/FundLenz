@@ -123,7 +123,9 @@ export function startLiveSwarm({signal,hostClass}){
  section.dataset.swarmRunning="true";
  document.body.append(host);
  const upstream=new SwarmMotion();
- upstream.tempo=1.5;
+ // The reference completes its building gestures promptly; the first
+ // implementation made six independent typists drag on for several seconds.
+ upstream.tempo=2.25;
  const view=new SwarmLiveView(host);
  const origin={x:clamp(signal.originX,10,innerWidth-10),y:clamp(signal.originY,82,innerHeight-10)};
  const pointer={...origin};
