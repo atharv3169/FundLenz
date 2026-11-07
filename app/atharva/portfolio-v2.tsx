@@ -4,67 +4,46 @@ import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, GitBranch, Mail, Menu, 
 import { stories, learning, interests, type Story } from "./stories-data";
 import { HeroWave, SceneFigure } from "./scenes";
 import { MiniTools } from "./mini-tools";
-import CursorCrew, { type MorphSignal } from "./cursor-crew";
 import s from "./portfolio-v2.module.css";
 
-function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(change:Omit<MorphSignal,"sequence">)=>void}){
+function StorySection({story,index}:{story:Story;index:number}){
  const [open,setOpen]=useState(false);
- const [choreography,setChoreography]=useState<"idle"|"entering"|"exiting">("idle");
- const phaseRef=useRef<"idle"|"entering"|"exiting">("idle");
  const sectionRef=useRef<HTMLElement>(null);
  const toggleRef=useRef<HTMLButtonElement>(null);
  const scrollRaf=useRef<number|null>(null);
  const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
-
- const eligible=()=>window.matchMedia("(min-width: 1024px)").matches&&
-   !window.matchMedia("(pointer: coarse)").matches&&
-   !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
- const changeMode=(next:boolean,pointer?:{x:number;y:number})=>{
-   if(phaseRef.current!=="idle")return;
-   const desktop=eligible();
-   const btn=toggleRef.current?.getBoundingClientRect();
-   const origin={
-     x:pointer&&pointer.x>0?pointer.x:btn?btn.left+btn.width/2:window.innerWidth/2,
-     y:pointer&&pointer.y>0?pointer.y:btn?btn.top+btn.height/2:window.innerHeight/2,
-   };
-   if(!desktop){
-     sectionRef.current?.scrollIntoView({behavior:"instant",block:"start"});
-     setOpen(next);
-     if(!next)toggleRef.current?.focus({preventScroll:true});
-     return;
-   }
-   phaseRef.current=next?"entering":"exiting";
-   setChoreography(phaseRef.current);
-   const launch=()=>{
+ const changeMode=(next:boolean)=>{
+   if(scrollRaf.current!==null){
+     cancelAnimationFrame(scrollRaf.current);
      scrollRaf.current=null;
-     onMorph({
-       storyId:story.id,opening:next,originX:origin.x,originY:origin.y,
-       apply:()=>{setOpen(next);if(!next)toggleRef.current?.focus({preventScroll:true});},
-       finish:()=>{phaseRef.current="idle";setChoreography("idle");}
-     });
-   };
+   }
    if(next){
      sectionRef.current?.scrollIntoView({behavior:"instant",block:"start"});
-     launch();
+     setOpen(true);
      return;
    }
-   // Reverse choreography must not target nodes while the entire document
-   // is moving from a deep reading position. Finish the smooth scroll first.
+   const top=sectionRef.current?.getBoundingClientRect().top??0;
+   const close=()=>{
+     scrollRaf.current=null;
+     setOpen(false);
+     toggleRef.current?.focus({preventScroll:true});
+   };
+   if(Math.abs(top-76)<80||window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+     close();
+     return;
+   }
    sectionRef.current?.scrollIntoView({behavior:"smooth",block:"start"});
-   let lastTop=Number.NaN,settled=0;
-   const start=performance.now();
+   let previous=Number.NaN,steady=0;
+   const started=performance.now();
    const check=()=>{
-     const top=sectionRef.current?.getBoundingClientRect().top??0;
-     if(Number.isFinite(lastTop)&&Math.abs(top-lastTop)<.75)settled++;
-     else settled=0;
-     lastTop=top;
-     if(settled>=5||performance.now()-start>2200)launch();
+     const current=sectionRef.current?.getBoundingClientRect().top??0;
+     steady=Number.isFinite(previous)&&Math.abs(current-previous)<.7?steady+1:0;
+     previous=current;
+     if(steady>=5||performance.now()-started>1800)close();
      else scrollRaf.current=requestAnimationFrame(check);
    };
    scrollRaf.current=requestAnimationFrame(check);
  };
-
  useEffect(()=>()=>{if(scrollRaf.current!==null)cancelAnimationFrame(scrollRaf.current);},[]);
  useEffect(()=>{
    if(!open)return;
@@ -75,8 +54,6 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
    };
    window.addEventListener("keydown",onKey);
    return()=>window.removeEventListener("keydown",onKey);
- // Event handler is intentionally bound per expanded-state change.
- // eslint-disable-next-line react-hooks/exhaustive-deps
  },[open]);
  return <section
    ref={sectionRef}
@@ -85,14 +62,13 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
    style={{"--accent":story.accent,"--previous-accent":stories[index-1]?.accent||story.accent,"--next-accent":stories[index+1]?.accent||story.accent} as CSSProperties}
    data-story={story.id}
    data-expanded={open}
-   data-choreography={choreography}
  >
   <div className={s.storyWorkspace}>
    <div className={s.storyStage} data-reveal data-role="story-overview">
-    <div className={s.storyCopy} data-crew-target="copy">
+    <div className={s.storyCopy}>
      <div className={s.storyEyebrow}><span className={s.storyIndex}>{String(index+1).padStart(2,"0")}</span><span>{story.eyebrow}</span></div>
      <p className={s.storyYears}>{story.type}{story.year&&<><i> / </i> {story.year}</>}</p>
-     <h3 data-crew-target="title">{story.title}<span>.</span></h3>
+     <h3>{story.title}<span>.</span></h3>
      <p className={s.storyHook}>{story.hook}</p>
      <p className={s.storyIntro}>{story.intro}</p>
      <div className={s.storyActions}>
@@ -102,16 +78,16 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
        className={s.storyRead}
        aria-expanded={open}
        aria-controls={"full-"+story.id}
-       onClick={event=>changeMode(!open,{x:event.clientX,y:event.clientY})}
+       onClick={()=>changeMode(!open)}
       >
        {open?"Back to overview":"Read full story"}
        {open?<ArrowLeft size={17}/>:<ArrowRight size={17}/>}
       </button>
       {story.visit&&(story.visit.pending?<span className={s.storyUpcoming} title={"Planned URL: "+story.visit.href}>{story.visit.text} · planned URL</span>:<a className={s.storyVisit} href={story.visit.href} target="_blank" rel="noopener noreferrer">{story.visit.text}<ArrowUpRight size={17}/></a>)}
      </div>
-     <div className={s.storyNumbers} data-crew-target="metrics">{story.numbers.map((n,i)=><div key={i}><strong>{n.value}</strong><span>{n.label}</span></div>)}</div>
+     <div className={s.storyNumbers}>{story.numbers.map((n,i)=><div key={i}><strong>{n.value}</strong><span>{n.label}</span></div>)}</div>
     </div>
-    <div className={s.storyIllustration} data-crew-target="figure">
+    <div className={s.storyIllustration}>
       <SceneFigure id={story.id}/>
       <span className={s.storyFigureWatermark}>{String(index+1).padStart(2,"0")}</span>
     </div>
@@ -127,13 +103,13 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
      inert={!open}
    >
     <div className={s.storyPanelBody}>
-     <div className={s.longStoryLead} data-crew-target="lead">
+     <div className={s.longStoryLead}>
       <span className={s.sectionTag}>THE DEEPER STORY / {String(index+1).padStart(2,"0")}</span>
-      <h4 data-crew-target="heading">Behind <em>the work.</em></h4>
-      <p data-crew-target="reader-intro">{story.intro}</p>
+      <h4>Behind <em>the work.</em></h4>
+      <p>{story.intro}</p>
      </div>
      <div className={s.storyChapterList}>
-      {story.chapters.map((chapter,i)=><article key={chapter.title} className={s.chapter} data-crew-target={i===0?"chapter":i===1?"chapter-two":undefined}>
+      {story.chapters.map((chapter,i)=><article key={chapter.title} className={s.chapter}>
        <span>{String(i+1).padStart(2,"0")}</span>
        <div><h5>{chapter.title}</h5>{chapter.paragraphs.map((p,j)=><p key={j}>{p}</p>)}</div>
       </article>)}
@@ -155,9 +131,6 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
 export default function PortfolioV2(){
  const [navOpen,setNavOpen]=useState(false);
  const [progress,setProgress]=useState(0);
- const [morph,setMorph]=useState<MorphSignal|null>(null);
- const count=useRef(0);
- const notifyMorph=(change:Omit<MorphSignal,"sequence">)=>setMorph({...change,sequence:++count.current});
  useEffect(()=>{
   const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.setAttribute("data-visible","true");observer.unobserve(e.target)}}),{rootMargin:"0px 0px -60px 0px",threshold:.06});
   document.querySelectorAll("#atharva-portfolio [data-reveal]").forEach(el=>observer.observe(el));
@@ -196,7 +169,6 @@ export default function PortfolioV2(){
  },[]);
  return <main className={s.portfolioShell} id="atharva-portfolio">
   <div className={s.ambientWash} aria-hidden="true"/>
-  <CursorCrew signal={morph}/>
   <div className={s.progressBar} style={{transform:"scaleX("+progress/100+")"}} aria-hidden="true"/>
   <nav className={s.siteNav} aria-label="Portfolio navigation">
    <a href="#top" className={s.mark} aria-label="Atharva Sahu, back to top">A<span> / </span>S<span>.</span></a>
@@ -217,7 +189,7 @@ export default function PortfolioV2(){
     <div className={s.aboutColumns} data-reveal><p>Engineering gave me a way of thinking. Working on accounts and machinery-financing decisions at Shyam Construction gave me a reason to use it. I wanted to understand why a business makes one investment instead of another, and what happens when the numbers stop cooperating.</p><p>That curiosity took me into mutual-fund liquidity research, FundLenz, FinCalc and now DCF modelling. I&apos;m interested in corporate finance, investment research and technology that makes complex decisions clearer. There&apos;s still a lot I want to learn.</p></div>
    </section>
    <section className={s.workIntro} id="work"><span className={s.sectionTag}>02 / THE WORK, UP CLOSE</span><h2>Things I&apos;ve<br/><em>actually done.</em></h2><p>Every section is a chapter, not a card. Open any story to go deeper—and try the small working demos built into a few of them.</p><div className={s.workCount}>{String(stories.length).padStart(2,"0")} <span>PROJECTS & EXPERIENCES</span></div></section>
-   {stories.map((story,i)=><StorySection key={story.id} story={story} index={i} onMorph={notifyMorph}/>)}
+   {stories.map((story,i)=><StorySection key={story.id} story={story} index={i}/>)}
 
    <section id="skills" className={s.skillsSection}><div data-reveal><span className={s.sectionTag}>03 / HOW I WORK</span><h2>Tools, methods<br/><em>and things I keep learning.</em></h2><p>Subjects I&apos;ve worked with and programmes I&apos;ve completed. They&apos;re presented as plain text, not interactive buttons or professional licences.</p></div>
     <div className={s.skillsColumns}>{learning.map((group,i)=><div className={s.skillGroup} key={group.title} data-reveal><span>0{i+1}</span><h3>{group.title}</h3><div className={s.skillsText}>{group.skills.map((name,j)=><span key={name}>{name}{j!==group.skills.length-1?<i> / </i>:""}</span>)}</div></div>)}</div>
