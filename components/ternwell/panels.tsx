@@ -1,9 +1,10 @@
 'use client';
 import {useState} from 'react';
+import './edit.css';
 import {ArrowDownRight,ArrowUpRight,AlertTriangle,Check,Search,SlidersHorizontal} from 'lucide-react';
-import {CASES,DRIVERS,DRIVER_KEYS,REPORTS,SCHEDULES,forecast,fmt,openingGap,type Book,type Driver,type Period,type ReportRow,type Scenario} from '@/lib/ternwell/model';
+import {CASES,DRIVERS,DRIVER_KEYS,REPORTS,SCHEDULES,forecast,fmt,openingGap,isLineValue,type RowKey,type Book,type Driver,type Period,type ReportRow,type Scenario} from '@/lib/ternwell/model';
 import {TernwellChart} from './visual';
-import {GridTable,NumberField,PALETTE,Section} from './ui';
+import {Dialog,GridTable,NumberField,PALETTE,Section} from './ui';
 export type Tab='Overview'|'Statements'|'Drivers'|'Schedules'|'Scenarios'|'Checks & files';
 export type PanelProps={b:Book;s:Scenario;periods:Period[];index:number;onIndex:(i:number)=>void;onTrace:(r:ReportRow)=>void;go:(v:Tab)=>void};
 const labels=(p:Period[])=>p.map(x=>'FY'+x.year);
@@ -22,12 +23,18 @@ export function Overview(p:PanelProps){
  <div className="tw-chart-grid"><div className="tw-card tw-pad"><span className="tw-over">Cash bridge / FY{r.year}</span><h3>From opening to closing cash</h3><div className="tw-bridge">{([['Opening cash',r.openingCash],['Operations',r.cfo],['Investing',r.cfi],['Financing',r.cff],['Closing cash',r.cash]] as const).map(([l,v])=><div key={l}><span>{l}</span><i><b style={{width:(Math.abs(v)/Math.max(1,...[r.openingCash,r.cfo,r.cfi,r.cff,r.cash].map(Math.abs))*100)+'%',background:v<0?'#ac6645':'#347e72'}}/></i><strong>{fmt(v,2)}</strong></div>)}</div></div>
  <div className="tw-card tw-pad"><span className="tw-over">Operating ratios / FY{r.year}</span><h3>Capital discipline</h3><dl className="tw-ratios">{[['EBITDA margin',fmt(r.ebitdaMargin)+(r.ebitdaMargin===null?'':'%')],['Interest coverage',fmt(r.interestCover,2)+(r.interestCover===null?'':'×')],['Debt / EBITDA',fmt(r.debtMultiple,2)+(r.debtMultiple===null?'':'×')],['Cash conversion cycle',fmt(r.cashCycle)+(r.cashCycle===null?'':' days')]].map(([k,v])=><div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl></div></div></>
 }
-export function Statements(p:PanelProps){
+export function Statements(p:PanelProps&{editLine:(key:RowKey,year:number,value:number|undefined)=>void}){
+ const [cell,setCell]=useState<{row:ReportRow;year:number}|null>(null),[draft,setDraft]=useState(''),[error,setError]=useState('');
+ const fixed=(key:RowKey,year:number)=>p.b.cases[p.s].lines?.[year]?.[key]!==undefined;
+ const start=(row:ReportRow,period:Period)=>{setCell({row,year:period.year});setDraft(String(period[row[0]]??''));setError('');};
+ const save=()=>{const n=Number(draft);if(!cell)return;if(!draft.trim()||!isLineValue(n)){setError('Enter a finite number between −1e15 and 1e15.');return;}p.editLine(cell.row[0],cell.year,n);setCell(null);};
+
  const [type,setType]=useState<keyof typeof REPORTS>('Income'),[q,setQ]=useState(''),[common,setCommon]=useState(false);
  const den=type==='Balance'?'assets':'revenue';
- return <><Section k="02 / Statement viewer" title="Linked statements" note="Select a line to see its calculation. Select a fiscal year to inspect the same period across the desk."/>
+ return <><Section k="02 / Statement viewer" title="Linked statements" note="Select any figure to edit it for this case and year. Select a line name to trace its calculation. Underlined figures have been entered manually."/>
  <div className="tw-card tw-pad"><div className="tw-tools"><div className="tw-seg" aria-label="Financial statement">{(Object.keys(REPORTS) as (keyof typeof REPORTS)[]).map(s=><button key={s} aria-pressed={s===type} onClick={()=>setType(s)}>{s==='Balance'?'Balance sheet':s==='Income'?'Income statement':s}</button>)}</div><label className="tw-search"><Search size={15}/><input placeholder="Find a line item" aria-label="Find a line item" value={q} onChange={e=>setQ(e.target.value)}/></label><label className="tw-switch"><input type="checkbox" checked={common} onChange={e=>setCommon(e.target.checked)}/> Common size</label></div>
- <p className="tw-meta">{common?'Percentage of '+(den==='assets'?'total assets':'revenue')+'; a zero or negative denominator is shown as —.':p.b.currency+' millions · Expenses and cash outflows are shown as negatives.'}</p><GridTable {...p} rows={REPORTS[type].filter(t=>t[1].toLowerCase().includes(q.toLowerCase()))} denominator={common?den:undefined} caption={type+' statement'}/></div></>
+ <p className="tw-meta">{common?'Percentage of '+(den==='assets'?'total assets':'revenue')+'; a zero or negative denominator is shown as —.':p.b.currency+' millions · Expenses and cash outflows are shown as negatives.'}</p><GridTable {...p} rows={REPORTS[type].filter(t=>t[1].toLowerCase().includes(q.toLowerCase()))} denominator={common?den:undefined} onCell={start} overridden={fixed} caption={type+' statement'}/></div>
+ {cell&&<Dialog title={'Edit '+cell.row[1]} onClose={()=>setCell(null)}><form onSubmit={e=>{e.preventDefault();save();}}><p className="tw-over">{p.s} case · FY{cell.year} · {p.b.currency} millions</p><p className="tw-formula">{cell.row[2]}</p><label className="tw-edit-label">Statement value<input aria-label="Statement value" autoFocus type="number" step="any" value={draft} onChange={e=>{setDraft(e.target.value);setError('');}}/></label><p className="tw-meta">Enter an amount in millions, even in common-size view. This figure stays fixed until you revert it to its formula. Linked figures recalculate, and any discrepancy appears in Checks &amp; files.</p>{error&&<p role="alert">{error}</p>}<div className="tw-actions"><button type="submit" className="tw-solid">Save value</button>{fixed(cell.row[0],cell.year)&&<button type="button" className="tw-btn" onClick={()=>{p.editLine(cell.row[0],cell.year,undefined);setCell(null);}}>Revert to formula</button>}<button type="button" className="tw-btn" onClick={()=>setCell(null)}>Cancel</button></div></form></Dialog>}</>
 }
 export function Drivers(p:PanelProps&{edit:(k:Driver,v:number|undefined,year?:number)=>void}){
  const [mode,setMode]=useState('Case defaults'),[q,setQ]=useState('');const yr=p.periods[p.index].year,over=mode==='Annual overrides',record=p.b.cases[p.s],groups=[...new Set(DRIVER_KEYS.map(k=>DRIVERS[k].group))];
@@ -51,9 +58,10 @@ export function HealthPanel(p:PanelProps){
  return <div className="tw-card tw-pad"><div className="tw-cardtitle"><div><span className="tw-over">Reconciliation / {p.s}</span><h3>Model checks</h3></div><span className={'tw-pill '+(issue.length||!eb?'tw-warn':'')}>{issue.length||!eb?<AlertTriangle size={14}/>:<Check size={14}/>} {issue.length||!eb?'Review needed':'All clear'}</span></div>
  <p className="tw-meta">{eb?'Opening balance sheet reconciles.':'Opening assets minus liabilities and equity: '+fmt(firstGap,3)+'m. Review the opening position.'} A balanced model may still have a funding gap.</p>
  <GridTable {...p} caption="Model reconciliation checks" rows={[
- ['balanceGap','Balance sheet difference','Assets minus liabilities and equity; zero means balanced.'],
+ ['statementGap','Largest statement discrepancy','Largest absolute difference between a reported line and its accounting identity.'],
+ ['actualBalanceGap','Balance sheet difference','Assets minus liabilities and equity; zero means balanced.'],
  ['cashGap','Cash roll-forward difference','Closing cash less pre-facility cash and net drawings.'],
  ['retainedGap','Equity roll-forward difference','Closing equity less opening equity, issuance and earnings, plus dividends.'],
  ['fundingGap','Cash target shortfall','Positive values are unfunded after the available revolver.'],
- ['limitExcess','Facility limit breach','Drawings above the assumed facility limit. No automatic refinancing is assumed.']]}/></div>
+ ['limitExcess','Facility limit breach','Drawings above the assumed facility limit. No automatic refinancing is assumed.']]}/>{p.periods.some(r=>r.lineIssues.length>0)&&<details><summary>See lines that do not reconcile</summary>{p.periods.filter(r=>r.lineIssues.length).map(r=><section key={r.year}><h4>FY{r.year}</h4><ul>{r.lineIssues.map(v=><li key={v.key}>{v.label}: {fmt(v.delta,3)}m difference</li>)}</ul></section>)}</details>}</div>
 }

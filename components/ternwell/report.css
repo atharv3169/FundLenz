@@ -1,0 +1,21 @@
+.tw-case-report{display:none}
+@page ternwell-folio{size:A4 portrait;margin:12mm 13mm}
+@media print{
+ .ternwell .tw-case-report{display:block;page:ternwell-folio;padding:0;margin:0;max-width:none;color:#332a35;font:9pt/1.3 Arial,sans-serif;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .tw-case-report .tr-paper{break-before:page;break-inside:auto}
+ .tw-case-report .tr-paper:first-child{break-before:auto}
+ .tr-letter,.tr-footer{display:flex;align-items:center;justify-content:space-between;gap:12pt;border-bottom:1.5pt solid #53374e;padding:2pt 0 6pt}
+ .tr-letter b{font:bold 17pt Georgia,serif;color:#302139}.tr-letter b span{color:#137060}
+ .tr-letter>span,.tr-heading small{font:600 7pt/1.25 Arial,sans-serif;letter-spacing:.1em;color:#6b5365}
+ .tr-heading{margin:13pt 0 10pt}.tr-heading small{display:block}
+ .ternwell .tw-case-report .tr-heading h2{font:normal 25pt/1.04 Georgia,serif;letter-spacing:-.035em;margin:3pt 0;overflow-wrap:anywhere}
+ .tr-heading p,.tr-note,.tr-footer{font-size:8pt;color:#58525a}.tr-heading p,.tr-note{margin:3pt 0}
+ .tr-footer{margin-top:11pt;padding-top:5pt;border-bottom:0;border-top:.6pt solid #a59aa0}.tr-footer span{overflow-wrap:anywhere}
+ .tr-table{width:100%;border-collapse:collapse;table-layout:fixed;font:8pt/1.28 Arial,sans-serif;font-variant-numeric:tabular-nums;margin:5pt 0 7pt}
+ .tr-table th,.tr-table td{padding:3pt 3.5pt;text-align:right;border-bottom:.4pt solid #ddd5d8;overflow-wrap:anywhere}
+ .tr-table th:first-child{width:40%;text-align:left}.tr-table thead th{background:#4b374a;color:white}.tr-table tbody th{font-weight:400}.tr-table .tr-total :is(th,td){font-weight:700;background:#f3efef}
+ .tr-table tr{break-inside:avoid}.tr-table thead{display:table-header-group}
+ .tr-paper h3,.tr-chart figcaption{font:bold 11pt/1.25 Georgia,serif;color:#443047;break-after:avoid;margin:9pt 0 3pt}
+ .tr-legend{display:flex;gap:12pt;font-size:8pt}.tr-legend i{display:inline-block;width:8pt;height:3pt;vertical-align:middle;margin-right:3pt}
+ .tr-charts{display:grid;grid-template-columns:1fr 1fr;gap:12pt}.tr-chart{margin:3pt 0 5pt;border-top:.6pt solid #b6aeb2}.tr-chart svg{display:block;width:100%;height:61pt}.tr-chart text{font:9px Arial;fill:#504b52}
+}
