@@ -13,6 +13,7 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
  const phaseRef=useRef<"idle"|"entering"|"exiting">("idle");
  const sectionRef=useRef<HTMLElement>(null);
  const toggleRef=useRef<HTMLButtonElement>(null);
+ const scrollRaf=useRef<number|null>(null);
  const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
 
  const eligible=()=>window.matchMedia("(min-width: 1024px)").matches&&
@@ -21,31 +22,50 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
 
  const changeMode=(next:boolean,pointer?:{x:number;y:number})=>{
    if(phaseRef.current!=="idle")return;
-   // When closing from deeper in a story, move back to its beginning
-   // while the cursor crew dismantles the right-hand text. Do not jump.
-   sectionRef.current?.scrollIntoView({
-     behavior:next||!eligible()?"instant":"smooth",
-     block:"start"
-   });
-   if(!eligible()){
+   const desktop=eligible();
+   const btn=toggleRef.current?.getBoundingClientRect();
+   const origin={
+     x:pointer&&pointer.x>0?pointer.x:btn?btn.left+btn.width/2:window.innerWidth/2,
+     y:pointer&&pointer.y>0?pointer.y:btn?btn.top+btn.height/2:window.innerHeight/2,
+   };
+   if(!desktop){
+     sectionRef.current?.scrollIntoView({behavior:"instant",block:"start"});
      setOpen(next);
      if(!next)toggleRef.current?.focus({preventScroll:true});
      return;
    }
-   const button=toggleRef.current?.getBoundingClientRect();
    phaseRef.current=next?"entering":"exiting";
    setChoreography(phaseRef.current);
-   onMorph({
-     storyId:story.id,opening:next,
-     originX:pointer&&pointer.x>0?pointer.x:button?button.left+button.width/2:window.innerWidth/2,
-     originY:pointer&&pointer.y>0?pointer.y:button?button.top+button.height/2:window.innerHeight/2,
-     // Swarm Rebuild workers now own the sequence: the actual React layout
-     // only changes after their selection/erase tasks have completed.
-     apply:()=>{setOpen(next);if(!next)toggleRef.current?.focus({preventScroll:true});},
-     finish:()=>{phaseRef.current="idle";setChoreography("idle");}
-   });
+   const launch=()=>{
+     scrollRaf.current=null;
+     onMorph({
+       storyId:story.id,opening:next,originX:origin.x,originY:origin.y,
+       apply:()=>{setOpen(next);if(!next)toggleRef.current?.focus({preventScroll:true});},
+       finish:()=>{phaseRef.current="idle";setChoreography("idle");}
+     });
+   };
+   if(next){
+     sectionRef.current?.scrollIntoView({behavior:"instant",block:"start"});
+     launch();
+     return;
+   }
+   // Reverse choreography must not target nodes while the entire document
+   // is moving from a deep reading position. Finish the smooth scroll first.
+   sectionRef.current?.scrollIntoView({behavior:"smooth",block:"start"});
+   let lastTop=Number.NaN,settled=0;
+   const start=performance.now();
+   const check=()=>{
+     const top=sectionRef.current?.getBoundingClientRect().top??0;
+     if(Number.isFinite(lastTop)&&Math.abs(top-lastTop)<.75)settled++;
+     else settled=0;
+     lastTop=top;
+     if(settled>=5||performance.now()-start>2200)launch();
+     else scrollRaf.current=requestAnimationFrame(check);
+   };
+   scrollRaf.current=requestAnimationFrame(check);
  };
 
+ useEffect(()=>()=>{if(scrollRaf.current!==null)cancelAnimationFrame(scrollRaf.current);},[]);
  useEffect(()=>{
    if(!open)return;
    const onKey=(event:KeyboardEvent)=>{
