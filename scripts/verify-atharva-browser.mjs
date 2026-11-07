@@ -42,8 +42,24 @@ try{
   await new Promise((resolve,reject)=>{socket.addEventListener("open",resolve,{once:true});socket.addEventListener("error",reject,{once:true});});
   let index=0;
   const pending=new Map();
+  const recording={mode:null,frames:{opening:[],closing:[]}};
   socket.addEventListener("message",(event)=>{
     const data=JSON.parse(event.data);
+    if(data.method==="Runtime.exceptionThrown"){
+      const e=data.params?.exceptionDetails;
+      console.error("BROWSER RUNTIME ERROR:",e?.exception?.description||e?.text||JSON.stringify(e));
+    }
+    if(data.method==="Runtime.consoleAPICalled"&&data.params?.type==="error"){
+      console.error("BROWSER CONSOLE ERROR:",data.params.args?.map(x=>x.value||x.description).join(" ")||"unknown");
+    }
+    if(data.method==="Page.screencastFrame"){
+      const mode=recording.mode;
+      if(mode&&recording.frames[mode].length<160)
+        recording.frames[mode].push({at:Date.now(),image:data.params.data});
+      // Ack with a fresh protocol ID; its response does not need a callback.
+      socket.send(JSON.stringify({id:++index,method:"Page.screencastFrameAck",params:{sessionId:data.params.sessionId}}));
+      return;
+    }
     if(!data.id||!pending.has(data.id))return;
     const handlers=pending.get(data.id);pending.delete(data.id);
     if(data.error)handlers.reject(Error(data.error.message));else handlers.resolve(data.result);
@@ -57,6 +73,24 @@ try{
   const shot=async(filename)=>{
     const data=await cmd("Page.captureScreenshot",{format:"png",captureBeyondViewport:false});
     await writeFile(path.join(output,filename),Buffer.from(data.data,"base64"));
+  };
+  const recordStart=async(mode)=>{
+    recording.frames[mode]=[];
+    recording.mode=mode;
+    await cmd("Page.startScreencast",{format:"jpeg",quality:68,everyNthFrame:1,maxWidth:1440,maxHeight:900});
+  };
+  const recordStop=async()=>{
+    const mode=recording.mode;
+    recording.mode=null;
+    await cmd("Page.stopScreencast");
+    if(!mode)return;
+    const frames=recording.frames[mode];
+    const dest=path.join(output,"motion-"+mode);
+    await mkdir(dest,{recursive:true});
+    for(let i=0;i<frames.length;i++)
+      await writeFile(path.join(dest,"frame"+String(i).padStart(4,"0")+".jpg"),Buffer.from(frames[i].image,"base64"));
+    await writeFile(path.join(dest,"timestamps.csv"),"frame,unix_ms\n"+frames.map((f,i)=>i+","+f.at).join("\n"));
+    console.log("Captured "+frames.length+" motion frames for "+mode);
   };
 
   await cmd("Page.enable");await cmd("Runtime.enable");
@@ -88,21 +122,25 @@ try{
   assert.ok(closedBounds.buttonBottom < closedBounds.stageBottom - 15,"Shyam action must not be clipped: "+JSON.stringify(closedBounds));
   const beforeMorph=await js('document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().width');
   assert.ok(beforeMorph>1100,"Overview starts full width");
+  await recordStart("opening");
   await js('document.querySelector("#story-shyam button[aria-expanded]").click()');
+  await until(()=>js('Boolean(document.querySelector("[data-cursor-crew][data-swarm-engine=upstream]"))'));
   await until(()=>js('document.querySelectorAll("[data-crew-agent]").length===18'));
-  await sleep(340);
-  const halfway=await js('document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().width');
-  assert.ok(halfway<beforeMorph && halfway>480,"Overview must smoothly resize through intermediate widths: "+halfway);
-  const swarmSpawned=await js('({count:document.querySelectorAll("[data-crew-agent]").length,phase:document.querySelector("[data-cursor-crew]")?.dataset.phase})');
-  assert.equal(swarmSpawned.count,18,"Cursor agents should emerge from the click rather than remain on the page");
-  await sleep(520);
-  const swarmActive=await js('({phase:document.querySelector("[data-cursor-crew]").dataset.phase,titleGuide:document.querySelector("[data-crew-guide=title]").style.opacity,figureGuide:document.querySelector("[data-crew-guide=figure]").style.opacity,selectionCount:document.querySelectorAll("[data-crew-guide]").length})');
-  assert.equal(swarmActive.phase,"building","Agents should be doing actual layout tasks during the morph");
-  assert.equal(swarmActive.titleGuide,"1","Title selection frame must track the real heading");
-  assert.equal(swarmActive.selectionCount,3,"Guides should represent only actual DOM elements");
+  const upstream=await js('({engine:document.querySelector("[data-cursor-crew]").dataset.swarmEngine,cursors:document.querySelectorAll("[data-crew-agent]").length,svg:document.querySelectorAll(".swarm-original-cursors .cursor svg").length})');
+  assert.equal(upstream.engine,"upstream","Original Swarm Rebuild engine must power the interaction");
+  assert.equal(upstream.cursors,18,"Eighteen upstream cursor agents must emerge from the click");
+  assert.equal(upstream.svg,18,"Use the original animated cursor SVG renderer");
+  await shot("desktop-shyam-agents-select-before-morph.png");
+  await until(()=>js('document.querySelector(".swarm-original-overlay rect")!==null'),12000);
   await shot("desktop-shyam-cursor-crew-midway.png");
+  await until(()=>js('document.querySelector("#story-shyam").dataset.expanded==="true"'),12000);
+  await sleep(310);
+  const halfway=await js('document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().width');
+  assert.ok(halfway<beforeMorph&&halfway>400,"Reader must animate through intermediate layout widths: "+halfway);
   await shot("desktop-shyam-morph-midway.png");
-  await sleep(1140);
+  await sleep(650);
+  await shot("desktop-shyam-story-typing.png");
+  await until(()=>js('document.querySelector("[data-cursor-crew]")===null'),16000);
   const morph=await js('({stage:document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().width,panel:document.querySelector("#story-shyam [data-role=story-reader]").getBoundingClientRect().width,inert:document.querySelector("#full-shyam").inert,hidden:document.querySelector("#full-shyam").getAttribute("aria-hidden")})');
   assert.ok(morph.stage<650&&morph.panel>700,"Story morphs into left overview / right reader: "+JSON.stringify(morph));
   assert.equal(morph.hidden,"false","Reader must be accessible when open");
@@ -118,7 +156,11 @@ try{
   assert.equal(seamless.stage,"rgba(0, 0, 0, 0)","Same transparent stage background");
   assert.equal(seamless.reader,"rgba(0, 0, 0, 0)","Same transparent story background");
   assert.equal(seamless.border,"0px","No divider line or reader box border");
+  const builtText=await js('({heading:getComputedStyle(document.querySelector("#story-shyam [data-crew-target=heading]")).opacity,intro:getComputedStyle(document.querySelector("#story-shyam [data-crew-target=reader-intro]")).opacity})');
+  assert.equal(builtText.heading,"1","Upstream text worker must finish building the story heading");
+  assert.equal(builtText.intro,"1","Upstream text worker must finish building the story introduction");
   await shot("desktop-shyam-expanded.png");
+  await recordStop();
   const startScroll=await js("window.scrollY");
   await cmd("Input.dispatchMouseEvent",{type:"mouseWheel",x:1060,y:510,deltaY:700,deltaX:0});
   await sleep(450);
@@ -126,14 +168,16 @@ try{
   assert.ok(scrolled.documentTop>startScroll+130&&scrolled.readerTop===0&&scrolled.readerOverflow!=="auto","Wheel over story must scroll the whole document: "+JSON.stringify(scrolled));
   await shot("desktop-shyam-page-scroll.png");
   assert.equal(await js('document.querySelectorAll("#full-shyam button").length'),0,"No separate close button or dark header");
+  await recordStart("closing");
   await js('document.querySelector("#story-shyam button[aria-expanded]").click()');
-  await sleep(520);
-  assert.equal(await js('document.querySelector("[data-cursor-crew]")?.dataset.phase==="building"'),true,"Reverse action should also send cursor agents to work");
+  await until(()=>js('document.querySelector("[data-cursor-crew]")!==null'));
+  assert.equal(await js('document.querySelector("[data-cursor-crew]").dataset.swarmEngine'),"upstream","Reverse uses the same source engine");
+  await sleep(350);
+  await shot("desktop-shyam-cursors-return.png");
+  await until(()=>js('document.querySelector("[data-cursor-crew]")===null'),16000);
+  await recordStop();
   const returningTitle=await js('({width:document.querySelector("#story-shyam [data-crew-target=title]").getBoundingClientRect().width,stageWidth:document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().width})');
   assert.ok(returningTitle.width>240,"The headline must remain readable while cursors undo the layout: "+JSON.stringify(returningTitle));
-  await shot("desktop-shyam-cursors-return.png");
-  await sleep(3100);
-  assert.equal(await js('document.querySelector("[data-cursor-crew]")===null'),true,"Agents must gather at pointer and vanish after reversing");
   const reverseMorph=await js('({stage:document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().width,hidden:document.querySelector("#full-shyam").getAttribute("aria-hidden"),inert:document.querySelector("#full-shyam").inert})');
   assert.ok(reverseMorph.stage>1100,"Reverse morph must restore full-width overview: "+JSON.stringify(reverseMorph));
   assert.equal(reverseMorph.hidden,"true");
@@ -144,6 +188,7 @@ try{
   assert.ok(await js('document.querySelectorAll("#full-shyam article").length')>=3);
   await js('document.getElementById("story-fundlenz").scrollIntoView({block:"start",behavior:"instant"})');
   await js('document.querySelector("#story-fundlenz button[aria-expanded]").click()');
+  await until(()=>js('document.querySelector("#story-fundlenz").dataset.expanded==="true"'));
   await until(()=>js('Boolean(document.querySelector("#full-fundlenz input[type=range]"))'));
   assert.ok(await js('document.getElementById("full-fundlenz").textContent.includes("ALPHA")'),"Fund mini tool populated");
   await js('(()=>{const e=document.querySelector("#full-fundlenz input[type=range]");window.scrollBy({top:e.getBoundingClientRect().top-210,behavior:"instant"});})()');
@@ -152,6 +197,7 @@ try{
   await shot("desktop-fund-mini.png");
   await js('document.getElementById("story-dcf").scrollIntoView({block:"start",behavior:"instant"})');
   await js('document.querySelector("#story-dcf button[aria-expanded]").click()');
+  await until(()=>js('document.querySelector("#story-dcf").dataset.expanded==="true"'));
   await until(()=>js('Boolean(document.querySelector("#full-dcf input[type=number]"))'));
   assert.ok(await js('document.getElementById("full-dcf").textContent.includes("ENTERPRISE VALUE")'));
   await js('(()=>{const e=document.querySelector("#full-dcf input[type=number]");window.scrollBy({top:e.getBoundingClientRect().top-210,behavior:"instant"});})()');
@@ -160,6 +206,7 @@ try{
   await shot("desktop-dcf-mini.png");
   await js('document.getElementById("story-study").scrollIntoView({block:"start",behavior:"instant"})');
   await js('document.querySelector("#story-study button[aria-expanded]").click()');
+  await until(()=>js('document.querySelector("#story-study").dataset.expanded==="true"'));
   await until(()=>js('Boolean(document.querySelector("#full-study input[aria-label]"))'));
   assert.ok(await js('document.querySelectorAll("#full-study input[type=checkbox]").length')>=3);
   await js('document.getElementById("story-synk").scrollIntoView({block:"start",behavior:"instant"})');
@@ -167,7 +214,7 @@ try{
   await shot("desktop-synk-fpa.png");
   assert.ok(await js('document.querySelector("#story-synk").textContent.includes("paywall implementation")'),"SYNK FP&A work is source-correct");
   await js('document.querySelector("#story-synk button[aria-expanded]").click()');
-  await sleep(1430);
+  await sleep(1780);
   const synkEntry=await js('({sectionTop:document.getElementById("story-synk").getBoundingClientRect().top,headingTop:document.querySelector("#full-synk [class*=longStoryLead]").getBoundingClientRect().top,readerTop:document.querySelector("#full-synk").getBoundingClientRect().top})');
   assert.ok(synkEntry.sectionTop>30&&synkEntry.sectionTop<125&&synkEntry.headingTop>140,"Opening a later story must start its reader from the top: "+JSON.stringify(synkEntry));
   await shot("desktop-synk-fpa-expanded.png");

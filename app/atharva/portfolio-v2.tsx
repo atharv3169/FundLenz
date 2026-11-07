@@ -9,26 +9,41 @@ import s from "./portfolio-v2.module.css";
 
 function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(change:Omit<MorphSignal,"sequence">)=>void}){
  const [open,setOpen]=useState(false);
+ const [choreography,setChoreography]=useState<"idle"|"entering"|"exiting">("idle");
+ const phaseRef=useRef<"idle"|"entering"|"exiting">("idle");
  const sectionRef=useRef<HTMLElement>(null);
  const toggleRef=useRef<HTMLButtonElement>(null);
  const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
 
- const changeMode=(next:boolean, pointer?:{x:number;y:number})=>{
+ const eligible=()=>window.matchMedia("(min-width: 1024px)").matches&&
+   !window.matchMedia("(pointer: coarse)").matches&&
+   !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+ const changeMode=(next:boolean,pointer?:{x:number;y:number})=>{
+   if(phaseRef.current!=="idle")return;
+   // When closing from deeper in a story, move back to its beginning
+   // while the cursor crew dismantles the right-hand text. Do not jump.
+   sectionRef.current?.scrollIntoView({
+     behavior:next||!eligible()?"instant":"smooth",
+     block:"start"
+   });
+   if(!eligible()){
+     setOpen(next);
+     if(!next)toggleRef.current?.focus({preventScroll:true});
+     return;
+   }
    const button=toggleRef.current?.getBoundingClientRect();
-   if(window.matchMedia("(min-width: 1024px)").matches&&!window.matchMedia("(pointer: coarse)").matches&&!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
-     onMorph({storyId:story.id,opening:next,
-       originX:pointer&&pointer.x>0?pointer.x:button?button.left+button.width/2:window.innerWidth/2,
-       originY:pointer&&pointer.y>0?pointer.y:button?button.top+button.height/2:window.innerHeight/2});
-   }
-   // Keep one scroll context. Do not launch a competing smooth scroll
-   // while the spatial layout is animating.
-   sectionRef.current?.scrollIntoView({behavior:"instant",block:"start"});
-   if(next){
-     requestAnimationFrame(()=>setOpen(true));
-   } else {
-     setOpen(false);
-     toggleRef.current?.focus({preventScroll:true});
-   }
+   phaseRef.current=next?"entering":"exiting";
+   setChoreography(phaseRef.current);
+   onMorph({
+     storyId:story.id,opening:next,
+     originX:pointer&&pointer.x>0?pointer.x:button?button.left+button.width/2:window.innerWidth/2,
+     originY:pointer&&pointer.y>0?pointer.y:button?button.top+button.height/2:window.innerHeight/2,
+     // Swarm Rebuild workers now own the sequence: the actual React layout
+     // only changes after their selection/erase tasks have completed.
+     apply:()=>{setOpen(next);if(!next)toggleRef.current?.focus({preventScroll:true});},
+     finish:()=>{phaseRef.current="idle";setChoreography("idle");}
+   });
  };
 
  useEffect(()=>{
@@ -36,14 +51,13 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
    const onKey=(event:KeyboardEvent)=>{
      if(event.key!=="Escape")return;
      event.preventDefault();
-     sectionRef.current?.scrollIntoView({behavior:"instant",block:"start"});
-     setOpen(false);
-     toggleRef.current?.focus({preventScroll:true});
+     changeMode(false);
    };
    window.addEventListener("keydown",onKey);
    return()=>window.removeEventListener("keydown",onKey);
+ // Event handler is intentionally bound per expanded-state change.
+ // eslint-disable-next-line react-hooks/exhaustive-deps
  },[open]);
-
  return <section
    ref={sectionRef}
    id={"story-"+story.id}
@@ -51,10 +65,11 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
    style={{"--accent":story.accent,"--previous-accent":stories[index-1]?.accent||story.accent,"--next-accent":stories[index+1]?.accent||story.accent} as CSSProperties}
    data-story={story.id}
    data-expanded={open}
+   data-choreography={choreography}
  >
   <div className={s.storyWorkspace}>
    <div className={s.storyStage} data-reveal data-role="story-overview">
-    <div className={s.storyCopy}>
+    <div className={s.storyCopy} data-crew-target="copy">
      <div className={s.storyEyebrow}><span className={s.storyIndex}>{String(index+1).padStart(2,"0")}</span><span>{story.eyebrow}</span></div>
      <p className={s.storyYears}>{story.type}{story.year&&<><i> / </i> {story.year}</>}</p>
      <h3 data-crew-target="title">{story.title}<span>.</span></h3>
@@ -74,7 +89,7 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
       </button>
       {story.visit&&(story.visit.pending?<span className={s.storyUpcoming} title={"Planned URL: "+story.visit.href}>{story.visit.text} · planned URL</span>:<a className={s.storyVisit} href={story.visit.href} target="_blank" rel="noopener noreferrer">{story.visit.text}<ArrowUpRight size={17}/></a>)}
      </div>
-     <div className={s.storyNumbers}>{story.numbers.map((n,i)=><div key={i}><strong>{n.value}</strong><span>{n.label}</span></div>)}</div>
+     <div className={s.storyNumbers} data-crew-target="metrics">{story.numbers.map((n,i)=><div key={i}><strong>{n.value}</strong><span>{n.label}</span></div>)}</div>
     </div>
     <div className={s.storyIllustration} data-crew-target="figure">
       <SceneFigure id={story.id}/>
@@ -94,11 +109,11 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
     <div className={s.storyPanelBody}>
      <div className={s.longStoryLead} data-crew-target="lead">
       <span className={s.sectionTag}>THE DEEPER STORY / {String(index+1).padStart(2,"0")}</span>
-      <h4>Behind <em>the work.</em></h4>
-      <p>{story.intro}</p>
+      <h4 data-crew-target="heading">Behind <em>the work.</em></h4>
+      <p data-crew-target="reader-intro">{story.intro}</p>
      </div>
      <div className={s.storyChapterList}>
-      {story.chapters.map((chapter,i)=><article key={chapter.title} className={s.chapter} data-crew-target={i===0?"chapter":undefined}>
+      {story.chapters.map((chapter,i)=><article key={chapter.title} className={s.chapter} data-crew-target={i===0?"chapter":i===1?"chapter-two":undefined}>
        <span>{String(i+1).padStart(2,"0")}</span>
        <div><h5>{chapter.title}</h5>{chapter.paragraphs.map((p,j)=><p key={j}>{p}</p>)}</div>
       </article>)}
