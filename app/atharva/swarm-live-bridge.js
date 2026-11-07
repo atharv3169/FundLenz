@@ -49,7 +49,7 @@ function browserEligible(){
 }
 // Original prepText/reveal work on an actual styled clone. Keep the React DOM
 // untouched so links, tools and events remain live throughout the animation.
-function stageText(node,history){
+function stageText(node,history,parentStates){
  const full=node.cloneNode(true);
  const it={full,v:0,shown:0};
  prepText(it);
@@ -57,7 +57,7 @@ function stageText(node,history){
  const parent=node.parentElement;
  if(!parent)return null;
  const r=node.getBoundingClientRect(),pr=parent.getBoundingClientRect();
- const previousParent=parent.style.position;
+ if(!parentStates.has(parent))parentStates.set(parent,parent.style.position);
  const parentPosition=getComputedStyle(parent).position;
  if(parentPosition==="static")parent.style.position="relative";
  live.removeAttribute("id");
@@ -71,7 +71,7 @@ function stageText(node,history){
  const previousOpacity=node.style.opacity;
  node.style.opacity="0";
  parent.appendChild(live);
- const entry={it,node,live,parent,previousParent,previousOpacity,finished:false};
+ const entry={it,node,live,parent,previousOpacity,finished:false};
  history.push(entry);
  return entry;
 }
@@ -80,8 +80,6 @@ function restoreEntry(entry){
  entry.finished=true;
  entry.live.remove();
  entry.node.style.opacity=entry.previousOpacity;
- if(entry.parent.style.position==="relative"&&entry.previousParent!=="relative")
-    entry.parent.style.position=entry.previousParent;
 }
 function caretPoint(it){
  let last=null;
@@ -117,6 +115,7 @@ export function startLiveSwarm({signal,hostClass}){
  let stopped=false, applied=false, leftReady=0, eraseDone=0, finishedCount=0;
  let raf=0, last=performance.now(),start=last;
  const agents=[],entries=[],cleanup=[];
+ const parentStates=new Map();
 
  const pointerMove=e=>{
   if(e.pointerType!=="touch"){pointer.x=e.clientX;pointer.y=e.clientY;}
@@ -137,6 +136,7 @@ export function startLiveSwarm({signal,hostClass}){
   if(stopped)return;
   stopped=true;
   for(const entry of entries)restoreEntry(entry);
+  for(const [parent,position] of parentStates)parent.style.position=position;
   for(const fn of cleanup)fn();
   cancelAnimationFrame(raf);
   view.destroy();
@@ -199,7 +199,7 @@ export function startLiveSwarm({signal,hostClass}){
   c.shape="cross";
   yield* original.click(c);
   c.ov=()=>selectionOf(target);
-  const record=stageText(target,entries);
+  const record=stageText(target,entries,parentStates);
   if(record){
     if(signal.opening){
       c.shape="ibeam";
