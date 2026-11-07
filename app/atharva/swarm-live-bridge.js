@@ -138,7 +138,6 @@ export function startLiveSwarm({signal,hostClass}){
  let applied=false,stopped=false,readyLeft=0,erasedRight=0,worked=0,done=0;
  let raf=0,start=performance.now(),last=start;
  let phase="selecting",transitionTime=0,completed=false;
- const scrollPoint={x:0,y:0};
  const onPointer=e=>{if(e.pointerType!=="touch"){pointer.x=e.clientX;pointer.y=e.clientY;}};
  const onResize=()=>{if(!enabled())finish();};
  window.addEventListener("pointermove",onPointer,{passive:true});
@@ -218,7 +217,7 @@ export function startLiveSwarm({signal,hostClass}){
   yield* waitFor(()=>applied,3);
   // Real resize: a cursor remains attached to the DOM grip for the entire
   // CSS morph, rather than chasing where the element used to be.
-  c.press=1;c.shape=i%2?"nwse":"arrow";
+  c.press=1;c.shape=i%2?"ew":"arrow";
   let elapsed=0;
   while(!stopped&&elapsed<1.28){
    const p=point();c.x=p.x;c.y=p.y;
