@@ -767,32 +767,32 @@
   content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(ellipse 74% 75% at 53% 48%,color-mix(in srgb,var(--accent) 8%,transparent),transparent 85%);
 }
-/* More deliberate desktop morph: agents can visibly guide each object. */
+/* Smooth fullscreen-to-story transition. */
 @media(min-width:1024px){
  .storyWorkspace{
-   transition:grid-template-columns 1560ms cubic-bezier(.22,.68,.18,1);
+   transition:grid-template-columns 980ms cubic-bezier(.22,.68,.18,1);
  }
  .storyWorkspace>.storyStage .storyCopy{
-   transition:padding 1520ms cubic-bezier(.22,.68,.18,1);
+   transition:padding 950ms cubic-bezier(.22,.68,.18,1);
  }
  .storyWorkspace>.storyStage .storyCopy h3{
-   transition:font-size 1510ms cubic-bezier(.22,.68,.18,1),margin 1510ms ease;
+   transition:font-size 950ms cubic-bezier(.22,.68,.18,1),margin 950ms ease;
  }
  .storyWorkspace>.storyStage .storyHook{
-   transition:font-size 1480ms cubic-bezier(.22,.68,.18,1),margin 1480ms ease;
+   transition:font-size 950ms cubic-bezier(.22,.68,.18,1),margin 950ms ease;
  }
  .storyWorkspace>.storyStage .storyIllustration{
-   transition:width 1530ms cubic-bezier(.22,.68,.18,1),
-     height 1530ms cubic-bezier(.22,.68,.18,1),
-     top 1530ms cubic-bezier(.22,.68,.18,1),
-     right 1530ms cubic-bezier(.22,.68,.18,1),
-     opacity 1160ms ease;
+   transition:width 980ms cubic-bezier(.22,.68,.18,1),
+     height 980ms cubic-bezier(.22,.68,.18,1),
+     top 980ms cubic-bezier(.22,.68,.18,1),
+     right 980ms cubic-bezier(.22,.68,.18,1),
+     opacity 780ms ease;
  }
  .storyWorkspace>.longStory{
-   transition:opacity 1150ms ease,transform 1480ms cubic-bezier(.21,.77,.26,1),visibility 0s linear 1550ms;
+   transition:opacity 680ms ease,transform 950ms cubic-bezier(.21,.77,.26,1),visibility 0s linear 980ms;
  }
  .storyIsOpen .storyWorkspace>.longStory{
-   transition:opacity 1120ms ease 220ms,transform 1490ms cubic-bezier(.21,.77,.26,1) 80ms,visibility 0s;
+   transition:opacity 650ms ease 140ms,transform 950ms cubic-bezier(.21,.77,.26,1) 70ms,visibility 0s;
  }
  .storyIsOpen .storyWorkspace>.storyStage .storyCopy{
    padding:clamp(24px,3.1vw,44px) clamp(22px,2.4vw,40px) 16px;
@@ -873,7 +873,7 @@
 
 /* ----------------------------------------------------------
    A single shared canvas: no story panel, header, or hard split.
-   Text is placed into the existing page by the click-only crew.
+   Story content appears on the same background through the layout transition.
    ---------------------------------------------------------- */
 .portfolioShell .storySection>.storyWorkspace{
   position:relative;
@@ -911,7 +911,7 @@
 }
 .portfolioShell .storySection .storyWorkspace>.longStory{
   transform:none!important;
-  transition:opacity 650ms ease,visibility 0s linear 1530ms!important;
+  transition:opacity 650ms ease,visibility 0s linear 980ms!important;
 }
 .portfolioShell .storyIsOpen .storyWorkspace>.longStory{
   transform:none!important;
@@ -926,40 +926,6 @@
 }
 .portfolioShell .storyPanelBody .storyChapterList{
   margin-top:42px;
-}
-@media(min-width:1024px) and (prefers-reduced-motion:no-preference){
-  /* Real content follows the choreography: label, text, then chapters. */
-  .storyIsOpen .storyPanelBody .longStoryLead>.sectionTag{
-    animation:crewPlaceText 670ms cubic-bezier(.2,.74,.24,1) 290ms both;
-  }
-  .storyIsOpen .storyPanelBody .longStoryLead h4{
-    animation:crewTypeText 780ms steps(15,end) 470ms both;
-  }
-  .storyIsOpen .storyPanelBody .longStoryLead>p{
-    animation:crewPlaceText 670ms cubic-bezier(.2,.74,.24,1) 690ms both;
-  }
-  .storyIsOpen .storyPanelBody .chapter:nth-child(1){
-    animation:crewPlaceText 690ms cubic-bezier(.2,.74,.24,1) 930ms both;
-  }
-  .storyIsOpen .storyPanelBody .chapter:nth-child(2){
-    animation:crewPlaceText 690ms cubic-bezier(.2,.74,.24,1) 1100ms both;
-  }
-  .storyIsOpen .storyPanelBody .chapter:nth-child(n+3){
-    animation:crewPlaceText 690ms cubic-bezier(.2,.74,.24,1) 1210ms both;
-  }
-  .storyIsOpen .storyPanelBody .miniStage,
-  .storyIsOpen .storyPanelBody .tagsLine,
-  .storyIsOpen .storyPanelBody .readerFooter{
-    animation:crewPlaceText 720ms cubic-bezier(.2,.74,.24,1) 1320ms both;
-  }
-}
-@keyframes crewPlaceText{
-  from{opacity:0;transform:translate3d(0,20px,0);filter:blur(3px);}
-  to{opacity:1;transform:translate3d(0,0,0);filter:blur(0);}
-}
-@keyframes crewTypeText{
-  from{opacity:.7;clip-path:inset(0 100% 0 0);filter:blur(1px);}
-  to{opacity:1;clip-path:inset(0 0 0 0);filter:blur(0);}
 }
 @media(max-width:1023px){
   .portfolioShell .storyPanelBody{padding-top:38px;}
@@ -1010,209 +976,14 @@
 }
 
 
-/* Critical layout invariant: the content column never shrinks faster than
-   its parent overview while the cursor swarm is dragging it back. */
+/* Maintain readable headline width throughout both transition directions. */
 @media(min-width:1024px){
  .portfolioShell .storyWorkspace>.storyStage .storyCopy,
  .portfolioShell .storyIsOpen>.storyWorkspace>.storyStage .storyCopy{
    width:100%;
    max-width:min(750px,55vw);
-   transition:padding 1500ms cubic-bezier(.22,.68,.18,1);
+   transition:padding 950ms cubic-bezier(.22,.68,.18,1);
  }
 }
 
 
-/* Reference-paced cursor-built stories (desktop). Open: select → drag
-   existing overview → compose right text → return. Reverse: erase
-   right copy first → restore left composition → return to pointer.
-   This is a live, interactive page, not an overlay reconstruction. */
-@media(min-width:1024px) and (prefers-reduced-motion:no-preference){
- .portfolioShell .storyWorkspace{
-   transition:grid-template-columns 1140ms cubic-bezier(.22,.66,.18,1);
- }
- .portfolioShell .storyWorkspace>.storyStage .storyCopy{
-   transition:padding 1140ms cubic-bezier(.22,.66,.18,1);
- }
- .portfolioShell .storyWorkspace>.storyStage .storyCopy h3{
-   transition:font-size 1140ms cubic-bezier(.22,.66,.18,1),margin 1140ms cubic-bezier(.22,.66,.18,1);
- }
- .portfolioShell .storyWorkspace>.storyStage .storyHook{
-   transition:font-size 1140ms cubic-bezier(.22,.66,.18,1),margin 1140ms cubic-bezier(.22,.66,.18,1);
- }
- .portfolioShell .storyWorkspace>.storyStage .storyIllustration{
-   transition:top 1140ms cubic-bezier(.22,.66,.18,1),
-     right 1140ms cubic-bezier(.22,.66,.18,1),
-     width 1140ms cubic-bezier(.22,.66,.18,1),
-     height 1140ms cubic-bezier(.22,.66,.18,1),
-     opacity 940ms ease;
- }
- .portfolioShell .storyWorkspace>.longStory{
-   transition:opacity 340ms ease,visibility 0s linear 1140ms!important;
- }
- .portfolioShell .storyIsOpen .storyWorkspace>.longStory{
-   transition:opacity 460ms ease 70ms,visibility 0s!important;
- }
- /* Avoid unrelated prior animations re-running when a finished
-    sequence changes from "entering" to "idle". */
- .portfolioShell .storyIsOpen .storyPanelBody .longStoryLead>*,
- .portfolioShell .storyIsOpen .storyPanelBody .chapter,
- .portfolioShell .storyIsOpen .storyPanelBody .miniStage,
- .portfolioShell .storyIsOpen .storyPanelBody .tagsLine,
- .portfolioShell .storyIsOpen .storyPanelBody .readerFooter{
-   animation:none!important;
- }
- .portfolioShell [data-choreography="entering"].storyIsOpen
-   .storyPanelBody .longStoryLead>.sectionTag{
-   animation:storyInkArrive 390ms ease 190ms both!important;
- }
- .portfolioShell [data-choreography="entering"].storyIsOpen
-   .storyPanelBody .longStoryLead h4{
-   animation:storyTypedHeading 520ms steps(24,end) 350ms both!important;
- }
- .portfolioShell [data-choreography="entering"].storyIsOpen
-   .storyPanelBody .longStoryLead>p{
-   animation:storyInkArrive 530ms cubic-bezier(.16,1,.3,1) 600ms both!important;
- }
- .portfolioShell [data-choreography="entering"].storyIsOpen
-   .storyPanelBody .chapter:nth-child(1){
-   animation:storyTypedParagraph 590ms steps(26,end) 780ms both!important;
- }
- .portfolioShell [data-choreography="entering"].storyIsOpen
-   .storyPanelBody .chapter:nth-child(2){
-   animation:storyTypedParagraph 580ms steps(26,end) 900ms both!important;
- }
- .portfolioShell [data-choreography="entering"].storyIsOpen
-   .storyPanelBody .chapter:nth-child(n+3){
-   animation:storyInkArrive 560ms ease 1050ms both!important;
- }
- .portfolioShell [data-choreography="entering"].storyIsOpen
-   .storyPanelBody .miniStage,
- .portfolioShell [data-choreography="entering"].storyIsOpen
-   .storyPanelBody .tagsLine,
- .portfolioShell [data-choreography="entering"].storyIsOpen
-   .storyPanelBody .readerFooter{
-   animation:storyInkArrive 550ms ease 1170ms both!important;
- }
- /* Right-hand content is selected/erased before geometry resets. */
- .portfolioShell [data-choreography="exiting"].storyIsOpen
-   .storyPanelBody .chapter,
- .portfolioShell [data-choreography="exiting"].storyIsOpen
-   .storyPanelBody .miniStage,
- .portfolioShell [data-choreography="exiting"].storyIsOpen
-   .storyPanelBody .tagsLine,
- .portfolioShell [data-choreography="exiting"].storyIsOpen
-   .storyPanelBody .readerFooter{
-   animation:storyErase 260ms steps(16,end) 350ms both!important;
- }
- .portfolioShell [data-choreography="exiting"].storyIsOpen
-   .storyPanelBody .longStoryLead>p{
-   animation:storyErase 270ms steps(16,end) 450ms both!important;
- }
- .portfolioShell [data-choreography="exiting"].storyIsOpen
-   .storyPanelBody .longStoryLead h4{
-   animation:storyErase 280ms steps(20,end) 510ms both!important;
- }
- .portfolioShell [data-choreography="exiting"].storyIsOpen
-   .storyPanelBody .longStoryLead>.sectionTag{
-   animation:storyErase 200ms steps(12,end) 570ms both!important;
- }
-}
-@keyframes storyInkArrive{
-  0%{opacity:.12;filter:blur(2.4px);transform:translate3d(-9px,4px,0);}
-  48%{opacity:.42;filter:blur(1.2px);transform:translate3d(-4px,2px,0);}
-  100%{opacity:1;filter:blur(0);transform:translate3d(0,0,0);}
-}
-@keyframes storyTypedHeading{
-  0%{opacity:.2;clip-path:inset(0 99% 0 0);filter:blur(1.2px);}
-  100%{opacity:1;clip-path:inset(0 0 0 0);filter:blur(0);}
-}
-@keyframes storyTypedParagraph{
-  0%{opacity:.16;clip-path:inset(0 95% 0 0);filter:blur(1px);}
-  100%{opacity:1;clip-path:inset(0 0 0 0);filter:blur(0);}
-}
-@keyframes storyErase{
-  0%{opacity:1;clip-path:inset(0 0 0 0);filter:blur(0);}
-  100%{opacity:0;clip-path:inset(0 100% 0 0);filter:blur(2px);}
-}
-
-
-/* Prevent the truck, data graphics and headline from physically passing
-   through each other. The original scene moves down *before* resizing;
-   undo moves it back to the right *after* the text column has reopened. */
-@media(min-width:1024px) and (prefers-reduced-motion:no-preference){
- .portfolioShell [data-choreography="entering"].storyIsOpen
-   .storyWorkspace>.storyStage .storyIllustration{
-   animation:crewStowIllustration 1140ms cubic-bezier(.25,.7,.2,1) both!important;
- }
- .portfolioShell [data-choreography="exiting"]:not(.storyIsOpen)
-   .storyWorkspace>.storyStage .storyIllustration{
-   animation:crewRestoreIllustration 1140ms cubic-bezier(.25,.7,.2,1) both!important;
- }
-}
-@keyframes crewStowIllustration{
-  0%{top:0;right:0;width:58%;height:100%;opacity:1;}
-  18%{top:78%;right:0;width:58%;height:22%;opacity:.6;}
-  53%{top:69%;right:0;width:84%;height:31%;opacity:.8;}
-  100%{top:61%;right:0;width:100%;height:39%;opacity:.81;}
-}
-@keyframes crewRestoreIllustration{
-  0%{top:61%;right:0;width:100%;height:39%;opacity:.81;}
-  53%{top:69%;right:0;width:84%;height:31%;opacity:.8;}
-  82%{top:78%;right:0;width:58%;height:22%;opacity:.6;}
-  100%{top:0;right:0;width:58%;height:100%;opacity:1;}
-}
-
-
-/* Upstream Swarm Rebuild now owns the actual typing and selection effects.
-   Disable the earlier simulated CSS "typing" so content cannot appear
-   before the workers arrive or be built twice. */
-@media(min-width:1024px) and (prefers-reduced-motion:no-preference){
- .portfolioShell [data-choreography="entering"] .storyPanelBody .longStoryLead>*,
- .portfolioShell [data-choreography="entering"] .storyPanelBody .chapter,
- .portfolioShell [data-choreography="exiting"] .storyPanelBody .longStoryLead>*,
- .portfolioShell [data-choreography="exiting"] .storyPanelBody .chapter{
-   animation:none!important;
-   clip-path:none!important;
-   filter:none!important;
- }
- .portfolioShell [data-choreography="entering"].storyIsOpen .storyPanelBody .miniStage,
- .portfolioShell [data-choreography="entering"].storyIsOpen .storyPanelBody .tagsLine,
- .portfolioShell [data-choreography="entering"].storyIsOpen .storyPanelBody .readerFooter{
-   animation:none!important;
-   opacity:0;
-   transition:opacity .6s ease;
- }
- .portfolioShell [data-choreography="idle"].storyIsOpen .storyPanelBody .miniStage,
- .portfolioShell [data-choreography="idle"].storyIsOpen .storyPanelBody .tagsLine,
- .portfolioShell [data-choreography="idle"].storyIsOpen .storyPanelBody .readerFooter{
-   opacity:1;
- }
- .portfolioShell [data-choreography="exiting"].storyIsOpen .storyPanelBody .miniStage,
- .portfolioShell [data-choreography="exiting"].storyIsOpen .storyPanelBody .tagsLine,
- .portfolioShell [data-choreography="exiting"].storyIsOpen .storyPanelBody .readerFooter{
-   opacity:0;
-   transition:opacity .3s ease;
- }
-}
-
-
-/* Swarm v3: only the upstream engine builds content. Old stacked animation
-   experiments re-triggered on entering→idle, briefly erasing finished text. */
-@media(min-width:1024px){
- .portfolioShell .storyIsOpen .storyPanelBody .longStoryLead>*,
- .portfolioShell .storyIsOpen .storyPanelBody .chapter,
- .portfolioShell .storyIsOpen .storyPanelBody .chapter h5,
- .portfolioShell .storyIsOpen .storyPanelBody .chapter p{
-   animation:none!important;
-   clip-path:none!important;
-   filter:none!important;
- }
- /* Keep these content groups on the same canvas. The JS typists control
-    only their own actual nodes, never the whole long-story surface. */
- .portfolioShell .storyIsOpen .storyWorkspace>.longStory{
-   background:transparent!important;
-   border-left:0!important;
-   border-right:0!important;
-   box-shadow:none!important;
- }
-}
