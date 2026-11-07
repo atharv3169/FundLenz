@@ -1161,3 +1161,36 @@
   82%{top:78%;right:0;width:58%;height:22%;opacity:.6;}
   100%{top:0;right:0;width:58%;height:100%;opacity:1;}
 }
+
+
+/* Upstream Swarm Rebuild now owns the actual typing and selection effects.
+   Disable the earlier simulated CSS "typing" so content cannot appear
+   before the workers arrive or be built twice. */
+@media(min-width:1024px) and (prefers-reduced-motion:no-preference){
+ .portfolioShell [data-choreography="entering"] .storyPanelBody .longStoryLead>*,
+ .portfolioShell [data-choreography="entering"] .storyPanelBody .chapter,
+ .portfolioShell [data-choreography="exiting"] .storyPanelBody .longStoryLead>*,
+ .portfolioShell [data-choreography="exiting"] .storyPanelBody .chapter{
+   animation:none!important;
+   clip-path:none!important;
+   filter:none!important;
+ }
+ .portfolioShell [data-choreography="entering"].storyIsOpen .storyPanelBody .miniStage,
+ .portfolioShell [data-choreography="entering"].storyIsOpen .storyPanelBody .tagsLine,
+ .portfolioShell [data-choreography="entering"].storyIsOpen .storyPanelBody .readerFooter{
+   animation:none!important;
+   opacity:0;
+   transition:opacity .6s ease;
+ }
+ .portfolioShell [data-choreography="idle"].storyIsOpen .storyPanelBody .miniStage,
+ .portfolioShell [data-choreography="idle"].storyIsOpen .storyPanelBody .tagsLine,
+ .portfolioShell [data-choreography="idle"].storyIsOpen .storyPanelBody .readerFooter{
+   opacity:1;
+ }
+ .portfolioShell [data-choreography="exiting"].storyIsOpen .storyPanelBody .miniStage,
+ .portfolioShell [data-choreography="exiting"].storyIsOpen .storyPanelBody .tagsLine,
+ .portfolioShell [data-choreography="exiting"].storyIsOpen .storyPanelBody .readerFooter{
+   opacity:0;
+   transition:opacity .3s ease;
+ }
+}
