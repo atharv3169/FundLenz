@@ -213,7 +213,7 @@
   }
 
 export class SwarmMotion {
- constructor(){this.tempo=1;this.sfx=null;this.vp={sx:0,sy:0,ox:0,oy:0,vw:innerWidth,vh:innerHeight};this.time=0;this.mouse=null;this.tv={x:0,y:0};this.lastT=null;}
+ constructor(){this.tempo=1;this.sfx=null;this.nextId=0;this.vp={sx:0,sy:0,ox:0,oy:0,vw:innerWidth,vh:innerHeight};this.time=0;this.mouse=null;this.tv={x:0,y:0};this.lastT=null;}
  get viewTop(){return 0;}
  get viewBot(){return innerHeight;}
  fromViewport(x,y){return {x,y};}
