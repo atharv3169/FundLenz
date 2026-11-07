@@ -122,6 +122,31 @@ try{
   assert.ok(closedBounds.buttonBottom < closedBounds.stageBottom - 15,"Shyam action must not be clipped: "+JSON.stringify(closedBounds));
   const beforeMorph=await js('document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().width');
   assert.ok(beforeMorph>1100,"Overview starts full width");
+  await js(`(()=>{
+    window.__swarmFrameTrace=[];
+    const started=performance.now();
+    const sample=()=>{
+      if(window.__swarmFrameTrace.length>=330)return;
+      const scope=document.getElementById("story-shyam");
+      const rect=s=>{const r=scope.querySelector(s)?.getBoundingClientRect();return r?{x:r.x,y:r.y,w:r.width,h:r.height}:null;};
+      const visible=s=>{const e=scope.querySelector(s);if(!e)return null;const cs=getComputedStyle(e);return {opacity:Number(cs.opacity),visibility:cs.visibility,inline:e.style.opacity,text:e.textContent?.length||0};};
+      const crew=document.querySelector("[data-cursor-crew]");
+      window.__swarmFrameTrace.push({
+        ms:Math.round(performance.now()-started),phase:crew?.dataset.phase||"idle",
+        stage:rect("[data-role=story-overview]"),title:rect("[data-crew-target=title]"),
+        primary:rect("[data-crew-object=primary]"),secondary:rect("[data-crew-object=secondary]"),
+        heading:visible("[data-crew-target=heading]"),
+        intro:visible("[data-crew-target=reader-intro]"),
+        first:visible("[data-crew-target=chapter] h5"),
+        supporting:visible("[data-crew-target=chapter] p:nth-of-type(2)"),
+        cursors:document.querySelectorAll("[data-crew-agent]").length,
+        guides:document.querySelectorAll(".swarm-original-overlay rect").length,
+        clones:document.querySelectorAll("[data-cursor-crew] [aria-hidden=true]").length
+      });
+      requestAnimationFrame(sample);
+    };
+    requestAnimationFrame(sample);
+  })()`);
   await recordStart("opening");
   await js('document.querySelector("#story-shyam button[aria-expanded]").click()');
   await until(()=>js('Boolean(document.querySelector("[data-cursor-crew][data-swarm-engine=upstream]"))'));
@@ -159,8 +184,39 @@ try{
   const builtText=await js('({heading:getComputedStyle(document.querySelector("#story-shyam [data-crew-target=heading]")).opacity,intro:getComputedStyle(document.querySelector("#story-shyam [data-crew-target=reader-intro]")).opacity})');
   assert.equal(builtText.heading,"1","Upstream text worker must finish building the story heading");
   assert.equal(builtText.intro,"1","Upstream text worker must finish building the story introduction");
+  const state=await js(`(()=>{
+    const scope=document.getElementById("story-shyam"),selectors=[
+      "[data-crew-target=heading]","[data-crew-target=reader-intro]",
+      "[data-crew-target=chapter] h5","[data-crew-target=chapter] p",
+      "[data-crew-target=chapter-two] h5","[data-crew-target=chapter-two] p"
+    ];
+    return {typed:Number(scope.dataset.swarmLastTyped),
+      errors:Number(scope.dataset.swarmLastErrors),
+      timedOut:scope.dataset.swarmLastTimedOut,
+      boxes:Number(scope.dataset.swarmLastMaxBoxes),
+      texts:selectors.map(s=>{const e=scope.querySelector(s),v=e&&getComputedStyle(e);
+        return {selector:s,opacity:v?.opacity,inline:e?.style.opacity,
+          visible:v?.visibility,width:e?.getBoundingClientRect().width,chars:e?.textContent?.length};})};
+  })()`);
+  assert.equal(state.errors,0,"Swarm must complete without runtime task exceptions: "+JSON.stringify(state));
+  assert.equal(state.timedOut,"false","Swarm must finish, not be force-destroyed by watchdog: "+JSON.stringify(state));
+  assert.equal(state.typed,6,"All six source-engine typists must complete: "+JSON.stringify(state));
+  assert.ok(state.boxes<=9,"Selection outlines should not flood the screen: "+JSON.stringify(state));
+  assert.ok(state.texts.every(x=>x.opacity==="1"&&x.visible==="visible"&&x.width>100&&x.chars>0),
+     "Every completed text group must remain fully visible: "+JSON.stringify(state.texts));
+  const supporting=await js('Array.from(document.querySelectorAll("#story-shyam [data-crew-target=chapter] p:nth-of-type(n+2),#story-shyam [data-crew-target=chapter-two] p:nth-of-type(n+2),#story-shyam [class*=storyChapterList] article:nth-child(n+3)")).map(e=>getComputedStyle(e).opacity)');
+  assert.ok(supporting.length>=2&&supporting.every(v=>v==="1"),
+    "Supporting paragraphs and later chapters must reappear when the workers finish: "+JSON.stringify(supporting));
   await shot("desktop-shyam-expanded.png");
+  await sleep(1600);
+  const held=await js('Array.from(document.querySelectorAll("#story-shyam [data-crew-target=heading],#story-shyam [data-crew-target=reader-intro],#story-shyam [data-crew-target=chapter] h5,#story-shyam [data-crew-target=chapter-two] h5")).map(e=>getComputedStyle(e).opacity)');
+  assert.ok(held.every(v=>v==="1"),"Text must not disappear seconds after the swarm departs: "+held);
+  await shot("desktop-shyam-text-still-visible.png");
   await recordStop();
+  const trace=await js('window.__swarmFrameTrace');
+  await writeFile(path.join(output,"swarm-opening-frame-trace.json"),JSON.stringify(trace,null,2));
+  assert.ok(trace.some(x=>x.cursors===18&&x.supporting?.opacity===0),
+    "Secondary paragraphs must remain hidden until their chapter is assembled");
   const startScroll=await js("window.scrollY");
   await cmd("Input.dispatchMouseEvent",{type:"mouseWheel",x:1060,y:510,deltaY:700,deltaX:0});
   await sleep(450);
@@ -176,6 +232,8 @@ try{
   await shot("desktop-shyam-cursors-return.png");
   await until(()=>js('document.querySelector("[data-cursor-crew]")===null'),16000);
   await recordStop();
+  const cleanClose=await js('({mode:document.querySelector("#story-shyam").dataset.swarmLastMode,errors:document.querySelector("#story-shyam").dataset.swarmLastErrors,timedOut:document.querySelector("#story-shyam").dataset.swarmLastTimedOut})');
+  assert.equal(cleanClose.mode,"close");assert.equal(cleanClose.errors,"0");assert.equal(cleanClose.timedOut,"false");
   const returningTitle=await js('({width:document.querySelector("#story-shyam [data-crew-target=title]").getBoundingClientRect().width,stageWidth:document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().width})');
   assert.ok(returningTitle.width>240,"The headline must remain readable while cursors undo the layout: "+JSON.stringify(returningTitle));
   const reverseMorph=await js('({stage:document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().width,hidden:document.querySelector("#full-shyam").getAttribute("aria-hidden"),inert:document.querySelector("#full-shyam").inert})');
@@ -183,7 +241,7 @@ try{
   assert.equal(reverseMorph.hidden,"true");
   assert.equal(reverseMorph.inert,true);
   await js('document.querySelector("#story-shyam button[aria-expanded]").click()');
-  await sleep(1660);
+  await until(()=>js('document.querySelector("[data-cursor-crew]")===null'),16000);
   assert.equal(await js('document.querySelector("#full-shyam")?.textContent.includes("80 lakh")'),true);
   assert.ok(await js('document.querySelectorAll("#full-shyam article").length')>=3);
   await js('document.getElementById("story-fundlenz").scrollIntoView({block:"start",behavior:"instant"})');
