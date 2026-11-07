@@ -184,7 +184,7 @@ export function startLiveSwarm({signal,hostClass}){
     // Wait for the right-hand reading column to have useful width.
     while(wait<4.2){
      const r=rectOf(target);
-     if(r&&r.width>150&&getComputedStyle(target).visibility!=="hidden")break;
+     if(r&&r.width>Math.min(530,innerWidth*.38)&&getComputedStyle(target).visibility!=="hidden")break;
      wait+=(yield);
     }
     yield* original.wait(i*.12);
@@ -200,6 +200,7 @@ export function startLiveSwarm({signal,hostClass}){
   if(record){
     if(signal.opening){
       c.shape="ibeam";
+      record.it.cursor=c;
       yield* original.type(record.it,c);
     } else {
       const it=record.it;
@@ -218,6 +219,7 @@ export function startLiveSwarm({signal,hostClass}){
     // Restore originals on the next frame; on close the geometry will hide
     // the panel as part of the real React transition.
     restoreEntry(record);
+    target.style.opacity=signal.opening?"1":"0";
   }
   c.ov=null;c.shape="arrow";
   if(!signal.opening){
