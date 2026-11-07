@@ -138,6 +138,7 @@ try{
         heading:visible("[data-crew-target=heading]"),
         intro:visible("[data-crew-target=reader-intro]"),
         first:visible("[data-crew-target=chapter] h5"),
+        supporting:visible("[data-crew-target=chapter] p:nth-of-type(2)"),
         cursors:document.querySelectorAll("[data-crew-agent]").length,
         guides:document.querySelectorAll(".swarm-original-overlay rect").length,
         clones:document.querySelectorAll("[data-cursor-crew] [aria-hidden=true]").length
@@ -203,13 +204,19 @@ try{
   assert.ok(state.boxes<=9,"Selection outlines should not flood the screen: "+JSON.stringify(state));
   assert.ok(state.texts.every(x=>x.opacity==="1"&&x.visible==="visible"&&x.width>100&&x.chars>0),
      "Every completed text group must remain fully visible: "+JSON.stringify(state.texts));
+  const supporting=await js('Array.from(document.querySelectorAll("#story-shyam [data-crew-target=chapter] p:nth-of-type(n+2),#story-shyam [data-crew-target=chapter-two] p:nth-of-type(n+2),#story-shyam [class*=storyChapterList] article:nth-child(n+3)")).map(e=>getComputedStyle(e).opacity)');
+  assert.ok(supporting.length>=2&&supporting.every(v=>v==="1"),
+    "Supporting paragraphs and later chapters must reappear when the workers finish: "+JSON.stringify(supporting));
   await shot("desktop-shyam-expanded.png");
   await sleep(1600);
   const held=await js('Array.from(document.querySelectorAll("#story-shyam [data-crew-target=heading],#story-shyam [data-crew-target=reader-intro],#story-shyam [data-crew-target=chapter] h5,#story-shyam [data-crew-target=chapter-two] h5")).map(e=>getComputedStyle(e).opacity)');
   assert.ok(held.every(v=>v==="1"),"Text must not disappear seconds after the swarm departs: "+held);
   await shot("desktop-shyam-text-still-visible.png");
   await recordStop();
-  await writeFile(path.join(output,"swarm-opening-frame-trace.json"),JSON.stringify(await js('window.__swarmFrameTrace'),null,2));
+  const trace=await js('window.__swarmFrameTrace');
+  await writeFile(path.join(output,"swarm-opening-frame-trace.json"),JSON.stringify(trace,null,2));
+  assert.ok(trace.some(x=>x.cursors===18&&x.supporting?.opacity===0),
+    "Secondary paragraphs must remain hidden until their chapter is assembled");
   const startScroll=await js("window.scrollY");
   await cmd("Input.dispatchMouseEvent",{type:"mouseWheel",x:1060,y:510,deltaY:700,deltaX:0});
   await sleep(450);
