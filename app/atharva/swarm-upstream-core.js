@@ -567,6 +567,7 @@ export class SwarmMotion {
       c.ov = null;
       it.done = true;
       bump(it);
+    }
 
 }
 
