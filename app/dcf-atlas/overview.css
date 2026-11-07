@@ -47,7 +47,7 @@
 .ao-grid .a-kpi > small {
   font-size: 12px;
 }
-@container atlas-desk (max-width: 650px) {
+@container atlas-desk (max-width: 780px) {
   .atlas-app .ao-workhead {
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas: 'heading history' 'start start';
@@ -66,9 +66,17 @@
     width: 100%;
   }
   .ao-start button {
-    flex: 1;
-    min-height: 40px;
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 42px;
+    padding-inline: 5px;
+    white-space: normal;
+    line-height: 1.15;
+    justify-content: center;
   }
+}
+@container atlas-desk (max-width: 340px) {
+  .ao-start button svg { display: none; }
 }
 .ao-frame {
   container: atlas-overview / inline-size;

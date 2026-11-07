@@ -1,10 +1,11 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { FileUp, Upload } from 'lucide-react';
-import { blank, demo, evaluate, keys, type Model } from '@/lib/atlas/model';
+import { demo, evaluate, keys, type Model } from '@/lib/atlas/model';
 import {
   csv,
   download,
+  downloadInputTemplate,
   historyUnits,
   importJson,
   modelCsv,
@@ -155,9 +156,7 @@ export function ModelImporter({ csvOnly = false, onClose }: Props) {
       <div className="a-tools a-import-templates" aria-label="CSV downloads">
         <button
           className="a-link"
-          onClick={() =>
-            download('atlas-input-template.csv', modelCsv(blank()), 'text/csv')
-          }
+          onClick={downloadInputTemplate}
         >
           Blank input template ↓
         </button>

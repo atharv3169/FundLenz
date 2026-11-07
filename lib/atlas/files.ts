@@ -480,6 +480,10 @@ export function importJson(s: string) {
     bad('Not a version 1 FundLenz Atlas snapshot.');
   return parseModel(raw.model);
 }
+export function downloadInputTemplate() {
+  download('atlas-input-template.csv', modelCsv(blank()), 'text/csv');
+}
+
 export function download(
   name: string,
   body: string | Blob,

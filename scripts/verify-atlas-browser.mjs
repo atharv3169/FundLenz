@@ -199,6 +199,14 @@ try {
           await action('Upload CSV').click();
           await p.getByRole('dialog', { name: 'Upload CSV' }).waitFor();
         };
+        const dl = p.waitForEvent('download');
+        await action('Download template').click();
+        const template = await dl;
+        assert.equal(template.suggestedFilename(), 'atlas-input-template.csv');
+        await openUpload();
+        await p.getByLabel('Upload model CSV').setInputFiles(await template.path());
+        await p.getByRole('dialog', {name: 'Review import before applying'}).waitFor();
+        await action('Cancel').click();
         await action('Add model').click();
         await dialog.getByLabel('Company name').fill('Manual case');
         await dialog.getByLabel('Currency').selectOption('GBP');
@@ -524,6 +532,8 @@ try {
       .getByRole('link', { name: /DCF Atlas/ })
       .filter({ visible: true })
       .first();
+    const ordered = await page.getByRole('navigation', {name: 'FundLenz projects', exact: true}).getByRole('link').evaluateAll(nodes => nodes.map(n => n.getAttribute('href')));
+    assert.deepEqual(ordered.slice(0, 3), ['/', '/dcf-atlas', '/fincalc']);
     assert.equal(await link.getAttribute('href'), '/dcf-atlas');
     await link.click();
     assert.equal(new URL(page.url()).pathname, '/dcf-atlas');
@@ -567,6 +577,8 @@ try {
           .boundingBox();
         const upload = starts.getByRole('button', { name: 'Upload CSV' });
         const uploadBox = await upload.boundingBox();
+        const templateBox = await starts.getByRole('button', {name: 'Download template'}).boundingBox();
+        assert(templateBox && uploadBox && templateBox.y === uploadBox.y && templateBox.x + templateBox.width <= width + 1);
         assert(
           addBox &&
             uploadBox &&
