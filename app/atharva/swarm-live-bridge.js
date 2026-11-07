@@ -15,6 +15,10 @@ const LEFT=[
  {selector:"[data-crew-object=secondary]",u:.91,v:.84,fallback:"[data-crew-target=figure]"},
  {selector:"[data-crew-target=metrics]",u:.05,v:.53},
  {selector:"[data-crew-target=metrics]",u:.88,v:.53},
+ {selector:"[data-crew-target=copy] [class*=storyEyebrow]",u:.1,v:.55},
+ {selector:"[data-crew-target=copy] [class*=storyHook]",u:.3,v:.65},
+ {selector:"[data-crew-target=copy] [class*=storyIntro]",u:.68,v:.56},
+ {selector:"[data-crew-target=copy] [class*=storyActions]",u:.52,v:.5},
 ];
 const RIGHT=[
  "[data-crew-target=heading]",
