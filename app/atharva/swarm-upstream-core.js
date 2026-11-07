@@ -441,6 +441,133 @@ export class SwarmMotion {
       }
     }
 
+ sfxPlace(){} // No page-reconstruction sound effects on live FundLenz.
+    underline(it, b) {
+      return { x: b.x, y: b.y + (it.lh * 0.5 + it.fs * 0.42) * it.scale, w: Math.min(b.w, it.tb.w * it.scale), h: 0 };
+    }
+    *drawText(c, it, guide, grow) {
+      if (guide) {
+        if (guide.axis === "x") {
+          it.dx = rand(28, 64);
+          it.dy = rand(-8, 8);
+        } else {
+          it.dx = rand(-8, 8);
+          it.dy = rand(18, 34) * (Math.random() < 0.5 ? -1 : 1);
+        }
+      }
+      if (grow) it.scale = Math.min(1, 18 / it.fs);
+      const b0 = this.bounds(it);
+      c.shape = "cross";
+      yield* this.moveTo(c, { x: b0.x, y: b0.y });
+      const lineH = Math.min(b0.h, it.lh * it.scale);
+      if (b0.w < 140 && it.tb.h < it.lh * 1.6) {
+        yield* this.click(c);
+      } else {
+        c.press = 1;
+        const ghost = { x: b0.x, y: b0.y, w: 0, h: 0 };
+        c.ov = () => [{ t: "box", b: ghost, handles: true, badge: `${Math.round(ghost.w)} × ${Math.round(ghost.h)}`, rulerLines: true }];
+        yield* this.moveTo(
+          c,
+          { x: b0.x + b0.w, y: b0.y + lineH },
+          {
+            speed: 0.9,
+            drag: true,
+            bend: 0,
+            onStep: () => {
+              ghost.w = Math.max(0, c.x - b0.x);
+              ghost.h = Math.max(0, c.y - b0.y);
+            },
+          },
+        );
+      }
+      it.vis = true;
+      it.editing = true;
+      it.shown = 0;
+      bump(it);
+      c.shape = "ibeam";
+      c.ov = () => [{ t: "box", b: this.bounds(it) }];
+      yield* this.moveTo(c, { x: c.x + rand(-30, 10), y: c.y + rand(10, 30) }, { speed: 1.5 });
+      yield* this.type(it, c);
+      yield* this.wait(0.12);
+      it.editing = false;
+      bump(it);
+      this.sfxPlace("text", it);
+      c.shape = "arrow";
+      c.ov = () => [this.selection(it)];
+      if (grow) {
+        const steps = [24, 32, 40, 48, 56, 64, 72, 88, 104].filter((s) => s < it.fs && s > 18);
+        let k = 0;
+        for (const s of [...steps, it.fs]) {
+          yield* this.wait(0.06);
+          it.scale = s / it.fs;
+          bump(it);
+          if (this.sfx) this.sfx.grow(k++, this.scr(c).x, this.vp.vw);
+        }
+        it.scale = 1;
+        bump(it);
+        yield* this.wait(0.15);
+      }
+      if (guide) {
+        // give the guide a moment to land; never block a cursor on it
+        let waited = 0;
+        while (guide.task.state !== "done" && waited < 1.6) waited += (yield) * this.tempo;
+        if (guide.task.state !== "done") guide = null;
+      }
+      if (guide) {
+        const u = this.bounds(it);
+        const a = { x: u.x + Math.min(u.w * 0.4, 60) + rand(-6, 6), y: u.y + Math.min(u.h * 0.5, 22) };
+        yield* this.moveTo(c, a);
+        c.press = 1;
+        const p = { x: a.x - it.dx, y: a.y - it.dy };
+        const m = {
+          x: p.x + (guide.axis === "x" ? -rand(2, 5) : rand(-6, 6)),
+          y: p.y + (guide.axis === "y" ? -rand(2, 5) : rand(-3, 3)),
+        };
+        const drag = () => {
+          let h = c.x - p.x;
+          let v = c.y - p.y;
+          if (guide.axis === "x" && Math.abs(h) < 9) {
+            if (h !== 0 && it.dx !== 0) {
+              if (guide.flash < 0.5 && this.sfx) this.sfx.snap(this.scr(c).x, this.vp.vw);
+              guide.flash = 1;
+            }
+            h = 0;
+          }
+          if (guide.axis === "y" && Math.abs(v) < 9) {
+            if (v !== 0 && it.dy !== 0) {
+              if (guide.flash < 0.5 && this.sfx) this.sfx.snap(this.scr(c).x, this.vp.vw);
+              guide.flash = 1;
+            }
+            v = 0;
+          }
+          it.dx = h;
+          it.dy = v;
+          bump(it);
+        };
+        yield* this.moveTo(c, m, { speed: 0.6, drag: true, onStep: drag });
+        yield* this.wait(0.1);
+        yield* this.moveTo(c, p, { speed: 2, onStep: drag });
+        it.dx = 0;
+        it.dy = 0;
+        bump(it);
+        yield* this.wait(0.25);
+      } else if (it.dx || it.dy) {
+        const dx0 = it.dx;
+        const dy0 = it.dy;
+        let k = 0;
+        while (k < 1) {
+          k = Math.min(1, k + ((yield) * this.tempo) / 0.3);
+          const e = easeInOut(k);
+          it.dx = dx0 * (1 - e);
+          it.dy = dy0 * (1 - e);
+          bump(it);
+        }
+        yield* this.wait(0.15);
+      } else yield* this.wait(0.2);
+      c.ov = null;
+      it.done = true;
+      bump(it);
+
 }
 
 export class SwarmLiveView {
