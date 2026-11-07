@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, Calculator, Compass, Layers3, Menu, ScanSearch, X } from "lucide-react";
+import { ArrowRight, BookOpen, Calculator, Compass, Layers3, Menu, ScanSearch, X } from "lucide-react";
 
 const focusable = 'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
@@ -214,6 +214,13 @@ export function ProjectsDrawer() {
                   <span className="mt-1 block text-base font-semibold text-white">FinCalc</span>
                   <span className="mt-1 block text-[13px] leading-5 text-[#b6cad5]">Compound interest, EMI, CAGR, present value and loan schedules.</span>
                 </div>
+                <ArrowRight size={16} aria-hidden="true" className="mt-4 shrink-0 text-[#a3d7cc] transition group-hover:translate-x-0.5" />
+              </Link>
+              <Link href="/ternwell" prefetch={false} onClick={close} aria-current={currentPath === "/ternwell" ? "page" : undefined}
+                className="group flex items-start gap-3 rounded-[8px] border border-[#385766] bg-white/[0.04] p-4 transition hover:border-[#8adacc] hover:bg-[#24495a] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8adacc]">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[7px] bg-[#254759] text-[#a9d9dc]"><BookOpen size={18} aria-hidden="true" /></span>
+                <span className="min-w-0 flex-1"><span className="block text-[11px] font-semibold uppercase tracking-[0.08em] text-[#97bdcc]">04 · Financial modelling</span>
+                  <span className="mt-1 block text-base font-semibold text-white">Ternwell</span><span className="mt-1 block text-[13px] leading-5 text-[#b6cad5]">Link three financial statements, model funding needs and compare scenarios.</span></span>
                 <ArrowRight size={16} aria-hidden="true" className="mt-4 shrink-0 text-[#a3d7cc] transition group-hover:translate-x-0.5" />
               </Link>
             </nav>
