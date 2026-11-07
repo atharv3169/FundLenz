@@ -132,11 +132,18 @@ export function startLiveSwarm({signal,hostClass}){
  const get=(sel,alt)=>section.querySelector(sel)||(alt?section.querySelector(alt):null);
  const leftNodes=LEFT.map(([sel,, ,alt])=>get(sel,alt));
  const rightNodes=RIGHT.map(sel=>get(sel));
+ // Secondary paragraphs were visible while their chapter's first sentence
+ // was still being typed, creating stray floating text. Keep their geometry
+ // in place but reveal them with the corresponding upstream typist.
+ const extraChapterOne=[...section.querySelectorAll('[data-crew-target="chapter"] p')].slice(1);
+ const extraChapterTwo=[...section.querySelectorAll('[data-crew-target="chapter-two"] p')].slice(1);
+ const laterChapters=[...section.querySelectorAll('[class*="storyChapterList"] article:nth-child(n+3)')];
+ const otherCopy=[...extraChapterOne,...extraChapterTwo,...laterChapters];
  const agents=Array.from({length:LEFT.length+RIGHT.length},(_,i)=>{
    const c=upstream.makeCursor(origin.x+(i%3-1)*2,origin.y+(i%4-1)*2,true);
    return {cursor:c,gen:null,done:false};
  });
- const originals=new Map(),parents=new Map(),entries=[];
+ const originals=new Map(),parents=new Map(),entries=[],transitions=new Map();
  let applied=false,stopped=false,readyLeft=0,erasedRight=0,worked=0,done=0;
  let raf=0,start=performance.now(),last=start;
  let phase="selecting",transitionTime=0,completed=false,taskErrors=0,maxSimultaneousBoxes=0;
@@ -166,6 +173,9 @@ export function startLiveSwarm({signal,hostClass}){
   for(const [node,value] of originals){
    if(node.isConnected)node.style.opacity=value;
   }
+  for(const [node,value] of transitions){
+   if(node.isConnected)node.style.transition=value;
+  }
   for(const [parent,value] of parents){
    if(parent.isConnected)parent.style.position=value;
   }
@@ -184,6 +194,19 @@ export function startLiveSwarm({signal,hostClass}){
  }
  function track(node,u,v){
   return ()=>at(rectOf(node),u,v)||origin;
+ }
+ function updateSupportingCopy(nodes,visible){
+  for(const node of nodes){
+   if(!node.isConnected)continue;
+   if(!originals.has(node))originals.set(node,node.style.opacity);
+   if(!transitions.has(node))transitions.set(node,node.style.transition);
+   node.style.transition="opacity 320ms ease";
+   node.style.opacity=visible?"1":"0";
+  }
+ }
+ function supportingCopy(i,visible){
+  if(i===3)updateSupportingCopy(extraChapterOne,visible);
+  if(i===5)updateSupportingCopy([...extraChapterTwo,...laterChapters],visible);
  }
  function* goHome(c){
   c.ov=null;c.press=0;c.shape="arrow";
@@ -275,6 +298,7 @@ export function startLiveSwarm({signal,hostClass}){
     removeText(entry);node.style.opacity="0";
    }
   }
+  supportingCopy(i,signal.opening);
   c.ov=null;c.shape="arrow";
   if(!signal.opening){
    erasedRight++;
@@ -285,7 +309,7 @@ export function startLiveSwarm({signal,hostClass}){
  }
  if(signal.opening){
   // Capture the original style exactly once. It is always restored on end.
-  for(const n of rightNodes){
+  for(const n of [...rightNodes,...otherCopy]){
    if(!n||originals.has(n))continue;
    originals.set(n,n.style.opacity);
    n.style.opacity="0";
