@@ -68,6 +68,14 @@ function stageText(node,history,parentStates){
    ";left:"+(r.left-pr.left)+"px!important;top:"+(r.top-pr.top)+"px!important"+
    ";width:"+r.width+"px!important;max-width:"+r.width+"px!important"+
    ";height:"+r.height+"px!important;margin:0!important;opacity:1!important";
+ const st=getComputedStyle(node);
+ const fs=parseFloat(st.fontSize)||14;
+ Object.assign(it,{
+  kind:"text",tb:{x:r.left,y:r.top,w:r.width,h:r.height},
+  x:r.left,y:r.top,dx:0,dy:0,scale:1,align:st.textAlign||"left",
+  fs,lh:parseFloat(st.lineHeight)||fs*1.4,
+  vis:false,done:false,editing:false,selAll:false,
+ });
  const previousOpacity=node.style.opacity;
  node.style.opacity="0";
  parent.appendChild(live);
@@ -195,16 +203,19 @@ export function startLiveSwarm({signal,hostClass}){
     // Reverse starts by selecting existing story text.
     yield* original.wait(i*.045);
   }
-  yield* original.moveTo(c,dest,{speed:2.5});
-  c.shape="cross";
-  yield* original.click(c);
-  c.ov=()=>selectionOf(target);
+  if(!signal.opening){
+   yield* original.moveTo(c,dest,{speed:2.5});
+   c.shape="arrow";
+   yield* original.click(c);
+   c.ov=()=>selectionOf(target);
+  }
   const record=stageText(target,entries,parentStates);
   if(record){
     if(signal.opening){
-      c.shape="ibeam";
       record.it.cursor=c;
-      yield* original.type(record.it,c);
+      // Verbatim upstream drawText: crosshair sizing, ghost selection,
+      // I-beam reveal, caret and final selection handles.
+      yield* original.drawText(c,record.it,null,false);
     } else {
       const it=record.it;
       it.shown=it.total;
@@ -280,7 +291,7 @@ export function startLiveSwarm({signal,hostClass}){
   for(const node of view.cursorEls.values())node.setAttribute("data-crew-agent","true");
   // Guard against a missed target when navigating fast or changing viewport.
   if(!applied&&elapsed>3.0)apply();
-  if(finishedCount===agents.length||elapsed>5.4){
+  if(finishedCount===agents.length||elapsed>8.2){
    if(!applied)apply();
    finalize();
    return;
