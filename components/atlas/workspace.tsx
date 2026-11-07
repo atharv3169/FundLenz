@@ -34,7 +34,7 @@ import {
   X,
 } from 'lucide-react';
 import { demo, evaluate, fields, keys, type Model } from '@/lib/atlas/model';
-import { parseModel } from '@/lib/atlas/files';
+import { downloadInputTemplate, parseModel } from '@/lib/atlas/files';
 import { AtlasContext, views, type View, type Saved } from './context';
 import { AtlasArt, Dialog, cash } from './ui';
 import { Assumptions, Forecast } from './model-views';
@@ -461,6 +461,14 @@ export function AtlasWorkspace() {
                       onClick={() => open('csv')}
                     >
                       <Upload size={16} aria-hidden="true" /> Upload CSV
+                    </button>
+                    <button
+                      className="a-btn"
+                      disabled={!ready}
+                      onClick={downloadInputTemplate}
+                      title="Download the editable Atlas input worksheet (CSV)"
+                    >
+                      <Download size={16} aria-hidden="true" /> Download template
                     </button>
                   </div>
                 )}
