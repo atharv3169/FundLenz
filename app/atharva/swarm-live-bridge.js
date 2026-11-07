@@ -28,7 +28,7 @@ const RIGHT=[
  "[data-crew-target=chapter-two] h5",
  "[data-crew-target=chapter-two] p",
 ];
-const leftLeaders=new Set([0,2,4,6]);
+const leftLeaders=new Set([0,2,4]);
 const enabled=()=>matchMedia("(min-width:1024px)").matches
  && !matchMedia("(pointer:coarse)").matches
  && !matchMedia("(prefers-reduced-motion:reduce)").matches;
@@ -87,10 +87,10 @@ function followText(entry){
  const r=rectOf(entry.node);
  if(!r)return;
  const pr=entry.parent.getBoundingClientRect();
- entry.live.style.left=(r.left-pr.left)+"px";
- entry.live.style.top=(r.top-pr.top)+"px";
- entry.live.style.width=r.width+"px";
- entry.live.style.maxWidth=r.width+"px";
+ entry.live.style.setProperty("left",(r.left-pr.left)+"px","important");
+ entry.live.style.setProperty("top",(r.top-pr.top)+"px","important");
+ entry.live.style.setProperty("width",r.width+"px","important");
+ entry.live.style.setProperty("max-width",r.width+"px","important");
  entry.it.tb.x=r.left;entry.it.tb.y=r.top;
  entry.it.tb.w=r.width;entry.it.tb.h=r.height;
 }
