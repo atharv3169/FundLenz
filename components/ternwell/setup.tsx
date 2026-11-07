@@ -1,0 +1,16 @@
+'use client';
+import {useState} from 'react';
+import {CURRENCIES,OPENING,OPEN_KEYS,fmt,openingGap,type Book,type Currency,type OpeningKey} from '@/lib/ternwell/model';
+import {shiftYear,validate} from '@/lib/ternwell/files';
+import {Dialog} from './ui';
+export function Setup({base,onClose,onSave,creating}:{base:Book;creating:boolean;onClose:()=>void;onSave:(b:Book)=>void}){
+ const [name,setName]=useState(base.name),[currency,setCurrency]=useState<Currency>(base.currency),[year,setYear]=useState(String(base.year)),[horizon,setHorizon]=useState(String(base.horizon)),[err,setErr]=useState('');
+ const [raw,change]=useState<Record<OpeningKey,string>>(()=>Object.fromEntries(OPEN_KEYS.map(k=>[k,String(base.opening[k])])) as Record<OpeningKey,string>);
+ const complete=OPEN_KEYS.every(k=>raw[k].trim()!==''&&Number.isFinite(Number(raw[k]))),opening=Object.fromEntries(OPEN_KEYS.map(k=>[k,Number(raw[k])])) as Book['opening'],gap=openingGap(opening);
+ return <Dialog title={creating?'Start a company model':'Company & opening balances'} onClose={onClose}><form onSubmit={e=>{e.preventDefault();try{if(!complete)throw Error('Fill all opening values. Enter zero where no balance exists.');const b=structuredClone(base);b.name=name;b.currency=currency;b.horizon=Number(horizon);shiftYear(b,Number(year));b.opening=opening;onSave(validate(b));}catch(ex){setErr((ex as Error).message);}}}>
+ <p className="tw-meta">{creating?'Start from zero and enter your own closing balances. Set forecast assumptions in Drivers after creating the model.':'These closing balances are the starting point for every scenario.'} Amounts are in millions. Changing currency relabels the model; it does not perform an FX conversion.</p>
+ <div className="tw-form-grid"><label className="tw-field">Company name<input name="name" required maxLength={100} value={name} onChange={e=>setName(e.target.value)}/></label><label className="tw-field">Reporting currency<select value={currency} onChange={e=>setCurrency(e.target.value as Currency)}>{CURRENCIES.map(c=><option key={c}>{c}</option>)}</select></label>
+ <label className="tw-field">Opening fiscal year<input type="number" required min={1900} max={2150} value={year} onChange={e=>setYear(e.target.value)}/></label><label className="tw-field">Forecast horizon<select value={horizon} onChange={e=>setHorizon(e.target.value)}>{Array.from({length:10},(_,i)=><option key={i} value={i+1}>{i+1} {i?'years':'year'}</option>)}</select></label></div>
+ <h3>Opening position</h3><div className="tw-form-grid">{OPEN_KEYS.map(k=><label className="tw-field" key={k}>{OPENING[k]}<input type="number" step="any" min={k==='retained'?-1e9:0} max={1e9} required value={raw[k]} onChange={e=>change({...raw,[k]:e.target.value})}/></label>)}</div>
+ <p className={'tw-insight '+(Math.abs(gap)>1e-7?'tw-warn':'')}>{!complete?'Complete the opening balances to check them.':Math.abs(gap)<1e-7?'Opening assets equal liabilities and equity.':'Opening balance difference: '+currency+' '+fmt(gap,3)+'m. This will appear in model checks.'}</p>{err&&<p role="alert" className="tw-warn">{err}</p>}<div className="tw-actions"><button type="button" className="tw-btn" onClick={onClose}>Cancel</button><button className="tw-solid" type="submit">{creating?'Create model':'Apply changes'}</button></div></form></Dialog>
+}

@@ -9,6 +9,10 @@ on:
       - 'components/projects-drawer.tsx'
       - 'components/site-header.tsx'
       - 'lib/atlas/**'
+      - 'app/ternwell/**'
+      - 'components/ternwell/**'
+      - 'lib/ternwell/**'
+      - 'scripts/verify-ternwell*.mjs'
       - 'scripts/verify-dcf-atlas.mjs'
       - 'scripts/verify-atlas-browser.mjs'
       - 'scripts/atlas-reference.py'
@@ -42,7 +46,7 @@ jobs:
       - name: Check types, Atlas lint and model regressions
         run: |
           pnpm typecheck
-          pnpm exec eslint app/dcf-atlas/page.tsx components/atlas lib/atlas --max-warnings=0
+          pnpm exec eslint app/dcf-atlas/page.tsx components/atlas lib/atlas app/ternwell components/ternwell lib/ternwell --max-warnings=0
           pnpm verify
       - name: Build native FundLenz Worker
         run: pnpm build
@@ -58,3 +62,4 @@ jobs:
             sleep 1
           done
           ATLAS_PLAYWRIGHT_MODULE="$RUNNER_TEMP/atlas-browser/node_modules/playwright/index.mjs" node scripts/verify-atlas-browser.mjs
+          ATLAS_PLAYWRIGHT_MODULE="$RUNNER_TEMP/atlas-browser/node_modules/playwright/index.mjs" node scripts/verify-ternwell-browser.mjs

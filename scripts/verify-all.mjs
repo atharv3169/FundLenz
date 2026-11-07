@@ -7,7 +7,7 @@ const require = createRequire(import.meta.url);
 const viteRequire = createRequire(require.resolve('vite'));
 const { build } = await import(pathToFileURL(viteRequire.resolve('esbuild')).href);
 fs.mkdirSync('.checks', { recursive: true });
-const suites = ['finance','catalog','global','revision','reliability','global-portfolios','dcf-atlas'];
+const suites = ['finance','catalog','global','revision','reliability','global-portfolios','dcf-atlas','ternwell'];
 for (const suite of suites) {
  const output = `.checks/verify-${suite}.mjs`;
  await build({ entryPoints: [`scripts/verify-${suite}.mjs`], outfile: output, bundle: true, platform: 'node', format: 'esm', packages: 'external' });
