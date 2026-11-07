@@ -129,6 +129,14 @@ export function startLiveSwarm({signal,hostClass}){
   if(e.pointerType!=="touch"){pointer.x=e.clientX;pointer.y=e.clientY;}
  };
  window.addEventListener("pointermove",pointerMove,{passive:true});
+ const viewportMatch=matchMedia("(min-width: 1024px)");
+ const pointerMatch=matchMedia("(pointer: coarse)");
+ const motionMatch=matchMedia("(prefers-reduced-motion: reduce)");
+ const updateEligibility=()=>{if(!browserEligible())finalize();};
+ viewportMatch.addEventListener("change",updateEligibility);
+ pointerMatch.addEventListener("change",updateEligibility);
+ motionMatch.addEventListener("change",updateEligibility);
+ window.addEventListener("resize",updateEligibility);
  const get=(selector,fallback)=>section.querySelector(selector)||(fallback?section.querySelector(fallback):null);
  const grip=(def)=>{
   const r=rectOf(get(def.selector,def.fallback));
@@ -150,6 +158,10 @@ export function startLiveSwarm({signal,hostClass}){
   view.destroy();
   host.remove();
   window.removeEventListener("pointermove",pointerMove);
+  viewportMatch.removeEventListener("change",updateEligibility);
+  pointerMatch.removeEventListener("change",updateEligibility);
+  motionMatch.removeEventListener("change",updateEligibility);
+  window.removeEventListener("resize",updateEligibility);
   signal.finish?.();
  }
  function returnHome(c){
