@@ -137,7 +137,7 @@ export function startLiveSwarm({signal,hostClass}){
  const originals=new Map(),parents=new Map(),entries=[];
  let applied=false,stopped=false,readyLeft=0,erasedRight=0,worked=0,done=0;
  let raf=0,start=performance.now(),last=start;
- let phase="selecting",transitionTime=0,completed=false;
+ let phase="selecting",transitionTime=0,completed=false,taskErrors=0,maxSimultaneousBoxes=0;
  const onPointer=e=>{if(e.pointerType!=="touch"){pointer.x=e.clientX;pointer.y=e.clientY;}};
  const onResize=()=>{if(!enabled())finish();};
  window.addEventListener("pointermove",onPointer,{passive:true});
@@ -168,6 +168,11 @@ export function startLiveSwarm({signal,hostClass}){
    if(parent.isConnected)parent.style.position=value;
   }
   cancelAnimationFrame(raf);
+  section.dataset.swarmLastTyped=host.dataset.typedCount||"0";
+  section.dataset.swarmLastErrors=String(taskErrors);
+  section.dataset.swarmLastTimedOut=host.dataset.timedOut||"false";
+  section.dataset.swarmLastMaxBoxes=String(maxSimultaneousBoxes);
+  section.dataset.swarmLastMode=signal.opening?"open":"close";
   view.destroy();host.remove();
   section.removeAttribute("data-swarm-running");
   window.removeEventListener("pointermove",onPointer);
@@ -299,6 +304,7 @@ export function startLiveSwarm({signal,hostClass}){
    try{
     if(a.gen.next(dt).done){a.done=true;done++;}
    }catch(error){
+    taskErrors++;
     console.error("Swarm animation task error",error);
     a.done=true;done++;
    }
@@ -320,6 +326,7 @@ export function startLiveSwarm({signal,hostClass}){
   if(applied&&!signal.opening)phase="restoring";
   if(worked===agents.length&&done<agents.length)phase="returning";
   host.dataset.phase=phase;
+  maxSimultaneousBoxes=Math.max(maxSimultaneousBoxes,agents.filter(a=>!!a.cursor.ov).length);
   const E={vp:view.vp,cursors:agents.map(a=>a.cursor),guides:[],editLines:new Set(),rulers:{t:0}};
   view.render(E);
   for(const el of view.cursorEls.values())el.setAttribute("data-crew-agent","true");
