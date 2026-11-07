@@ -45,6 +45,13 @@ try{
   const recording={mode:null,frames:{opening:[],closing:[]}};
   socket.addEventListener("message",(event)=>{
     const data=JSON.parse(event.data);
+    if(data.method==="Runtime.exceptionThrown"){
+      const e=data.params?.exceptionDetails;
+      console.error("BROWSER RUNTIME ERROR:",e?.exception?.description||e?.text||JSON.stringify(e));
+    }
+    if(data.method==="Runtime.consoleAPICalled"&&data.params?.type==="error"){
+      console.error("BROWSER CONSOLE ERROR:",data.params.args?.map(x=>x.value||x.description).join(" ")||"unknown");
+    }
     if(data.method==="Page.screencastFrame"){
       const mode=recording.mode;
       if(mode&&recording.frames[mode].length<160)
