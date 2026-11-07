@@ -11,7 +11,6 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
  const [open,setOpen]=useState(false);
  const [choreography,setChoreography]=useState<"idle"|"entering"|"exiting">("idle");
  const phaseRef=useRef<"idle"|"entering"|"exiting">("idle");
- const scheduled=useRef<ReturnType<typeof setTimeout>[]>([]);
  const sectionRef=useRef<HTMLElement>(null);
  const toggleRef=useRef<HTMLButtonElement>(null);
  const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
@@ -39,22 +38,14 @@ function StorySection({story,index,onMorph}:{story:Story;index:number;onMorph:(c
    onMorph({
      storyId:story.id,opening:next,
      originX:pointer&&pointer.x>0?pointer.x:button?button.left+button.width/2:window.innerWidth/2,
-     originY:pointer&&pointer.y>0?pointer.y:button?button.top+button.height/2:window.innerHeight/2
+     originY:pointer&&pointer.y>0?pointer.y:button?button.top+button.height/2:window.innerHeight/2,
+     // Swarm Rebuild workers now own the sequence: the actual React layout
+     // only changes after their selection/erase tasks have completed.
+     apply:()=>{setOpen(next);if(!next)toggleRef.current?.focus({preventScroll:true});},
+     finish:()=>{phaseRef.current="idle";setChoreography("idle");}
    });
-   // Match the reference's order: agents reach and select elements before
-   // their real DOM geometry changes. On close, right-hand text is erased
-   // before the overview is restored.
-   scheduled.current.push(setTimeout(()=>{
-     setOpen(next);
-     if(!next)toggleRef.current?.focus({preventScroll:true});
-   },next?320:820));
-   scheduled.current.push(setTimeout(()=>{
-     phaseRef.current="idle";
-     setChoreography("idle");
-   },2530));
  };
 
- useEffect(()=>()=>{scheduled.current.forEach(clearTimeout);},[]);
  useEffect(()=>{
    if(!open)return;
    const onKey=(event:KeyboardEvent)=>{
