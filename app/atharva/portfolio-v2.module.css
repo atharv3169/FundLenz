@@ -1194,3 +1194,25 @@
    transition:opacity .3s ease;
  }
 }
+
+
+/* Swarm v3: only the upstream engine builds content. Old stacked animation
+   experiments re-triggered on entering→idle, briefly erasing finished text. */
+@media(min-width:1024px){
+ .portfolioShell .storyIsOpen .storyPanelBody .longStoryLead>*,
+ .portfolioShell .storyIsOpen .storyPanelBody .chapter,
+ .portfolioShell .storyIsOpen .storyPanelBody .chapter h5,
+ .portfolioShell .storyIsOpen .storyPanelBody .chapter p{
+   animation:none!important;
+   clip-path:none!important;
+   filter:none!important;
+ }
+ /* Keep these content groups on the same canvas. The JS typists control
+    only their own actual nodes, never the whole long-story surface. */
+ .portfolioShell .storyIsOpen .storyWorkspace>.longStory{
+   background:transparent!important;
+   border-left:0!important;
+   border-right:0!important;
+   box-shadow:none!important;
+ }
+}
