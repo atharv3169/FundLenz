@@ -533,7 +533,7 @@ try {
       .filter({ visible: true })
       .first();
     const ordered = await page.getByRole('navigation', {name: 'FundLenz projects', exact: true}).getByRole('link').evaluateAll(nodes => nodes.map(n => n.getAttribute('href')));
-    assert.deepEqual(ordered.slice(0, 3), ['/', '/dcf-atlas', '/fincalc']);
+    assert.deepEqual(ordered.slice(0, 4), ['/', '/dcf-atlas', '/ternwell', '/fincalc']);
     assert.equal(await link.getAttribute('href'), '/dcf-atlas');
     await link.click();
     assert.equal(new URL(page.url()).pathname, '/dcf-atlas');

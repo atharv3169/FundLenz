@@ -38,7 +38,7 @@ export type Inputs = Record<Driver, number>;
 export type Opening = Record<OpeningKey, number>;
 export type Overrides = Record<string, Partial<Inputs>>;
 export type Book = {schema:'ternwell/1'; name:string; currency:Currency; year:number; horizon:number; opening:Opening;
-  cases: Record<Scenario,{drivers:Inputs; overrides:Overrides}> };
+  cases: Record<Scenario,{drivers:Inputs; overrides:Overrides; lines?:Record<string,Partial<Record<string,number>>>}> };
 export const initialDrivers:Inputs = {growth:8, margin:43, opex:23, dso:48, dio:65, dpo:44, capex:6, dep:11, interest:6.5, revolverRate:8, newDebt:0, repay:7, newEquity:0, floor:16, limit:50, tax:24, payout:22};
 export function example():Book {
   const base={...initialDrivers};
@@ -57,34 +57,44 @@ export const ratio=(a:number,b:number)=>b>0?a/b:null;
 export function effective(b:Book,scenario:Scenario,year:number):Inputs {
   return {...b.cases[scenario].drivers,...b.cases[scenario].overrides[String(year)]};
 }
-function period(p:Opening,d:Inputs,year:number) {
-  const revenue=p.revenue*(1+d.growth/100), cogs=-revenue*(1-d.margin/100), gross=revenue+cogs;
-  const opex=-revenue*d.opex/100, ebitda=gross+opex;
-  const da=-p.ppe*d.dep/100, ebit=ebitda+da;
-  const interest=-(p.debt*d.interest+p.revolver*d.revolverRate)/100, pretax=ebit+interest;
-  const tax=-Math.max(0,pretax)*d.tax/100, net=pretax+tax;
-  const ar=revenue*d.dso/365, inv=-cogs*d.dio/365, ap=-cogs*d.dpo/365;
-  const arCash=p.ar-ar, invCash=p.inv-inv, apCash=ap-p.ap, wcCash=arCash+invCash+apCash;
-  const depAdd=-da, cfo=net+depAdd+wcCash, capex=-revenue*d.capex/100, cfi=capex, fcf=cfo+cfi;
-  const borrow=d.newDebt, debtPay=-Math.min(d.repay,p.debt+borrow), debt=p.debt+borrow+debtPay;
-  const dividends=-Math.max(0,net)*d.payout/100, equityRaise=d.newEquity;
-  const beforeLine=p.cash+cfo+cfi+borrow+debtPay+dividends+equityRaise;
+export function isLineValue(v:unknown):v is number{return typeof v==='number'&&Number.isFinite(v)&&Math.abs(v)<=1e15;}
+function period(p:Opening,d:Inputs,year:number,lines:Partial<Record<string,number>>={}) {
+  const diffs:{key:string;label:string;delta:number}[]=[];
+  const take=(key:string,value:number,identity=false)=>{const manual=lines[key];if(manual===undefined)return value;
+    if(identity&&manual!==value)diffs.push({key,label:LINE_LABELS.get(key)??key,delta:manual-value});return manual;};
+  const otherAssets=take('otherAssets',p.otherAssets),otherLiab=take('otherLiab',p.otherLiab),openingCash=take('openingCash',p.cash,true);
+  const revenue=take('revenue',p.revenue*(1+d.growth/100)), cogs=take('cogs',-revenue*(1-d.margin/100)), gross=take('gross',revenue+cogs,true);
+  const opex=take('opex',-revenue*d.opex/100), ebitda=take('ebitda',gross+opex,true);
+  const da=take('da',-p.ppe*d.dep/100), ebit=take('ebit',ebitda+da,true);
+  const interest=take('interest',-(p.debt*d.interest+p.revolver*d.revolverRate)/100), pretax=take('pretax',ebit+interest,true);
+  const tax=take('tax',-Math.max(0,pretax)*d.tax/100), net=take('net',pretax+tax,true);
+  const ar=take('ar',revenue*d.dso/365), inv=take('inv',-cogs*d.dio/365), ap=take('ap',-cogs*d.dpo/365);
+  const arCash=take('arCash',p.ar-ar,true), invCash=take('invCash',p.inv-inv,true), apCash=take('apCash',ap-p.ap,true), wcCash=arCash+invCash+apCash;
+  const depAdd=take('depAdd',-da,true), cfo=take('cfo',net+depAdd+wcCash,true), capex=take('capex',-revenue*d.capex/100), cfi=take('cfi',capex,true), fcf=cfo+cfi;
+  const borrow=take('borrow',d.newDebt), debtPay=take('debtPay',-Math.min(d.repay,p.debt+borrow)), debt=take('debt',p.debt+borrow+debtPay,true);
+  const dividends=take('dividends',-Math.max(0,net)*d.payout/100), equityRaise=take('equityRaise',d.newEquity);
+  const beforeLine=openingCash+cfo+cfi+borrow+debtPay+dividends+equityRaise;
   // An exhausted line cannot manufacture cash. Negative cash is a diagnostic funding deficit.
-  const draw=Math.min(Math.max(0,d.floor-beforeLine),Math.max(0,d.limit-p.revolver));
-  const sweep=-Math.min(p.revolver,Math.max(0,beforeLine-d.floor));
-  const lineFlow=draw+sweep, revolver=p.revolver+lineFlow;
-  const cff=borrow+debtPay+lineFlow+equityRaise+dividends, movement=cfo+cfi+cff, cash=p.cash+movement;
-  const ppe=p.ppe-capex+da, capital=p.capital+equityRaise, retained=p.retained+net+dividends;
-  const assets=cash+ar+inv+ppe+p.otherAssets, liabilities=ap+p.otherLiab+debt+revolver;
-  const equity=capital+retained, liabilitiesEquity=liabilities+equity;
+  const automaticDraw=Math.min(Math.max(0,d.floor-beforeLine),Math.max(0,d.limit-p.revolver));
+  const automaticSweep=-Math.min(p.revolver,Math.max(0,beforeLine-d.floor));
+  const lineFlow=take('lineFlow',automaticDraw+automaticSweep), draw=Math.max(0,lineFlow), sweep=Math.min(0,lineFlow), revolver=take('revolver',p.revolver+lineFlow,true);
+  const cff=take('cff',borrow+debtPay+lineFlow+equityRaise+dividends,true), movement=take('movement',cfo+cfi+cff,true), cash=take('cash',openingCash+movement,true);
+  const ppe=take('ppe',p.ppe-capex+da,true), capital=take('capital',p.capital+equityRaise,true), retained=take('retained',p.retained+net+dividends,true);
+  const assets=take('assets',cash+ar+inv+ppe+otherAssets,true), liabilities=take('liabilities',ap+otherLiab+debt+revolver,true);
+  const equity=take('equity',capital+retained,true), liabilitiesEquity=take('liabilitiesEquity',liabilities+equity,true);
   const totalDebt=debt+revolver, netDebt=totalDebt-cash, workingCapital=ar+inv-ap;
-  const balanceGap=assets-liabilitiesEquity, cashGap=cash-beforeLine-lineFlow;
+  const balanceGap=take('balanceGap',assets-liabilitiesEquity,true), cashGap=cash-beforeLine-lineFlow;
   const retainedGap=equity-(p.capital+p.retained+net+equityRaise+dividends);
   const fundingGap=Math.max(0,d.floor-cash), limitExcess=Math.max(0,revolver-d.limit), headroom=Math.max(0,d.limit-revolver);
   const tol=1e-8+1e-12*Math.max(Math.abs(assets),Math.abs(liabilitiesEquity),Math.abs(cfo),Math.abs(cff),1);
-  const balanced=Math.abs(balanceGap)<=tol && Math.abs(cashGap)<=tol && Math.abs(retainedGap)<=tol;
-  const cashCycle=(revenue>0&&-cogs>0)?d.dso+d.dio-d.dpo:null;
-  return {year,revenue,cogs,gross,opex,ebitda,da,ebit,interest,pretax,tax,net,ar,inv,ap,arCash,invCash,apCash,wcCash,depAdd,cfo,capex,cfi,fcf,borrow,debtPay,dividends,equityRaise,draw,sweep,lineFlow,cff,movement,cash,openingCash:p.cash,ppe,capital,retained,assets,liabilities,equity,liabilitiesEquity,totalDebt,netDebt,workingCapital,debt,revolver,otherAssets:p.otherAssets,otherLiab:p.otherLiab,openingPpe:p.ppe,openingDebt:p.debt,openingLine:p.revolver,openingRetained:p.retained,cashFloor:d.floor,facilityLimit:d.limit,balanceGap,cashGap,retainedGap,fundingGap,limitExcess,headroom,tol,balanced,cashCycle,
+  const actualBalanceGap=assets-liabilitiesEquity;
+  for(const [key,label,value] of [['debt','Term debt below zero',debt],['revolver','Revolving credit below zero',revolver],['ppe','Net PP&E below zero',ppe],['ar','Receivables below zero',ar],['inv','Inventory below zero',inv],['ap','Trade payables below zero',ap]] as const){
+    if(value < -tol)diffs.push({key,label,delta:value});
+  }
+  const lineIssues=diffs.filter(d=>Math.abs(d.delta)>tol),statementGap=lineIssues.reduce((n,d)=>Math.max(n,Math.abs(d.delta)),0);
+  const balanced=statementGap<=tol&&Math.abs(actualBalanceGap)<=tol && Math.abs(cashGap)<=tol && Math.abs(retainedGap)<=tol;
+  const cashCycle=(revenue>0&&-cogs>0)?365*(ar/revenue+(inv-ap)/(-cogs)):null;
+  return {year,revenue,cogs,gross,opex,ebitda,da,ebit,interest,pretax,tax,net,ar,inv,ap,arCash,invCash,apCash,wcCash,depAdd,cfo,capex,cfi,fcf,borrow,debtPay,dividends,equityRaise,draw,sweep,lineFlow,cff,movement,cash,openingCash,ppe,capital,retained,assets,liabilities,equity,liabilitiesEquity,totalDebt,netDebt,workingCapital,debt,revolver,otherAssets,otherLiab,openingPpe:p.ppe,openingDebt:p.debt,openingLine:p.revolver,openingRetained:p.retained,cashFloor:d.floor,facilityLimit:d.limit,balanceGap,cashGap,retainedGap,fundingGap,limitExcess,headroom,tol,balanced,cashCycle,lineIssues,statementGap,actualBalanceGap,
     ebitdaMargin:ratio(ebitda*100,revenue),netMargin:ratio(net*100,revenue),interestCover:ratio(ebit,-interest),debtMultiple:ratio(totalDebt,ebitda)};
 }
 export type Period=ReturnType<typeof period>;
@@ -93,10 +103,10 @@ export function forecast(b:Book,s:Scenario,shock:Partial<Inputs>={}):Period[]{
   for(let i=1;i<=b.horizon;i++){
     const year=b.year+i,d=effective(b,s,year);
     for(const key of DRIVER_KEYS){if(shock[key]!==undefined)d[key]=Math.min(DRIVERS[key].max,Math.max(DRIVERS[key].min,d[key]+shock[key]!));}
-    const r=period(p,d,year); result.push(r);p=r;
+    const r=period(p,d,year,b.cases[s].lines?.[year]); result.push(r);p=r;
   }return result;
 }
-export type RowKey = Exclude<keyof Period,'balanced'|'tol'|'year'>;
+export type RowKey = Exclude<keyof Period,'balanced'|'tol'|'year'|'lineIssues'>;
 export type ReportRow = readonly [RowKey, string, string];
 export const INCOME:ReportRow[]=[
   ['revenue','Revenue','Prior-year revenue × (1 + revenue growth).'],['cogs','Cost of sales','Revenue × (1 − gross margin), shown as an expense.'],
@@ -116,3 +126,6 @@ export const SCHEDULES:Record<string,ReportRow[]>={
 };
 export const REPORTS={Income:INCOME,Balance:BALANCE,'Cash flow':CASHFLOW};
 export const fmt=(n:number|null, digits=1)=>n===null?'—':new Intl.NumberFormat('en-US',{maximumFractionDigits:digits,minimumFractionDigits:0}).format(Math.abs(n)<1e-8?0:n);
+
+export const LINE_LABELS=new Map<string,string>([...INCOME,...BALANCE,...CASHFLOW].map(([k,label])=>[k,label]));
+export const LINE_KEYS=[...LINE_LABELS.keys()];

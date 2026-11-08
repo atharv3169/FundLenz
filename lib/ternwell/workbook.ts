@@ -1,7 +1,8 @@
 /** A small, deterministic XLSX writer for Ternwell reports. Worksheets carry numeric formula
  * caches as well as Excel formulas so file readers need not recalculate to show the results. */
 export type Cell = string | number | null | {formula:string; value:number};
-export type Sheet = {name:string; rows:Cell[][]};
+export type Chart = {title:string; firstRow:number; years:string[]; series:{label:string; values:number[]}[]};
+export type Sheet = {name:string; rows:Cell[][]; charts?:Chart[]};
 
 const NS='http://schemas.openxmlformats.org/spreadsheetml/2006/main';
 const REL='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
@@ -33,7 +34,7 @@ function cellXml(c:Cell,row:number,col:number){
   if(c===null)return '';
   if(typeof c==='string'){
     const style=row===1?1:col===1?2:5;
-    return '<c r="'+ref+'" s="'+style+'" t="inlineStr"><is><t xml:space="preserve">'+safeText(c)+'</t></is></c>';
+    return '<c r="'+ref+'" s="'+style+'" t="inlineStr"><is><t xml:space="preserve">'+safeText(row===1&&col===1&&!c.includes('FundLenz')?'FundLenz  /  '+c:c)+'</t></is></c>';
   }
   const format=row===1?1:3;
   if(typeof c==='number'){
@@ -53,8 +54,8 @@ function sheetXml(sheet:Sheet){
     const cells=row.map((c,j)=>{widths[j]=Math.max(widths[j]??0,widthOf(c));return cellXml(c,idx+1,j+1);});
     body.push('<row r="'+(idx+1)+'"'+(idx===0?' ht="29" customHeight="1"':'')+'>'+cells.join('')+'</row>');
   });
-  const cols=widths.map((w,i)=>'<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+boundedWidth(w,i)+'" customWidth="1"/>').join('');
-  return XML+'<worksheet xmlns="'+NS+'" xmlns:r="'+REL+'"><dimension ref="A1:'+column(Math.max(1,widths.length))+sheet.rows.length+'"/><sheetViews><sheetView workbookViewId="0" showGridLines="0"><pane xSplit="1" ySplit="1" topLeftCell="B2" activePane="bottomRight" state="frozen"/><selection pane="bottomRight" activeCell="B2" sqref="B2"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="17"/>'+(cols?'<cols>'+cols+'</cols>':'')+'<sheetData>'+body.join('')+'</sheetData><pageMargins left=".3" right=".3" top=".65" bottom=".65" header=".25" footer=".25"/><pageSetup orientation="landscape" fitToWidth="1" fitToHeight="0"/></worksheet>';
+  const cols=widths.map((w,i)=>'<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+(sheet.charts?.length?(i===0?36:16):boundedWidth(w,i))+'" customWidth="1"/>').join('');
+  return XML+'<worksheet xmlns="'+NS+'" xmlns:r="'+REL+'"><dimension ref="A1:'+column(Math.max(1,widths.length))+sheet.rows.length+'"/><sheetViews><sheetView workbookViewId="0" showGridLines="0"><pane xSplit="1" ySplit="1" topLeftCell="B2" activePane="bottomRight" state="frozen"/><selection pane="bottomRight" activeCell="B2" sqref="B2"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="17"/>'+(cols?'<cols>'+cols+'</cols>':'')+'<sheetData>'+body.join('')+'</sheetData><pageMargins left=".3" right=".3" top=".65" bottom=".65" header=".25" footer=".25"/><pageSetup orientation="landscape" fitToWidth="1" fitToHeight="0"/><headerFooter><oddFooter>&amp;LFundLenz  /  Ternwell&amp;RPage &amp;P of &amp;N</oddFooter></headerFooter>'+(sheet.charts?.length?'<drawing r:id="rChart"/>':'')+'</worksheet>';
 }
 function styles(){
   const font=(bold:boolean,color:string,size=11)=>'<font>'+(bold?'<b/>':'')+'<sz val="'+size+'"/><color rgb="'+color+'"/><name val="Calibri"/><family val="2"/></font>';
@@ -90,5 +91,19 @@ export function buildWorkbook(sheets:Sheet[]):Uint8Array{
     {path:'xl/workbook.xml',xml:XML+'<workbook xmlns="'+NS+'" xmlns:r="'+REL+'"><bookViews><workbookView/></bookViews><sheets>'+sheets.map((s,i)=>'<sheet name="'+xml(s.name)+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>').join('')+'</sheets><calcPr calcId="191029" calcMode="auto" fullCalcOnLoad="1"/></workbook>'},
     {path:'xl/_rels/workbook.xml.rels',xml:XML+'<Relationships xmlns="'+PKG+'">'+sheets.map((_,i)=>r('rId'+(i+1),'worksheet','worksheets/sheet'+(i+1)+'.xml')).join('')+r('rId'+(sheets.length+1),'styles','styles.xml')+'</Relationships>'},
     {path:'xl/styles.xml',xml:styles()},...sheets.map((s,i)=>({path:'xl/worksheets/sheet'+(i+1)+'.xml',xml:sheetXml(s)}))];
-  return archive(parts);
+  let extras='', counter=0;
+  sheets.forEach((s,idx)=>{if(!s.charts?.length)return;const n=idx+1, rels=(body:string)=>XML+'<Relationships xmlns="'+PKG+'">'+body+'</Relationships>';parts.push({path:'xl/worksheets/_rels/sheet'+n+'.xml.rels',xml:rels(r('rChart','drawing','../drawings/drawing'+n+'.xml'))});
+    let anchors='',links='';s.charts.forEach((c,j)=>{const id=++counter;const top=s.rows.length+2+Math.floor(j/2)*16, left=j%2?6:0;
+      const coordinate=(tag:string,col:number,row:number)=>'<xdr:'+tag+'><xdr:col>'+col+'</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>'+row+'</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:'+tag+'>';
+      anchors+='<xdr:twoCellAnchor>'+coordinate('from',left,top)+coordinate('to',left+6,top+15)+'<xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="'+id+'" name="'+xml(c.title)+'"/><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/></xdr:xfrm><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart"><c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" r:id="r'+id+'"/></a:graphicData></a:graphic></xdr:graphicFrame><xdr:clientData/></xdr:twoCellAnchor>';
+      links+=r('r'+id,'chart','../charts/chart'+id+'.xml');parts.push({path:'xl/charts/chart'+id+'.xml',xml:chartXml(c,s.name)});extras+='<Override PartName="/xl/charts/chart'+id+'.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';});
+    parts.push({path:'xl/drawings/drawing'+n+'.xml',xml:XML+'<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="'+REL+'">'+anchors+'</xdr:wsDr>'},{path:'xl/drawings/_rels/drawing'+n+'.xml.rels',xml:rels(links)});extras+='<Override PartName="/xl/drawings/drawing'+n+'.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.drawing+xml"/>';});
+  parts[0].xml=parts[0].xml.replace('</Types>',extras+'</Types>');return archive(parts);
+}
+function chartXml(c:Chart,sheet:string){
+ const q="'"+sheet.replaceAll("'","''")+"'!",end=column(1+c.years.length);
+ const cache=(xs:(string|number)[])=>'<c:ptCount val="'+xs.length+'"/>'+xs.map((v,i)=>'<c:pt idx="'+i+'"><c:v>'+xml(String(v))+'</c:v></c:pt>').join('');
+ const series=c.series.map((s,i)=>{const row=c.firstRow+i;return '<c:ser><c:idx val="'+i+'"/><c:order val="'+i+'"/><c:tx><c:v>'+xml(s.label)+'</c:v></c:tx><c:spPr><a:ln w="30000"><a:solidFill><a:srgbClr val="'+['5D4167','22776D','BD7745'][i]+'"/></a:solidFill></a:ln></c:spPr><c:cat><c:strRef><c:f>'+q+'$B$1:$'+end+'$1</c:f><c:strCache>'+cache(c.years)+'</c:strCache></c:strRef></c:cat><c:val><c:numRef><c:f>'+q+'$B$'+row+':$'+end+'$'+row+'</c:f><c:numCache><c:formatCode>#,##0.0</c:formatCode>'+cache(s.values)+'</c:numCache></c:numRef></c:val></c:ser>';}).join('');
+ const axis=(category:boolean)=>{const tag=category?'catAx':'valAx';return '<c:'+tag+'><c:axId val="'+(category?101:102)+'"/><c:scaling><c:orientation val="minMax"/></c:scaling><c:axPos val="'+(category?'b':'l')+'"/><c:crossAx val="'+(category?102:101)+'"/><c:crosses val="autoZero"/></c:'+tag+'>';};
+ return XML+'<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><c:chart><c:title><c:tx><c:rich><a:bodyPr/><a:lstStyle/><a:p><a:r><a:t>'+xml(c.title)+'</a:t></a:r></a:p></c:rich></c:tx></c:title><c:plotArea><c:layout/><c:lineChart><c:grouping val="standard"/>'+series+'<c:axId val="101"/><c:axId val="102"/></c:lineChart>'+axis(true)+axis(false)+'</c:plotArea><c:legend><c:legendPos val="b"/></c:legend><c:plotVisOnly val="1"/></c:chart></c:chartSpace>';
 }

@@ -55,7 +55,7 @@ function sheet(rows: Cell[][]) {
           '</row>',
       )
       .join('') +
-    '</sheetData></worksheet>'
+    '</sheetData><headerFooter><oddHeader>&amp;LFundLenz&amp;RDCF Atlas</oddHeader><oddFooter>&amp;Lfundlenz.com&amp;R&amp;P / &amp;N</oddFooter></headerFooter></worksheet>'
   );
 }
 function zip(files: Record<string, string>) {
@@ -351,7 +351,7 @@ export function workbook(m: Model, r: Result) {
   };
   [summary, inputs, forecast, hist].forEach(
     (rows, i) =>
-      (files['xl/worksheets/sheet' + (i + 1) + '.xml'] = sheet(rows)),
+      (files['xl/worksheets/sheet' + (i + 1) + '.xml'] = sheet([...rows, [], ['FundLenz  /  DCF Atlas', 'fundlenz.com · Valuation research']])),
   );
   return new Blob([zip(files)], {
     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',

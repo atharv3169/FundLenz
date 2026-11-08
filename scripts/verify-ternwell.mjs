@@ -27,3 +27,26 @@ const bytes=resultsWorkbook(ref,'Base');assert.equal(Buffer.from(bytes).readUInt
 let n=0;
 for(const growth of [-80,-15,0,55])for(const margin of [-15,20,92])for(const days of [0,75,360])for(const limit of [0,23])for(const sc of CASES){const b=structuredClone(ref);b.horizon=10;Object.assign(b.cases[sc].drivers,{growth,margin,dso:days,limit});const rows=forecast(b,sc);for(const [i,r] of rows.entries()){assert(r.balanced);assert(r.revolver>=0&&r.revolver<=limit+1e-7);near(r.cash,r.openingCash+r.cfo+r.cfi+r.cff);near(r.retained,(i?rows[i-1].retained:b.opening.retained)+r.net+r.dividends);assert(Number.isFinite(r.assets));n++;}}
 console.log('Ternwell: independent profit, loss and liquidity fixtures; CSV/JSON and workbook checks; '+n+' simulated forecast years passed.');
+
+const {importStatements}=await import('../lib/ternwell/files.ts');
+const {LINE_KEYS}=await import('../lib/ternwell/model.ts');
+for(const key of LINE_KEYS){
+  const b=example(), old=forecast(b,'Base')[0];
+  b.cases.Base.lines={2026:{[key]:old[key]+7}};
+  assert.equal(forecast(b,'Base')[0][key],old[key]+7,key);
+  assert.deepEqual(importFile(inputCsv(b)),b);assert.deepEqual(validate(JSON.parse(JSON.stringify(b))),b);
+  shiftYear(b,2030);assert.equal(b.cases.Base.lines[2031][key],old[key]+7);
+}
+const editing=example(),raw=statementCsv(editing,'Base');
+assert.deepEqual(importStatements(raw,editing,'Base'),editing);
+const changed=raw.replace(/Income statement,Revenue,[^,]+/,'Income statement,Revenue,500');
+const patched=importStatements(changed,editing,'Base');
+assert.deepEqual(patched.cases.Base.lines,{2026:{revenue:500}});
+const [p1,p2]=forecast(patched,'Base');near(p1.revenue,500);near(p2.revenue,540);assert(p1.balanced);
+assert.deepEqual(forecast(patched,'Upside'),forecast(editing,'Upside'));
+const mismatch=example(); mismatch.opening.cash+=3;mismatch.cases.Base.lines={2026:{balanceGap:0,net:90}};
+const mr=forecast(mismatch,'Base')[0];near(mr.balanceGap,0);near(mr.actualBalanceGap,3);assert(!mr.balanced&&mr.lineIssues.length>=2&&mr.statementGap>0);
+assert.throws(()=>importStatements(raw,editing,'Upside'));assert.throws(()=>importStatements(raw.replace('USD millions','EUR millions'),editing,'Base'));
+const conflicting=raw.replace(/Income statement,Net income,[^,]+/,'Income statement,Net income,9').replace(/Cash flow,Net income,[^,]+/,'Cash flow,Net income,8');assert.throws(()=>importStatements(conflicting,editing,'Base'),/Conflicting/);
+assert.deepEqual(importStatements(raw,patched,'Base'),patched);
+console.log('Ternwell: all statement lines, linked years, independent diagnostics, case isolation and CSV edits verified.');

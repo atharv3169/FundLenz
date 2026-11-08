@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
+import {execFileSync} from 'node:child_process';
 const {chromium}=await import(process.env.ATLAS_PLAYWRIGHT_MODULE||'playwright');
 const url=process.env.TERNWELL_URL||new URL('/ternwell',process.env.ATLAS_URL||'http://127.0.0.1:8787').href;
 const browser=await chromium.launch({executablePath:process.env.ATLAS_CHROMIUM||undefined,args:['--no-sandbox','--disable-dev-shm-usage']});
@@ -9,12 +10,13 @@ try{
  const ctx=await browser.newContext({viewport:{width:1440,height:940},acceptDownloads:true});
  const page=await ctx.newPage();page.setDefaultTimeout(12000);page.on('pageerror',e=>errors.push(e.message));
  const b=name=>page.getByRole('button',{name,exact:true}),nav=t=>page.getByRole('navigation',{name:'Ternwell tools'}).getByRole('button',{name:t,exact:true}).click();
+ const download=async(label)=>{const [d]=await Promise.all([page.waitForEvent('download'),b(label).click()]);return await d.path();};
  const dlg=()=>page.getByRole('dialog');let formData,jsonFile;
  await page.goto(url);
- await check('Overview, chart keyboard inspection, fourth project and preserved Atlas/FinCalc order',async()=>{
+ await check('Overview, chart keyboard inspection, third-place Ternwell and fourth-place FinCalc',async()=>{
    await page.getByRole('heading',{name:'Operating outlook'}).waitFor();
    const plot=page.getByRole('slider',{name:'Inspect fiscal year for Earnings into cash'});await plot.focus();await plot.press('End');assert.equal(await page.getByLabel('Inspect fiscal year',{exact:true}).inputValue(),'4');await plot.press('Home');
-   await b('More projects').click();const links=await page.getByRole('navigation',{name:'FundLenz projects',exact:true}).getByRole('link').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href')));assert.deepEqual(links,['/','/dcf-atlas','/fincalc','/ternwell']);await page.keyboard.press('Escape');await page.getByRole('navigation',{name:'FundLenz projects',exact:true}).waitFor({state:'hidden'});
+   await b('More projects').click();const links=await page.getByRole('navigation',{name:'FundLenz projects',exact:true}).getByRole('link').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href')));assert.deepEqual(links,['/','/dcf-atlas','/ternwell','/fincalc']);await page.keyboard.press('Escape');await page.getByRole('navigation',{name:'FundLenz projects',exact:true}).waitFor({state:'hidden'});
  });
  await check('Changing a driver, annual override, case isolation, and undo/redo',async()=>{
    await nav('Drivers');const val=page.getByRole('spinbutton',{name:/^Revenue growth/});await val.fill('13');await val.press('Enter');await b('Upside').click();assert.equal(await val.inputValue(),'12');await b('Downside').click();assert.equal(await val.inputValue(),'-3');await b('Base').click();assert.equal(await val.inputValue(),'13');
@@ -26,15 +28,76 @@ try{
    await b('Balance sheet').click();const cash=await amount('Cash and equivalents');assert.equal(await amount('Balance difference'),'0');
    await b('Cash flow').click();assert.equal(await amount('Net income'),ni);assert.equal(await amount('Closing cash'),cash);
  });
+ await check('Edit and restore formulas on every statement; cross-statement edits stay in one case',async()=>{
+   await nav('Statements');
+   for(const [sheet,line] of [['Income statement','Net income'],['Balance sheet','Cash and equivalents'],['Cash flow','Cash from operations']]){
+     await b(sheet).click();
+     const cell=b('Edit '+line+', FY2026');
+     const original=await cell.innerText();await cell.click();
+     await dlg().getByRole('spinbutton',{name:/Statement value/}).fill('222.25');await b('Save value').click();
+     assert.match(await cell.innerText(),/222[.]25/);
+     if(sheet==='Income statement'){
+       await b('Cash flow').click();assert.match(await b('Edit Net income, FY2026').innerText(),/222[.]25/);
+       await page.getByRole('group',{name:'Active scenario'}).getByRole('button',{name:'Upside'}).click();
+       assert.doesNotMatch(await b('Edit Net income, FY2026').innerText(),/222[.]25/);
+       await page.getByRole('group',{name:'Active scenario'}).getByRole('button',{name:'Base'}).click();await b(sheet).click();
+     }
+     await cell.click();await b('Revert to formula').click();assert.equal(await cell.innerText(),original);
+   }
+ });
  await check('Financing schedules, scenario sensitivity and report downloads',async()=>{
    await nav('Schedules');await b('Debt & liquidity').click();await page.getByRole('table',{name:'Debt & liquidity roll-forward',exact:true}).waitFor();
    await nav('Scenarios');await page.getByRole('button',{name:/^Growth -6, margin -6,/}).click();assert.match(await page.locator('.tw-insight').innerText(),/growth -6 pp/);
    await nav('Checks & files');await page.getByText('All clear',{exact:true}).waitFor();
-   const download=async(label)=>{const d=page.waitForEvent('download');await b(label).click();return await d;};
-   const x=await download('Download Excel');assert((await fs.readFile(await x.path())).subarray(0,2).equals(Buffer.from('PK')));
-   const c=await download('Download inputs');formData=await fs.readFile(await c.path(),'utf8');assert.match(formData,/override,Base,2026,growth,-10/);
-   const j=await download('Download JSON');jsonFile=JSON.parse(await fs.readFile(await j.path(),'utf8'));assert.equal(jsonFile.cases.Base.drivers.growth,13);
-   await page.emulateMedia({media:'print'});for(const name of ['Income statement','Balance sheet','Cash-flow statement'])assert(await page.getByRole('heading',{name,exact:true}).isVisible(),name+' missing from print report');await page.emulateMedia({media:'screen'});
+
+   const x=await download('Download Excel');assert((await fs.readFile(x)).subarray(0,2).equals(Buffer.from('PK')));
+   const c=await download('Download inputs');formData=await fs.readFile(c,'utf8');assert.match(formData,/override,Base,2026,growth,-10/);
+   const j=await download('Download JSON');jsonFile=JSON.parse(await fs.readFile(j,'utf8'));assert.equal(jsonFile.cases.Base.drivers.growth,13);
+   const premium=await download('Download editable Excel');
+   const evidence=JSON.parse(execFileSync('python3',['-c',`
+import json, sys, zipfile, xml.etree.ElementTree as ET
+with zipfile.ZipFile(sys.argv[1]) as z:
+ sheets=[n for n in z.namelist() if __import__('re').fullmatch(r'xl/worksheets/sheet[0-9]+[.]xml',n)]
+ charts=[n for n in z.namelist() if __import__('re').fullmatch(r'xl/charts/chart[0-9]+[.]xml',n)]
+ docs=[ET.fromstring(z.read(n)) for n in sheets]
+ print(json.dumps({'charts':len(charts),'formulas':sum(len(d.findall('.//{*}f')) for d in docs),'brand':any('fundlenz' in ''.join(d.itertext()).lower() for d in docs)}))
+`,premium],{encoding:'utf8'}));
+   assert(evidence.charts>=1&&evidence.formulas>20&&evidence.brand,'Missing native chart, editable formulas or workbook branding: '+JSON.stringify(evidence));
+   await page.emulateMedia({media:'print'});
+   const report=page.locator('.tw-case-report');assert(await report.locator('[data-report="comparison"]').first().isVisible());
+   for(const scenario of ['Base','Upside','Downside'])for(const statement of ['income','balance','cash']){
+     const section=report.locator('[data-case="'+scenario+'"][data-statement="'+statement+'"]').first();
+     assert(await section.isVisible(),scenario+' '+statement+' missing from print report');
+     assert.match(await section.innerText(),/FY\s*2026/i);
+   }
+   await page.emulateMedia({media:'screen'});
+ });
+ await check('Download current statement CSV, edit one line, preview, apply and undo',async()=>{
+   const path=await download('Export statements'),source=await fs.readFile(path,'utf8');
+   const edited=source.replace(/^(Income statement,Revenue,)[^,\r\n]+/m,(_,prefix)=>prefix+'512.75');
+   assert.notEqual(edited,source,'Current statement export must include an editable Revenue row');
+   await b('Upload statement CSV').click();await page.getByLabel('Upload Ternwell file').setInputFiles({name:'edited-statements.csv',mimeType:'text/csv',buffer:Buffer.from(edited)});
+   await b('Apply import').click();await nav('Statements');await b('Income statement').click();
+   assert.match(await b('Edit Revenue, FY2026').innerText(),/512[.]75/);
+   await page.emulateMedia({media:'print'});
+   const income=page.locator('.tw-case-report [data-case="Base"][data-statement="income"]').first();
+   assert.match(await income.innerText(),/512[.]75/,'Changed revenue missing from printed Base statement');
+   await page.emulateMedia({media:'screen'});await nav('Checks & files');
+   const workbookPath=await download('Download editable Excel');
+   const baseRevenue=execFileSync('python3',['-c',`
+import sys, posixpath, zipfile, xml.etree.ElementTree as ET
+with zipfile.ZipFile(sys.argv[1]) as z:
+ wb=ET.fromstring(z.read('xl/workbook.xml')); rels=ET.fromstring(z.read('xl/_rels/workbook.xml.rels'))
+ sheet=next(el for el in wb.findall('.//{*}sheet') if el.get('name')=='Base Statements')
+ rid=next(v for k,v in sheet.attrib.items() if k.endswith('}id'))
+ target=next(el.get('Target') for el in rels if el.get('Id')==rid)
+ xml=ET.fromstring(z.read(posixpath.normpath(posixpath.join('xl',target)).lstrip('/')))
+ for row in xml.findall('.//{*}row'):
+  cells=row.findall('{*}c')
+  if cells and ''.join(cells[0].itertext())=='Revenue':
+   print(cells[1].find('{*}v').text);break
+`,workbookPath],{encoding:'utf8'});assert.equal(Number(baseRevenue),512.75,'Workbook must export the edited Base revenue');
+   await nav('Statements');await b('Undo change').click();assert.match(await b('Edit Revenue, FY2026').innerText(),/328[.]5/);
  });
  await check('Import rejects invalid inputs; preview, cancel, apply, device save and restore',async()=>{
    await b('Import').click();const upload=()=>page.getByLabel('Upload Ternwell file');await upload().setInputFiles({name:'wrong.csv',mimeType:'text/csv',buffer:Buffer.from('revenue,year\n3,2025')});await dlg().getByRole('alert').waitFor();assert(await b('Apply import').isDisabled());

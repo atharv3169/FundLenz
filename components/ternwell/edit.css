@@ -1,0 +1,6 @@
+.ternwell .tw-grid-table .tw-edit-cell{display:inline-block;color:inherit;font:inherit;text-align:right;padding:.22rem .42rem;margin:-.22rem -.42rem;border:1px solid transparent;border-radius:4px;cursor:text;font-variant-numeric:tabular-nums}
+.ternwell .tw-edit-cell:hover,.ternwell .tw-edit-cell:focus-visible{background:#f2e9f0;outline:1px solid #795b73}
+.ternwell .tw-edit-cell[data-fixed]{text-decoration:underline dotted #855473;text-underline-offset:4px;color:#693b60}
+.tw-edit-label{display:grid;gap:.5rem;font-weight:600;margin-block:1rem}
+.tw-edit-label input{padding:.6rem;border:1px solid #978798;border-radius:4px;font-variant-numeric:tabular-nums}
+.tw-file-section{margin:1.8rem 0 .15rem;font-size:1.35rem}.tw-file-section+.tw-meta{margin-top:.25rem}
