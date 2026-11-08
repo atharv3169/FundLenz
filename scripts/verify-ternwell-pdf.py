@@ -57,7 +57,7 @@ with tempfile.TemporaryDirectory() as tmp:
     proof = io.BytesIO()
     montage.thumbnail((900,1200))
     montage.save(proof, "WEBP", quality=48)
-    print("TERNWELL_CONTACT_WEBP="+base64.b64encode(proof.getvalue()).decode(),flush=True)
+    if out.name == "ternwell-print-review": print("TERNWELL_CONTACT_WEBP="+base64.b64encode(proof.getvalue()).decode(),flush=True)
 (out / "metrics.json").write_text(json.dumps(metrics, indent=2))
 print(json.dumps(metrics),flush=True)
 if errors:
