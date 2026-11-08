@@ -50,6 +50,11 @@ jobs:
           pnpm verify
       - name: Build native FundLenz Worker
         run: pnpm build
+      - name: Prepare print inspection tools
+        run: |
+          if ! command -v pdftoppm >/dev/null || ! command -v pdftotext >/dev/null || ! /usr/bin/python3 -c "import PIL"; then
+            sudo apt-get update -qq && sudo apt-get install -y poppler-utils python3-pil
+          fi
       - name: Exercise the built Worker in Chromium
         run: |
           npm install --prefix "$RUNNER_TEMP/atlas-browser" --ignore-scripts --no-audit --no-fund playwright@1.62.1
@@ -63,3 +68,12 @@ jobs:
           done
           ATLAS_PLAYWRIGHT_MODULE="$RUNNER_TEMP/atlas-browser/node_modules/playwright/index.mjs" node scripts/verify-atlas-browser.mjs
           ATLAS_PLAYWRIGHT_MODULE="$RUNNER_TEMP/atlas-browser/node_modules/playwright/index.mjs" node scripts/verify-ternwell-browser.mjs
+
+      - name: Keep rendered Ternwell report for review
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ternwell-print-review
+          path: ${{ runner.temp }}/ternwell-print-review
+          if-no-files-found: ignore
+          retention-days: 7
