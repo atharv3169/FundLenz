@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 const {chromium}=await import(process.env.ATLAS_PLAYWRIGHT_MODULE||'playwright');
 const url=process.env.TERNWELL_URL||new URL('/ternwell',process.env.ATLAS_URL||'http://127.0.0.1:8787').href;
@@ -70,6 +72,17 @@ with zipfile.ZipFile(sys.argv[1]) as z:
      assert(await section.isVisible(),scenario+' '+statement+' missing from print report');
      assert.match(await section.innerText(),/FY\s*2026/i);
    }
+   const out=path.join(process.env.RUNNER_TEMP||os.tmpdir(),'ternwell-print-review');
+   await fs.mkdir(out,{recursive:true});
+   const folios=await report.locator('.tr-paper').evaluateAll(sections=>sections.map(el=>({
+     heading:el.querySelector('h2')?.textContent.trim(), statement:el.getAttribute('data-statement'),
+     captions:[...el.querySelectorAll('figure')].filter(f=>f.querySelector('svg :is(path,rect,circle,polyline,line)')).map(f=>f.querySelector('figcaption')?.textContent.trim()).filter(Boolean)
+   })));
+   assert(folios[0]?.captions.length>=1,'Opening dashboard has no labelled data visualization');
+   for(const f of folios.filter(x=>x.statement))assert(f.captions.length>=1,'Missing chart: '+f.heading);
+   await fs.writeFile(path.join(out,'folios.json'),JSON.stringify(folios));await page.evaluate(()=>document.fonts.ready.then(()=>true));
+   await page.pdf({path:path.join(out,'ternwell-report.pdf'),format:'A4',preferCSSPageSize:true,printBackground:true});
+   execFileSync('python3',['scripts/verify-ternwell-pdf.py',out],{stdio:'inherit'});
    await page.emulateMedia({media:'screen'});
  });
  await check('Download current statement CSV, edit one line, preview, apply and undo',async()=>{
