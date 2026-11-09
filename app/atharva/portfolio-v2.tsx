@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, GitBranch, Mail, Menu, X } from "lucide-react";
 import { stories, learning, interests, type Story } from "./stories-data";
@@ -179,7 +180,7 @@ export default function PortfolioV2(){
   <nav className={s.siteNav} aria-label="Portfolio navigation">
    <a href="#top" className={s.mark} aria-label="Atharva Sahu, back to top">A<span> / </span>S<span>.</span></a>
    <span className={s.navDescriptor}>FINANCE · RESEARCH · MODELLING</span>
-   <div className={s.navLinks}><a href="#work">Selected work</a><a href="#skills">Skills & learning</a><a href="#contact">Contact</a><a href="/">Visit FundLenz <ArrowUpRight size={13}/></a></div>
+   <div className={s.navLinks}><a href="#work">Selected work</a><a href="#skills">Skills & learning</a><a href="#contact">Contact</a><Link href="/">Visit FundLenz <ArrowUpRight size={13}/></Link></div>
    <button ref={menuRef} className={s.menuToggle} onClick={()=>setNavOpen(v=>!v)} aria-expanded={navOpen} aria-label={navOpen?"Close navigation":"Open navigation"}>{navOpen?<X size={21}/>:<Menu size={21}/>}</button>
    {navOpen&&<div className={s.mobileNav}>{[["Selected work","#work"],["Skills & learning","#skills"],["Contact","#contact"],["Visit FundLenz","/"]].map(([label,href])=><a key={href} href={href} onClick={()=>setNavOpen(false)}>{label}<ArrowUpRight size={17}/></a>)}</div>}
   </nav>
