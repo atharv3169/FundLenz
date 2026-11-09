@@ -156,6 +156,37 @@ try{
       await js("window.scrollTo({top:document.documentElement.scrollHeight,behavior:'instant'})");await until(async()=>await value(meter)===100);
 
     }
+    if(width===390){
+      // Reproduce the Safari recording: open a middle chapter, scroll to the
+      // next one, then open other chapters before returning to earlier cards.
+      const audit=()=>["shyam","fundlenz","research","fincalc","dcf","ternwell","crowd","study","vs","synk"].map(id=>{
+        const e=document.getElementById("story-"+id),style=getComputedStyle(e);
+        return {id,position:style.position,z:Number(style.zIndex),expanded:e.dataset.expanded,opacity:Number(getComputedStyle(e.querySelector("[data-entry]")).opacity)};
+      });
+      for(const [id,next] of [["fundlenz","research"],["research","fincalc"],["fincalc","dcf"]]){
+        await scroll("paper-"+id);
+        await button(id);await expanded(id,true);await sleep(900);
+        const state=await js("("+audit+")()");
+        assert.ok(state.every(s=>s.position==="sticky"),id+" must not remove any story from sticky stack");
+        assert.ok(state.every((s,i)=>s.z===i+1),id+" must preserve all ten distinct stack layers");
+        assert.ok(state.every(s=>s.opacity>.99),id+" must not hide unexplored stories");
+        await scroll("paper-"+next);await sleep(240);
+        await capture("390-expanded-"+id+"-scroll-into-"+next);
+      }
+      await scroll("paper-shyam");await sleep(250);
+      const randomState=await js("("+audit+")()");
+      assert.ok(randomState.every(s=>s.position==="sticky"&&s.opacity>.99),"random opening and scrolling must retain all stories");
+      await capture("390-random-open-stacked-cards");
+      for(const id of ["fundlenz","research","fincalc"]){
+        await scroll("paper-"+id);
+        await js("document.getElementById('full-"+id+"').querySelector('button').click()");
+        await expanded(id,false);await sleep(820);
+      }
+      await scroll("paper-dcf");await sleep(200);
+      const restored=await js("("+audit+")()");
+      assert.ok(restored.every(s=>s.position==="sticky"&&s.opacity>.99&&s.expanded==="false"),"all stories restore in the same stack after closing");
+      await capture("390-stack-restored-after-random-navigation");
+    }
     for(const id of ids){
       await scroll((width<768?"paper-":"story-")+id);await sleep(350);
       const before=await runInspect(id,"overview",width);
