@@ -72,6 +72,7 @@ function StorySection({story,index}:{story:Story;index:number}){
    data-story={story.id}
    data-expanded={open}
  >
+  <StoryTrace index={index} name={story.title}/>
   <div className={s.storyWorkspace} data-entry={index%2?"right":"left"}>
    <div className={s.storyStage} data-role="story-overview">
     <div className={s.storyCopy}>
@@ -211,7 +212,7 @@ export default function PortfolioV2(){
     <h1>Atharva<br/><em>Sahu.</em></h1>
     <p className={s.heroMessage}>I model business decisions and build <em>financial research tools.</em></p>
     <p className={s.heroIntro}>My work spans equipment financing at Shyam Construction, mutual-fund liquidity research and the FundLenz platform.</p>
-    <svg className={s.paperSignature} viewBox="0 0 300 23" preserveAspectRatio="none" aria-hidden="true"><path d={quotePath} fill="none" stroke="url(#paper-quote-ink)" strokeWidth="2" vectorEffect="non-scaling-stroke"/></svg>
+    <svg className={s.paperSignature} viewBox="0 0 300 23" preserveAspectRatio="none" aria-hidden="true"><path d={quotePath} fill="none" stroke="currentColor" strokeWidth="2" vectorEffect="non-scaling-stroke"/></svg>
     <a className={s.heroLink} href="#work">Explore my work <ArrowRight size={18}/></a>
    </div><div className={s.heroFoot}><span>PORTFOLIO / 2026</span><span>SCROLL DOWN <ArrowDown size={14}/></span></div></section>
    <div className={s.currencyRibbon} aria-hidden="true"><div>{[0,1].map(group=><div className={s.ribbonGroup} key={group}>{[["₹","Cash flow"],["β","Beta"],["$","Markets"],["%","Yield"],["€","Valuation"],["Σ","Research"],["σ","Volatility"],["£","Capital"],["Δ","Change"],["×","Multiples"],["¥","FX"],["ρ","Correlation"],["α","Alpha"],["±","Risk"],["bps","Spreads"],["ƒ","Forecasts"]].map(([symbol,label])=><span key={label}><i>{symbol}</i>{label}</span>)}</div>)}</div></div>
@@ -220,7 +221,7 @@ export default function PortfolioV2(){
     <div className={s.paperLinks}><a href="https://www.linkedin.com/in/atharvasahu/">Connect on LinkedIn ↗</a><a href="https://github.com/atharv3169">My code on GitHub ↗</a><a href="#work" aria-label="Scroll to projects">↓</a></div>
    </section>
    <section className={s.workIntro} id="work"><span className={s.sectionTag}>02 / THE WORK, UP CLOSE</span><h2>Selected<br/><em>work.</em></h2><p>Explore the decisions, research and models behind each project.</p><div className={s.workCount}>{String(stories.length).padStart(2,"0")} <span>PROJECTS & EXPERIENCES</span></div></section>
-   <div className={s.paperDeck}>{stories.map((story,i)=><div key={story.id} className={s.paperSlot}><span id={"paper-"+story.id} className={s.paperAnchor} style={{"--stack":Math.min(i,4)} as CSSProperties}/><StorySection story={story} index={i}/></div>)}</div>
+   <div className={s.paperDeck} data-paper-deck>{stories.map((story,i)=><div key={story.id} className={s.paperSlot}><span id={"paper-"+story.id} className={s.paperAnchor} style={{"--stack":Math.min(i,4)} as CSSProperties}/><StorySection story={story} index={i}/></div>)}</div>
    <PaperIndex/>
 
    <section id="skills" className={s.skillsSection}><div data-reveal><span className={s.sectionTag}>03 / HOW I WORK</span><h2>Skills &amp;<br/><em>education.</em></h2></div>
@@ -276,31 +277,38 @@ function PaperIntro(){
 }
 
 const quotePath="M0 19 L13 18 L24 20 L39 14 L48 16 L61 12 L75 15 L90 9 L103 13 L115 11 L130 15 L146 9 L158 10 L171 6 L186 11 L200 8 L215 10 L229 4 L242 7 L258 3 L273 6 L286 3 L300 2";
+function StoryTrace({index,name}:{index:number;name:string}){
+ const right=Math.floor((index+1)/2)%2===1, swap=index%2===0&&index<stories.length-1;
+ const trace=<><svg className={s.traceStem} viewBox="0 0 12 120" preserveAspectRatio="none" aria-hidden="true"><path d="M5 0V28L9 34L3 43L7 51L5 58V120"/></svg><svg className={s.traceTurn} viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><path d={swap?"M0 0V5L3 8H34L39 13L44 10L50 17H95L100 22V24":"M0 0V24"}/></svg></>;
+ return <div className={s.storyTrace} data-route={right?"right":"left"} role="progressbar" aria-label={name+" story progress"} aria-valuemin={0} aria-valuemax={100} aria-valuenow={0}><div>{trace}</div><div className={s.tracePaint}>{trace}</div></div>;
+}
 function ReadingQuote(){
  const meter=useRef<HTMLDivElement>(null);
  useEffect(()=>{
-  const el=meter.current,root=document.getElementById("atharva-portfolio");
-  if(!el||!root)return;
-  const media=matchMedia("(max-width:767px)");let frame=0;
+  const el=meter.current,root=document.getElementById("atharva-portfolio");if(!el||!root)return;
+  const media=matchMedia("(max-width:767px)"),deck=root.querySelector<HTMLElement>("[data-paper-deck]");
+  if(!deck)return;
+  const segments=stories.map(story=>({story,anchor:document.getElementById("paper-"+story.id),trace:document.getElementById("story-"+story.id)?.querySelector<HTMLElement>('[data-route]')}));
+  let frame=0;
   const update=()=>{
    frame=0;if(!media.matches)return;
-   const header=el.parentElement?.getBoundingClientRect().height??52;
-   let scope="Portfolio",ratio=window.scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight);
-   for(const section of root.querySelectorAll<HTMLElement>('[data-story][data-expanded="true"]')){
-    const r=section.getBoundingClientRect();
-    if(r.top<=innerHeight*.4&&r.bottom>header){
-     scope=(stories.find(v=>v.id===section.dataset.story)?.title??"Story");
-     ratio=r.height<=innerHeight-header?1:(header-r.top)/Math.max(1,r.height-innerHeight+header);break;
-    }
-   }
-   const value=Math.max(0,Math.min(1,ratio));
-   el.style.setProperty("--unread",String(100-value*100));
-   el.setAttribute("aria-label",scope+" reading progress");el.setAttribute("aria-valuenow",String(Math.round(value*100)));
+   const clamp=(n:number)=>Math.max(0,Math.min(1,n));
+   const page=clamp(scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight));
+   const stops=segments.map(s=>s.anchor?.getBoundingClientRect().top??Infinity),end=deck.getBoundingClientRect().bottom,focus=innerHeight*.56;
+   let accent="";
+   segments.forEach(({trace,story},i)=>{
+    const a=stops[i],b=stops[i+1]??end,part=clamp((focus-a)/Math.max(1,b-a));
+    if(!trace)return;
+    trace.style.setProperty("--remaining",(100-part*100).toFixed(2)+"%");trace.setAttribute("aria-valuenow",String(Math.round(part*100)));
+    if(focus>=a&&focus<b)accent=story.accent;
+   });
+   el.style.setProperty("--page",String(page));el.style.setProperty("--story-ink",accent||"var(--page-ink)");el.setAttribute("aria-valuenow",String(Math.round(page*100)));
   };
   const schedule=()=>{if(!frame)frame=requestAnimationFrame(update);};
-  const size=new ResizeObserver(schedule);size.observe(root);const mode=new MutationObserver(schedule);mode.observe(root,{subtree:true,attributes:true,attributeFilter:["data-expanded"]});
+  const size=new ResizeObserver(schedule);size.observe(root);size.observe(deck);
+  const mode=new MutationObserver(schedule);mode.observe(deck,{subtree:true,attributes:true,attributeFilter:["data-expanded"]});
   window.addEventListener("scroll",schedule,{passive:true});window.addEventListener("resize",schedule);schedule();
   return()=>{size.disconnect();mode.disconnect();cancelAnimationFrame(frame);window.removeEventListener("scroll",schedule);window.removeEventListener("resize",schedule);};
  },[]);
- return <div ref={meter} className={s.readingQuote} role="progressbar" aria-label="Portfolio reading progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={0}><svg viewBox="0 0 300 23" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="paper-quote-ink"><stop stopColor="#b65c4c"/><stop offset=".32" stopColor="#c99b40"/><stop offset=".65" stopColor="#49a78a"/><stop offset="1" stopColor="#518db0"/></linearGradient></defs><path d={quotePath} className={s.quoteTrack}/><path d={quotePath} pathLength="100" className={s.quoteInk}/></svg></div>;
+ return <div ref={meter} className={s.readingQuote} role="progressbar" aria-label="Whole page progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={0}><i/></div>;
 }
