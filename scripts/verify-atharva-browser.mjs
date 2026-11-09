@@ -131,6 +131,8 @@ try{
       assert.equal(detail.id,id);
       assert.ok(detail.title.length>=3&&detail.chapters>=1, id+" story has its authored chapters");
       assert.ok(detail.bar&&detail.rail, id+" has reading progress rail and top line");
+      const accessible=await js("(()=>{const rail=document.querySelector('[aria-label=\\\"Case study sections\\\"]'),progress=rail.querySelector('[role=progressbar]'),links=[...rail.querySelectorAll('a[href^=\\\"#case-\\\"]')];return {hasProgress:!!progress,hasLinks:links.length>0,independent:!!progress&&links.every(link=>!progress.contains(link))}})()");
+      assert.ok(accessible.hasProgress&&accessible.hasLinks&&accessible.independent,id+" chapter links must remain accessible outside the progressbar");
       assert.equal(detail.goBack,"/atharva#paper-"+id);
       assert.ok(detail.color.startsWith("#"),"case-study progress inherits its color");
       const ribbon=await js("(()=>{const m=document.querySelector('[data-story-page]'),p=m.querySelector('[aria-label=\\\"Story sequence progress\\\"]'),fill=p.querySelector('[class*=topFill]'),segments=m.querySelectorAll('a[data-story-segment]');return {segments:segments.length,current:m.querySelector('a[data-story-segment][aria-current=page]')?.dataset.storySegment,gradient:m.style.getPropertyValue('--story-spectrum'),clip:getComputedStyle(fill).clipPath,transform:getComputedStyle(fill).transform,value:Number(p.getAttribute('aria-valuenow'))}})()");
