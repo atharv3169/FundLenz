@@ -126,8 +126,38 @@ try{
       await capture("390-navigation");
       await js(`document.querySelector('[aria-label="Close navigation"]').click()`);
     }
+    if(width===390){
+      await js("document.querySelector('button[aria-haspopup=dialog]').click()");
+      await until(()=>js("!!document.querySelector('dialog[open]')"));
+      await capture("390-project-index");
+      await js(`document.querySelector('dialog a[href="#paper-dcf"]').click()`);
+      assert.equal(await js("location.hash"),"#paper-dcf");
+      await until(()=>js("!document.querySelector('dialog[open]')"));
+    }
+    if(width===390){
+      await scroll("top");await sleep(200);
+      const grain=await js("getComputedStyle(document.querySelector('main')).backgroundImage");
+      await js(`document.querySelector('[aria-label="Dark paper"]').click()`);
+      await until(()=>js(`document.querySelector('main').dataset.paper==="dark"`));
+      assert.equal(await js("getComputedStyle(document.querySelector('main')).backgroundImage"),grain);
+      await capture("390-dark-paper");
+      await js(`document.querySelector('[aria-label="Dark paper"]').click()`);
+      await scroll("paper-shyam");await button("shyam");await expanded("shyam",true);await sleep(500);
+      const meter=`document.querySelector('[aria-label="Whole page progress"]')`;
+      const segment='document.querySelector("#story-shyam [data-route]")';
+      const value=async selector=>Number(await js(selector+'.getAttribute("aria-valuenow")'));
+      const start=await value(segment),pageStart=await value(meter);
+      await js("window.scrollBy({top:330,behavior:'instant'})");
+      await until(async()=>await value(segment)>start && await value(meter)>pageStart);
+      await capture("390-reading-graph");await button("shyam");await expanded("shyam",false);
+      await scroll("paper-synk");await sleep(200);
+      assert.equal(await value(segment),100);
+      assert.equal(await js("document.querySelectorAll('[data-route]').length"),10);
+      await js("window.scrollTo({top:document.documentElement.scrollHeight,behavior:'instant'})");await until(async()=>await value(meter)===100);
+
+    }
     for(const id of ids){
-      await scroll("story-"+id);await sleep(350);
+      await scroll((width<768?"paper-":"story-")+id);await sleep(350);
       const before=await runInspect(id,"overview",width);
       if(width===1440||width===390)await capture(width+"-"+id+"-overview");
       await button(id);await expanded(id,true);await sleep(240);

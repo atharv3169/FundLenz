@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, GitBranch, Mail, Menu, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, GitBranch, Mail, Menu, Moon, Sun, X } from "lucide-react";
 import { stories, learning, interests, type Story } from "./stories-data";
 import { HeroWave, SceneFigure } from "./scenes";
 import { MiniTools } from "./mini-tools";
@@ -12,10 +12,19 @@ function StorySection({story,index}:{story:Story;index:number}){
  const toggleRef=useRef<HTMLButtonElement>(null);
  const scrollRaf=useRef<number|null>(null);
  const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
- const changeMode=(next:boolean)=>{
+ const changeMode=useCallback((next:boolean)=>{
    if(scrollRaf.current!==null){
      cancelAnimationFrame(scrollRaf.current);
      scrollRaf.current=null;
+   }
+   if(window.matchMedia("(max-width:767px)").matches){
+     setOpen(next);
+     scrollRaf.current=requestAnimationFrame(()=>{
+       scrollRaf.current=null;
+       (next?sectionRef.current:document.getElementById("paper-"+story.id))?.scrollIntoView({behavior:"instant",block:"start"});
+       if(!next)toggleRef.current?.focus({preventScroll:true});
+     });
+     return;
    }
    if(next){
      sectionRef.current?.scrollIntoView({behavior:"instant",block:"start"});
@@ -43,7 +52,7 @@ function StorySection({story,index}:{story:Story;index:number}){
      else scrollRaf.current=requestAnimationFrame(check);
    };
    scrollRaf.current=requestAnimationFrame(check);
- };
+ },[story.id]);
  useEffect(()=>()=>{if(scrollRaf.current!==null)cancelAnimationFrame(scrollRaf.current);},[]);
  useEffect(()=>{
    if(!open)return;
@@ -54,23 +63,26 @@ function StorySection({story,index}:{story:Story;index:number}){
    };
    window.addEventListener("keydown",onKey);
    return()=>window.removeEventListener("keydown",onKey);
- },[open]);
+ },[open,changeMode]);
  return <section
    ref={sectionRef}
    id={"story-"+story.id}
    className={s.storySection+(open?" "+s.storyIsOpen:"")}
-   style={{"--accent":story.accent,"--previous-accent":stories[index-1]?.accent||story.accent,"--next-accent":stories[index+1]?.accent||story.accent} as CSSProperties}
+   style={{"--stack":Math.min(index,4),"--accent":story.accent,"--previous-accent":stories[index-1]?.accent||story.accent,"--next-accent":stories[index+1]?.accent||story.accent} as CSSProperties}
    data-story={story.id}
    data-expanded={open}
  >
+  <StoryTrace index={index} name={story.title}/>
   <div className={s.storyWorkspace} data-entry={index%2?"right":"left"}>
    <div className={s.storyStage} data-role="story-overview">
     <div className={s.storyCopy}>
+     <div className={s.cardFolio}><span>{String(index+1).padStart(2,"0")} / {String(stories.length).padStart(2,"0")}</span><span>{story.year}</span></div>
      <div className={s.storyEyebrow}><span className={s.storyIndex}>{String(index+1).padStart(2,"0")}</span><span>{story.eyebrow}</span></div>
      <p className={s.storyYears}>{story.type}{story.year&&<><i> / </i> {story.year}</>}</p>
      <h3>{story.title}<span>.</span></h3>
      <p className={s.storyHook}>{story.hook}</p>
      <p className={s.storyIntro}>{story.intro}</p>
+     <div className={s.paperTags}>{story.tags.slice(0,2).map(tag=><span key={tag}>{tag}</span>)}</div>
      <div className={s.storyActions}>
       <button
        ref={toggleRef}
@@ -106,6 +118,7 @@ function StorySection({story,index}:{story:Story;index:number}){
      <div className={s.longStoryLead}>
       <span className={s.sectionTag}>CASE NOTES / {String(index+1).padStart(2,"0")}</span>
       <h4>Project <em>brief.</em></h4>
+      <dl className={s.paperMetrics}>{story.numbers.map(n=><div key={n.label}><dt>{n.label}</dt><dd>{n.value}</dd></div>)}</dl>
       <p>{story.intro}</p>
      </div>
      <div className={s.storyChapterList}>
@@ -130,6 +143,9 @@ function StorySection({story,index}:{story:Story;index:number}){
 
 export default function PortfolioV2(){
  const [navOpen,setNavOpen]=useState(false);
+ const [dark,setDark]=useState(false);
+ useEffect(()=>{let frame=0;try{if(localStorage.getItem("atharva-paper")==="dark")frame=requestAnimationFrame(()=>setDark(true));}catch{}return()=>cancelAnimationFrame(frame);},[]);
+ const togglePaper=()=>{setDark(!dark);try{localStorage.setItem("atharva-paper",dark?"light":"dark");}catch{}};
  const menuRef=useRef<HTMLButtonElement>(null);
  useEffect(()=>{
    if(!navOpen)return;
@@ -177,13 +193,17 @@ export default function PortfolioV2(){
   onScroll();window.addEventListener("scroll",onScroll,{passive:true});
   return()=>{observer.disconnect();entrants.disconnect();window.removeEventListener("scroll",onScroll)};
  },[]);
- return <main className={s.portfolioShell} id="atharva-portfolio">
+ return <main className={s.portfolioShell} id="atharva-portfolio" data-paper={dark?"dark":"light"}>
+  <PaperIntro/>
   <div className={s.ambientWash} aria-hidden="true"/>
   <div className={s.progressBar} style={{transform:"scaleX("+progress/100+")"}} aria-hidden="true"/>
   <nav className={s.siteNav} aria-label="Portfolio navigation">
    <a href="#top" className={s.mark} aria-label="Atharva Sahu, back to top">A<span> / </span>S<span>.</span></a>
    <span className={s.navDescriptor}>FINANCE · RESEARCH · MODELLING</span>
    <div className={s.navLinks}><a href="#work">Selected work</a><a href="#skills">Skills & learning</a><a href="#contact">Contact</a><a href="https://fundlenz.com/">Visit FundLenz <ArrowUpRight size={13}/></a></div>
+   <a className={s.paperContact} href="#contact">Contact</a>
+   <button className={s.paperSwitch} type="button" aria-label="Dark paper" aria-pressed={dark} onClick={togglePaper}>{dark?<Sun size={17}/>:<Moon size={17}/>}</button>
+   <ReadingQuote/>
    <button ref={menuRef} className={s.menuToggle} onClick={()=>setNavOpen(v=>!v)} aria-expanded={navOpen} aria-label={navOpen?"Close navigation":"Open navigation"}>{navOpen?<X size={21}/>:<Menu size={21}/>}</button>
    {navOpen&&<div className={s.mobileNav}>{[["Selected work","#work"],["Skills & learning","#skills"],["Contact","#contact"],["Visit FundLenz","https://fundlenz.com/"]].map(([label,href])=><a key={href} href={href} onClick={()=>setNavOpen(false)}>{label}<ArrowUpRight size={17}/></a>)}</div>}
   </nav>
@@ -192,14 +212,17 @@ export default function PortfolioV2(){
     <h1>Atharva<br/><em>Sahu.</em></h1>
     <p className={s.heroMessage}>I model business decisions and build <em>financial research tools.</em></p>
     <p className={s.heroIntro}>My work spans equipment financing at Shyam Construction, mutual-fund liquidity research and the FundLenz platform.</p>
+    <svg className={s.paperSignature} viewBox="0 0 300 23" preserveAspectRatio="none" aria-hidden="true"><path d={quotePath} fill="none" stroke="currentColor" strokeWidth="2" vectorEffect="non-scaling-stroke"/></svg>
     <a className={s.heroLink} href="#work">Explore my work <ArrowRight size={18}/></a>
    </div><div className={s.heroFoot}><span>PORTFOLIO / 2026</span><span>SCROLL DOWN <ArrowDown size={14}/></span></div></section>
    <div className={s.currencyRibbon} aria-hidden="true"><div>{[0,1].map(group=><div className={s.ribbonGroup} key={group}>{[["₹","Cash flow"],["β","Beta"],["$","Markets"],["%","Yield"],["€","Valuation"],["Σ","Research"],["σ","Volatility"],["£","Capital"],["Δ","Change"],["×","Multiples"],["¥","FX"],["ρ","Correlation"],["α","Alpha"],["±","Risk"],["bps","Spreads"],["ƒ","Forecasts"]].map(([symbol,label])=><span key={label}><i>{symbol}</i>{label}</span>)}</div>)}</div></div>
    <section id="about" className={s.about}><div data-reveal><span className={s.sectionTag}>01 / IN SHORT</span><h2>From engineering<br/><em>to finance.</em></h2></div>
     <div className={s.aboutColumns} data-reveal><p>At Shyam Construction, I assessed whether equipment would earn enough to cover its loan repayments. That question drew me from engineering into capital budgeting and cash-flow analysis.</p><p>Today I study portfolio concentration and build models that others can test. FundLenz, DCF Atlas and Ternwell let a reader change the inputs and see how an investment or financing decision changes.</p></div>
+    <div className={s.paperLinks}><a href="https://www.linkedin.com/in/atharvasahu/">Connect on LinkedIn ↗</a><a href="https://github.com/atharv3169">My code on GitHub ↗</a><a href="#work" aria-label="Scroll to projects">↓</a></div>
    </section>
    <section className={s.workIntro} id="work"><span className={s.sectionTag}>02 / THE WORK, UP CLOSE</span><h2>Selected<br/><em>work.</em></h2><p>Explore the decisions, research and models behind each project.</p><div className={s.workCount}>{String(stories.length).padStart(2,"0")} <span>PROJECTS & EXPERIENCES</span></div></section>
-   {stories.map((story,i)=><StorySection key={story.id} story={story} index={i}/>)}
+   <div className={s.paperDeck} data-paper-deck>{stories.map((story,i)=><div key={story.id} className={s.paperSlot}><span id={"paper-"+story.id} className={s.paperAnchor} style={{"--stack":Math.min(i,4)} as CSSProperties}/><StorySection story={story} index={i}/></div>)}</div>
+   <PaperIndex/>
 
    <section id="skills" className={s.skillsSection}><div data-reveal><span className={s.sectionTag}>03 / HOW I WORK</span><h2>Skills &amp;<br/><em>education.</em></h2></div>
     <div className={s.skillsColumns}>{learning.map((group,i)=><div className={s.skillGroup} key={group.title} data-reveal><span>0{i+1}</span><h3>{group.title}</h3><div className={s.skillsText}>{group.skills.map((name,j)=><span key={name}>{name}{j!==group.skills.length-1?<i> / </i>:""}</span>)}</div></div>)}</div>
@@ -224,4 +247,68 @@ function MarketPlate(){
  {closes.map((y,i)=>{const x=49+i*17.5,open=(closes[i-1]??280)+(i%3-1)*4,col=y<open?"#aad4bf":"#c8a67b",volume=9+Math.abs(y-open)*.9;return <g key={i} fill={col}><path d={`M${x} ${Math.min(open,y)-7-i%4}V${Math.max(open,y)+6+i%6}`} stroke={col}/><rect x={x-4.3} y={Math.min(y,open)} width="8.6" height={Math.max(2,Math.abs(y-open))} rx=".8"/><rect x={x-4.3} y={354-volume} width="8.6" height={volume} opacity=".42"/></g>})}
  <path className={s.goldTrace} d={line} pathLength="100" fill="none" stroke="#d8b781" strokeWidth="2.1" strokeLinejoin="round" strokeLinecap="round"/>
  </svg>;
+}
+
+function PaperIndex(){
+ const [active,setActive]=useState(0);
+ const box=useRef<HTMLDialogElement>(null);
+ const items=[{id:"top",title:"Introduction"},{id:"work",title:"Selected work"},...stories.map(v=>({id:"paper-"+v.id,title:v.title})),{id:"skills",title:"Skills & education"},{id:"contact",title:"Contact"}];
+ useEffect(()=>{
+  const mq=matchMedia("(max-width:767px)");
+  let raf=0;
+  const read=()=>{raf=0;if(!mq.matches){box.current?.close();return;}const anchors=["top","work",...stories.map(s=>"paper-"+s.id),"skills","contact"];let current=0;anchors.forEach((id,i)=>{const node=document.getElementById(id);if(node&&node.getBoundingClientRect().top<innerHeight*.36)current=i;});setActive(current);};
+  const update=()=>{if(!raf)raf=requestAnimationFrame(read);};update();window.addEventListener("scroll",update,{passive:true});window.addEventListener("resize",update);
+  return()=>{window.removeEventListener("scroll",update);window.removeEventListener("resize",update);cancelAnimationFrame(raf);};
+ },[]);
+ return <div className={s.paperIndex}><button type="button" aria-haspopup="dialog" onClick={()=>box.current?.showModal()}><b>{String(active+1).padStart(2,"0")}</b> All projects</button><dialog ref={box} aria-label="Portfolio index" onClick={e=>{if(e.target===box.current)box.current.close();}}><div><header>Portfolio index <button type="button" onClick={()=>box.current?.close()} aria-label="Close index">×</button></header>{items.map((it,i)=><a key={it.id} href={"#"+it.id} aria-current={active===i?"location":undefined} onClick={()=>box.current?.close()}><small>{String(i+1).padStart(2,"0")}</small>{it.title}</a>)}</div></dialog></div>;
+}
+
+function PaperIntro(){
+ const [visible,setVisible]=useState(false);
+ useEffect(()=>{
+   if(!matchMedia("(max-width:767px) and (prefers-reduced-motion:no-preference)").matches||location.hash)return;
+   try{if(sessionStorage.getItem("atharva-paper-intro"))return;sessionStorage.setItem("atharva-paper-intro","1");}catch{}
+   const start=requestAnimationFrame(()=>setVisible(true)),end=setTimeout(()=>setVisible(false),1650);
+   return()=>{cancelAnimationFrame(start);clearTimeout(end);};
+ },[]);
+ return visible?<div className={s.paperIntro}><span>ATHARVA SAHU · PORTFOLIO</span>
+ <svg viewBox="0 0 240 160" aria-hidden="true">{["#965947","#cd983a","#427667","#466d8a"].map((c,i)=><path key={c} transform={`translate(${i*3},${i*2})`} d="M24 129 Q38 83 68 30 Q78 7 84 38 L109 123 M47 89 Q73 77 96 80 M192 46 C144 18 108 79 156 82 S193 145 127 125" fill="none" stroke={c} strokeWidth="4" strokeLinecap="round" pathLength="1"/>)}</svg>
+ <button onClick={()=>setVisible(false)}>Skip intro →</button></div>:null;
+}
+
+const quotePath="M0 19 L13 18 L24 20 L39 14 L48 16 L61 12 L75 15 L90 9 L103 13 L115 11 L130 15 L146 9 L158 10 L171 6 L186 11 L200 8 L215 10 L229 4 L242 7 L258 3 L273 6 L286 3 L300 2";
+function StoryTrace({index,name}:{index:number;name:string}){
+ const right=Math.floor((index+1)/2)%2===1, swap=index%2===0&&index<stories.length-1;
+ const trace=<><svg className={s.traceStem} viewBox="0 0 12 120" preserveAspectRatio="none" aria-hidden="true"><path d="M5 0V28L9 34L3 43L7 51L5 58V120"/></svg><svg className={s.traceTurn} viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><path d={swap?"M0 0V5L3 8H34L39 13L44 10L50 17H95L100 22V24":"M0 0V24"}/></svg></>;
+ return <div className={s.storyTrace} data-route={right?"right":"left"} role="progressbar" aria-label={name+" story progress"} aria-valuemin={0} aria-valuemax={100} aria-valuenow={0}><div>{trace}</div><div className={s.tracePaint}>{trace}</div></div>;
+}
+function ReadingQuote(){
+ const meter=useRef<HTMLDivElement>(null);
+ useEffect(()=>{
+  const el=meter.current,root=document.getElementById("atharva-portfolio");if(!el||!root)return;
+  const media=matchMedia("(max-width:767px)"),deck=root.querySelector<HTMLElement>("[data-paper-deck]");
+  if(!deck)return;
+  const segments=stories.map(story=>({story,anchor:document.getElementById("paper-"+story.id),trace:document.getElementById("story-"+story.id)?.querySelector<HTMLElement>('[data-route]')}));
+  let frame=0;
+  const update=()=>{
+   frame=0;if(!media.matches)return;
+   const clamp=(n:number)=>Math.max(0,Math.min(1,n));
+   const page=clamp(scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight));
+   const stops=segments.map(s=>s.anchor?.getBoundingClientRect().top??Infinity),end=deck.getBoundingClientRect().bottom,focus=innerHeight*.56;
+   let accent="";
+   segments.forEach(({trace,story},i)=>{
+    const a=stops[i],b=stops[i+1]??end,part=clamp((focus-a)/Math.max(1,b-a));
+    if(!trace)return;
+    trace.style.setProperty("--remaining",(100-part*100).toFixed(2)+"%");trace.setAttribute("aria-valuenow",String(Math.round(part*100)));
+    if(focus>=a&&focus<b)accent=story.accent;
+   });
+   el.style.setProperty("--page",String(page));el.style.setProperty("--story-ink",accent||"var(--page-ink)");el.setAttribute("aria-valuenow",String(Math.round(page*100)));
+  };
+  const schedule=()=>{if(!frame)frame=requestAnimationFrame(update);};
+  const size=new ResizeObserver(schedule);size.observe(root);size.observe(deck);
+  const mode=new MutationObserver(schedule);mode.observe(deck,{subtree:true,attributes:true,attributeFilter:["data-expanded"]});
+  window.addEventListener("scroll",schedule,{passive:true});window.addEventListener("resize",schedule);schedule();
+  return()=>{size.disconnect();mode.disconnect();cancelAnimationFrame(frame);window.removeEventListener("scroll",schedule);window.removeEventListener("resize",schedule);};
+ },[]);
+ return <div ref={meter} className={s.readingQuote} role="progressbar" aria-label="Whole page progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={0}><i/></div>;
 }
