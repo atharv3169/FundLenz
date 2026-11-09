@@ -560,17 +560,11 @@ try {
       });
       for (const width of [390, 320]) {
         await p.setViewportSize({ width, height: 844 });
-        const menu = p.locator('.a-mobilemenu');
-        if (
-          (await menu.getAttribute('aria-expanded')) === 'false' &&
-          !(await p.locator('.ao-grid').isVisible())
-        ) {
-          await menu.tap();
-          await p
-            .getByRole('navigation', { name: 'Atlas tools' })
-            .getByRole('button', { name: 'Overview', exact: true })
-            .tap();
-        }
+        const strip = p.getByRole('navigation', { name: 'Atlas tools' });
+        assert(await strip.isVisible());
+        assert(await strip.evaluate(el => el.scrollWidth > el.clientWidth), 'mobile tools must scroll within the strip');
+        await strip.evaluate(el => el.scrollLeft = 0);
+        await strip.getByRole('button', {name:'Overview', exact:true}).tap();
         const starts = p.getByRole('group', { name: 'Start with your data' });
         const addBox = await starts
           .getByRole('button', { name: 'Add model' })
@@ -614,13 +608,14 @@ try {
           .getByRole('region', { name: 'Overview annual forecast' })
           .waitFor();
 
-        await menu.click();
+        await strip.evaluate(el => el.scrollLeft = el.scrollWidth);
+        assert(await strip.evaluate(el => el.scrollLeft > 0));
         await p
           .getByRole('navigation', { name: 'Atlas tools' })
           .getByRole('button', { name: 'Sensitivity', exact: true })
           .click();
         await p.getByRole('heading', { name: 'Valuation surface' }).waitFor();
-        assert.equal(await menu.getAttribute('aria-expanded'), 'false');
+        assert.equal(await strip.getByRole('button', {name:'Sensitivity', exact:true}).getAttribute('aria-current'), 'page');
         assert(
           await p.evaluate(
             () => document.documentElement.scrollWidth <= window.innerWidth + 1,
