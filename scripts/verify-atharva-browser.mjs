@@ -167,15 +167,36 @@ try{
         await scroll("paper-"+id);
         await button(id);await expanded(id,true);await sleep(900);
         const state=await js("("+audit+")()");
-        assert.ok(state.every(s=>s.position==="sticky"),id+" must not remove any story from sticky stack");
+        assert.ok(state.every(s=>s.position===(s.expanded==="true"?"relative":"sticky")),id+" opened readers must scroll while closed cards remain sticky");
         assert.ok(state.every((s,i)=>s.z===i+1),id+" must preserve all ten distinct stack layers");
         assert.ok(state.every(s=>s.opacity>.99),id+" must not hide unexplored stories");
+        // Geometry is measured in document coordinates, not the sticky
+        // painted coordinates, so it detects the reader being covered early.
+        const bounds=await js("(()=>{const a=document.getElementById('story-"+id+"'),reader=a.querySelector('[data-role=story-reader]'),next=document.getElementById('paper-"+next+"');return {top:a.getBoundingClientRect().top+scrollY,bottom:a.getBoundingClientRect().bottom+scrollY,readerTop:reader.getBoundingClientRect().top+scrollY,readerBottom:reader.getBoundingClientRect().bottom+scrollY,nextTop:next.getBoundingClientRect().top+scrollY,readerHeight:reader.getBoundingClientRect().height}})()");
+        assert.ok(bounds.nextTop>=bounds.bottom-3,id+" next card must start after full story ends");
+        assert.ok(bounds.readerHeight>innerHeight*.95,id+" story must be longer than the viewport");
+        const maxBeforeNext=bounds.nextTop-innerHeight-12;
+        const waypoints=[bounds.top+Math.min(450,bounds.readerHeight*.2),bounds.top+Math.min(1150,bounds.readerHeight*.55)].filter(y=>y<maxBeforeNext);
+        let previousTop=await js("document.getElementById('full-"+id+"').getBoundingClientRect().top");
+        for(const [step,targetY] of waypoints.entries()){
+          await js("window.scrollTo({top:"+Math.round(targetY)+",behavior:'instant'})");await sleep(170);
+          const traveled=await js("(()=>{const a=document.getElementById('full-"+id+"'),next=document.getElementById('paper-"+next+"');return {readerTop:a.getBoundingClientRect().top,nextTop:next.getBoundingClientRect().top}})()");
+          assert.ok(traveled.readerTop<previousTop-55,id+" full-story text must advance with page scrolling at step "+step);
+          assert.ok(traveled.nextTop>innerHeight-16,id+" next card must stay offscreen before full-story content ends");
+          previousTop=traveled.readerTop;
+          if(step===0)await capture("390-"+id+"-reader-middle");
+        }
+        // The last chapter/tags must be reachable before the next card.
+        await js("document.querySelector('#full-"+id+" [class*=tagsLine]').scrollIntoView({block:'center',behavior:'instant'})");await sleep(180);
+        const endOfReader=await js("(()=>{const e=document.querySelector('#full-"+id+" [class*=tagsLine]'),next=document.getElementById('paper-"+next+"');return {last:e.getBoundingClientRect().top,next:next.getBoundingClientRect().top}})()");
+        assert.ok(endOfReader.last>25&&endOfReader.last<innerHeight-35,id+" final story tags must be reachable by normal page scroll");
+        await capture("390-"+id+"-reader-last-chapter");
         await scroll("paper-"+next);await sleep(240);
         await capture("390-expanded-"+id+"-scroll-into-"+next);
       }
       await scroll("paper-shyam");await sleep(250);
       const randomState=await js("("+audit+")()");
-      assert.ok(randomState.every(s=>s.position==="sticky"&&s.opacity>.99),"random opening and scrolling must retain all stories");
+      assert.ok(randomState.every(s=>s.position===(s.expanded==="true"?"relative":"sticky")&&s.opacity>.99),"random opening and scrolling must retain visible cards in the correct positioning mode");
       await capture("390-random-open-stacked-cards");
       for(const id of ["fundlenz","research","fincalc"]){
         await scroll("paper-"+id);
@@ -186,6 +207,17 @@ try{
       const restored=await js("("+audit+")()");
       assert.ok(restored.every(s=>s.position==="sticky"&&s.opacity>.99&&s.expanded==="false"),"all stories restore in the same stack after closing");
       await capture("390-stack-restored-after-random-navigation");
+    }
+    if(width===390){
+      await scroll("paper-dcf");
+      await js("window.scrollBy({top:230,behavior:'instant'})");await sleep(130);
+      const coverTop=await js("document.getElementById('story-dcf').getBoundingClientRect().top");
+      await button("dcf");await expanded("dcf",true);await sleep(95);
+      const activeTop=await js("document.getElementById('story-dcf').getBoundingClientRect().top");
+      assert.ok(Math.abs(activeTop-coverTop)<18,"opening an already-pinned story must not jump vertically");
+      await sleep(850);await capture("390-open-pinned-card-no-jump");
+      await js("document.getElementById('full-dcf').querySelector('button').click()");
+      await expanded("dcf",false);await sleep(860);
     }
     for(const id of ids){
       await scroll((width<768?"paper-":"story-")+id);await sleep(350);
