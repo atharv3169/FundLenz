@@ -1,6 +1,6 @@
-body:has(#atharva-portfolio) { background: #080b10; }
-body:has(#atharva-portfolio) > .masthead,
-body:has(#atharva-portfolio) > .legal-footer { display:none!important; }
+body:has(:is(#atharva-portfolio,#atharva-story)) { background: #080b10; }
+body:has(:is(#atharva-portfolio,#atharva-story)) > .masthead,
+body:has(:is(#atharva-portfolio,#atharva-story)) > .legal-footer { display:none!important; }
 @media(max-width:767px) and (prefers-reduced-motion:no-preference){
  html:has(#atharva-portfolio){scroll-behavior:smooth}
 }
