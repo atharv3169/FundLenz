@@ -151,6 +151,7 @@ try{
       assert.ok(Math.abs(atMiddle-(ids.indexOf(id)*10+middle/10))<=1.5,id+" global timeline advances only through the active story segment");
       await js("document.querySelector('a[href=\\\"#case-chapter-0\\\"]').click()");
       await until(()=>js("location.hash==='#case-chapter-0'"),2500);
+      await until(()=>js("document.querySelector('a[href=\\\"#case-chapter-0\\\"]').getAttribute('aria-current')==='location'"),4000);
       const activeChapter=await js("document.querySelector('a[href=\\\"#case-chapter-0\\\"]').getAttribute('aria-current')");
       assert.equal(activeChapter,"location",id+" vertical progress follows the active chapter");
       if(width===390&&["shyam","research","fincalc","dcf"].includes(id))await capture(width+"-"+id+"-middle");
