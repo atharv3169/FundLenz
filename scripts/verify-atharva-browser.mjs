@@ -134,6 +134,23 @@ try{
       assert.equal(await js("location.hash"),"#paper-dcf");
       await until(()=>js("!document.querySelector('dialog[open]')"));
     }
+    if(width===390){
+      await scroll("top");await sleep(200);
+      const grain=await js("getComputedStyle(document.querySelector('main')).backgroundImage");
+      await js(`document.querySelector('[aria-label="Dark paper"]').click()`);
+      await until(()=>js(`document.querySelector('main').dataset.paper==="dark"`));
+      assert.equal(await js("getComputedStyle(document.querySelector('main')).backgroundImage"),grain);
+      await capture("390-dark-paper");
+      await js(`document.querySelector('[aria-label="Dark paper"]').click()`);
+      await scroll("paper-shyam");await button("shyam");await expanded("shyam",true);await sleep(500);
+      const meter='document.querySelector("[role=progressbar]")';
+      await until(()=>js(meter+'.getAttribute("aria-label").includes("Shyam")'));
+      const start=await js('Number('+meter+'.getAttribute("aria-valuenow"))');
+      await js("window.scrollBy({top:220,behavior:'instant'})");
+      await until(()=>js('Number('+meter+'.getAttribute("aria-valuenow"))>'+start));
+      await capture("390-reading-graph");await button("shyam");await expanded("shyam",false);
+      await until(()=>js(meter+'.getAttribute("aria-label")==="Portfolio reading progress"'));
+    }
     for(const id of ids){
       await scroll((width<768?"paper-":"story-")+id);await sleep(350);
       const before=await runInspect(id,"overview",width);
