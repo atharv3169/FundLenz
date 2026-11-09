@@ -95,3 +95,177 @@
 @media(prefers-reduced-motion:reduce){
  .topFill,.railFill,.railTrack a,.neighbor,.back{transition:none!important}
 }
+
+/* One rainbow-like financial timeline, using actual ordered project colors.
+   Reveal the full-size gradient with clip-path: unlike scaleX it never
+   squashes the individual story colors as the reader progresses. */
+.page{--case-highlight:var(--case-accent);background:#080b10}
+.storySequence{position:fixed;inset:69px 0 auto;height:27px;z-index:61;pointer-events:none}
+.storySequence .topProgress{
+ position:absolute;inset:0 0 auto;height:6px;width:100%;overflow:visible;
+ background:transparent;border-top:1px solid #9baea34a;pointer-events:none;
+}
+.topSpectrum,.storySequence .topFill{
+ position:absolute;inset:0;width:100%;height:100%;
+ background:var(--story-spectrum);transform:none;
+}
+.topSpectrum{opacity:.22;filter:saturate(.8)}
+.storySequence .topFill{
+ clip-path:inset(0 var(--sequence-unread,100%) 0 0);
+ transition:clip-path .10s linear;box-shadow:none;filter:saturate(1.15);
+}
+.progressTip{
+ position:absolute;top:-3px;left:calc(var(--sequence-progress,0)*100%);
+ width:11px;height:11px;border-radius:50%;
+ transform:translateX(-50%);background:var(--case-accent);
+ border:2px solid #f6f3e9;box-shadow:0 0 0 3px #07151ba6,0 0 14px var(--case-accent);
+ transition:left .10s linear;pointer-events:none;
+}
+.storySegments{
+ position:absolute;top:0;left:0;right:0;height:27px;
+ display:grid;grid-template-columns:repeat(10,minmax(0,1fr));
+ pointer-events:auto;
+}
+.storySegments a{display:block;position:relative;outline-offset:1px;cursor:pointer}
+.storySegments a:not(:last-child)::before{
+ content:"";height:6px;width:1px;position:absolute;right:0;top:0;
+ background:rgba(247,248,240,.55);opacity:.55;
+}
+.storySegments a span{
+ width:4px;height:4px;background:#f5f1e6;display:block;
+ position:absolute;top:1px;left:50%;border-radius:50%;transform:translateX(-50%);
+ opacity:.55;transition:opacity .15s,transform .15s,background .15s;
+}
+.storySegments a:hover span,.storySegments a[aria-current=page] span{
+ opacity:1;transform:translateX(-50%) scale(1.6);background:var(--case-accent);
+}
+.storySegments a:focus-visible{outline:2px solid var(--case-accent);outline-offset:-2px}
+/* Chapter progress remains independent of the ten-story timeline. */
+.railTrack .railFill[role=progressbar]{
+ background:var(--case-accent);box-shadow:0 0 9px color-mix(in srgb,var(--case-accent) 65%,transparent);
+}
+.paperSwitch{display:none}
+@media(max-width:767px){
+ .storySequence{top:56px;height:25px}
+ .storySegments{height:25px}
+ .paperSwitch{
+   display:grid;place-items:center;justify-self:end;
+   width:35px;height:35px;border-radius:50%;flex:none;
+   color:#ecf2e9;background:#1b3036;border:1px solid #567876;
+ }
+ .topbar{grid-template-columns:auto 1fr auto auto;gap:10px}
+ .brand{justify-self:center}
+ .pageCount{white-space:nowrap}
+ .progressTip{width:10px;height:10px}
+}
+@media(max-width:360px){
+ .topbar{grid-template-columns:auto 1fr auto}
+ .pageCount{display:none}
+}
+/* The portfolio's desktop is dark; both its paper modes are explicit on
+   mobile. The same saved preference powers the overview and every story. */
+@media(max-width:767px){
+ .page[data-paper=dark]{
+   --ink:#edf2ec;--muted:#b8c7c4;
+   background:#090e15;color:#edf2ec;color-scheme:dark;
+ }
+ .page[data-paper=dark] .grain{
+   opacity:.62;background:
+   radial-gradient(ellipse at 82% 17%,#214e4e66,transparent 52%),
+   radial-gradient(ellipse at 12% 72%,#25384e60,transparent 50%);
+ }
+ .page[data-paper=dark] .topbar{background:rgba(13,24,32,.93);border-color:#374947}
+ .page[data-paper=dark] .paperSwitch{background:#1d3036;border-color:#4c6565;color:#dbbf91}
+ .page[data-paper=light]{
+   --ink:#163e41;--muted:#355553;
+   --case-highlight:color-mix(in srgb,var(--case-accent) 43%,#163e41);
+   background:#eeeae0;color:#163e41;color-scheme:light;
+ }
+ .page[data-paper=light] .grain{
+   opacity:.75;background:
+   radial-gradient(ellipse at 80% 22%,color-mix(in srgb,var(--case-accent) 14%,transparent),transparent 62%),
+   radial-gradient(ellipse at 5% 70%,#71948919,transparent 58%),
+   repeating-linear-gradient(40deg,rgba(37,64,56,.015) 0 1px,transparent 1px 5px);
+ }
+ .page[data-paper=light] .topbar{
+   background:rgba(238,234,224,.94);border-color:#c9c8bb;
+   color:#163e41;box-shadow:0 1px 0 rgba(51,82,72,.08);
+ }
+ .page[data-paper=light] .back{border-color:#95aaa0;color:#21494a}
+ .page[data-paper=light] .back:hover{background:#cad9c78f}
+ .page[data-paper=light] .pageCount{color:#466663}
+ .page[data-paper=light] .paperSwitch{
+   background:transparent;color:#163e41;border-color:#81958a;
+ }
+ .page[data-paper=light] .storySequence .topProgress{border-color:#afc1b8}
+ .page[data-paper=light] .topSpectrum{opacity:.27}
+ .page[data-paper=light] .progressTip{border-color:#eeeae0;box-shadow:0 0 0 2px #58756b90,0 0 12px var(--case-accent)}
+ .page[data-paper=light] .storySegments a:not(:last-child)::before{background:#163e4155}
+ .page[data-paper=light] .storySegments a span{background:#6c8b80}
+ .page[data-paper=light] .storySegments a[aria-current=page] span{background:var(--case-highlight)}
+ .page[data-paper=light] .progressRail{
+   background:rgba(238,234,224,.95);border-color:#a2b4a8;box-shadow:0 3px 12px #5b756b23;
+ }
+ .page[data-paper=light] .railTrack::before{background:#79958d6b}
+ .page[data-paper=light] .railTrack a{background:#e9e8dc;border-color:#7c9a8e}
+ .page[data-paper=light] .railTrack a i{background:#54766a}
+ .page[data-paper=light] .railTrack a:hover,
+ .page[data-paper=light] .railTrack a.railActive{background:var(--case-highlight);border-color:var(--case-highlight)}
+ .page[data-paper=light] .railTrack a:hover i,
+ .page[data-paper=light] .railTrack a.railActive i{background:#fffaf0}
+ .page[data-paper=light] .percent{color:var(--case-highlight)}
+ .page[data-paper=light] .kicker{border-color:#a7b8aa;color:var(--case-highlight)}
+ .page[data-paper=light] .kicker span:last-child{color:#547168}
+ .page[data-paper=light] .sequence{color:#5c776e}
+ .page[data-paper=light] .sequence span{color:var(--case-highlight)}
+ .page[data-paper=light] .hero h1 span,
+ .page[data-paper=light] .chapterText h2 span,
+ .page[data-paper=light] .demoHeading h2 span{color:var(--case-highlight)}
+ .page[data-paper=light] .hook{color:#163e41}
+ .page[data-paper=light] .intro{color:#355553}
+ .page[data-paper=light] .visit{border-color:#66867d}
+ .page[data-paper=light] .metricStrip{border-color:#aab8a8}
+ .page[data-paper=light] .metricStrip strong{color:var(--case-highlight)}
+ .page[data-paper=light] .metricStrip span{color:#547168}
+ .page[data-paper=light] :is(.overview,.chapter,.demo,.closing){border-color:#bac6b6}
+ .page[data-paper=light] .sectionLabel{color:var(--case-highlight)}
+ .page[data-paper=light] .sectionLabel span{border-color:#9eb2a4}
+ .page[data-paper=light] .overview h2 em,
+ .page[data-paper=light] .closing h2 em{color:var(--case-highlight)}
+ .page[data-paper=light] .overview p,
+ .page[data-paper=light] .closing p,
+ .page[data-paper=light] .chapterText p{color:#355553}
+ .page[data-paper=light] .chapterRule{color:#557267}
+ .page[data-paper=light] .chapterRule i{background:linear-gradient(90deg,var(--case-highlight),transparent)}
+ .page[data-paper=light] .demoHeading p{color:#4f6c61}
+ .page[data-paper=light] .tags span{color:#315b57;border-color:#8eab9d}
+ .page[data-paper=light] .footer{background:#e0e2d7;border-color:#afc2b0}
+ .page[data-paper=light] .neighbor{border-color:#a8b9a9}
+ .page[data-paper=light] .neighbor:hover{background:#cad9c1;border-color:var(--case-highlight)}
+ .page[data-paper=light] .neighbor>span,
+ .page[data-paper=light] .returnLink{color:var(--case-highlight)!important}
+ .page[data-paper=light] .footer>span{color:#577169}
+ .page[data-paper=light] .demoContent > :not(.demoHeading){
+   padding:22px 16px;border:1px solid #63837b;
+   border-radius:14px;background:linear-gradient(135deg,#19323a,#0f212b);
+   color:#eef2e9;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .storySequence .topFill,.progressTip,.storySegments a span{transition:none!important}
+}
+
+/* Project-colored nodes make completed, current and upcoming stories legible
+   independently of the spectrum fill, including in keyboard navigation. */
+.storySegments a[data-segment-state=complete] span{
+ opacity:.95;background:var(--segment-ink);transform:translateX(-50%) scale(1.15);
+}
+.storySegments a[data-segment-state=upcoming] span{opacity:.25}
+.storySegments a[data-segment-state=active] span{
+ opacity:1;transform:translateX(-50%) scale(1.65);background:var(--segment-ink);
+}
+@media(max-width:767px){
+ .page[data-paper=light] .storySegments a[data-segment-state=complete] span{background:var(--segment-ink);opacity:.88}
+ .page[data-paper=light] .storySegments a[data-segment-state=upcoming] span{opacity:.22}
+ .page[data-paper=light] .storySegments a[data-segment-state=active] span{background:var(--case-highlight);opacity:1}
+}

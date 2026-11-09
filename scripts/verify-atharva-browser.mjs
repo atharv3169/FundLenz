@@ -82,7 +82,7 @@ try{
   const assertNoHorizontal=async(label)=>{
     assert.ok(await js("document.documentElement.scrollWidth<=document.documentElement.clientWidth+2"),label+" horizontal page overflow");
   };
-  const counts={homepage:0,stories:0,progress:0,back:0};
+  const counts={homepage:0,stories:0,progress:0,back:0,theme:0,spectrum:0};
   for(const [width,height] of [[1440,900],[390,844],[320,667]]){
     await view(width,height);
     await navigate("/atharva","#atharva-portfolio");
@@ -100,10 +100,16 @@ try{
     for(const id of ["fundlenz","research","fincalc","dcf","synk"]){
       await js("document.getElementById('"+(width<768?"paper-":"story-")+id+"').scrollIntoView({block:'start',behavior:'instant'})");
       await sleep(280);
-      const progress=await js("(()=>{const meter="+quote+",root=document.getElementById('atharva-portfolio');return {color:meter.style.getPropertyValue('--story-ink'),value:Number(meter.getAttribute('aria-valuenow')),active:root.dataset.activeStory,visible:getComputedStyle(meter).display!=='none'}})()");
+      const progress=await js("(()=>{const meter="+quote+",root=document.getElementById('atharva-portfolio');return {color:meter.style.getPropertyValue('--story-ink'),value:Number(meter.getAttribute('aria-valuenow')),active:root.dataset.activeStory,visible:getComputedStyle(meter).display!=='none',gradient:meter.style.getPropertyValue('--story-spectrum'),transform:getComputedStyle(meter.querySelector('i')).transform,clip:getComputedStyle(meter.querySelector('i')).clipPath}})()");
       assert.ok(progress.visible,"portfolio progress strip visible at "+width+"px");
       assert.ok(progress.value>0&&progress.value<=100,"portfolio fill responds to page scroll");
+      assert.equal(progress.transform,"none","rainbow never scales or squashes its color spectrum");
+      assert.ok(progress.clip.startsWith("inset("),"rainbow progresses by revealing fixed-width colors");
+      const accentList=await js("Array.from(document.querySelectorAll('section[data-story]'),e=>getComputedStyle(e).getPropertyValue('--accent').trim())");
+      assert.equal(accentList.length,10,"exactly ten thematic story colors");
+      assert.ok(accentList.every(color=>progress.gradient.includes(color)),"spectrum uses every existing project's own color");
       colors.push(progress.color);
+      counts.spectrum++;
       counts.progress++;
     }
     assert.ok(new Set(colors).size>=3,"main page progress changes color as the active story changes");
@@ -125,8 +131,18 @@ try{
       assert.equal(detail.id,id);
       assert.ok(detail.title.length>=3&&detail.chapters>=1, id+" story has its authored chapters");
       assert.ok(detail.bar&&detail.rail, id+" has reading progress rail and top line");
+      const accessible=await js("(()=>{const rail=document.querySelector('[aria-label=\\\"Case study sections\\\"]'),progress=rail.querySelector('[role=progressbar]'),links=[...rail.querySelectorAll('a[href^=\\\"#case-\\\"]')];return {hasProgress:!!progress,hasLinks:links.length>0,independent:!!progress&&links.every(link=>!progress.contains(link))}})()");
+      assert.ok(accessible.hasProgress&&accessible.hasLinks&&accessible.independent,id+" chapter links must remain accessible outside the progressbar");
       assert.equal(detail.goBack,"/atharva#paper-"+id);
       assert.ok(detail.color.startsWith("#"),"case-study progress inherits its color");
+      const ribbon=await js("(()=>{const m=document.querySelector('[data-story-page]'),p=m.querySelector('[aria-label=\\\"Story sequence progress\\\"]'),fill=p.querySelector('[class*=topFill]'),segments=m.querySelectorAll('a[data-story-segment]');return {segments:segments.length,current:m.querySelector('a[data-story-segment][aria-current=page]')?.dataset.storySegment,completed:[...segments].filter(e=>e.dataset.segmentState==='complete').length,upcoming:[...segments].filter(e=>e.dataset.segmentState==='upcoming').length,gradient:m.style.getPropertyValue('--story-spectrum'),clip:getComputedStyle(fill).clipPath,transform:getComputedStyle(fill).transform,value:Number(p.getAttribute('aria-valuenow'))}})()");
+      assert.equal(ribbon.segments,10,"the Katerina-style ribbon contains all ten projects");
+      assert.equal(ribbon.current,id,"timeline highlights the current story");
+      assert.equal(ribbon.completed,ids.indexOf(id),"all previous story nodes are marked complete");
+      assert.equal(ribbon.upcoming,ids.length-ids.indexOf(id)-1,"future story nodes remain unfilled");
+      assert.ok(ribbon.clip.startsWith("inset(")&&ribbon.transform==="none","timeline reveals the stationary spectrum, without squeezing it");
+      assert.equal(ribbon.value,Math.round(ids.indexOf(id)*10),"global story timeline starts at the correct project");
+      counts.spectrum++;
       await assertNoHorizontal(id+" detail "+width);
       if(width===390)await capture(width+"-"+id+"-beginning");
       const max=await js("Math.max(0,document.documentElement.scrollHeight-innerHeight)");
@@ -135,12 +151,21 @@ try{
       await until(()=>js("Number(document.querySelector('[aria-label=\\\"Case study reading progress\\\"]').getAttribute('aria-valuenow'))>=32"),4000);
       const middle=await js("Number(document.querySelector('[aria-label=\\\"Case study reading progress\\\"]').getAttribute('aria-valuenow'))");
       assert.ok(middle>=32&&middle<=72,id+" progress advances through middle of page");
+      const atMiddle=await js("Number(document.querySelector('[aria-label=\\\"Story sequence progress\\\"]').getAttribute('aria-valuenow'))");
+      assert.ok(Math.abs(atMiddle-(ids.indexOf(id)*10+middle/10))<=1.5,id+" global timeline advances only through the active story segment");
+      await js("document.querySelector('a[href=\\\"#case-chapter-0\\\"]').click()");
+      await until(()=>js("location.hash==='#case-chapter-0'"),2500);
+      await until(()=>js("document.querySelector('a[href=\\\"#case-chapter-0\\\"]').getAttribute('aria-current')==='location'"),4000);
+      const activeChapter=await js("document.querySelector('a[href=\\\"#case-chapter-0\\\"]').getAttribute('aria-current')");
+      assert.equal(activeChapter,"location",id+" vertical progress follows the active chapter");
       if(width===390&&["shyam","research","fincalc","dcf"].includes(id))await capture(width+"-"+id+"-middle");
       await js("window.scrollTo({top:document.documentElement.scrollHeight,behavior:'instant'})");
       await until(()=>js("Number(document.querySelector('[aria-label=\\\"Case study reading progress\\\"]').getAttribute('aria-valuenow'))>=99"),4000);
       const finish=await js("(()=>{const m=document.querySelector('[data-story-page]');return {pct:Number(m.querySelector('[aria-label=\\\"Case study reading progress\\\"]').getAttribute('aria-valuenow')),end:!!m.querySelector('#case-end'),chapters:m.querySelectorAll('[data-case-chapter]').length,footer:!!m.querySelector('footer a[href^=\\\"/atharva/stories/\\\"]')}})()");
       assert.equal(finish.pct,100,id+" progress reaches 100%");
       assert.ok(finish.end&&finish.footer,"page ends with full content and next/previous stories");
+      const globalEnd=await js("Number(document.querySelector('[aria-label=\\\"Story sequence progress\\\"]').getAttribute('aria-valuenow'))");
+      assert.equal(globalEnd,(ids.indexOf(id)+1)*10,id+" completed story finishes only its own spectrum segment");
       if(width===390)await capture(width+"-"+id+"-end");
       counts.stories++;
       if(width===390&&["research","fincalc","dcf"].includes(id)){
@@ -152,6 +177,33 @@ try{
       }
     }
   }
+  // Verify that standalone pages have the same paper colors as the main
+  // portfolio on mobile, and share a persistent theme choice across routes.
+  await view(390,844);
+  await navigate("/atharva","#atharva-portfolio");
+  await js('localStorage.setItem("atharva-paper","light")');
+  await navigate("/atharva","#atharva-portfolio");await sleep(170);
+  const lightHome=await js("getComputedStyle(document.getElementById('atharva-portfolio')).backgroundColor");
+  await navigate("/atharva/stories/research",'main[data-story-page="research"]');await sleep(170);
+  const lightStory=await js("getComputedStyle(document.querySelector('[data-story-page]')).backgroundColor");
+  assert.equal(lightStory,lightHome,"story light paper must exactly match portfolio light-paper color");
+  assert.equal(await js("document.querySelector('[aria-label=\\\"Dark paper\\\"]').getAttribute('aria-pressed')"),"false","story starts with saved light theme");
+  await capture("390-research-matching-light-paper");
+  await js("document.querySelector('[aria-label=\\\"Dark paper\\\"]').click()");
+  await until(()=>js("document.querySelector('[data-story-page]').dataset.paper==='dark'"));
+  const darkStory=await js("getComputedStyle(document.querySelector('[data-story-page]')).backgroundColor");
+  assert.notEqual(darkStory,lightStory,"theme control changes the complete story color scheme");
+  await capture("390-research-matching-dark-paper");
+  await navigate("/atharva","#atharva-portfolio");await sleep(220);
+  const darkHome=await js("getComputedStyle(document.getElementById('atharva-portfolio')).backgroundColor");
+  assert.equal(darkStory,darkHome,"story dark paper must exactly match portfolio dark-paper color");
+  await navigate("/atharva/stories/fincalc",'main[data-story-page="fincalc"]');await sleep(220);
+  assert.equal(await js("document.querySelector('[data-story-page]').dataset.paper"),"dark","saved dark mode persists to a different story");
+  await capture("390-fincalc-persisted-dark-paper");
+  await js("document.querySelector('[aria-label=\\\"Dark paper\\\"]').click()");
+  await until(()=>js("document.querySelector('[data-story-page]').dataset.paper==='light'"));
+  assert.equal(await js("localStorage.getItem('atharva-paper')"),"light","light mode persists after toggling back");
+  counts.theme+=5;
   // Direct links must work with no earlier visit to the main portfolio.
   await view(390,844);
   await navigate("/atharva/stories/ternwell",'main[data-story-page="ternwell"]');
