@@ -254,3 +254,18 @@
 @media(prefers-reduced-motion:reduce){
  .storySequence .topFill,.progressTip,.storySegments a span{transition:none!important}
 }
+
+/* Project-colored nodes make completed, current and upcoming stories legible
+   independently of the spectrum fill, including in keyboard navigation. */
+.storySegments a[data-segment-state=complete] span{
+ opacity:.95;background:var(--segment-ink);transform:translateX(-50%) scale(1.15);
+}
+.storySegments a[data-segment-state=upcoming] span{opacity:.25}
+.storySegments a[data-segment-state=active] span{
+ opacity:1;transform:translateX(-50%) scale(1.65);background:var(--segment-ink);
+}
+@media(max-width:767px){
+ .page[data-paper=light] .storySegments a[data-segment-state=complete] span{background:var(--segment-ink);opacity:.88}
+ .page[data-paper=light] .storySegments a[data-segment-state=upcoming] span{opacity:.22}
+ .page[data-paper=light] .storySegments a[data-segment-state=active] span{background:var(--case-highlight);opacity:1}
+}

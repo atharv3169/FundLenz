@@ -135,9 +135,11 @@ try{
       assert.ok(accessible.hasProgress&&accessible.hasLinks&&accessible.independent,id+" chapter links must remain accessible outside the progressbar");
       assert.equal(detail.goBack,"/atharva#paper-"+id);
       assert.ok(detail.color.startsWith("#"),"case-study progress inherits its color");
-      const ribbon=await js("(()=>{const m=document.querySelector('[data-story-page]'),p=m.querySelector('[aria-label=\\\"Story sequence progress\\\"]'),fill=p.querySelector('[class*=topFill]'),segments=m.querySelectorAll('a[data-story-segment]');return {segments:segments.length,current:m.querySelector('a[data-story-segment][aria-current=page]')?.dataset.storySegment,gradient:m.style.getPropertyValue('--story-spectrum'),clip:getComputedStyle(fill).clipPath,transform:getComputedStyle(fill).transform,value:Number(p.getAttribute('aria-valuenow'))}})()");
+      const ribbon=await js("(()=>{const m=document.querySelector('[data-story-page]'),p=m.querySelector('[aria-label=\\\"Story sequence progress\\\"]'),fill=p.querySelector('[class*=topFill]'),segments=m.querySelectorAll('a[data-story-segment]');return {segments:segments.length,current:m.querySelector('a[data-story-segment][aria-current=page]')?.dataset.storySegment,completed:[...segments].filter(e=>e.dataset.segmentState==='complete').length,upcoming:[...segments].filter(e=>e.dataset.segmentState==='upcoming').length,gradient:m.style.getPropertyValue('--story-spectrum'),clip:getComputedStyle(fill).clipPath,transform:getComputedStyle(fill).transform,value:Number(p.getAttribute('aria-valuenow'))}})()");
       assert.equal(ribbon.segments,10,"the Katerina-style ribbon contains all ten projects");
       assert.equal(ribbon.current,id,"timeline highlights the current story");
+      assert.equal(ribbon.completed,ids.indexOf(id),"all previous story nodes are marked complete");
+      assert.equal(ribbon.upcoming,ids.length-ids.indexOf(id)-1,"future story nodes remain unfilled");
       assert.ok(ribbon.clip.startsWith("inset(")&&ribbon.transform==="none","timeline reveals the stationary spectrum, without squeezing it");
       assert.equal(ribbon.value,Math.round(ids.indexOf(id)*10),"global story timeline starts at the correct project");
       counts.spectrum++;

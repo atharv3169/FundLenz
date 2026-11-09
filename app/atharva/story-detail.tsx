@@ -77,7 +77,7 @@ export default function StoryDetail({story}:{story:Story}){
        <span className={s.progressTip} aria-hidden="true"/>
      </div>
      <nav className={s.storySegments} aria-label="Jump to another story">
-       {stories.map((item,i)=><a key={item.id} href={"/atharva/stories/"+item.id} title={two(i+1)+" / "+item.title} aria-label={"Story "+two(i+1)+": "+item.title} aria-current={i===index?"page":undefined} data-story-segment={item.id}><span/></a>)}
+       {stories.map((item,i)=><a key={item.id} href={"/atharva/stories/"+item.id} title={two(i+1)+" / "+item.title} aria-label={"Story "+two(i+1)+": "+item.title} aria-current={i===index?"page":undefined} data-segment-state={i<index?"complete":i===index?"active":"upcoming"} style={{"--segment-ink":item.accent} as CSSProperties} data-story-segment={item.id}><span/></a>)}
      </nav>
    </div>
    <aside className={s.progressRail} aria-label="Case study sections" data-active-stage={chapter}>
