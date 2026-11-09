@@ -1,3 +1,6 @@
 body:has(#atharva-portfolio) { background: #080b10; }
 body:has(#atharva-portfolio) > .masthead,
 body:has(#atharva-portfolio) > .legal-footer { display:none!important; }
+@media(max-width:767px) and (prefers-reduced-motion:no-preference){
+ html:has(#atharva-portfolio){scroll-behavior:smooth}
+}
