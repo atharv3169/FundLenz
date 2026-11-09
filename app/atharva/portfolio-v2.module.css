@@ -1123,3 +1123,21 @@
 }
 .paperMetrics{display:none}
 @media(max-width:767px){.paperMetrics{display:flex;gap:20px;flex-wrap:wrap}.paperMetrics dt{font-size:11px}.paperMetrics dd{font:24px Georgia,serif;margin:3px 0}}
+.paperSwitch,.readingQuote{display:none}
+@media(max-width:767px){
+ .paperSwitch{display:grid;place-items:center;border:1px solid #81958a;border-radius:50%;width:40px;height:40px;background:transparent;color:var(--pen);flex:none}
+ .readingQuote{display:block;position:absolute;left:0;right:0;bottom:-9px;height:11px;pointer-events:none;--unread:100}
+ .readingQuote svg{width:100%;height:100%;display:block;overflow:visible}
+ .readingQuote path{fill:none;stroke-width:1.65;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+ .quoteTrack{stroke:#748d82;opacity:.32}.quoteInk{stroke:url(#paper-quote-ink);stroke-dasharray:100 100;stroke-dashoffset:var(--unread)}
+ @media(prefers-reduced-motion:no-preference){.quoteInk{transition:stroke-dashoffset .16s ease-out}}
+ .portfolioShell[data-paper=dark]{--paper:#252c2b;--pen:#ede9db;background-color:var(--paper);color:var(--pen)}
+ .portfolioShell[data-paper=dark] :is(.siteNav,.mobileNav,.paperIndex dialog,.paperIndex>button,.paperIntro,.footer){background-color:var(--paper);color:var(--pen);border-color:#64716a}
+ .portfolioShell[data-paper=dark] :is(.mark span,.eyebrow,.sectionTag,.aboutColumns p,.workIntro>p,.contact p,.skillsText span,.educationLine p,.contactLinks a,.footer a,.paperLinks,.paperIndex small,.interestsSection>div p){color:#c6d5c9}
+ .portfolioShell[data-paper=dark] :is(.hero,.about,.workIntro,.skillsSection,.contact) em,.portfolioShell[data-paper=dark] :is(.skillGroup>span,.educationLine span){color:#e6b590}
+ .portfolioShell[data-paper=dark] .paperContact{background:#c2d7c8;color:#203634}
+ .portfolioShell[data-paper=dark] .quoteTrack{stroke:#b4bfae}
+}
+
+.paperSignature{display:none}
+@media(max-width:767px){.portfolioShell .heroContent:after{display:none}.paperSignature{display:block;width:100%;height:13px;margin:13px 0 2px}}
