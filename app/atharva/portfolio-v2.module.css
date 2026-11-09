@@ -1168,15 +1168,20 @@
  @media(prefers-reduced-motion:no-preference){.tracePaint{transition:clip-path .12s ease-out}.readingQuote i{transition:transform .12s ease-out,background-color .25s}}
 }
 
-/* Persistent paper-deck stack. Expanded cards keep their place among
-   every other chapter, instead of globally switching the deck to relative. */
+/* The compact covers remain sticky and form the paper stack.
+   The open reader MUST be in normal document flow: a sticky element taller
+   than the viewport pins the unread chapters in place until the next card
+   paints over them. Only the opened card leaves the sticky stack. */
 @media(max-width:767px){
- .portfolioShell .paperDeck .storySection,
- .portfolioShell .paperDeck .storySection.storyIsOpen{
+ .portfolioShell .paperDeck .storySection{
    position:sticky;
    top:calc(52px + var(--stack)*18px);
    scroll-margin-top:calc(53px + var(--stack)*18px);
    z-index:calc(1 + var(--stack));
+ }
+ .portfolioShell .paperDeck .storySection.storyIsOpen{
+   position:relative;
+   top:auto;
  }
  .portfolioShell .paperDeck .paperAnchor{
    scroll-margin-top:calc(53px + var(--stack)*18px);
