@@ -61,6 +61,14 @@ try{
     await writeFile(path.join(output,filename),Buffer.from(data.data,"base64"));
   };
   await cmd("Page.enable");await cmd("Runtime.enable");
+  await cmd("Emulation.setDeviceMetricsOverride",{width:390,height:844,deviceScaleFactor:1,mobile:true});
+  await cmd("Page.navigate",{url:"https://www.katerinavassiliou.xyz/"});
+  await sleep(9000);
+  await shot("reference-phone.png");
+  await js("document.querySelector('[data-nav=work]')?.scrollIntoView()");
+  await sleep(1200);
+  await shot("reference-work.png");
+  await cmd("Page.navigate",{url:"http://127.0.0.1:41893/"});
   await until(()=>js('!!document.querySelector("#story-ternwell")'),60000);
   await js('document.fonts.ready.then(()=>true)');
   const ids=await js('Array.from(document.querySelectorAll("section[data-story]"),e=>e.dataset.story)');
@@ -125,6 +133,14 @@ try{
       assert.equal(await js(`document.querySelector('[aria-label="Close navigation"]').getAttribute('aria-expanded')`),"true");
       await capture("390-navigation");
       await js(`document.querySelector('[aria-label="Close navigation"]').click()`);
+    }
+    if(width===390){
+      await js("document.querySelector('button[aria-haspopup=dialog]').click()");
+      await until(()=>js("!!document.querySelector('dialog[open]')"));
+      await capture("390-project-index");
+      await js(`document.querySelector('dialog a[href="#paper-dcf"]').click()`);
+      assert.equal(await js("location.hash"),"#paper-dcf");
+      await until(()=>js("!document.querySelector('dialog[open]')"));
     }
     for(const id of ids){
       await scroll("story-"+id);await sleep(350);
