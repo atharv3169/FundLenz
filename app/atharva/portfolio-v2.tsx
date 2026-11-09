@@ -51,7 +51,6 @@ export default function PortfolioV2(){
    const dismiss=(e:KeyboardEvent)=>{if(e.key==="Escape"){setNavOpen(false);menuRef.current?.focus();}};
    window.addEventListener("keydown",dismiss);return()=>window.removeEventListener("keydown",dismiss);
  },[navOpen]);
- const [progress,setProgress]=useState(0);
  useEffect(()=>{
   const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.setAttribute("data-visible","true");observer.unobserve(e.target)}}),{rootMargin:"0px 0px -60px 0px",threshold:.06});
   document.querySelectorAll("#atharva-portfolio [data-reveal]").forEach(el=>observer.observe(el));
@@ -67,8 +66,6 @@ export default function PortfolioV2(){
   const mix=(a:number,b:number,t:number)=>Math.round(a+(b-a)*t);
   const soften=(x:number)=>{const v=Math.max(0,Math.min(1,x));return v*v*(3-2*v);};
   const onScroll=()=>{
-    const max=document.documentElement.scrollHeight-window.innerHeight;
-    setProgress(max>0?window.scrollY/max*100:0);
     const container=document.getElementById("atharva-portfolio");
     if(!container||!sections.length)return;
     const y=window.scrollY+window.innerHeight*.5;
@@ -95,7 +92,6 @@ export default function PortfolioV2(){
  return <main className={s.portfolioShell} id="atharva-portfolio" data-paper={dark?"dark":"light"}>
   <PaperIntro/>
   <div className={s.ambientWash} aria-hidden="true"/>
-  <div className={s.progressBar} style={{transform:"scaleX("+progress/100+")"}} aria-hidden="true"/>
   <nav className={s.siteNav} aria-label="Portfolio navigation">
    <a href="#top" className={s.mark} aria-label="Atharva Sahu, back to top">A<span> / </span>S<span>.</span></a>
    <span className={s.navDescriptor}>FINANCE · RESEARCH · MODELLING</span>
@@ -185,15 +181,19 @@ function ReadingQuote(){
  const meter=useRef<HTMLDivElement>(null);
  useEffect(()=>{
   const el=meter.current,root=document.getElementById("atharva-portfolio");if(!el||!root)return;
-  const media=matchMedia("(max-width:767px)"),deck=root.querySelector<HTMLElement>("[data-paper-deck]");
+  const deck=root.querySelector<HTMLElement>("[data-paper-deck]");
   if(!deck)return;
   const segments=stories.map(story=>({story,anchor:document.getElementById("paper-"+story.id),trace:document.getElementById("story-"+story.id)?.querySelector<HTMLElement>('[data-route]')}));
   let frame=0;
   const update=()=>{
-   frame=0;if(!media.matches)return;
+   frame=0;
    const clamp=(n:number)=>Math.max(0,Math.min(1,n));
    const page=clamp(scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight));
-   const stops=segments.map(s=>s.anchor?.getBoundingClientRect().top??Infinity),end=deck.getBoundingClientRect().bottom,focus=innerHeight*.56;
+   const stops=segments.map(s=>{
+     const card=document.getElementById("story-"+s.story.id);
+     const anchor=s.anchor&&getComputedStyle(s.anchor).display!=="none"?s.anchor:card;
+     return anchor?.getBoundingClientRect().top??Infinity;
+   }),end=deck.getBoundingClientRect().bottom,focus=innerHeight*.56;
    let accent="";
    segments.forEach(({trace,story},i)=>{
     const a=stops[i],b=stops[i+1]??end,part=clamp((focus-a)/Math.max(1,b-a));
@@ -213,9 +213,9 @@ function ReadingQuote(){
   };
   const schedule=()=>{if(!frame)frame=requestAnimationFrame(update);};
   const size=new ResizeObserver(schedule);size.observe(root);size.observe(deck);
-  const mode=new MutationObserver(schedule);mode.observe(deck,{subtree:true,attributes:true,attributeFilter:["data-expanded"]});
+
   window.addEventListener("scroll",schedule,{passive:true});window.addEventListener("resize",schedule);schedule();
-  return()=>{size.disconnect();mode.disconnect();cancelAnimationFrame(frame);window.removeEventListener("scroll",schedule);window.removeEventListener("resize",schedule);};
+  return()=>{size.disconnect();cancelAnimationFrame(frame);window.removeEventListener("scroll",schedule);window.removeEventListener("resize",schedule);};
  },[]);
  return <div ref={meter} className={s.readingQuote} role="progressbar" aria-label="Whole page progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={0}><i/></div>;
 }
