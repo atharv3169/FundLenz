@@ -27,6 +27,17 @@ function StorySection({story,index}:{story:Story;index:number}){
    mobileHeightFrame.current=null;
    mobileHeightEnd.current=null;
    if(window.matchMedia("(max-width:767px)").matches){
+     // A collapsed card may already be pinned below the navigation bar.
+     // Rebase the document's scroll position to its actual paper anchor before
+     // un-sticking it, so the visible title doesn't jump on opening.
+     if(next){
+       const anchor=document.getElementById("paper-"+story.id);
+       const card=sectionRef.current;
+       if(anchor&&card){
+         const offset=anchor.getBoundingClientRect().top-card.getBoundingClientRect().top;
+         if(offset< -2)window.scrollBy({top:offset,behavior:"instant"});
+       }
+     }
      const workspace=workspaceRef.current;
      if(!workspace||window.matchMedia("(prefers-reduced-motion: reduce)").matches){
        setOpen(next);
@@ -76,7 +87,7 @@ function StorySection({story,index}:{story:Story;index:number}){
      else scrollRaf.current=requestAnimationFrame(check);
    };
    scrollRaf.current=requestAnimationFrame(check);
- },[]);
+ },[story.id]);
  useEffect(()=>()=>{if(scrollRaf.current!==null)cancelAnimationFrame(scrollRaf.current);if(mobileHeightFrame.current!==null)cancelAnimationFrame(mobileHeightFrame.current);if(mobileHeightEnd.current!==null)clearTimeout(mobileHeightEnd.current);},[]);
  useEffect(()=>{
    if(!open)return;
