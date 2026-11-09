@@ -59,7 +59,7 @@ function StorySection({story,index}:{story:Story;index:number}){
    ref={sectionRef}
    id={"story-"+story.id}
    className={s.storySection+(open?" "+s.storyIsOpen:"")}
-   style={{"--accent":story.accent,"--previous-accent":stories[index-1]?.accent||story.accent,"--next-accent":stories[index+1]?.accent||story.accent} as CSSProperties}
+   style={{"--stack":Math.min(index,4),"--accent":story.accent,"--previous-accent":stories[index-1]?.accent||story.accent,"--next-accent":stories[index+1]?.accent||story.accent} as CSSProperties}
    data-story={story.id}
    data-expanded={open}
  >
@@ -199,7 +199,8 @@ export default function PortfolioV2(){
     <div className={s.aboutColumns} data-reveal><p>At Shyam Construction, I assessed whether equipment would earn enough to cover its loan repayments. That question drew me from engineering into capital budgeting and cash-flow analysis.</p><p>Today I study portfolio concentration and build models that others can test. FundLenz, DCF Atlas and Ternwell let a reader change the inputs and see how an investment or financing decision changes.</p></div>
    </section>
    <section className={s.workIntro} id="work"><span className={s.sectionTag}>02 / THE WORK, UP CLOSE</span><h2>Selected<br/><em>work.</em></h2><p>Explore the decisions, research and models behind each project.</p><div className={s.workCount}>{String(stories.length).padStart(2,"0")} <span>PROJECTS & EXPERIENCES</span></div></section>
-   {stories.map((story,i)=><StorySection key={story.id} story={story} index={i}/>)}
+   <div className={s.paperDeck}>{stories.map((story,i)=><div key={story.id} className={s.paperSlot}><span id={"paper-"+story.id} className={s.paperAnchor} style={{"--stack":Math.min(i,4)} as CSSProperties}/><StorySection story={story} index={i}/></div>)}</div>
+   <PaperIndex/>
 
    <section id="skills" className={s.skillsSection}><div data-reveal><span className={s.sectionTag}>03 / HOW I WORK</span><h2>Skills &amp;<br/><em>education.</em></h2></div>
     <div className={s.skillsColumns}>{learning.map((group,i)=><div className={s.skillGroup} key={group.title} data-reveal><span>0{i+1}</span><h3>{group.title}</h3><div className={s.skillsText}>{group.skills.map((name,j)=><span key={name}>{name}{j!==group.skills.length-1?<i> / </i>:""}</span>)}</div></div>)}</div>
@@ -224,4 +225,18 @@ function MarketPlate(){
  {closes.map((y,i)=>{const x=49+i*17.5,open=(closes[i-1]??280)+(i%3-1)*4,col=y<open?"#aad4bf":"#c8a67b",volume=9+Math.abs(y-open)*.9;return <g key={i} fill={col}><path d={`M${x} ${Math.min(open,y)-7-i%4}V${Math.max(open,y)+6+i%6}`} stroke={col}/><rect x={x-4.3} y={Math.min(y,open)} width="8.6" height={Math.max(2,Math.abs(y-open))} rx=".8"/><rect x={x-4.3} y={354-volume} width="8.6" height={volume} opacity=".42"/></g>})}
  <path className={s.goldTrace} d={line} pathLength="100" fill="none" stroke="#d8b781" strokeWidth="2.1" strokeLinejoin="round" strokeLinecap="round"/>
  </svg>;
+}
+
+function PaperIndex(){
+ const [active,setActive]=useState(0);
+ const box=useRef<HTMLDialogElement>(null);
+ const items=[{id:"top",title:"Introduction"},{id:"work",title:"Selected work"},...stories.map(v=>({id:"paper-"+v.id,title:v.title})),{id:"skills",title:"Skills & education"},{id:"contact",title:"Contact"}];
+ useEffect(()=>{
+  const mq=matchMedia("(max-width:767px)");
+  let raf=0;
+  const read=()=>{raf=0;if(!mq.matches){box.current?.close();return;}const anchors=["top","work",...stories.map(s=>"paper-"+s.id),"skills","contact"];let current=0;anchors.forEach((id,i)=>{const node=document.getElementById(id);if(node&&node.getBoundingClientRect().top<innerHeight*.36)current=i;});setActive(current);};
+  const update=()=>{if(!raf)raf=requestAnimationFrame(read);};update();window.addEventListener("scroll",update,{passive:true});window.addEventListener("resize",update);
+  return()=>{window.removeEventListener("scroll",update);window.removeEventListener("resize",update);cancelAnimationFrame(raf);};
+ },[]);
+ return <div className={s.paperIndex}><button type="button" aria-haspopup="dialog" onClick={()=>box.current?.showModal()}><b>{String(active+1).padStart(2,"0")}</b> Index ↑</button><dialog ref={box} aria-label="Portfolio index" onClick={e=>{if(e.target===box.current)box.current.close();}}><div><header>Portfolio index <button type="button" onClick={()=>box.current?.close()} aria-label="Close index">×</button></header>{items.map((it,i)=><a key={it.id} href={"#"+it.id} aria-current={active===i?"location":undefined} onClick={()=>box.current?.close()}><small>{String(i+1).padStart(2,"0")}</small>{it.title}</a>)}</div></dialog></div>;
 }
