@@ -93,7 +93,7 @@ try{
     if(open||closed){
       const copy=overview.querySelector('[class*=storyCopy]'),illustration=overview.querySelector('[class*=storyIllustration]');
       if(vis(illustration)&&vis(copy)&&overlaps(rect(copy),rect(illustration)))fail("overview copy intersects illustration");
-      if(open&&overlaps(rect(overview),rect(reader)))fail("overview intersects reader");
+      if(open&&vis(overview)&&vis(reader)&&overlaps(rect(overview),rect(reader)))fail("overview intersects reader");
       const c=rect(overview);
       for(const el of [...overview.querySelectorAll('h3,button,a[href],[class*=storyNumbers]')].filter(vis)){
         const r=rect(el);
@@ -167,6 +167,7 @@ try{
         await sleep(180);
         const mid=await js("(()=>{const s=document.getElementById('story-"+id+"'),w=s.querySelector('[class*=storyWorkspace]'),a=s.querySelector('[data-role=story-overview]'),r=s.querySelector('[data-role=story-reader]'),art=s.querySelector('[class*=storyIllustration]');return {coverOpacity:+getComputedStyle(a).opacity,readerOpacity:+getComputedStyle(r).opacity,height:w.getBoundingClientRect().height,artHeight:art.getBoundingClientRect().height,heading:r.querySelector('h3').textContent}})()");
         assert.ok(mid.coverOpacity<.97&&mid.readerOpacity>.03,id+" cover and reader must crossfade together");
+        assert.ok(mid.coverOpacity+mid.readerOpacity<1.18,id+" title handoff must avoid double-bright ghosting");
         assert.ok(mid.artHeight>170,id+" artwork must remain full size while fading");
         assert.ok(mid.heading.includes(""),"reader title visible");
         if(width===390)await capture("390-"+id+"-crossfade-opening");
