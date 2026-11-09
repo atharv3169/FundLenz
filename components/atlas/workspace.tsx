@@ -12,7 +12,6 @@ import {
   ArrowRight,
   BookOpen,
   ChartNoAxesCombined,
-  ChevronDown,
   Compass,
   Download,
   FileText,
@@ -21,8 +20,6 @@ import {
   GitBranch,
   History,
   LayoutDashboard,
-  Menu,
-  PanelLeftClose,
   Plus,
   Redo2,
   Save,
@@ -116,8 +113,6 @@ export function AtlasWorkspace() {
     [library, setLibrary] = useState<Saved[]>([]),
     [ready, setReady] = useState(false),
     [message, setMsg] = useState(''),
-    [menu, setMenu] = useState(false),
-    [collapsed, collapse] = useState(false),
     [dialog, open] = useState<
       'search' | 'save' | 'history' | 'create' | 'csv' | null
     >(null),
@@ -129,6 +124,7 @@ export function AtlasWorkspace() {
     idx = views.indexOf(view),
     Screen = components[idx],
     timer = useRef<ReturnType<typeof setTimeout> | null>(null),
+    strip = useRef<HTMLElement>(null),
     title = useRef<HTMLHeadingElement>(null);
   const notify = useCallback((s: string) => {
     setMsg(s);
@@ -164,9 +160,16 @@ export function AtlasWorkspace() {
           }
         : s,
     );
+  useEffect(() => {
+    const nav = strip.current;
+    const active = nav?.querySelector<HTMLButtonElement>('[aria-current="page"]');
+    if (!nav || !active) return;
+    const row = nav.getBoundingClientRect(), tab = active.getBoundingClientRect();
+    const shift = tab.left < row.left ? tab.left - row.left : Math.max(0, tab.right - row.right);
+    if (shift) nav.scrollBy({ left: shift, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+  }, [view]);
   const go = useCallback((v: View) => {
     setView(v);
-    setMenu(false);
     open(null);
     requestAnimationFrame(() => title.current?.focus({ preventScroll: true }));
   }, []);
@@ -315,7 +318,7 @@ export function AtlasWorkspace() {
         setPeriod,
       }}
     >
-      <main className={'atlas-app' + (collapsed ? ' a-compact' : '')}>
+      <main className="atlas-app">
         <div className="atlas-screen">
           <div className="a-banner">
             <div className="a-banner-ink">
@@ -377,30 +380,7 @@ export function AtlasWorkspace() {
               </button>
             </div>
           </div>
-          <div className="a-layout">
-            <aside className={'a-rail ' + (menu ? 'opened' : '')}>
-              <div className="a-railcap">
-                <span>WORKSPACE</span>
-                <button
-                  className="a-icon"
-                  aria-label={
-                    collapsed
-                      ? 'Expand workspace navigation'
-                      : 'Collapse workspace navigation'
-                  }
-                  onClick={() => collapse(!collapsed)}
-                >
-                  <PanelLeftClose size={15} />
-                </button>
-              </div>
-              <button
-                className="a-mobilemenu"
-                onClick={() => setMenu(!menu)}
-                aria-expanded={menu}
-              >
-                <Menu size={17} /> {view} <ChevronDown size={15} />
-              </button>
-              <nav aria-label="Atlas tools">
+              <nav ref={strip} className="a-toolstrip" aria-label="Atlas tools">
                 {views.map((v, i) => {
                   const I = icons[i];
                   return (
@@ -416,15 +396,7 @@ export function AtlasWorkspace() {
                   );
                 })}
               </nav>
-              <div className="a-railfoot">
-                <span className={'a-dot ' + (!r ? 'warn' : '')} />
-                <span>{r ? 'Model calculates' : 'Inputs required'}</span>
-                <small>
-                  {m.horizon} years ·{' '}
-                  {m.timing === 'midyear' ? 'midyear' : 'year-end'}
-                </small>
-              </div>
-            </aside>
+          <div className="a-workbody">
             <div className="a-surface">
               <div
                 className={
@@ -505,7 +477,7 @@ export function AtlasWorkspace() {
                 <Screen />
               </div>
               <div className="a-foot">
-                <span>DCF Atlas / FundLenz</span>
+                <span>DCF Atlas / FundLenz · {r ? 'Model calculates' : 'Inputs required'} · {m.horizon} years · {m.timing === 'midyear' ? 'midyear' : 'year-end'}</span>
                 <span>
                   {draftOk
                     ? 'Working draft stored locally'
