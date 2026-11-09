@@ -22,13 +22,13 @@
 .heroFoot,.stageBottom{position:absolute;bottom:24px;left:clamp(25px,8vw,145px);right:clamp(25px,8vw,145px);display:flex;align-items:center;justify-content:space-between;gap:20px;z-index:3;font-size:10px;letter-spacing:.15em;color:#859a9d}.heroFoot>span:last-child,.stageBottom>span:last-child{display:flex;align-items:center;gap:12px;}
 .currencyRibbon{height:67px;background:#10171d;border-bottom:1px solid #36433b;overflow:hidden;display:flex;align-items:center;}
 .currencyRibbon>div{display:flex;width:max-content;animation:ticker 45s linear infinite;}
-.ribbonGroup{display:flex;align-items:center;justify-content:space-around;min-width:100vw;flex:none;}
-.ribbonGroup span{display:inline-flex;gap:.7em;align-items:center;padding-inline:clamp(18px,2vw,40px);white-space:nowrap;font-size:13px;letter-spacing:.075em;color:#c7d4ce;font-weight:550;}
-.ribbonGroup i{display:grid;place-items:center;width:1.65em;height:1.65em;border:1px solid #887b5c66;border-radius:50%;font:normal 15px/1 Georgia,serif;color:#d8bc91;}
+.ribbonGroup{display:flex;align-items:center;flex:none}
+.ribbonGroup span{display:inline-flex;gap:.42em;align-items:baseline;padding-inline:12px;white-space:nowrap;font-size:13px;letter-spacing:.035em;color:#c7d4ce;font-weight:550}
+.ribbonGroup i{font:normal 16px/1 Georgia,serif;color:#d8bc91}
 .marketPlate{display:none}
-@media(min-width:821px){.hero .heroFigure{display:none}.marketPlate{display:block;position:absolute;width:min(40%,640px);right:3%;top:43%;transform:translateY(-50%);pointer-events:none}.pricePulse{animation:tracePrice 9s linear infinite}}
-@keyframes tracePrice{from{stroke-dashoffset:8}to{stroke-dashoffset:-100}}
-@media(prefers-reduced-motion:reduce){.pricePulse{display:none}}
+@media(min-width:821px){.hero .heroFigure{display:none}.marketPlate{display:block;position:absolute;width:min(57%,950px);right:-2%;top:42%;transform:translateY(-50%);pointer-events:none;mask-image:linear-gradient(90deg,transparent 2%,#000 24%,#000 86%,transparent 99%)}.goldTrace{stroke-dasharray:100 100;animation:drawPrice 7.8s ease-in-out infinite}}
+@keyframes drawPrice{0%{stroke-dashoffset:100;opacity:0}5%{opacity:1}68%,90%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:0;opacity:0}}
+@media(prefers-reduced-motion:reduce){.marketPlate .goldTrace{animation:none;stroke-dashoffset:0}}
 .about,.skillsSection,.interestsSection{padding:clamp(105px,11vw,175px) clamp(25px,8vw,145px);max-width:1600px;margin:auto;}
 .about h2,.skillsSection h2{font-size:clamp(45px,6.6vw,100px);margin-top:30px;}.aboutColumns{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,7vw,120px);margin:70px 0 0 18%}.aboutColumns p{font-size:16px;line-height:1.95;color:#b1c0c0;letter-spacing:0;}
 .workIntro{min-height:80svh;position:relative;padding:clamp(100px,13vw,200px) clamp(25px,8vw,145px);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;border-top:1px solid #354139;border-bottom:1px solid #354139;background:radial-gradient(ellipse at 85% 50%,#23332866,transparent 60%),#10161b;}
