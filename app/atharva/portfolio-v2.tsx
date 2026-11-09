@@ -63,8 +63,8 @@ function StorySection({story,index}:{story:Story;index:number}){
    data-story={story.id}
    data-expanded={open}
  >
-  <div className={s.storyWorkspace}>
-   <div className={s.storyStage} data-reveal data-role="story-overview">
+  <div className={s.storyWorkspace} data-entry={index%2?"right":"left"}>
+   <div className={s.storyStage} data-role="story-overview">
     <div className={s.storyCopy}>
      <div className={s.storyEyebrow}><span className={s.storyIndex}>{String(index+1).padStart(2,"0")}</span><span>{story.eyebrow}</span></div>
      <p className={s.storyYears}>{story.type}{story.year&&<><i> / </i> {story.year}</>}</p>
@@ -141,6 +141,10 @@ export default function PortfolioV2(){
   const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.setAttribute("data-visible","true");observer.unobserve(e.target)}}),{rootMargin:"0px 0px -60px 0px",threshold:.06});
   document.querySelectorAll("#atharva-portfolio [data-reveal]").forEach(el=>observer.observe(el));
   const sections=Array.from(document.querySelectorAll<HTMLElement>("#atharva-portfolio [data-story]"));
+  const entrants=new IntersectionObserver(entries=>entries.forEach(entry=>{
+    if(entry.isIntersecting){entry.target.setAttribute("data-entered","true");entrants.unobserve(entry.target);}
+  }),{threshold:0});
+  sections.forEach(section=>{const pane=section.querySelector("[data-entry]");if(pane){if(section.getBoundingClientRect().top>=window.innerHeight)pane.setAttribute("data-pending","true");entrants.observe(pane);}});
   const colors=stories.map(story=>{
     const hex=story.accent.slice(1);
     return [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16));
@@ -171,7 +175,7 @@ export default function PortfolioV2(){
     container.style.setProperty("--wash-alpha",alpha.toFixed(3));
   };
   onScroll();window.addEventListener("scroll",onScroll,{passive:true});
-  return()=>{observer.disconnect();window.removeEventListener("scroll",onScroll)};
+  return()=>{observer.disconnect();entrants.disconnect();window.removeEventListener("scroll",onScroll)};
  },[]);
  return <main className={s.portfolioShell} id="atharva-portfolio">
   <div className={s.ambientWash} aria-hidden="true"/>
@@ -183,7 +187,7 @@ export default function PortfolioV2(){
    <button ref={menuRef} className={s.menuToggle} onClick={()=>setNavOpen(v=>!v)} aria-expanded={navOpen} aria-label={navOpen?"Close navigation":"Open navigation"}>{navOpen?<X size={21}/>:<Menu size={21}/>}</button>
    {navOpen&&<div className={s.mobileNav}>{[["Selected work","#work"],["Skills & learning","#skills"],["Contact","#contact"],["Visit FundLenz","https://fundlenz.com/"]].map(([label,href])=><a key={href} href={href} onClick={()=>setNavOpen(false)}>{label}<ArrowUpRight size={17}/></a>)}</div>}
   </nav>
-  <section className={s.hero} id="top"><div className={s.heroFigure}><HeroWave/></div><Orrery/><div className={s.heroContent}>
+  <section className={s.hero} id="top"><div className={s.heroFigure}><HeroWave/></div><MarketPlate/><div className={s.heroContent}>
     <p className={s.eyebrow}><i/> NAGPUR, INDIA <span>/</span> FINANCE × RESEARCH × TECHNOLOGY</p>
     <h1>Atharva<br/><em>Sahu.</em></h1>
     <p className={s.heroMessage}>I model business decisions and build <em>financial research tools.</em></p>
@@ -210,14 +214,16 @@ export default function PortfolioV2(){
 }
 
 
-// An engraved orbital instrument: fixed graduations frame independently moving rings.
-function Orrery(){
- return <svg className={s.orrery} viewBox="0 0 500 500" aria-hidden="true" focusable="false">
- <defs><radialGradient id="orreryLight"><stop stopColor="#8dc9af" stopOpacity=".19"/><stop offset="1" stopColor="#8dc9af" stopOpacity="0"/></radialGradient><linearGradient id="orreryMetal" x2="1" y2="1" gradientUnits="objectBoundingBox"><stop stopColor="#527d75"/><stop offset=".5" stopColor="#d5dec3"/><stop offset="1" stopColor="#48615f"/></linearGradient></defs>
- <circle cx="250" cy="250" r="235" fill="url(#orreryLight)"/>
- <g transform="translate(250 250)" fill="none"><circle r="213" stroke="#799b8e" opacity=".32"/><circle r="201" stroke="#657f75" strokeDasharray="1 8"/>
- {Array.from({length:72},(_,i)=><path key={i} transform={`rotate(${i*5})`} d={i%6===0?"M0 -211v-10":"M0 -212v-4"} stroke={i%6===0?"#bba780":"#55706b"}/>)}
- <g className={s.meridians}>{Array.from({length:15},(_,i)=><ellipse key={i} rx="147" ry="52" transform={`rotate(${i*12})`} stroke="url(#orreryMetal)" opacity=".56"/>)}</g>
- <g className={s.orbit}><g transform="rotate(-34)"><ellipse rx="187" ry="87" stroke="#d2b681"/><circle cx="187" r="5" fill="#ead1a5"/><circle cx="-187" r="3" fill="#d2b681"/></g></g>
- <circle r="7" fill="#d0e7d6"/><circle r="15" stroke="#b9d7bd" opacity=".45"/></g></svg>;
+// Illustrative price candles, a moving average and matched trading volume.
+function MarketPlate(){
+ const closes=[267,252,257,241,228,235,247,223,211,217,193,183,196,174,167,183,158,145,153,128,114,127,109,94];
+ const avg=closes.map((_,i)=>closes.slice(Math.max(0,i-4),i+1).reduce((a,b)=>a+b,0)/Math.min(i+1,5)+12);
+ const line=avg.map((y,i)=>(i?"L":"M")+(49+i*17.5)+" "+y).join(" ");
+ return <svg className={s.marketPlate} viewBox="0 0 500 410" aria-hidden="true" focusable="false">
+ <defs><linearGradient id="plateFill" x2="0" y2="1"><stop stopColor="#a5cec0" stopOpacity=".08"/><stop offset="1" stopColor="#a5cec0" stopOpacity="0"/></linearGradient></defs>
+ <rect x="18" y="36" width="464" height="338" rx="4" fill="url(#plateFill)" stroke="#839889" strokeOpacity=".3"/>
+ {[90,145,200,255,310,354].map(y=><path key={y} d={`M35 ${y}H465`} stroke="#a4c4b6" strokeOpacity=".16" strokeDasharray={y===310?"0":"2 6"}/>)}
+ {closes.map((y,i)=>{const x=49+i*17.5,open=(closes[i-1]??280)+(i%3-1)*4,col=y<open?"#aad4bf":"#c8a67b",volume=9+Math.abs(y-open)*.9;return <g key={i} fill={col}><path d={`M${x} ${Math.min(open,y)-7-i%4}V${Math.max(open,y)+6+i%6}`} stroke={col}/><rect x={x-4.3} y={Math.min(y,open)} width="8.6" height={Math.max(2,Math.abs(y-open))} rx=".8"/><rect x={x-4.3} y={354-volume} width="8.6" height={volume} opacity=".42"/></g>})}
+ <path d={line} fill="none" stroke="#d1b185" strokeWidth="1.8"/><path className={s.pricePulse} d={line} pathLength="100" fill="none" stroke="#ffedc8" strokeWidth="3" strokeLinecap="round" strokeDasharray="8 100"/>
+ </svg>;
 }
