@@ -82,8 +82,8 @@ export default function StoryDetail({story}:{story:Story}){
    </div>
    <aside className={s.progressRail} aria-label="Case study sections" data-active-stage={chapter}>
      <span className={s.railLabel}>READING / {two(index+1)}</span>
-     <div className={s.railTrack} role="progressbar" aria-label="Case study reading progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress*100)} aria-valuetext={story.title+" · "+Math.round(progress*100)+"% read"}>
-       <div className={s.railFill}/>
+     <div className={s.railTrack}>
+       <div className={s.railFill} role="progressbar" aria-label="Case study reading progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress*100)} aria-valuetext={story.title+" · "+Math.round(progress*100)+"% read"}/>
        <a href="#case-intro" onClick={()=>setChapter(0)} className={chapter===0?s.railActive:""} aria-current={chapter===0?"location":undefined} aria-label="Go to introduction" title="Introduction"><i/></a>
        {story.chapters.map((item,i)=><a href={"#case-chapter-"+i} onClick={()=>setChapter(i+1)} key={item.title} aria-label={"Go to "+item.title} aria-current={chapter===i+1?"location":undefined} className={chapter===i+1?s.railActive:""} title={item.title}><i/></a>)}
        {hasDemo&&<a href="#case-demo" onClick={()=>setChapter(story.chapters.length+1)} aria-label="Go to interactive demo" aria-current={chapter===story.chapters.length+1?"location":undefined} className={chapter===story.chapters.length+1?s.railActive:""} title="Interactive demo"><i/></a>}
