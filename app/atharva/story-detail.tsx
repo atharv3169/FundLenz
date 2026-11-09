@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { ArrowLeft, ArrowRight, ArrowUpRight, ChevronDown } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, ChevronDown, Moon, Sun } from "lucide-react";
 import { stories, type Story } from "./stories-data";
 import { SceneFigure } from "./scenes";
 import { MiniTools } from "./mini-tools";
+import { storyProgress, storySpectrum } from "./progress-palette";
 import s from "./story-detail.module.css";
 
 const clamp=(n:number)=>Math.max(0,Math.min(1,n));
@@ -15,7 +16,7 @@ export default function StoryDetail({story}:{story:Story}){
  const next=stories[(index+1)%stories.length];
  const root=useRef<HTMLElement>(null);
  const [progress,setProgress]=useState(0);
- const [chapter,setChapter]=useState(-1);
+ const [chapter,setChapter]=useState(0);
  const [paper,setPaper]=useState(false);
  const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
 
@@ -30,8 +31,8 @@ export default function StoryDetail({story}:{story:Story}){
      raf=0;
      const scrollMax=Math.max(1,document.documentElement.scrollHeight-innerHeight);
      setProgress(clamp(scrollY/scrollMax));
-     const nodes=[...document.querySelectorAll<HTMLElement>("[data-case-chapter]")];
-     let active=-1;
+     const nodes=[...document.querySelectorAll<HTMLElement>("[data-case-stage]")];
+     let active=0;
      for(let i=0;i<nodes.length;i++){
        if(nodes[i].getBoundingClientRect().top<=innerHeight*.45)active=i;
      }
@@ -46,7 +47,20 @@ export default function StoryDetail({story}:{story:Story}){
    return()=>{window.removeEventListener("scroll",schedule);window.removeEventListener("resize",schedule);resize.disconnect();cancelAnimationFrame(raf);};
  },[story.id]);
 
- const style={"--case-accent":story.accent,"--case-progress":String(progress)} as CSSProperties;
+ const sequence=storyProgress(index,progress);
+ const style={
+   "--case-accent":story.accent,
+   "--case-progress":String(progress),
+   "--case-unread":((1-progress)*100).toFixed(3)+"%",
+   "--sequence-progress":String(sequence),
+   "--sequence-unread":((1-sequence)*100).toFixed(3)+"%",
+   "--story-spectrum":storySpectrum
+ } as CSSProperties;
+ const togglePaper=()=>setPaper(current=>{
+   const next=!current;
+   try{localStorage.setItem("atharva-paper",next?"dark":"light");}catch{}
+   return next;
+ });
  const back="/atharva#paper-"+story.id;
  return <main ref={root} id="atharva-story" className={s.page} data-story-page={story.id} data-paper={paper?"dark":"light"} style={style}>
    <div className={s.grain} aria-hidden="true"/>
@@ -54,22 +68,30 @@ export default function StoryDetail({story}:{story:Story}){
      <a className={s.back} href={back}><ArrowLeft size={16}/> All projects</a>
      <a className={s.brand} href="/atharva" aria-label="Portfolio home">A<span> / </span>S.</a>
      <span className={s.pageCount}>CASE STUDY {two(index+1)} / {two(stories.length)}</span>
+     <button className={s.paperSwitch} type="button" aria-label="Dark paper" aria-pressed={paper} onClick={togglePaper} title={paper?"Use light paper":"Use dark paper"}>{paper?<Sun size={17}/>:<Moon size={17}/>}</button>
    </nav>
-   <div className={s.topProgress} role="progressbar" aria-label="Case study reading progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress*100)}>
-     <div className={s.topFill}/>
+   <div className={s.storySequence}>
+     <div className={s.topProgress} role="progressbar" aria-label="Story sequence progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(sequence*100)} aria-valuetext={story.title+" · "+Math.round(progress*100)+"% read"}>
+       <div className={s.topSpectrum}/>
+       <div className={s.topFill}/>
+       <span className={s.progressTip} aria-hidden="true"/>
+     </div>
+     <nav className={s.storySegments} aria-label="Jump to another story">
+       {stories.map((item,i)=><a key={item.id} href={"/atharva/stories/"+item.id} title={two(i+1)+" / "+item.title} aria-label={"Story "+two(i+1)+": "+item.title} aria-current={i===index?"page":undefined} data-story-segment={item.id}><span/></a>)}
+     </nav>
    </div>
-   <aside className={s.progressRail} aria-label="Case study sections">
+   <aside className={s.progressRail} aria-label="Case study sections" data-active-stage={chapter}>
      <span className={s.railLabel}>READING / {two(index+1)}</span>
-     <div className={s.railTrack}>
+     <div className={s.railTrack} role="progressbar" aria-label="Case study reading progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress*100)} aria-valuetext={story.title+" · "+Math.round(progress*100)+"% read"}>
        <div className={s.railFill}/>
-       <a href="#case-intro" className={chapter<0?s.railActive:""} aria-label="Go to introduction" title="Introduction"><i/></a>
-       {story.chapters.map((item,i)=><a href={"#case-chapter-"+i} key={item.title} aria-label={"Go to "+item.title} aria-current={chapter===i?"location":undefined} className={chapter===i?s.railActive:""} title={item.title}><i/></a>)}
-       {hasDemo&&<a href="#case-demo" aria-label="Go to interactive demo" title="Interactive demo"><i/></a>}
-       <a href="#case-end" aria-label="Go to end" title="End"><i/></a>
+       <a href="#case-intro" className={chapter===0?s.railActive:""} aria-current={chapter===0?"location":undefined} aria-label="Go to introduction" title="Introduction"><i/></a>
+       {story.chapters.map((item,i)=><a href={"#case-chapter-"+i} key={item.title} aria-label={"Go to "+item.title} aria-current={chapter===i+1?"location":undefined} className={chapter===i+1?s.railActive:""} title={item.title}><i/></a>)}
+       {hasDemo&&<a href="#case-demo" aria-label="Go to interactive demo" aria-current={chapter===story.chapters.length+1?"location":undefined} className={chapter===story.chapters.length+1?s.railActive:""} title="Interactive demo"><i/></a>}
+       <a href="#case-end" aria-label="Go to end" aria-current={chapter===story.chapters.length+1+(hasDemo?1:0)?"location":undefined} className={chapter===story.chapters.length+1+(hasDemo?1:0)?s.railActive:""} title="End"><i/></a>
      </div>
      <span className={s.percent}>{Math.round(progress*100)}%</span>
    </aside>
-   <section className={s.hero} id="case-intro">
+   <section className={s.hero} id="case-intro" data-case-stage>
      <div className={s.heroCopy}>
        <div className={s.kicker}><span>{story.eyebrow}</span><span>{story.year}</span></div>
        <div className={s.sequence}>PROJECT JOURNAL <span>—</span> {two(index+1)} OF {two(stories.length)}</div>
@@ -90,7 +112,7 @@ export default function StoryDetail({story}:{story:Story}){
        <div><h2>The work behind<br/><em>the numbers.</em></h2><p>{story.intro}</p></div>
      </section>
      <div className={s.chapters}>
-       {story.chapters.map((item,i)=><section id={"case-chapter-"+i} data-case-chapter key={item.title} className={s.chapter}>
+       {story.chapters.map((item,i)=><section id={"case-chapter-"+i} data-case-chapter data-case-stage key={item.title} className={s.chapter}>
          <div className={s.sectionLabel}><span>{two(i+1)}</span> CHAPTER</div>
          <div className={s.chapterText}>
            <h2>{item.title}<span>.</span></h2>
@@ -99,11 +121,11 @@ export default function StoryDetail({story}:{story:Story}){
          </div>
        </section>)}
      </div>
-     {hasDemo&&<section className={s.demo} id="case-demo">
+     {hasDemo&&<section className={s.demo} id="case-demo" data-case-stage>
        <div className={s.sectionLabel}><span>{two(story.chapters.length+1)}</span> INTERACTIVE</div>
        <div className={s.demoContent}><div className={s.demoHeading}><h2>Test the idea<span>.</span></h2><p>{story.id==="study"?"A small recreation of the study companion.":"Adjust the numbers and explore a working miniature of this project. Illustrative inputs, not financial advice."}</p></div><MiniTools id={story.id}/></div>
      </section>}
-     <section className={s.closing} id="case-end">
+     <section className={s.closing} id="case-end" data-case-stage>
        <div className={s.sectionLabel}><span>END</span> THE TAKEAWAY</div>
        <div><h2>Work in<br/><em>progress.</em></h2><p>{story.hook}</p>
          <div className={s.tags}>{story.tags.map(tag=><span key={tag}>{tag}</span>)}</div>
