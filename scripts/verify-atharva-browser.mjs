@@ -164,7 +164,7 @@ try{
       await button(id);
       await expanded(id,true);
       if(width<768){
-        await sleep(180);
+        await sleep(280);
         const mid=await js("(()=>{const s=document.getElementById('story-"+id+"'),w=s.querySelector('[class*=storyWorkspace]'),a=s.querySelector('[data-role=story-overview]'),r=s.querySelector('[data-role=story-reader]'),art=s.querySelector('[class*=storyIllustration]');return {coverOpacity:+getComputedStyle(a).opacity,readerOpacity:+getComputedStyle(r).opacity,height:w.getBoundingClientRect().height,artHeight:art.getBoundingClientRect().height,heading:r.querySelector('h3').textContent}})()");
         assert.ok(mid.coverOpacity<.97&&mid.readerOpacity>.03,id+" cover and reader must crossfade together");
         assert.ok(mid.coverOpacity+mid.readerOpacity<1.18,id+" title handoff must avoid double-bright ghosting");
@@ -186,7 +186,7 @@ try{
       await capture(width+"-"+id+"-expanded");
       await js("window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))");await expanded(id,false);
       if(width<768){
-        await sleep(180);
+        await sleep(280);
         const reverse=await js("(()=>{const s=document.getElementById('story-"+id+"'),a=s.querySelector('[data-role=story-overview]'),r=s.querySelector('[data-role=story-reader]'),w=s.querySelector('[class*=storyWorkspace]');return {cover:+getComputedStyle(a).opacity,reader:+getComputedStyle(r).opacity,height:w.getBoundingClientRect().height}})()");
         assert.ok(reverse.cover>.03&&reverse.reader<.97,id+" closing must reverse the crossfade");
         if(width===390)await capture("390-"+id+"-crossfade-closing");
