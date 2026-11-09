@@ -179,18 +179,18 @@ export default function PortfolioV2(){
   <nav className={s.siteNav} aria-label="Portfolio navigation">
    <a href="#top" className={s.mark} aria-label="Atharva Sahu, back to top">A<span> / </span>S<span>.</span></a>
    <span className={s.navDescriptor}>FINANCE · RESEARCH · MODELLING</span>
-   <div className={s.navLinks}><a href="#about">About</a><a href="#work">Selected work</a><a href="#skills">Skills & learning</a><a href="#contact">Contact <ArrowUpRight size={13}/></a></div>
+   <div className={s.navLinks}><a href="#work">Selected work</a><a href="#skills">Skills & learning</a><a href="#contact">Contact</a><a href="/">Visit FundLenz <ArrowUpRight size={13}/></a></div>
    <button ref={menuRef} className={s.menuToggle} onClick={()=>setNavOpen(v=>!v)} aria-expanded={navOpen} aria-label={navOpen?"Close navigation":"Open navigation"}>{navOpen?<X size={21}/>:<Menu size={21}/>}</button>
-   {navOpen&&<div className={s.mobileNav}>{[["About","#about"],["Selected work","#work"],["Skills & learning","#skills"],["Contact","#contact"]].map(([label,href])=><a key={href} href={href} onClick={()=>setNavOpen(false)}>{label}<ArrowUpRight size={17}/></a>)}</div>}
+   {navOpen&&<div className={s.mobileNav}>{[["Selected work","#work"],["Skills & learning","#skills"],["Contact","#contact"],["Visit FundLenz","/"]].map(([label,href])=><a key={href} href={href} onClick={()=>setNavOpen(false)}>{label}<ArrowUpRight size={17}/></a>)}</div>}
   </nav>
-  <section className={s.hero} id="top"><div className={s.heroFigure}><HeroWave/></div><div className={s.heroContent}>
+  <section className={s.hero} id="top"><div className={s.heroFigure}><HeroWave/></div><Orrery/><div className={s.heroContent}>
     <p className={s.eyebrow}><i/> NAGPUR, INDIA <span>/</span> FINANCE × RESEARCH × TECHNOLOGY</p>
     <h1>Atharva<br/><em>Sahu.</em></h1>
     <p className={s.heroMessage}>I model business decisions and build <em>financial research tools.</em></p>
     <p className={s.heroIntro}>My work spans equipment financing at Shyam Construction, mutual-fund liquidity research and the FundLenz platform.</p>
     <a className={s.heroLink} href="#work">Explore my work <ArrowRight size={18}/></a>
    </div><div className={s.heroFoot}><span>PORTFOLIO / 2026</span><span>SCROLL DOWN <ArrowDown size={14}/></span></div></section>
-   <div className={s.currencyRibbon} aria-label="Decorative financial themes, not market data"><div>{[0,1].map(i=><span key={i} aria-hidden={i===1}>₹ CASH FLOW <b>↗</b> $ MARKETS <b>↗</b> € VALUATION <b>↗</b> ∑ RESEARCH <b>↗</b> £ RISK <b>↗</b> ∆ BUILDING <b>↗</b></span>)}</div></div>
+   <div className={s.currencyRibbon} aria-hidden="true"><div>{[0,1].map(group=><div className={s.ribbonGroup} key={group}>{["Cash flow","Markets","Valuation","Research","Risk","Building"].map((label,i)=><span key={label}><i>{["₹","$","€","Σ","£","Δ"][i]}</i>{label}</span>)}</div>)}</div></div>
    <section id="about" className={s.about}><div data-reveal><span className={s.sectionTag}>01 / IN SHORT</span><h2>From engineering<br/><em>to finance.</em></h2></div>
     <div className={s.aboutColumns} data-reveal><p>At Shyam Construction, I assessed whether equipment would earn enough to cover its loan repayments. That question drew me from engineering into capital budgeting and cash-flow analysis.</p><p>Today I study portfolio concentration and build models that others can test. FundLenz, DCF Atlas and Ternwell let a reader change the inputs and see how an investment or financing decision changes.</p></div>
    </section>
@@ -199,7 +199,7 @@ export default function PortfolioV2(){
 
    <section id="skills" className={s.skillsSection}><div data-reveal><span className={s.sectionTag}>03 / HOW I WORK</span><h2>Skills &amp;<br/><em>education.</em></h2></div>
     <div className={s.skillsColumns}>{learning.map((group,i)=><div className={s.skillGroup} key={group.title} data-reveal><span>0{i+1}</span><h3>{group.title}</h3><div className={s.skillsText}>{group.skills.map((name,j)=><span key={name}>{name}{j!==group.skills.length-1?<i> / </i>:""}</span>)}</div></div>)}</div>
-    <div className={s.educationLine} data-reveal><div><span>EDUCATION</span><strong>B.Tech · Electronics & Telecommunication Engineering</strong><p>St. Vincent Pallotti College of Engineering & Technology, Nagpur · 2021–2026</p></div><div><span>ENGLISH</span><strong>IELTS Academic · 8.0</strong></div></div>
+    <div className={s.educationLine} data-reveal><div><span>EDUCATION</span><strong>B.Tech · Electronics & Telecommunication Engineering</strong><p>St. Vincent Pallotti College of Engineering & Technology, Nagpur · Completed 2026</p></div><div><span>ENGLISH</span><strong>IELTS Academic · 8.0</strong></div></div>
    </section>
    <section className={s.interestsSection}><span className={s.sectionTag}>04 / RESEARCH INTERESTS</span><div>{interests.map((t,i)=><p key={t} data-reveal><span>{String(i+1).padStart(2,"0")}</span>{t}</p>)}</div></section>
    <section id="contact" className={s.contact}><span className={s.sectionTag}>05 / SAY HELLO</span><h2>Get in<br/><em>touch.</em></h2><p>For opportunities in corporate finance, investment research or financial technology, email me directly.</p><a className={s.emailLink} href="mailto:atharva@fundlenz.com?subject=Hello%20Atharva">Let&apos;s talk <ArrowUpRight size={24}/></a>
@@ -209,3 +209,15 @@ export default function PortfolioV2(){
  </main>;
 }
 
+
+// An engraved orbital instrument: fixed graduations frame independently moving rings.
+function Orrery(){
+ return <svg className={s.orrery} viewBox="0 0 500 500" aria-hidden="true" focusable="false">
+ <defs><radialGradient id="orreryLight"><stop stopColor="#8dc9af" stopOpacity=".19"/><stop offset="1" stopColor="#8dc9af" stopOpacity="0"/></radialGradient><linearGradient id="orreryMetal" x2="1" y2="1" gradientUnits="objectBoundingBox"><stop stopColor="#527d75"/><stop offset=".5" stopColor="#d5dec3"/><stop offset="1" stopColor="#48615f"/></linearGradient></defs>
+ <circle cx="250" cy="250" r="235" fill="url(#orreryLight)"/>
+ <g transform="translate(250 250)" fill="none"><circle r="213" stroke="#799b8e" opacity=".32"/><circle r="201" stroke="#657f75" strokeDasharray="1 8"/>
+ {Array.from({length:72},(_,i)=><path key={i} transform={`rotate(${i*5})`} d={i%6===0?"M0 -211v-10":"M0 -212v-4"} stroke={i%6===0?"#bba780":"#55706b"}/>)}
+ <g className={s.meridians}>{Array.from({length:15},(_,i)=><ellipse key={i} rx="147" ry="52" transform={`rotate(${i*12})`} stroke="url(#orreryMetal)" opacity=".56"/>)}</g>
+ <g className={s.orbit}><g transform="rotate(-34)"><ellipse rx="187" ry="87" stroke="#d2b681"/><circle cx="187" r="5" fill="#ead1a5"/><circle cx="-187" r="3" fill="#d2b681"/></g></g>
+ <circle r="7" fill="#d0e7d6"/><circle r="15" stroke="#b9d7bd" opacity=".45"/></g></svg>;
+}
