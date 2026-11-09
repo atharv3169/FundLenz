@@ -1,12 +1,13 @@
 "use client";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { ArrowDown, ArrowRight, ArrowUpRight, GitBranch, Mail, Menu, Moon, Sun, X } from "lucide-react";
-import { stories, learning, interests, type Story } from "./stories-data";
+import { ArrowDown, ArrowRight, ArrowUpRight, Check, GitBranch, Mail, Menu, Moon, Sun, X } from "lucide-react";
+import { stories, learning, interests, type Story, type StoryId } from "./stories-data";
+import { EXPLORED_STORIES_CHANGED, readExploredStories } from "./story-views";
 import { HeroWave, SceneFigure } from "./scenes";
 import { storySpectrum } from "./progress-palette";
 import s from "./portfolio-v2.module.css";
 
-function StorySection({story,index}:{story:Story;index:number}){
+function StorySection({story,index,completed}:{story:Story;index:number;completed:boolean}){
  return <section
    id={"story-"+story.id}
    className={s.storySection}
@@ -14,9 +15,9 @@ function StorySection({story,index}:{story:Story;index:number}){
    data-story={story.id}
    data-expanded="false"
  >
-  <StoryTrace index={index} name={story.title}/>
   <div className={s.storyWorkspace} data-entry={index%2?"right":"left"}>
    <div className={s.storyStage} data-role="story-overview">
+    {completed&&<span className={s.storyCompletion} data-story-complete={story.id} role="img" aria-label={"Explored: "+story.title} title="Full story explored"><Check size={17} strokeWidth={2.6} aria-hidden="true"/></span>}
     <div className={s.storyCopy}>
      <div className={s.cardFolio}><span>{String(index+1).padStart(2,"0")} / {String(stories.length).padStart(2,"0")}</span><span>{story.year}</span></div>
      <div className={s.storyEyebrow}><span className={s.storyIndex}>{String(index+1).padStart(2,"0")}</span><span>{story.eyebrow}</span></div>
@@ -44,6 +45,21 @@ function StorySection({story,index}:{story:Story;index:number}){
 export default function PortfolioV2(){
  const [navOpen,setNavOpen]=useState(false);
  const [dark,setDark]=useState(false);
+ const [exploredStories,setExploredStories]=useState<Set<StoryId>>(()=>new Set());
+ useEffect(()=>{
+   const refresh=()=>setExploredStories(new Set(readExploredStories()));
+   refresh();
+   window.addEventListener("pageshow",refresh);
+   window.addEventListener("focus",refresh);
+   window.addEventListener("storage",refresh);
+   window.addEventListener(EXPLORED_STORIES_CHANGED,refresh);
+   return()=>{
+     window.removeEventListener("pageshow",refresh);
+     window.removeEventListener("focus",refresh);
+     window.removeEventListener("storage",refresh);
+     window.removeEventListener(EXPLORED_STORIES_CHANGED,refresh);
+   };
+ },[]);
  useEffect(()=>{let frame=0;try{if(localStorage.getItem("atharva-paper")==="dark")frame=requestAnimationFrame(()=>setDark(true));}catch{}return()=>cancelAnimationFrame(frame);},[]);
  const togglePaper=()=>{setDark(!dark);try{localStorage.setItem("atharva-paper",dark?"light":"dark");}catch{}};
  useEffect(()=>{
@@ -125,7 +141,7 @@ export default function PortfolioV2(){
     <div className={s.paperLinks}><a href="https://www.linkedin.com/in/atharvasahu/">Connect on LinkedIn ↗</a><a href="https://github.com/atharv3169">My code on GitHub ↗</a><a href="#work" aria-label="Scroll to projects">↓</a></div>
    </section>
    <section className={s.workIntro} id="work"><span className={s.sectionTag}>02 / THE WORK, UP CLOSE</span><h2>Selected<br/><em>work.</em></h2><p>Explore the decisions, research and models behind each project.</p><div className={s.workCount}>{String(stories.length).padStart(2,"0")} <span>PROJECTS & EXPERIENCES</span></div></section>
-   <div className={s.paperDeck} data-paper-deck>{stories.map((story,i)=><div key={story.id} className={s.paperSlot}><span id={"paper-"+story.id} className={s.paperAnchor} style={{"--stack":i} as CSSProperties}/><StorySection story={story} index={i}/></div>)}</div>
+   <div className={s.paperDeck} data-paper-deck>{stories.map((story,i)=><div key={story.id} className={s.paperSlot}><span id={"paper-"+story.id} className={s.paperAnchor} style={{"--stack":i} as CSSProperties}/><StorySection story={story} index={i} completed={exploredStories.has(story.id)}/></div>)}</div>
    <PaperIndex/>
 
    <section id="skills" className={s.skillsSection}><div data-reveal><span className={s.sectionTag}>03 / HOW I WORK</span><h2>Skills &amp;<br/><em>education.</em></h2></div>
@@ -181,18 +197,13 @@ function PaperIntro(){
 }
 
 const quotePath="M0 19 L13 18 L24 20 L39 14 L48 16 L61 12 L75 15 L90 9 L103 13 L115 11 L130 15 L146 9 L158 10 L171 6 L186 11 L200 8 L215 10 L229 4 L242 7 L258 3 L273 6 L286 3 L300 2";
-function StoryTrace({index,name}:{index:number;name:string}){
- const right=Math.floor((index+1)/2)%2===1, swap=index%2===0&&index<stories.length-1;
- const trace=<><svg className={s.traceStem} viewBox="0 0 12 120" preserveAspectRatio="none" aria-hidden="true"><path d="M5 0V28L9 34L3 43L7 51L5 58V120"/></svg><svg className={s.traceTurn} viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true"><path d={swap?"M0 0V5L3 8H34L39 13L44 10L50 17H95L100 22V24":"M0 0V24"}/></svg></>;
- return <div className={s.storyTrace} data-route={right?"right":"left"} role="progressbar" aria-label={name+" story progress"} aria-valuemin={0} aria-valuemax={100} aria-valuenow={0}><div>{trace}</div><div className={s.tracePaint}>{trace}</div></div>;
-}
 function ReadingQuote(){
  const meter=useRef<HTMLDivElement>(null);
  useEffect(()=>{
   const el=meter.current,root=document.getElementById("atharva-portfolio");if(!el||!root)return;
   const deck=root.querySelector<HTMLElement>("[data-paper-deck]");
   if(!deck)return;
-  const segments=stories.map(story=>({story,anchor:document.getElementById("paper-"+story.id),trace:document.getElementById("story-"+story.id)?.querySelector<HTMLElement>('[data-route]')}));
+  const segments=stories.map(story=>({story,anchor:document.getElementById("paper-"+story.id)}));
   let frame=0;
   const update=()=>{
    frame=0;
@@ -204,10 +215,8 @@ function ReadingQuote(){
      return anchor?.getBoundingClientRect().top??Infinity;
    }),end=deck.getBoundingClientRect().bottom,focus=innerHeight*.56;
    let accent="";
-   segments.forEach(({trace,story},i)=>{
-    const a=stops[i],b=stops[i+1]??end,part=clamp((focus-a)/Math.max(1,b-a));
-    if(!trace)return;
-    trace.style.setProperty("--remaining",(100-part*100).toFixed(2)+"%");trace.setAttribute("aria-valuenow",String(Math.round(part*100)));
+   segments.forEach(({story},i)=>{
+    const a=stops[i],b=stops[i+1]??end;
     if(focus>=a&&focus<b)accent=story.accent;
    });
    const topOfDeck=deck.getBoundingClientRect().top,bottomOfDeck=deck.getBoundingClientRect().bottom;
