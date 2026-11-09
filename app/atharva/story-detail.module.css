@@ -141,7 +141,7 @@
 }
 .storySegments a:focus-visible{outline:2px solid var(--case-accent);outline-offset:-2px}
 /* Chapter progress remains independent of the ten-story timeline. */
-.railTrack[role=progressbar] .railFill{
+.railTrack .railFill[role=progressbar]{
  background:var(--case-accent);box-shadow:0 0 9px color-mix(in srgb,var(--case-accent) 65%,transparent);
 }
 .paperSwitch{display:none}
