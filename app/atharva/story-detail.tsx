@@ -20,7 +20,9 @@ export default function StoryDetail({story}:{story:Story}){
  const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
 
  useEffect(()=>{
-   try{setPaper(localStorage.getItem("atharva-paper")==="dark");}catch{}
+   let frame=0;
+   try{if(localStorage.getItem("atharva-paper")==="dark")frame=requestAnimationFrame(()=>setPaper(true));}catch{}
+   return()=>cancelAnimationFrame(frame);
  },[]);
  useEffect(()=>{
    let raf=0;
