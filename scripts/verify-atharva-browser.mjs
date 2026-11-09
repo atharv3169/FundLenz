@@ -181,7 +181,7 @@ try{
         assert.ok(opened.every((s,i)=>Math.abs(s.height-before[i].height)<3),id+" reader must not change any card height");
         assert.ok(opened.every(s=>s.opacity>.99),id+" no project may vanish when another is opened");
         assert.equal(await js("document.querySelectorAll('dialog[data-mobile-story][open]').length"),1,"only one case study may take the top layer");
-        assert.equal(await js("document.documentElement.style.overflow"),"hidden","background scroll must be locked");
+        assert.ok(await js(dialog+".matches(':modal')"),id+" reader must be native modal and inert the background");
         await js(dialog+".scrollTop=500");await sleep(150);
         const middle=await js("(()=>{const d="+dialog+",content=d.querySelector('[data-role=story-reader]');return {scroll:d.scrollTop,progress:Number(d.style.getPropertyValue('--reading-progress')),visible:document.elementFromPoint(innerWidth/2,innerHeight/2).closest('dialog')===d,readerHeight:content.getBoundingClientRect().height}})()");
         assert.ok(middle.scroll>250&&middle.progress>.02,id+" reader must scroll independently");
