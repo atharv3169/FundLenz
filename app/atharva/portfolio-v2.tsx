@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { ArrowDown, ArrowRight, ArrowUpRight, GitBranch, Mail, Menu, Moon, Sun, X } from "lucide-react";
 import { stories, learning, interests, type Story } from "./stories-data";
 import { HeroWave, SceneFigure } from "./scenes";
+import { storySpectrum } from "./progress-palette";
 import s from "./portfolio-v2.module.css";
 
 function StorySection({story,index}:{story:Story;index:number}){
@@ -214,6 +215,7 @@ function ReadingQuote(){
    const current=activeIndex>=0?stories[activeIndex]:null;
    if(!accent&&topOfDeck<=focus)accent=stories[stories.length-1].accent;
    el.style.setProperty("--page",String(page));
+   el.style.setProperty("--page-unread",((1-page)*100).toFixed(3)+"%");
    el.style.setProperty("--story-ink",accent||stories[0].accent);
    el.setAttribute("aria-valuenow",String(Math.round(page*100)));
    el.setAttribute("aria-valuetext",(current?.title||"Portfolio")+" · "+Math.round(page*100)+"%");
@@ -225,5 +227,5 @@ function ReadingQuote(){
   window.addEventListener("scroll",schedule,{passive:true});window.addEventListener("resize",schedule);schedule();
   return()=>{size.disconnect();cancelAnimationFrame(frame);window.removeEventListener("scroll",schedule);window.removeEventListener("resize",schedule);};
  },[]);
- return <div ref={meter} className={s.readingQuote} role="progressbar" aria-label="Whole page progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={0}><i/></div>;
+ return <div ref={meter} className={s.readingQuote} role="progressbar" aria-label="Whole page progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={0} style={{"--story-spectrum":storySpectrum} as CSSProperties}><i/><b aria-hidden="true"/></div>;
 }
