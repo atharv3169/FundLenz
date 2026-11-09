@@ -45,6 +45,14 @@ export default function PortfolioV2(){
  const [dark,setDark]=useState(false);
  useEffect(()=>{let frame=0;try{if(localStorage.getItem("atharva-paper")==="dark")frame=requestAnimationFrame(()=>setDark(true));}catch{}return()=>cancelAnimationFrame(frame);},[]);
  const togglePaper=()=>{setDark(!dark);try{localStorage.setItem("atharva-paper",dark?"light":"dark");}catch{}};
+ useEffect(()=>{
+   if(!location.hash.startsWith("#paper-"))return;
+   let second=0;
+   const first=requestAnimationFrame(()=>{second=requestAnimationFrame(()=>{
+     document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView({behavior:"instant",block:"start"});
+   });});
+   return()=>{cancelAnimationFrame(first);cancelAnimationFrame(second);};
+ },[]);
  const menuRef=useRef<HTMLButtonElement>(null);
  useEffect(()=>{
    if(!navOpen)return;
