@@ -1,145 +1,17 @@
 "use client";
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, GitBranch, Mail, Menu, Moon, Sun, X } from "lucide-react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { ArrowDown, ArrowRight, ArrowUpRight, GitBranch, Mail, Menu, Moon, Sun, X } from "lucide-react";
 import { stories, learning, interests, type Story } from "./stories-data";
 import { HeroWave, SceneFigure } from "./scenes";
-import { MiniTools } from "./mini-tools";
 import s from "./portfolio-v2.module.css";
 
 function StorySection({story,index}:{story:Story;index:number}){
- const [open,setOpen]=useState(false);
- const sectionRef=useRef<HTMLElement>(null);
- const toggleRef=useRef<HTMLButtonElement>(null);
- const scrollRaf=useRef<number|null>(null);
- const workspaceRef=useRef<HTMLDivElement>(null);
- const stageRef=useRef<HTMLDivElement>(null);
- const readerRef=useRef<HTMLDivElement>(null);
- const modalRef=useRef<HTMLDialogElement>(null);
- const mobileCloseTimer=useRef<number|null>(null);
- const [mobile,setMobile]=useState(false);
- useEffect(()=>{
-   const media=window.matchMedia("(max-width:767px)");
-   const update=()=>setMobile(media.matches);
-   update();
-   media.addEventListener("change",update);
-   return()=>media.removeEventListener("change",update);
- },[]);
- const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
- const changeMode=useCallback((next:boolean)=>{
-   if(scrollRaf.current!==null){
-     cancelAnimationFrame(scrollRaf.current);
-     scrollRaf.current=null;
-   }
-   if(window.matchMedia("(max-width:767px)").matches){
-     // The reader lives in the browser's top layer. No card height, scroll
-     // anchor or sticky stacking rule changes when a chapter is opened.
-     if(next){setOpen(true);return;}
-     const dialog=modalRef.current;
-     if(!dialog?.open){setOpen(false);return;}
-     if(mobileCloseTimer.current!==null)return;
-     dialog.dataset.phase="closing";
-     mobileCloseTimer.current=window.setTimeout(()=>{
-       mobileCloseTimer.current=null;
-       if(dialog.open)dialog.close();
-       setOpen(false);
-       toggleRef.current?.focus({preventScroll:true});
-     },window.matchMedia("(prefers-reduced-motion: reduce)").matches?0:460);
-     return;
-   }
-   if(next){
-     sectionRef.current?.scrollIntoView({behavior:"instant",block:"start"});
-     setOpen(true);
-     return;
-   }
-   const top=sectionRef.current?.getBoundingClientRect().top??0;
-   const close=()=>{
-     scrollRaf.current=null;
-     setOpen(false);
-     toggleRef.current?.focus({preventScroll:true});
-   };
-   if(Math.abs(top-76)<80||window.matchMedia("(prefers-reduced-motion: reduce)").matches){
-     close();
-     return;
-   }
-   sectionRef.current?.scrollIntoView({behavior:"smooth",block:"start"});
-   let previous=Number.NaN,steady=0;
-   const started=performance.now();
-   const check=()=>{
-     const current=sectionRef.current?.getBoundingClientRect().top??0;
-     steady=Number.isFinite(previous)&&Math.abs(current-previous)<.7?steady+1:0;
-     previous=current;
-     if(steady>=5||performance.now()-started>1800)close();
-     else scrollRaf.current=requestAnimationFrame(check);
-   };
-   scrollRaf.current=requestAnimationFrame(check);
- },[]);
- useEffect(()=>()=>{if(scrollRaf.current!==null)cancelAnimationFrame(scrollRaf.current);if(mobileCloseTimer.current!==null)clearTimeout(mobileCloseTimer.current);},[]);
- useEffect(()=>{
-   if(!mobile||!open)return;
-   const dialog=modalRef.current;
-   if(!dialog)return;
-   dialog.dataset.phase="opening";
-   if(!dialog.open)dialog.showModal();
-   dialog.scrollTop=0;
-   // showModal() makes the background inert. Locking document overflow here
-   // would remove its scrollbar, reflow the covers and break the paper stack.
-   return()=>{if(dialog.open)dialog.close();};
- },[mobile,open]);
- useEffect(()=>{
-   if(!open||mobile)return;
-   const onKey=(event:KeyboardEvent)=>{
-     if(event.key!=="Escape")return;
-     event.preventDefault();
-     changeMode(false);
-   };
-   window.addEventListener("keydown",onKey);
-   return()=>window.removeEventListener("keydown",onKey);
- },[open,changeMode,mobile]);
- const storyReader=<div
-     ref={readerRef}
-     id={"full-"+story.id}
-     className={s.longStory}
-     data-role="story-reader"
-     role="region"
-     aria-label={story.title+" full story"}
-     aria-hidden={!open}
-     inert={!open}
-   >
-    <div className={s.mobileReaderHeading}>
-     <div className={s.mobileReaderFolio}><span>{String(index+1).padStart(2,"0")} / {String(stories.length).padStart(2,"0")}</span><span>{story.year}</span></div>
-     <h3>{story.title}<span>.</span></h3>
-     <button type="button" onClick={()=>changeMode(false)} aria-label={"Back to "+story.title+" overview"}><ArrowLeft size={16}/> Back to overview</button>
-    </div>
-    <div className={s.storyPanelBody}>
-     <div className={s.longStoryLead}>
-      <span className={s.sectionTag}>CASE NOTES / {String(index+1).padStart(2,"0")}</span>
-      <h4>Project <em>brief.</em></h4>
-      <dl className={s.paperMetrics}>{story.numbers.map(n=><div key={n.label}><dt>{n.label}</dt><dd>{n.value}</dd></div>)}</dl>
-      <p>{story.intro}</p>
-     </div>
-     <div className={s.storyChapterList}>
-      {story.chapters.map((chapter,i)=><article key={chapter.title} className={s.chapter}>
-       <span>{String(i+1).padStart(2,"0")}</span>
-       <div><h5>{chapter.title}</h5>{chapter.paragraphs.map((p,j)=><p key={j}>{p}</p>)}</div>
-      </article>)}
-     </div>
-     {hasDemo&&<div className={s.miniStage}>
-      <div className={s.miniHead}><span className={s.sectionTag}>TRY IT YOURSELF / INTERACTIVE</span><p>{story.id==="study"?"A small recreation of the study companion.":"Change the inputs and explore a working miniature of the idea."}</p></div>
-      <MiniTools id={story.id}/>
-     </div>}
-     <div className={s.tagsLine}><span>WHAT IT INVOLVED</span><div>{story.tags.map(tag=><span key={tag}>{tag}</span>)}</div></div>
-     {story.visit&&!story.visit.pending&&<div className={s.readerFooter}>
-      <a href={story.visit.href} target="_blank" rel="noopener noreferrer">Visit {story.title} <ArrowUpRight size={17}/></a>
-     </div>}
-    </div>
-   </div>;
  return <section
-   ref={sectionRef}
    id={"story-"+story.id}
-   className={s.storySection+(open&&!mobile?" "+s.storyIsOpen:"")}
+   className={s.storySection}
    style={{"--stack":index,"--accent":story.accent,"--previous-accent":stories[index-1]?.accent||story.accent,"--next-accent":stories[index+1]?.accent||story.accent} as CSSProperties}
    data-story={story.id}
-   data-expanded={open}
+   data-expanded="false"
  >
   <StoryTrace index={index} name={story.title}/>
   <div ref={workspaceRef} className={s.storyWorkspace} data-entry={index%2?"right":"left"}>
@@ -153,17 +25,7 @@ function StorySection({story,index}:{story:Story;index:number}){
      <p className={s.storyIntro}>{story.intro}</p>
      <div className={s.paperTags}>{story.tags.slice(0,2).map(tag=><span key={tag}>{tag}</span>)}</div>
      <div className={s.storyActions}>
-      <button
-       ref={toggleRef}
-       type="button"
-       className={s.storyRead}
-       aria-expanded={open}
-       aria-controls={"full-"+story.id}
-       onClick={()=>changeMode(!open)}
-      >
-       {open&&!mobile?"Back to overview":"Read full story"}
-       {open&&!mobile?<ArrowLeft size={17}/>:<ArrowRight size={17}/>}
-      </button>
+      <a className={s.storyRead} href={"/atharva/stories/"+story.id} data-story-link={story.id} aria-label={"Read full story: "+story.title}>Read full story <ArrowRight size={17}/></a>
       {story.visit&&(story.visit.pending?<span className={s.storyUpcoming} title={"Planned URL: "+story.visit.href}>{story.visit.text} · planned URL</span>:<a className={s.storyVisit} href={story.visit.href} target="_blank" rel="noopener noreferrer">{story.visit.text}<ArrowUpRight size={17}/></a>)}
      </div>
      <div className={s.storyNumbers}>{story.numbers.map((n,i)=><div key={i}><strong>{n.value}</strong><span>{n.label}</span></div>)}</div>
@@ -174,27 +36,7 @@ function StorySection({story,index}:{story:Story;index:number}){
     </div>
    </div>
 
-   {!mobile&&storyReader}
   </div>
-  {mobile&&<dialog
-    ref={modalRef}
-    className={s.mobileStoryDialog}
-    data-mobile-story={story.id}
-    aria-label={story.title+" case study"}
-    onCancel={event=>{event.preventDefault();changeMode(false);}}
-    onScroll={event=>{
-      const element=event.currentTarget;
-      const max=Math.max(1,element.scrollHeight-element.clientHeight);
-      element.style.setProperty("--reading-progress",(element.scrollTop/max).toFixed(4));
-    }}
-   >
-    <div className={s.mobileStoryToolbar}>
-      <button type="button" onClick={()=>changeMode(false)}><ArrowLeft size={17}/> All projects</button>
-      <span>{String(index+1).padStart(2,"0")} / {String(stories.length).padStart(2,"0")} · {story.title}</span>
-    </div>
-    <div className={s.mobileStoryProgress} aria-hidden="true"><i/></div>
-    {storyReader}
-   </dialog>}
  </section>;
 }
 
@@ -359,7 +201,15 @@ function ReadingQuote(){
     trace.style.setProperty("--remaining",(100-part*100).toFixed(2)+"%");trace.setAttribute("aria-valuenow",String(Math.round(part*100)));
     if(focus>=a&&focus<b)accent=story.accent;
    });
-   el.style.setProperty("--page",String(page));el.style.setProperty("--story-ink",accent||"var(--page-ink)");el.setAttribute("aria-valuenow",String(Math.round(page*100)));
+   const topOfDeck=deck.getBoundingClientRect().top,bottomOfDeck=deck.getBoundingClientRect().bottom;
+   const activeIndex=segments.findIndex((segment,i)=>focus>=stops[i]&&focus<(stops[i+1]??end));
+   const current=activeIndex>=0?stories[activeIndex]:null;
+   if(!accent&&topOfDeck<=focus)accent=stories[stories.length-1].accent;
+   el.style.setProperty("--page",String(page));
+   el.style.setProperty("--story-ink",accent||stories[0].accent);
+   el.setAttribute("aria-valuenow",String(Math.round(page*100)));
+   el.setAttribute("aria-valuetext",(current?.title||"Portfolio")+" · "+Math.round(page*100)+"%");
+   root.dataset.activeStory=current?.id||(topOfDeck>focus?"intro":bottomOfDeck<focus?"complete":"intro");
   };
   const schedule=()=>{if(!frame)frame=requestAnimationFrame(update);};
   const size=new ResizeObserver(schedule);size.observe(root);size.observe(deck);
