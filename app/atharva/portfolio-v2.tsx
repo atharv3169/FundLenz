@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, GitBranch, Mail, Menu, X } from "lucide-react";
 import { stories, learning, interests, type Story } from "./stories-data";
 import { HeroWave, SceneFigure } from "./scenes";
@@ -12,7 +12,7 @@ function StorySection({story,index}:{story:Story;index:number}){
  const toggleRef=useRef<HTMLButtonElement>(null);
  const scrollRaf=useRef<number|null>(null);
  const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
- const changeMode=(next:boolean)=>{
+ const changeMode=useCallback((next:boolean)=>{
    if(scrollRaf.current!==null){
      cancelAnimationFrame(scrollRaf.current);
      scrollRaf.current=null;
@@ -52,7 +52,7 @@ function StorySection({story,index}:{story:Story;index:number}){
      else scrollRaf.current=requestAnimationFrame(check);
    };
    scrollRaf.current=requestAnimationFrame(check);
- };
+ },[story.id]);
  useEffect(()=>()=>{if(scrollRaf.current!==null)cancelAnimationFrame(scrollRaf.current);},[]);
  useEffect(()=>{
    if(!open)return;
@@ -63,7 +63,7 @@ function StorySection({story,index}:{story:Story;index:number}){
    };
    window.addEventListener("keydown",onKey);
    return()=>window.removeEventListener("keydown",onKey);
- },[open]);
+ },[open,changeMode]);
  return <section
    ref={sectionRef}
    id={"story-"+story.id}
