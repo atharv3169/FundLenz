@@ -160,7 +160,22 @@ try{
       await scroll((width<768?"paper-":"story-")+id);await sleep(350);
       const before=await runInspect(id,"overview",width);
       if(width===1440||width===390)await capture(width+"-"+id+"-overview");
-      await button(id);await expanded(id,true);await sleep(240);
+      await button(id);
+      if(width<768){
+        assert.equal(await js("document.getElementById('story-"+id+"').dataset.mobileTransition"),"exiting",id+" should first exit the full-size figure");
+        assert.ok(await js("document.querySelector('#story-"+id+" [class*=storyIllustration]').getBoundingClientRect().height>160"),id+" figure should not shrink before fading");
+        await sleep(210);
+        assert.ok(Number(await js("getComputedStyle(document.querySelector('#story-"+id+" [class*=storyIllustration]')).opacity"))<.98,id+" figure should fade sideways");
+        if(width===390)await capture("390-"+id+"-figure-exit");
+      }
+      await expanded(id,true);
+      if(width<768){
+        const layout=await js("(()=>{const section=document.getElementById('story-"+id+"'),stage=section.querySelector('[data-role=story-overview]'),art=section.querySelector('[class*=storyIllustration]'),copy=section.querySelector('[class*=storyCopy]'),reader=section.querySelector('[data-role=story-reader]');return {art:getComputedStyle(art).display,copyWidth:copy.getBoundingClientRect().width,stageWidth:stage.getBoundingClientRect().width,readerWidth:reader.getBoundingClientRect().width,readerDisplay:getComputedStyle(reader).display}})()");
+        assert.equal(layout.art,"none",id+" illustration must be fully removed in reader mode");
+        assert.ok(layout.copyWidth>=layout.stageWidth*.95,id+" heading should use full stage width");
+        assert.ok(layout.readerWidth>=layout.stageWidth*.95&&layout.readerDisplay!=="none",id+" full story should take full width");
+      }
+      await sleep(240);
       await runInspect(id,"opening",width);
       if(width===1440||width===390)await capture(width+"-"+id+"-opening");
       await sleep(1080);await runInspect(id,"expanded",width);
@@ -199,7 +214,12 @@ try{
   console.log("Portfolio browser checks passed: 10 stories × 4 sizes × 5 animation states, desktop/mobile screenshots, working project links, mini tools and reduced motion.");
 } finally {
   socket?.close();
-  if(chrome && chrome.exitCode===null)chrome.kill();
+  if(chrome && chrome.exitCode===null){
+    const exited=new Promise(resolve=>chrome.once("exit",resolve));
+    chrome.kill();
+    await Promise.race([exited,sleep(1500)]);
+  }
   await server.close();
-  await rm(temp,{recursive:true,force:true});
+  // Chromium can still be flushing its profile when the browser process exits.
+  await rm(temp,{recursive:true,force:true,maxRetries:12,retryDelay:200});
 }
