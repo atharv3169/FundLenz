@@ -214,7 +214,12 @@ try{
   console.log("Portfolio browser checks passed: 10 stories × 4 sizes × 5 animation states, desktop/mobile screenshots, working project links, mini tools and reduced motion.");
 } finally {
   socket?.close();
-  if(chrome && chrome.exitCode===null)chrome.kill();
+  if(chrome && chrome.exitCode===null){
+    const exited=new Promise(resolve=>chrome.once("exit",resolve));
+    chrome.kill();
+    await Promise.race([exited,sleep(1500)]);
+  }
   await server.close();
-  await rm(temp,{recursive:true,force:true});
+  // Chromium can still be flushing its profile when the browser process exits.
+  await rm(temp,{recursive:true,force:true,maxRetries:12,retryDelay:200});
 }
