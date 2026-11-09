@@ -93,7 +93,7 @@ try{
     if(open||closed){
       const copy=overview.querySelector('[class*=storyCopy]'),illustration=overview.querySelector('[class*=storyIllustration]');
       if(vis(illustration)&&vis(copy)&&overlaps(rect(copy),rect(illustration)))fail("overview copy intersects illustration");
-      if(open&&overlaps(rect(overview),rect(reader)))fail("overview intersects reader");
+      if(open&&vis(overview)&&vis(reader)&&overlaps(rect(overview),rect(reader)))fail("overview intersects reader");
       const c=rect(overview);
       for(const el of [...overview.querySelectorAll('h3,button,a[href],[class*=storyNumbers]')].filter(vis)){
         const r=rect(el);
@@ -160,27 +160,37 @@ try{
       await scroll((width<768?"paper-":"story-")+id);await sleep(350);
       const before=await runInspect(id,"overview",width);
       if(width===1440||width===390)await capture(width+"-"+id+"-overview");
+      const startingHeight=width<768?await js("document.querySelector('#story-"+id+" [class*=storyWorkspace]').getBoundingClientRect().height"):0;
       await button(id);
-      if(width<768){
-        assert.equal(await js("document.getElementById('story-"+id+"').dataset.mobileTransition"),"exiting",id+" should first exit the full-size figure");
-        assert.ok(await js("document.querySelector('#story-"+id+" [class*=storyIllustration]').getBoundingClientRect().height>160"),id+" figure should not shrink before fading");
-        await sleep(210);
-        assert.ok(Number(await js("getComputedStyle(document.querySelector('#story-"+id+" [class*=storyIllustration]')).opacity"))<.98,id+" figure should fade sideways");
-        if(width===390)await capture("390-"+id+"-figure-exit");
-      }
       await expanded(id,true);
       if(width<768){
-        const layout=await js("(()=>{const section=document.getElementById('story-"+id+"'),stage=section.querySelector('[data-role=story-overview]'),art=section.querySelector('[class*=storyIllustration]'),copy=section.querySelector('[class*=storyCopy]'),reader=section.querySelector('[data-role=story-reader]');return {art:getComputedStyle(art).display,copyWidth:copy.getBoundingClientRect().width,stageWidth:stage.getBoundingClientRect().width,readerWidth:reader.getBoundingClientRect().width,readerDisplay:getComputedStyle(reader).display}})()");
-        assert.equal(layout.art,"none",id+" illustration must be fully removed in reader mode");
-        assert.ok(layout.copyWidth>=layout.stageWidth*.95,id+" heading should use full stage width");
-        assert.ok(layout.readerWidth>=layout.stageWidth*.95&&layout.readerDisplay!=="none",id+" full story should take full width");
+        await sleep(280);
+        const mid=await js("(()=>{const s=document.getElementById('story-"+id+"'),w=s.querySelector('[class*=storyWorkspace]'),a=s.querySelector('[data-role=story-overview]'),r=s.querySelector('[data-role=story-reader]'),art=s.querySelector('[class*=storyIllustration]');return {coverOpacity:+getComputedStyle(a).opacity,readerOpacity:+getComputedStyle(r).opacity,height:w.getBoundingClientRect().height,artHeight:art.getBoundingClientRect().height,heading:r.querySelector('h3').textContent}})()");
+        assert.ok(mid.coverOpacity<.97&&mid.readerOpacity>.03,id+" cover and reader must crossfade together");
+        assert.ok(mid.coverOpacity+mid.readerOpacity<1.18,id+" title handoff must avoid double-bright ghosting");
+        assert.ok(mid.artHeight>170,id+" artwork must remain full size while fading");
+        assert.ok(mid.heading.includes(""),"reader title visible");
+        if(width===390)await capture("390-"+id+"-crossfade-opening");
       }
-      await sleep(240);
+      await sleep(width<768?720:0);
+      if(width<768){
+        const layout=await js("(()=>{const s=document.getElementById('story-"+id+"'),w=s.querySelector('[class*=storyWorkspace]'),a=s.querySelector('[data-role=story-overview]'),r=s.querySelector('[data-role=story-reader]');return {coverOpacity:+getComputedStyle(a).opacity,readerOpacity:+getComputedStyle(r).opacity,readerWidth:r.getBoundingClientRect().width,workspaceWidth:w.getBoundingClientRect().width,height:w.getBoundingClientRect().height}})()");
+        assert.ok(layout.coverOpacity<.03&&layout.readerOpacity>.97,id+" reader fully replaces the cover");
+        assert.ok(layout.readerWidth>=layout.workspaceWidth*.95,id+" reader must be full width");
+        assert.ok(layout.height>startingHeight,id+" story box must grow to fit content");
+      }
+      await sleep(90);
       await runInspect(id,"opening",width);
       if(width===1440||width===390)await capture(width+"-"+id+"-opening");
       await sleep(1080);await runInspect(id,"expanded",width);
       await capture(width+"-"+id+"-expanded");
       await js("window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))");await expanded(id,false);
+      if(width<768){
+        await sleep(280);
+        const reverse=await js("(()=>{const s=document.getElementById('story-"+id+"'),a=s.querySelector('[data-role=story-overview]'),r=s.querySelector('[data-role=story-reader]'),w=s.querySelector('[class*=storyWorkspace]');return {cover:+getComputedStyle(a).opacity,reader:+getComputedStyle(r).opacity,height:w.getBoundingClientRect().height}})()");
+        assert.ok(reverse.cover>.03&&reverse.reader<.97,id+" closing must reverse the crossfade");
+        if(width===390)await capture("390-"+id+"-crossfade-closing");
+      }
       await sleep(240);await runInspect(id,"closing",width);
       if(width===1440||width===390)await capture(width+"-"+id+"-closing");
       await sleep(900);const after=await runInspect(id,"restored",width);
