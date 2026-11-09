@@ -161,8 +161,8 @@ function StorySection({story,index}:{story:Story;index:number}){
        aria-controls={"full-"+story.id}
        onClick={()=>changeMode(!open)}
       >
-       {open?"Back to overview":"Read full story"}
-       {open?<ArrowLeft size={17}/>:<ArrowRight size={17}/>}
+       {open&&!mobile?"Back to overview":"Read full story"}
+       {open&&!mobile?<ArrowLeft size={17}/>:<ArrowRight size={17}/>}
       </button>
       {story.visit&&(story.visit.pending?<span className={s.storyUpcoming} title={"Planned URL: "+story.visit.href}>{story.visit.text} · planned URL</span>:<a className={s.storyVisit} href={story.visit.href} target="_blank" rel="noopener noreferrer">{story.visit.text}<ArrowUpRight size={17}/></a>)}
      </div>
