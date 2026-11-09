@@ -92,7 +92,7 @@ function StorySection({story,index}:{story:Story;index:number}){
    ref={sectionRef}
    id={"story-"+story.id}
    className={s.storySection+(open?" "+s.storyIsOpen:"")}
-   style={{"--stack":Math.min(index,4),"--accent":story.accent,"--previous-accent":stories[index-1]?.accent||story.accent,"--next-accent":stories[index+1]?.accent||story.accent} as CSSProperties}
+   style={{"--stack":index,"--accent":story.accent,"--previous-accent":stories[index-1]?.accent||story.accent,"--next-accent":stories[index+1]?.accent||story.accent} as CSSProperties}
    data-story={story.id}
    data-expanded={open}
  >
@@ -251,7 +251,7 @@ export default function PortfolioV2(){
     <div className={s.paperLinks}><a href="https://www.linkedin.com/in/atharvasahu/">Connect on LinkedIn ↗</a><a href="https://github.com/atharv3169">My code on GitHub ↗</a><a href="#work" aria-label="Scroll to projects">↓</a></div>
    </section>
    <section className={s.workIntro} id="work"><span className={s.sectionTag}>02 / THE WORK, UP CLOSE</span><h2>Selected<br/><em>work.</em></h2><p>Explore the decisions, research and models behind each project.</p><div className={s.workCount}>{String(stories.length).padStart(2,"0")} <span>PROJECTS & EXPERIENCES</span></div></section>
-   <div className={s.paperDeck} data-paper-deck>{stories.map((story,i)=><div key={story.id} className={s.paperSlot}><span id={"paper-"+story.id} className={s.paperAnchor} style={{"--stack":Math.min(i,4)} as CSSProperties}/><StorySection story={story} index={i}/></div>)}</div>
+   <div className={s.paperDeck} data-paper-deck>{stories.map((story,i)=><div key={story.id} className={s.paperSlot}><span id={"paper-"+story.id} className={s.paperAnchor} style={{"--stack":i} as CSSProperties}/><StorySection story={story} index={i}/></div>)}</div>
    <PaperIndex/>
 
    <section id="skills" className={s.skillsSection}><div data-reveal><span className={s.sectionTag}>03 / HOW I WORK</span><h2>Skills &amp;<br/><em>education.</em></h2></div>
