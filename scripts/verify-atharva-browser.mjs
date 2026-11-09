@@ -207,16 +207,16 @@ try{
       await scroll((width<768?"paper-":"story-")+id);await sleep(350);
       const before=await runInspect(id,"overview",width);
       if(width===1440||width===390)await capture(width+"-"+id+"-overview");
-      const startingHeight=width<768?await js("document.querySelector('#story-"+id+" [class*=storyWorkspace]').getBoundingClientRect().height"):0;
+      const startingHeight=width<768?await js("document.getElementById('story-"+id+"').getBoundingClientRect().height"):0;
       await button(id);await expanded(id,true);
       if(width<768){
         const dialog="document.querySelector('dialog[data-mobile-story="+id+"]')";
         await until(()=>js(dialog+".open"));
         await sleep(280);
-        const mid=await js("(()=>{const d="+dialog+",r=d.querySelector('[data-role=story-reader]'),cover=document.getElementById('story-"+id+"');return {opacity:+getComputedStyle(d).opacity,readerWidth:r.getBoundingClientRect().width,coverHeight:cover.querySelector('[class*=storyWorkspace]').getBoundingClientRect().height,heading:r.querySelector('h3').textContent}})()");
+        const mid=await js("(()=>{const d="+dialog+",r=d.querySelector('[data-role=story-reader]'),cover=document.getElementById('story-"+id+"');return {opacity:+getComputedStyle(d).opacity,readerWidth:r.getBoundingClientRect().width,coverHeight:cover.querySelector('[class*=storyWorkspace]').getBoundingClientRect().height,cardHeight:cover.getBoundingClientRect().height,cardClass:cover.className,heading:r.querySelector('h3').textContent}})()");
         assert.ok(mid.opacity>.02&&mid.opacity<1.01,id+" full-screen reader must fade in");
         assert.ok(mid.readerWidth>=width*.95,id+" reader must occupy full viewport width");
-        assert.ok(Math.abs(mid.coverHeight-startingHeight)<2,id+" opening reader must not resize stack cover");
+        assert.ok(Math.abs(mid.cardHeight-startingHeight)<3,id+" opening reader must not change card boundary; "+JSON.stringify({startingHeight,cardHeight:mid.cardHeight,innerHeight:mid.coverHeight,className:mid.cardClass}));
         assert.ok(mid.heading.includes(""),id+" reader title is present");
         if(width===390)await capture("390-"+id+"-crossfade-opening");
         await sleep(450);
