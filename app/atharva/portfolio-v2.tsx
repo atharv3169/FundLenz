@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, GitBranch, Mail, Menu, X } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, GitBranch, Mail, Menu, Moon, Sun, X } from "lucide-react";
 import { stories, learning, interests, type Story } from "./stories-data";
 import { HeroWave, SceneFigure } from "./scenes";
 import { MiniTools } from "./mini-tools";
@@ -142,6 +142,9 @@ function StorySection({story,index}:{story:Story;index:number}){
 
 export default function PortfolioV2(){
  const [navOpen,setNavOpen]=useState(false);
+ const [dark,setDark]=useState(false);
+ useEffect(()=>{let frame=0;try{if(localStorage.getItem("atharva-paper")==="dark")frame=requestAnimationFrame(()=>setDark(true));}catch{}return()=>cancelAnimationFrame(frame);},[]);
+ const togglePaper=()=>{setDark(!dark);try{localStorage.setItem("atharva-paper",dark?"light":"dark");}catch{}};
  const menuRef=useRef<HTMLButtonElement>(null);
  useEffect(()=>{
    if(!navOpen)return;
@@ -189,7 +192,7 @@ export default function PortfolioV2(){
   onScroll();window.addEventListener("scroll",onScroll,{passive:true});
   return()=>{observer.disconnect();entrants.disconnect();window.removeEventListener("scroll",onScroll)};
  },[]);
- return <main className={s.portfolioShell} id="atharva-portfolio">
+ return <main className={s.portfolioShell} id="atharva-portfolio" data-paper={dark?"dark":"light"}>
   <PaperIntro/>
   <div className={s.ambientWash} aria-hidden="true"/>
   <div className={s.progressBar} style={{transform:"scaleX("+progress/100+")"}} aria-hidden="true"/>
@@ -198,6 +201,8 @@ export default function PortfolioV2(){
    <span className={s.navDescriptor}>FINANCE · RESEARCH · MODELLING</span>
    <div className={s.navLinks}><a href="#work">Selected work</a><a href="#skills">Skills & learning</a><a href="#contact">Contact</a><a href="https://fundlenz.com/">Visit FundLenz <ArrowUpRight size={13}/></a></div>
    <a className={s.paperContact} href="#contact">Contact</a>
+   <button className={s.paperSwitch} type="button" aria-label="Dark paper" aria-pressed={dark} onClick={togglePaper}>{dark?<Sun size={17}/>:<Moon size={17}/>}</button>
+   <ReadingQuote/>
    <button ref={menuRef} className={s.menuToggle} onClick={()=>setNavOpen(v=>!v)} aria-expanded={navOpen} aria-label={navOpen?"Close navigation":"Open navigation"}>{navOpen?<X size={21}/>:<Menu size={21}/>}</button>
    {navOpen&&<div className={s.mobileNav}>{[["Selected work","#work"],["Skills & learning","#skills"],["Contact","#contact"],["Visit FundLenz","https://fundlenz.com/"]].map(([label,href])=><a key={href} href={href} onClick={()=>setNavOpen(false)}>{label}<ArrowUpRight size={17}/></a>)}</div>}
   </nav>
@@ -206,6 +211,7 @@ export default function PortfolioV2(){
     <h1>Atharva<br/><em>Sahu.</em></h1>
     <p className={s.heroMessage}>I model business decisions and build <em>financial research tools.</em></p>
     <p className={s.heroIntro}>My work spans equipment financing at Shyam Construction, mutual-fund liquidity research and the FundLenz platform.</p>
+    <svg className={s.paperSignature} viewBox="0 0 300 23" preserveAspectRatio="none" aria-hidden="true"><path d={quotePath} fill="none" stroke="url(#paper-quote-ink)" strokeWidth="2" vectorEffect="non-scaling-stroke"/></svg>
     <a className={s.heroLink} href="#work">Explore my work <ArrowRight size={18}/></a>
    </div><div className={s.heroFoot}><span>PORTFOLIO / 2026</span><span>SCROLL DOWN <ArrowDown size={14}/></span></div></section>
    <div className={s.currencyRibbon} aria-hidden="true"><div>{[0,1].map(group=><div className={s.ribbonGroup} key={group}>{[["₹","Cash flow"],["β","Beta"],["$","Markets"],["%","Yield"],["€","Valuation"],["Σ","Research"],["σ","Volatility"],["£","Capital"],["Δ","Change"],["×","Multiples"],["¥","FX"],["ρ","Correlation"],["α","Alpha"],["±","Risk"],["bps","Spreads"],["ƒ","Forecasts"]].map(([symbol,label])=><span key={label}><i>{symbol}</i>{label}</span>)}</div>)}</div></div>
@@ -267,4 +273,34 @@ function PaperIntro(){
  return visible?<div className={s.paperIntro}><span>ATHARVA SAHU · PORTFOLIO</span>
  <svg viewBox="0 0 240 160" aria-hidden="true">{["#965947","#cd983a","#427667","#466d8a"].map((c,i)=><path key={c} transform={`translate(${i*3},${i*2})`} d="M24 129 Q38 83 68 30 Q78 7 84 38 L109 123 M47 89 Q73 77 96 80 M192 46 C144 18 108 79 156 82 S193 145 127 125" fill="none" stroke={c} strokeWidth="4" strokeLinecap="round" pathLength="1"/>)}</svg>
  <button onClick={()=>setVisible(false)}>Skip intro →</button></div>:null;
+}
+
+const quotePath="M0 19 L13 18 L24 20 L39 14 L48 16 L61 12 L75 15 L90 9 L103 13 L115 11 L130 15 L146 9 L158 10 L171 6 L186 11 L200 8 L215 10 L229 4 L242 7 L258 3 L273 6 L286 3 L300 2";
+function ReadingQuote(){
+ const meter=useRef<HTMLDivElement>(null);
+ useEffect(()=>{
+  const el=meter.current,root=document.getElementById("atharva-portfolio");
+  if(!el||!root)return;
+  const media=matchMedia("(max-width:767px)");let frame=0;
+  const update=()=>{
+   frame=0;if(!media.matches)return;
+   const header=el.parentElement?.getBoundingClientRect().height??52;
+   let scope="Portfolio",ratio=window.scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight);
+   for(const section of root.querySelectorAll<HTMLElement>('[data-story][data-expanded="true"]')){
+    const r=section.getBoundingClientRect();
+    if(r.top<=innerHeight*.4&&r.bottom>header){
+     scope=(stories.find(v=>v.id===section.dataset.story)?.title??"Story");
+     ratio=r.height<=innerHeight-header?1:(header-r.top)/Math.max(1,r.height-innerHeight+header);break;
+    }
+   }
+   const value=Math.max(0,Math.min(1,ratio));
+   el.style.setProperty("--unread",String(100-value*100));
+   el.setAttribute("aria-label",scope+" reading progress");el.setAttribute("aria-valuenow",String(Math.round(value*100)));
+  };
+  const schedule=()=>{if(!frame)frame=requestAnimationFrame(update);};
+  const size=new ResizeObserver(schedule);size.observe(root);const mode=new MutationObserver(schedule);mode.observe(root,{subtree:true,attributes:true,attributeFilter:["data-expanded"]});
+  window.addEventListener("scroll",schedule,{passive:true});window.addEventListener("resize",schedule);schedule();
+  return()=>{size.disconnect();mode.disconnect();cancelAnimationFrame(frame);window.removeEventListener("scroll",schedule);window.removeEventListener("resize",schedule);};
+ },[]);
+ return <div ref={meter} className={s.readingQuote} role="progressbar" aria-label="Portfolio reading progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={0}><svg viewBox="0 0 300 23" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="paper-quote-ink"><stop stopColor="#b65c4c"/><stop offset=".32" stopColor="#c99b40"/><stop offset=".65" stopColor="#49a78a"/><stop offset="1" stopColor="#518db0"/></linearGradient></defs><path d={quotePath} className={s.quoteTrack}/><path d={quotePath} pathLength="100" className={s.quoteInk}/></svg></div>;
 }
