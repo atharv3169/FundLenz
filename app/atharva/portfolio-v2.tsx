@@ -81,12 +81,9 @@ function StorySection({story,index}:{story:Story;index:number}){
    dialog.dataset.phase="opening";
    if(!dialog.open)dialog.showModal();
    dialog.scrollTop=0;
-   const previousOverflow=document.documentElement.style.overflow;
-   document.documentElement.style.overflow="hidden";
-   return()=>{
-     document.documentElement.style.overflow=previousOverflow;
-     if(dialog.open)dialog.close();
-   };
+   // showModal() makes the background inert. Locking document overflow here
+   // would remove its scrollbar, reflow the covers and break the paper stack.
+   return()=>{if(dialog.open)dialog.close();};
  },[mobile,open]);
  useEffect(()=>{
    if(!open||mobile)return;
