@@ -24,7 +24,7 @@ export function FundDemo(){
    return Object.entries(bag).sort((a,b)=>b[1]-a[1]);
  })();
  const hhi=composition.reduce((v,[,w])=>v+w*w,0);
- const effective=hhi?1/hhi:0,top=composition[0];
+ const effective=hhi?1/hhi:0,top=total?composition[0]:undefined;
  return <div className={m.toolLayout}>
    <div className={m.toolIntro}><span className={m.miniEyebrow}>INTERACTIVE / FUND OVERLAP</span><h4>Three funds.<br/><em>One portfolio.</em></h4><p>Change allocations to see how shared holdings build up. This demo uses entirely <strong>synthetic holdings</strong> with invented names, not live ETF data.</p>
    <div className={m.allocControls}>{toyFunds.map((fund,i)=><label key={fund.name} className={m.rangeRow}><span>{fund.name}<strong>{total?pct(weights[i]*100):"0%"}</strong></span><input type="range" min="0" max="100" step="5" value={shares[i]} onChange={e=>setShares(prev=>prev.map((v,j)=>i===j?+e.target.value:v))}/></label>)}</div>

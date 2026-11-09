@@ -104,8 +104,8 @@ function StorySection({story,index}:{story:Story;index:number}){
    >
     <div className={s.storyPanelBody}>
      <div className={s.longStoryLead}>
-      <span className={s.sectionTag}>THE DEEPER STORY / {String(index+1).padStart(2,"0")}</span>
-      <h4>Behind <em>the work.</em></h4>
+      <span className={s.sectionTag}>CASE NOTES / {String(index+1).padStart(2,"0")}</span>
+      <h4>Project <em>brief.</em></h4>
       <p>{story.intro}</p>
      </div>
      <div className={s.storyChapterList}>
@@ -130,6 +130,12 @@ function StorySection({story,index}:{story:Story;index:number}){
 
 export default function PortfolioV2(){
  const [navOpen,setNavOpen]=useState(false);
+ const menuRef=useRef<HTMLButtonElement>(null);
+ useEffect(()=>{
+   if(!navOpen)return;
+   const dismiss=(e:KeyboardEvent)=>{if(e.key==="Escape"){setNavOpen(false);menuRef.current?.focus();}};
+   window.addEventListener("keydown",dismiss);return()=>window.removeEventListener("keydown",dismiss);
+ },[navOpen]);
  const [progress,setProgress]=useState(0);
  useEffect(()=>{
   const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.setAttribute("data-visible","true");observer.unobserve(e.target)}}),{rootMargin:"0px 0px -60px 0px",threshold:.06});
@@ -172,33 +178,33 @@ export default function PortfolioV2(){
   <div className={s.progressBar} style={{transform:"scaleX("+progress/100+")"}} aria-hidden="true"/>
   <nav className={s.siteNav} aria-label="Portfolio navigation">
    <a href="#top" className={s.mark} aria-label="Atharva Sahu, back to top">A<span> / </span>S<span>.</span></a>
-   <span className={s.navDescriptor}>FINANCE · RESEARCH · THINGS I BUILD</span>
+   <span className={s.navDescriptor}>FINANCE · RESEARCH · MODELLING</span>
    <div className={s.navLinks}><a href="#about">About</a><a href="#work">Selected work</a><a href="#skills">Skills & learning</a><a href="#contact">Contact <ArrowUpRight size={13}/></a></div>
-   <button className={s.menuToggle} onClick={()=>setNavOpen(v=>!v)} aria-expanded={navOpen} aria-label={navOpen?"Close navigation":"Open navigation"}>{navOpen?<X size={21}/>:<Menu size={21}/>}</button>
+   <button ref={menuRef} className={s.menuToggle} onClick={()=>setNavOpen(v=>!v)} aria-expanded={navOpen} aria-label={navOpen?"Close navigation":"Open navigation"}>{navOpen?<X size={21}/>:<Menu size={21}/>}</button>
    {navOpen&&<div className={s.mobileNav}>{[["About","#about"],["Selected work","#work"],["Skills & learning","#skills"],["Contact","#contact"]].map(([label,href])=><a key={href} href={href} onClick={()=>setNavOpen(false)}>{label}<ArrowUpRight size={17}/></a>)}</div>}
   </nav>
   <section className={s.hero} id="top"><div className={s.heroFigure}><HeroWave/></div><div className={s.heroContent}>
     <p className={s.eyebrow}><i/> NAGPUR, INDIA <span>/</span> FINANCE × RESEARCH × TECHNOLOGY</p>
-    <h1>Hey, I&apos;m<br/><em>Atharva.</em></h1>
-    <p className={s.heroMessage}>I started with machines. Then I got curious about <em>the numbers behind them.</em></p>
-    <p className={s.heroIntro}>Now I research investments, build financial tools and try to make the difficult parts of finance easier to explore. This is what I&apos;ve been working on.</p>
+    <h1>Atharva<br/><em>Sahu.</em></h1>
+    <p className={s.heroMessage}>I model business decisions and build <em>financial research tools.</em></p>
+    <p className={s.heroIntro}>My work spans equipment financing at Shyam Construction, mutual-fund liquidity research and the FundLenz platform.</p>
     <a className={s.heroLink} href="#work">Explore my work <ArrowRight size={18}/></a>
    </div><div className={s.heroFoot}><span>PORTFOLIO / 2026</span><span>SCROLL DOWN <ArrowDown size={14}/></span></div></section>
    <div className={s.currencyRibbon} aria-label="Decorative financial themes, not market data"><div>{[0,1].map(i=><span key={i} aria-hidden={i===1}>₹ CASH FLOW <b>↗</b> $ MARKETS <b>↗</b> € VALUATION <b>↗</b> ∑ RESEARCH <b>↗</b> £ RISK <b>↗</b> ∆ BUILDING <b>↗</b></span>)}</div></div>
-   <section id="about" className={s.about}><div data-reveal><span className={s.sectionTag}>01 / IN SHORT</span><h2>I didn&apos;t plan a straight line.<br/><em>I followed the interesting questions.</em></h2></div>
-    <div className={s.aboutColumns} data-reveal><p>Engineering gave me a way of thinking. Working on accounts and machinery-financing decisions at Shyam Construction gave me a reason to use it. I wanted to understand why a business makes one investment instead of another, and what happens when the numbers stop cooperating.</p><p>That curiosity took me into mutual-fund liquidity research, FundLenz, FinCalc and now DCF modelling. I&apos;m interested in corporate finance, investment research and technology that makes complex decisions clearer. There&apos;s still a lot I want to learn.</p></div>
+   <section id="about" className={s.about}><div data-reveal><span className={s.sectionTag}>01 / IN SHORT</span><h2>From engineering<br/><em>to finance.</em></h2></div>
+    <div className={s.aboutColumns} data-reveal><p>At Shyam Construction, I assessed whether equipment would earn enough to cover its loan repayments. That question drew me from engineering into capital budgeting and cash-flow analysis.</p><p>Today I study portfolio concentration and build models that others can test. FundLenz, DCF Atlas and Ternwell let a reader change the inputs and see how an investment or financing decision changes.</p></div>
    </section>
-   <section className={s.workIntro} id="work"><span className={s.sectionTag}>02 / THE WORK, UP CLOSE</span><h2>Things I&apos;ve<br/><em>actually done.</em></h2><p>Every section is a chapter, not a card. Open any story to go deeper—and try the small working demos built into a few of them.</p><div className={s.workCount}>{String(stories.length).padStart(2,"0")} <span>PROJECTS & EXPERIENCES</span></div></section>
+   <section className={s.workIntro} id="work"><span className={s.sectionTag}>02 / THE WORK, UP CLOSE</span><h2>Selected<br/><em>work.</em></h2><p>Explore the decisions, research and models behind each project.</p><div className={s.workCount}>{String(stories.length).padStart(2,"0")} <span>PROJECTS & EXPERIENCES</span></div></section>
    {stories.map((story,i)=><StorySection key={story.id} story={story} index={i}/>)}
 
-   <section id="skills" className={s.skillsSection}><div data-reveal><span className={s.sectionTag}>03 / HOW I WORK</span><h2>Tools, methods<br/><em>and things I keep learning.</em></h2><p>Subjects I&apos;ve worked with and programmes I&apos;ve completed. They&apos;re presented as plain text, not interactive buttons or professional licences.</p></div>
+   <section id="skills" className={s.skillsSection}><div data-reveal><span className={s.sectionTag}>03 / HOW I WORK</span><h2>Skills &amp;<br/><em>education.</em></h2></div>
     <div className={s.skillsColumns}>{learning.map((group,i)=><div className={s.skillGroup} key={group.title} data-reveal><span>0{i+1}</span><h3>{group.title}</h3><div className={s.skillsText}>{group.skills.map((name,j)=><span key={name}>{name}{j!==group.skills.length-1?<i> / </i>:""}</span>)}</div></div>)}</div>
     <div className={s.educationLine} data-reveal><div><span>EDUCATION</span><strong>B.Tech · Electronics & Telecommunication Engineering</strong><p>St. Vincent Pallotti College of Engineering & Technology, Nagpur · 2021–2026</p></div><div><span>ENGLISH</span><strong>IELTS Academic · 8.0</strong></div></div>
    </section>
-   <section className={s.interestsSection}><span className={s.sectionTag}>04 / THINGS THAT KEEP ME CURIOUS</span><div>{interests.map((t,i)=><p key={t} data-reveal><span>{String(i+1).padStart(2,"0")}</span>{t}</p>)}</div></section>
-   <section id="contact" className={s.contact}><span className={s.sectionTag}>05 / SAY HELLO</span><h2>Got an interesting<br/><em>problem to work on?</em></h2><p>I&apos;m exploring work in finance, research and financial technology. If something here caught your attention, I&apos;d be happy to hear from you.</p><a className={s.emailLink} href="mailto:atharva@fundlenz.com?subject=Hello%20Atharva">Let&apos;s talk <ArrowUpRight size={24}/></a>
+   <section className={s.interestsSection}><span className={s.sectionTag}>04 / RESEARCH INTERESTS</span><div>{interests.map((t,i)=><p key={t} data-reveal><span>{String(i+1).padStart(2,"0")}</span>{t}</p>)}</div></section>
+   <section id="contact" className={s.contact}><span className={s.sectionTag}>05 / SAY HELLO</span><h2>Get in<br/><em>touch.</em></h2><p>For opportunities in corporate finance, investment research or financial technology, email me directly.</p><a className={s.emailLink} href="mailto:atharva@fundlenz.com?subject=Hello%20Atharva">Let&apos;s talk <ArrowUpRight size={24}/></a>
     <div className={s.contactLinks}><a href="mailto:atharva@fundlenz.com"><Mail size={17}/> Email <ArrowUpRight size={14}/></a><a href="https://www.linkedin.com/in/atharvasahu/" target="_blank" rel="noopener noreferrer">LinkedIn <ArrowUpRight size={14}/></a><a href="https://github.com/atharv3169" target="_blank" rel="noopener noreferrer"><GitBranch size={17}/> GitHub <ArrowUpRight size={14}/></a></div></section>
-   <footer className={s.footer}><span>© 2026 ATHARVA SAHU</span><span>BUILT WITH CURIOSITY IN NAGPUR</span><a href="#top">BACK TO TOP ↑</a></footer>
+   <footer className={s.footer}><span>© 2026 ATHARVA SAHU</span><span>NAGPUR, INDIA</span><a href="#top">BACK TO TOP ↑</a></footer>
 
  </main>;
 }

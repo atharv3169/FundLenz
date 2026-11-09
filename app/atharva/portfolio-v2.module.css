@@ -956,34 +956,84 @@
 }
 
 
-/* Stable desktop text width throughout the spatial morph. The artwork is
-   absolutely positioned, so the nested stage grid is unnecessary and was
-   briefly collapsing the headline into a one-letter-wide column. */
-@media(min-width:1024px){
+/* The stage owns its layout, not the illustration. Sharing normal-flow grid
+   tracks keeps the overview, actions and artwork separate at every width. */
+.portfolioShell .storyWorkspace>.storyStage .storyCopy,
+.portfolioShell .storyWorkspace>.storyStage .storyIllustration,
+.storyPanelBody,.chapter>div,.toolResults,.toolIntro,.metricPair>div{min-width:0}
+.portfolioShell .storyWorkspace>.storyStage .storyIllustration{
+ position:relative;inset:auto;width:100%;min-height:0;max-height:none;margin:0;
+ mask-image:none;align-self:center;opacity:1;
+ transition:opacity .3s ease;
+}
+.portfolioShell .storyWorkspace>.storyStage .storyCopy{max-width:none;width:100%;margin:0}
+.storyRead,.storyVisit,.storyUpcoming{max-width:100%;white-space:normal;text-align:center}
+.storyNumbers strong{white-space:normal;overflow-wrap:anywhere}
+.storyIndex,.storyActions svg{flex-shrink:0}
+.storyPanelBody .longStoryLead,.storyPanelBody .chapter p{max-width:70ch}
+.educationLine>div,.skillsColumns>div,.aboutColumns>p{min-width:0}
+@media(min-width:961px){
+ .portfolioShell .storyWorkspace{height:auto;min-height:calc(100svh - 76px)}
  .portfolioShell .storyWorkspace>.storyStage{
-   display:block;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);height:auto;
+  min-height:calc(100svh - 76px);align-items:center;align-content:center;
+ }
+ .portfolioShell .storyWorkspace>.storyStage .storyIllustration{height:clamp(320px,53svh,590px)}
+ .portfolioShell .storySection.storyIsOpen>.storyWorkspace>.storyStage{
+  display:grid;grid-template-columns:minmax(0,1fr);align-content:start;
+  align-items:start;height:auto;min-height:0;max-height:none;row-gap:12px;
+ }
+ .portfolioShell .storySection.storyIsOpen .storyCopy{padding:clamp(20px,3vw,45px) clamp(19px,2.6vw,44px) 0}
+ .portfolioShell .storySection.storyIsOpen .storyIllustration{
+  height:clamp(160px,29svh,315px);padding:0 clamp(10px,1.3vw,25px);
+ }
+ .portfolioShell .storySection.storyIsOpen .storyIntro,
+ .portfolioShell .storySection.storyIsOpen .storyNumbers{max-height:none}
+ .portfolioShell .storySection:not(.storyIsOpen) .storyCopy{
+  padding:clamp(32px,6svh,92px) clamp(16px,2.2vw,45px) clamp(32px,6svh,92px) clamp(32px,6vw,116px)
+ }
+}
+@media(max-width:960px){
+ .portfolioShell .storyWorkspace>.storyStage{
+  display:grid;grid-template-columns:minmax(0,1fr);align-items:center;height:auto;
+  min-height:0;max-height:none;align-content:start;
  }
  .portfolioShell .storyWorkspace>.storyStage .storyCopy{
-   width:49%;
-   max-width:none;
-   min-width:0;
-   transition:width 1500ms cubic-bezier(.22,.68,.18,1),padding 1500ms cubic-bezier(.22,.68,.18,1);
+  padding:clamp(34px,6vw,75px) clamp(20px,5vw,50px) 12px;
  }
- .portfolioShell .storyIsOpen>.storyWorkspace>.storyStage .storyCopy{
-   width:100%;
-   max-width:none;
+ .portfolioShell .storyWorkspace>.storyStage .storyIllustration{
+  height:clamp(210px,48vw,370px);padding:0 clamp(14px,3.5vw,40px);margin:0 0 24px;
  }
+ .portfolioShell .storySection.storyIsOpen>.storyWorkspace>.storyStage{
+  grid-template-columns:minmax(0,3fr) minmax(0,2fr);height:auto;min-height:0;max-height:none;
+ }
+ .portfolioShell .storySection.storyIsOpen .storyCopy{width:100%;max-width:none;padding:22px clamp(18px,4vw,44px)}
+ .portfolioShell .storySection.storyIsOpen .storyIllustration{height:170px;padding:0 10px;margin:0}
+ .portfolioShell .storyIsOpen .storyIntro,.portfolioShell .storyIsOpen .storyNumbers{display:none}
+ .portfolioShell .storyPanelBody{padding:24px clamp(20px,5vw,50px) 42px}
+ .portfolioShell .storySection:not(.storyIsOpen) .longStory{display:none}
 }
-
-
-/* Maintain readable headline width throughout both transition directions. */
-@media(min-width:1024px){
- .portfolioShell .storyWorkspace>.storyStage .storyCopy,
- .portfolioShell .storyIsOpen>.storyWorkspace>.storyStage .storyCopy{
-   width:100%;
-   max-width:min(750px,55vw);
-   transition:padding 950ms cubic-bezier(.22,.68,.18,1);
- }
+@media(max-width:600px){
+ .portfolioShell .storySection.storyIsOpen>.storyWorkspace>.storyStage{grid-template-columns:minmax(0,1fr)}
+ .portfolioShell .storySection.storyIsOpen .storyCopy{padding:14px 20px 0}
+ .portfolioShell .storyIsOpen .storyCopy h3{font-size:clamp(24px,6.5vw,35px);margin:5px 0 8px;line-height:1.1}
+ .portfolioShell .storyIsOpen .storyActions{margin:0}
+ .portfolioShell .storyIsOpen .storyEyebrow{display:none}
+ .portfolioShell .storySection.storyIsOpen .storyIllustration{height:clamp(118px,32vw,145px);margin:7px 0 0}
+ .portfolioShell .storyPanelBody .toolLayout,.portfolioShell .storyPanelBody .chapter{grid-template-columns:minmax(0,1fr)}
+ .portfolioShell .storyPanelBody .toolLayout{gap:20px}
+ .contactLinks{column-gap:18px;row-gap:4px}
+ .contactLinks a,.menuToggle{min-height:44px}
+ .storyPanelBody .chapter p{line-height:1.72}
 }
-
-
+@media(max-height:680px) and (min-width:961px){
+ .portfolioShell .storySection.storyIsOpen>.storyWorkspace>.storyStage{position:relative;top:0}
+}
+/* A collapsed zero-width reader must not contribute its text height to the
+   outer grid. Only the overview determines the closed section's block size. */
+@media(min-width:961px){
+ .portfolioShell .storySection:not(.storyIsOpen)>.storyWorkspace>.longStory{contain:size;min-height:0;max-height:100%}
+}
+@media(min-width:961px) and (max-width:1023px){
+ .portfolioShell .storySection.storyIsOpen .storyWorkspace>.storyStage :is(.storyIntro,.storyNumbers){opacity:1;margin-top:10px!important}
+}

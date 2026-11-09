@@ -42,24 +42,10 @@ try{
   await new Promise((resolve,reject)=>{socket.addEventListener("open",resolve,{once:true});socket.addEventListener("error",reject,{once:true});});
   let index=0;
   const pending=new Map();
-  const recording={mode:null,frames:{opening:[],closing:[]}};
-  socket.addEventListener("message",(event)=>{
+  const faults=[];
+  socket.addEventListener("message",event=>{
     const data=JSON.parse(event.data);
-    if(data.method==="Runtime.exceptionThrown"){
-      const e=data.params?.exceptionDetails;
-      console.error("BROWSER RUNTIME ERROR:",e?.exception?.description||e?.text||JSON.stringify(e));
-    }
-    if(data.method==="Runtime.consoleAPICalled"&&data.params?.type==="error"){
-      console.error("BROWSER CONSOLE ERROR:",data.params.args?.map(x=>x.value||x.description).join(" ")||"unknown");
-    }
-    if(data.method==="Page.screencastFrame"){
-      const mode=recording.mode;
-      if(mode&&recording.frames[mode].length<160)
-        recording.frames[mode].push({at:Date.now(),image:data.params.data});
-      // Ack with a fresh protocol ID; its response does not need a callback.
-      socket.send(JSON.stringify({id:++index,method:"Page.screencastFrameAck",params:{sessionId:data.params.sessionId}}));
-      return;
-    }
+    if(data.method==="Runtime.exceptionThrown")faults.push(data.params.exceptionDetails.exception?.description||data.params.exceptionDetails.text);
     if(!data.id||!pending.has(data.id))return;
     const handlers=pending.get(data.id);pending.delete(data.id);
     if(data.error)handlers.reject(Error(data.error.message));else handlers.resolve(data.result);
@@ -74,168 +60,113 @@ try{
     const data=await cmd("Page.captureScreenshot",{format:"png",captureBeyondViewport:false});
     await writeFile(path.join(output,filename),Buffer.from(data.data,"base64"));
   };
-  const recordStart=async(mode)=>{
-    recording.frames[mode]=[];
-    recording.mode=mode;
-    await cmd("Page.startScreencast",{format:"jpeg",quality:68,everyNthFrame:1,maxWidth:1440,maxHeight:900});
-  };
-  const recordStop=async()=>{
-    const mode=recording.mode;
-    recording.mode=null;
-    await cmd("Page.stopScreencast");
-    if(!mode)return;
-    const frames=recording.frames[mode];
-    const dest=path.join(output,"motion-"+mode);
-    await mkdir(dest,{recursive:true});
-    for(let i=0;i<frames.length;i++)
-      await writeFile(path.join(dest,"frame"+String(i).padStart(4,"0")+".jpg"),Buffer.from(frames[i].image,"base64"));
-    await writeFile(path.join(dest,"timestamps.csv"),"frame,unix_ms\n"+frames.map((f,i)=>i+","+f.at).join("\n"));
-    console.log("Captured "+frames.length+" motion frames for "+mode);
-  };
-
   await cmd("Page.enable");await cmd("Runtime.enable");
-  await cmd("Emulation.setDeviceMetricsOverride",{width:1440,height:900,deviceScaleFactor:1,mobile:false});
-  await until(()=>js('Boolean(document.querySelector("#atharva-portfolio")&&document.querySelector("#story-shyam"))'),60000);
-  await sleep(1150);
-  assert.equal(await js('document.querySelectorAll("section[data-story]").length'),9,"Nine full-screen stories required");
-  assert.equal(await js('document.body.innerText.includes("CGPA")'),false,"No CGPA on portfolio");
-  assert.equal(await js('document.getElementById("explore")===null'),true,"Constellation removed");
-  assert.equal(await js('document.getElementById("journey")===null'),true,"Timeline removed");
-  assert.equal(await js('document.querySelector("#story-shyam a").getAttribute("href")'),"https://shyamconstruction.org/");
-  assert.equal(await js('document.querySelector("#story-crowd a")===null'),true,"Crowd has no external arrow");
-  assert.equal(await js('document.querySelector("#story-dcf a")===null'),true,"Upcoming DCF route should not be a broken link");
-  assert.equal(await js('document.body.innerText.includes("CURIOUSITY")'),false,"No typo in hero");
-  assert.equal(await js('document.querySelectorAll("[class*=stageBottom]").length'),0,"Remove redundant per-project bottom legend");
-  assert.equal(await js('document.querySelector("#story-crowd").textContent.includes("ESP32")'),false,"Crowd project no longer claims ESP32");
-  assert.ok(await js('document.querySelector("#story-synk").textContent.includes("Financial Planning and Analysis Intern")'),"SYNK role reflects LinkedIn");
-  assert.ok(await js('document.querySelector("#story-synk").textContent.includes("subscription pricing")'),"SYNK story covers monetisation");
-  assert.equal(await js('getComputedStyle(document.querySelector("#story-shyam")).borderBottomStyle'),"none","No hard separator between stories");
-  await shot("desktop-hero.png");
-  await js('document.getElementById("story-shyam").scrollIntoView({block:"start",behavior:"instant"})');
-  await sleep(500);
-  await shot("desktop-shyam.png");
-  await cmd("Input.dispatchMouseEvent",{type:"mouseMoved",x:670,y:440});
-  await sleep(150);
-  assert.equal(await js('document.querySelector("[data-cursor-crew]")===null'),true,"No cursor crew should exist until a story action is clicked");
-  assert.equal(await js('document.querySelectorAll("[class*=storyPanelHeader]").length'),0,"Remove the entire old dark reader header");
-  const closedBounds=await js('(()=>{const p=document.querySelector("#story-shyam button[aria-expanded]").getBoundingClientRect();const section=document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect();return {buttonBottom:p.bottom,stageBottom:section.bottom}})()');
-  assert.ok(closedBounds.buttonBottom < closedBounds.stageBottom - 15,"Shyam action must not be clipped: "+JSON.stringify(closedBounds));
-  const beforeMorph=await js('document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().width');
-  assert.ok(beforeMorph>1100,"Overview starts full width");
-  // Plain CSS transition: verify there is no Swarm runtime at any stage.
-  assert.equal(await js('document.querySelector("[data-cursor-crew], [data-crew-target], [data-crew-object], [data-choreography]")===null'),true,
-    "All cursor-agent runtime markers must be removed");
-  await recordStart("opening");
-  await js('document.querySelector("#story-shyam button[aria-expanded]").click()');
-  await until(()=>js('document.querySelector("#story-shyam").dataset.expanded==="true"'));
-  await sleep(340);
-  const halfway=await js('document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().width');
-  assert.ok(halfway<beforeMorph&&halfway>400,
-    "Reader must resize smoothly through intermediate widths: "+halfway);
-  assert.equal(await js('document.querySelector("[data-cursor-crew], .swarm-original-overlay, [data-crew-agent]")===null'),true,
-    "No artificial cursor overlays should appear when opening");
-  await shot("desktop-shyam-morph-midway.png");
-  await sleep(1150);
-  const morph=await js('({stage:document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().width,panel:document.querySelector("#story-shyam [data-role=story-reader]").getBoundingClientRect().width,inert:document.querySelector("#full-shyam").inert,hidden:document.querySelector("#full-shyam").getAttribute("aria-hidden")})');
-  assert.ok(morph.stage<650&&morph.panel>700,"Story morphs into left overview / right reader: "+JSON.stringify(morph));
-  assert.equal(morph.hidden,"false","Reader must be accessible when open");
-  assert.equal(morph.inert,false,"Reader controls must work when open");
-  const storyReaderBg=await js('getComputedStyle(document.querySelector("#full-shyam")).backgroundColor');
-  assert.ok(storyReaderBg==="rgba(0, 0, 0, 0)"||storyReaderBg==="transparent","No solid story box: "+storyReaderBg);
-  const overviewIntro=await js('({opacity:getComputedStyle(document.querySelector("#story-shyam [class*=storyIntro]")).opacity,maxHeight:getComputedStyle(document.querySelector("#story-shyam [class*=storyIntro]")).maxHeight})');
-  assert.equal(overviewIntro.opacity,"1","Expanded overview should retain supporting text");
-  const expandedSeparation=await js('({metricsBottom:document.querySelector("#story-shyam [class*=storyNumbers]").getBoundingClientRect().bottom,artLabelTop:document.querySelector("#story-shyam [class*=figMicro]").getBoundingClientRect().top})');
-  assert.ok(expandedSeparation.artLabelTop>expandedSeparation.metricsBottom+8,"Artwork must not overlap copy or metrics: "+JSON.stringify(expandedSeparation));
-  const seamless=await js('({stage:getComputedStyle(document.querySelector("#story-shyam [data-role=story-overview]")).backgroundColor,reader:getComputedStyle(document.querySelector("#full-shyam")).backgroundColor,border:getComputedStyle(document.querySelector("#full-shyam")).borderLeftWidth})');
-  assert.equal(seamless.stage,"rgba(0, 0, 0, 0)","Same transparent stage background");
-  assert.equal(seamless.reader,"rgba(0, 0, 0, 0)","Same transparent story background");
-  assert.equal(seamless.border,"0px","No divider line or reader box border");
-  const builtText=await js('Array.from(document.querySelectorAll("#full-shyam [class*=longStoryLead] h4, #full-shyam [class*=longStoryLead] p, #full-shyam article h5, #full-shyam article p")).map(e=>({opacity:getComputedStyle(e).opacity,chars:e.textContent.length}))');
-  assert.ok(builtText.length>8&&builtText.every(x=>x.opacity==="1"&&x.chars>0),"All original story text remains visible without a typing engine: "+JSON.stringify(builtText));
-  await shot("desktop-shyam-expanded.png");
-  await recordStop();
-  await sleep(850);
-  assert.equal(await js('document.querySelector("[data-cursor-crew]")===null'),true,"No delayed swarm scripts after opening");
-  const startScroll=await js("window.scrollY");
-  await cmd("Input.dispatchMouseEvent",{type:"mouseWheel",x:1060,y:510,deltaY:700,deltaX:0});
-  await sleep(450);
-  const scrolled=await js('({documentTop:window.scrollY,readerTop:document.querySelector("#full-shyam").scrollTop,readerOverflow:getComputedStyle(document.querySelector("#full-shyam")).overflowY,stageTop:document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().top})');
-  assert.ok(scrolled.documentTop>startScroll+130&&scrolled.readerTop===0&&scrolled.readerOverflow!=="auto","Wheel over story must scroll the whole document: "+JSON.stringify(scrolled));
-  await shot("desktop-shyam-page-scroll.png");
-  assert.equal(await js('document.querySelectorAll("#full-shyam button").length'),0,"No separate close button or dark header");
-  await recordStart("closing");
-  await js('document.querySelector("#story-shyam button[aria-expanded]").click()');
-  await until(()=>js('document.querySelector("#story-shyam").dataset.expanded==="false"'),5500);
-  await sleep(1080);
-  await shot("desktop-shyam-restored.png");
-  await recordStop();
-  assert.equal(await js('document.querySelector("[data-cursor-crew], .swarm-original-overlay")===null'),true,
-    "No Swarm overlay on close either");
-  const returningTitle=await js('({width:document.querySelector("#story-shyam h3").getBoundingClientRect().width,stageWidth:document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().width})');
-  assert.ok(returningTitle.width>240,"Headline remains readable after returning: "+JSON.stringify(returningTitle));
-  const reverseMorph=await js('({stage:document.querySelector("#story-shyam [data-role=story-overview]").getBoundingClientRect().width,hidden:document.querySelector("#full-shyam").getAttribute("aria-hidden"),inert:document.querySelector("#full-shyam").inert})');
-  assert.ok(reverseMorph.stage>1100,"Reverse morph must restore full-width overview: "+JSON.stringify(reverseMorph));
-  assert.equal(reverseMorph.hidden,"true");
-  assert.equal(reverseMorph.inert,true);
-  await js('document.querySelector("#story-shyam button[aria-expanded]").click()');
-  await until(()=>js('document.querySelector("#story-shyam").dataset.expanded==="true"'));
-  assert.equal(await js('document.querySelector("#full-shyam")?.textContent.includes("80 lakh")'),true);
-  assert.ok(await js('document.querySelectorAll("#full-shyam article").length')>=3);
-  await js('document.getElementById("story-fundlenz").scrollIntoView({block:"start",behavior:"instant"})');
-  await js('document.querySelector("#story-fundlenz button[aria-expanded]").click()');
-  await until(()=>js('document.querySelector("#story-fundlenz").dataset.expanded==="true"'));
-  await until(()=>js('Boolean(document.querySelector("#full-fundlenz input[type=range]"))'));
-  assert.ok(await js('document.getElementById("full-fundlenz").textContent.includes("ALPHA")'),"Fund mini tool populated");
-  await js('(()=>{const e=document.querySelector("#full-fundlenz input[type=range]");window.scrollBy({top:e.getBoundingClientRect().top-210,behavior:"instant"});})()');
-  await js('document.getElementById("story-fundlenz").scrollIntoView({block:"start",behavior:"instant"})');
-  await sleep(950);
-  await shot("desktop-fund-mini.png");
-  await js('document.getElementById("story-dcf").scrollIntoView({block:"start",behavior:"instant"})');
-  await js('document.querySelector("#story-dcf button[aria-expanded]").click()');
-  await until(()=>js('document.querySelector("#story-dcf").dataset.expanded==="true"'));
-  await until(()=>js('Boolean(document.querySelector("#full-dcf input[type=number]"))'));
-  assert.ok(await js('document.getElementById("full-dcf").textContent.includes("ENTERPRISE VALUE")'));
-  await js('(()=>{const e=document.querySelector("#full-dcf input[type=number]");window.scrollBy({top:e.getBoundingClientRect().top-210,behavior:"instant"});})()');
-  await js('document.getElementById("story-dcf").scrollIntoView({block:"start",behavior:"instant"})');
-  await sleep(950);
-  await shot("desktop-dcf-mini.png");
-  await js('document.getElementById("story-study").scrollIntoView({block:"start",behavior:"instant"})');
-  await js('document.querySelector("#story-study button[aria-expanded]").click()');
-  await until(()=>js('document.querySelector("#story-study").dataset.expanded==="true"'));
-  await until(()=>js('Boolean(document.querySelector("#full-study input[aria-label]"))'));
-  assert.ok(await js('document.querySelectorAll("#full-study input[type=checkbox]").length')>=3);
-  await js('document.getElementById("story-synk").scrollIntoView({block:"start",behavior:"instant"})');
-  await sleep(800);
-  await shot("desktop-synk-fpa.png");
-  assert.ok(await js('document.querySelector("#story-synk").textContent.includes("paywall implementation")'),"SYNK FP&A work is source-correct");
-  await js('document.querySelector("#story-synk button[aria-expanded]").click()');
-  await sleep(1780);
-  const synkEntry=await js('({sectionTop:document.getElementById("story-synk").getBoundingClientRect().top,headingTop:document.querySelector("#full-synk [class*=longStoryLead]").getBoundingClientRect().top,readerTop:document.querySelector("#full-synk").getBoundingClientRect().top})');
-  assert.ok(synkEntry.sectionTop>30&&synkEntry.sectionTop<125&&synkEntry.headingTop>140,"Opening a later story must start its reader from the top: "+JSON.stringify(synkEntry));
-  await shot("desktop-synk-fpa-expanded.png");
-  assert.ok(await js('document.querySelector("#full-synk").textContent.includes("potential M&A")'),"SYNK long story contains strategy and M&A work");
-  await cmd("Emulation.setDeviceMetricsOverride",{width:390,height:844,deviceScaleFactor:1,mobile:true});
-  await js('window.scrollTo({top:0,behavior:"instant"})');await sleep(700);
-  await shot("mobile-hero.png");
-  assert.equal(await js('document.querySelector("[data-cursor-crew]")===null'),true,"Swarm must not render on mobile");
-  let dims=await js('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})');
-  assert.ok(dims.scroll<=dims.client+2,"Mobile overflow "+JSON.stringify(dims));
-  await js('document.querySelector(\'[aria-label="Open navigation"]\').click()');
-  assert.equal(await js('document.querySelector(\'[aria-label="Close navigation"]\').getAttribute("aria-expanded")'),"true");
-  await js('document.querySelector(\'[aria-label="Close navigation"]\').click()');
-  await js('document.getElementById("story-crowd").scrollIntoView({block:"start",behavior:"instant"})');await sleep(950);
-  await shot("mobile-crowd.png");
-  await js('document.querySelector("#story-crowd button[aria-expanded]").click()');
-  await sleep(950);
-  const mobileStory=await js('({stageHeight:document.querySelector("#story-crowd [data-role=story-overview]").getBoundingClientRect().height,readerWidth:document.querySelector("#story-crowd [data-role=story-reader]").getBoundingClientRect().width,hidden:document.querySelector("#full-crowd").getAttribute("aria-hidden")})');
-  assert.ok(mobileStory.stageHeight<340&&mobileStory.readerWidth>340&&mobileStory.hidden==="false","Mobile morph must compress the overview and open the reader: "+JSON.stringify(mobileStory));
-  await shot("mobile-crowd-expanded.png");
-  await js('document.querySelector("#story-crowd button[aria-expanded]").click()');
-  await sleep(900);
-  assert.equal(await js('document.querySelector("#full-crowd").getAttribute("aria-hidden")'),"true","Close restores mobile overview");
-  dims=await js('({scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth})');
-  assert.ok(dims.scroll<=dims.client+2,"Mobile story overflow "+JSON.stringify(dims));
-  console.log("Portfolio browser checks PASSED: 9 full-screen scenes; mini tools and disclosures; no CGPA; mobile responsive.");
+  await until(()=>js('!!document.querySelector("#story-ternwell")'),60000);
+  await js('document.fonts.ready.then(()=>true)');
+  const ids=await js('Array.from(document.querySelectorAll("section[data-story]"),e=>e.dataset.story)');
+  assert.deepEqual(ids,["shyam","fundlenz","research","fincalc","dcf","ternwell","crowd","study","vs","synk"]);
+  for(const [id,pathname] of [["dcf","/dcf-atlas"],["ternwell","/ternwell"]]){
+    assert.equal(await js('document.querySelector("#story-'+id+' a[href]").pathname'),pathname);
+  }
+  const issues=[], measures=[], shots=[];
+  const view=(width,height)=>cmd("Emulation.setDeviceMetricsOverride",{width,height,deviceScaleFactor:1,mobile:width<600});
+  // Evaluate painted geometry, not CSS declarations. Only compare deliberately
+  // separate components (an arm on a loader, for example, belongs to one group).
+  function inspect(id,state){
+    const section=document.querySelector("#story-"+id),overview=section.querySelector('[data-role=story-overview]'),reader=section.querySelector('[data-role=story-reader]'),scene=section.querySelector('[data-art-scene]');
+    const result=[],rect=e=>e.getBoundingClientRect(),fail=x=>result.push(id+" "+state+": "+x);
+    const vis=e=>e&&e.checkVisibility({checkOpacity:true,checkVisibilityCSS:true})&&rect(e).width>1&&rect(e).height>1;
+    const overlaps=(a,b)=>Math.min(a.right,b.right)-Math.max(a.left,b.left)>2&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>2;
+    function pairs(items,msg){for(let i=0;i<items.length;i++)for(let j=0;j<i;j++)if(overlaps(rect(items[i]),rect(items[j])))fail(msg+" "+(items[i].dataset.artPart||items[i].dataset.artRegion||items[i].tagName)+"/"+(items[j].dataset.artPart||items[j].dataset.artRegion||items[j].tagName));}
+    if(document.documentElement.scrollWidth>document.documentElement.clientWidth+2)fail("page overflows horizontally");
+    if(!scene)fail("missing scene");
+    if(scene&&vis(scene)){
+      const parts=[...scene.querySelectorAll('[data-art-part]')].filter(vis);
+      pairs(parts,"overlapping illustration parts");
+      pairs([...scene.querySelectorAll('[data-art-region]')].filter(vis),"overlapping illustration regions");
+      for(const el of parts){
+        const a=rect(el),s=rect(scene);
+        if(a.left<s.left-3||a.right>s.right+3||a.top<s.top-3||a.bottom>s.bottom+3)fail("clipped illustration "+el.dataset.artPart);
+      }
+    }
+    const open=state==="expanded",closed=state==="overview"||state==="restored";
+    if(open||closed){
+      const copy=overview.querySelector('[class*=storyCopy]'),illustration=overview.querySelector('[class*=storyIllustration]');
+      if(vis(illustration)&&vis(copy)&&overlaps(rect(copy),rect(illustration)))fail("overview copy intersects illustration");
+      if(open&&overlaps(rect(overview),rect(reader)))fail("overview intersects reader");
+      const c=rect(overview);
+      for(const el of [...overview.querySelectorAll('h3,button,a[href],[class*=storyNumbers]')].filter(vis)){
+        const r=rect(el);
+        if(r.left<c.left-3||r.right>c.right+3||r.bottom>c.bottom+3||r.top<c.top-3)fail("stage clips "+el.tagName);
+      }
+      if(open){
+        if(reader.inert||reader.getAttribute("aria-hidden")!=="false")fail("open reader inaccessible");
+        for(const el of reader.querySelectorAll("h4,h5,p,input,button"))if(vis(el)&&(rect(el).left<rect(reader).left-3||rect(el).right>rect(reader).right+3))fail("reader clips "+el.tagName);
+      }
+      if(closed&&!reader.inert)fail("collapsed reader is focusable");
+    }
+    return {failures:result,width:rect(overview).width};
+  }
+  const runInspect=async(id,state,w)=>{const m=await js("("+inspect+")("+JSON.stringify(id)+","+JSON.stringify(state)+")");issues.push(...m.failures.map(e=>w+"px "+e));measures.push({id,state,w,stageWidth:m.width});return m.width};
+  const scroll=id=>js("document.getElementById("+JSON.stringify(id)+").scrollIntoView({block:'start',behavior:'instant'})");
+  const button=id=>js("document.querySelector('#story-"+id+" button[aria-expanded]').click()");
+  const expanded=(id,open)=>until(()=>js("document.getElementById('story-"+id+"').dataset.expanded==='"+open+"'"),6000);
+  async function capture(name){const r=await cmd("Page.captureScreenshot",{format:"jpeg",quality:72,captureBeyondViewport:false});await writeFile(path.join(output,name+".jpg"),Buffer.from(r.data,"base64"));shots.push(name)}
+  const pages=["top","about","work","skills","contact"];
+  for(const [width,height] of [[1440,900],[1280,720],[390,844],[320,667]]){
+    await view(width,height);
+    for(const id of pages){
+      await scroll(id);await sleep(400);
+      if(await js("document.documentElement.scrollWidth>document.documentElement.clientWidth+2"))issues.push(width+"px "+id+" page overflow");
+      if(width===1440||width===390)await capture(width+"-"+id);
+    }
+    if(width===390){
+      await js(`document.querySelector('[aria-label="Open navigation"]').click()`);
+      assert.equal(await js(`document.querySelector('[aria-label="Close navigation"]').getAttribute('aria-expanded')`),"true");
+      await capture("390-navigation");
+      await js(`document.querySelector('[aria-label="Close navigation"]').click()`);
+    }
+    for(const id of ids){
+      await scroll("story-"+id);await sleep(350);
+      const before=await runInspect(id,"overview",width);
+      if(width===1440||width===390)await capture(width+"-"+id+"-overview");
+      await button(id);await expanded(id,true);await sleep(240);
+      await runInspect(id,"opening",width);
+      if(width===1440||width===390)await capture(width+"-"+id+"-opening");
+      await sleep(1080);await runInspect(id,"expanded",width);
+      await capture(width+"-"+id+"-expanded");
+      await js("window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))");await expanded(id,false);
+      await sleep(240);await runInspect(id,"closing",width);
+      if(width===1440||width===390)await capture(width+"-"+id+"-closing");
+      await sleep(900);const after=await runInspect(id,"restored",width);
+      if(Math.abs(before-after)>2)issues.push(width+"px "+id+": width failed to restore");
+    }
+  }
+  for(const [id,selector] of [["fundlenz","input[type=range]"],["dcf","input[type=number]"],["fincalc","input[type=number]"],["study","input[type=checkbox]"]])assert.ok(await js("!!document.querySelector('#full-"+id+" "+selector+"')"),id+" mini missing");
+  assert.equal(await js('!!document.querySelector("[data-cursor-crew], [data-choreography]")'),false);
+  await cmd("Emulation.setEmulatedMedia",{features:[{name:"prefers-reduced-motion",value:"reduce"}]});
+  await scroll("story-shyam");await button("shyam");await expanded("shyam",true);await sleep(100);await runInspect("shyam","expanded",320);
+  async function montage(tag,names,cols){
+    const thumbs=await Promise.all(names.map(async n=>({name:n,b:(await readFile(path.join(output,n+".jpg"))).toString("base64")})));
+    const encoded=await js("("+async function(thumbs,cols){
+      const box=200,frame=140,can=document.createElement("canvas");can.width=cols*box;can.height=Math.ceil(thumbs.length/cols)*(frame+18);
+      const ctx=can.getContext("2d");ctx.fillStyle="#ddd";ctx.fillRect(0,0,can.width,can.height);ctx.font="11px sans-serif";ctx.fillStyle="#161616";
+      for(const [i,t] of thumbs.entries()){
+        const img=new Image();img.src="data:image/jpeg;base64,"+t.b;await img.decode();
+        const rate=Math.min((box-4)/img.width,frame/img.height),x=i%cols*box,y=Math.floor(i/cols)*(frame+18);
+        ctx.drawImage(img,x,y,img.width*rate,img.height*rate);ctx.fillText(t.name,x,y+frame+12);
+      }return can.toDataURL("image/jpeg",.60).split(",")[1];
+    }+")("+JSON.stringify(thumbs)+","+cols+")");
+    await writeFile(path.join(output,"review-"+tag+".jpg"),Buffer.from(encoded,"base64"));
+    console.log("PORTFOLIO_REVIEW_"+tag+"="+encoded);
+  }
+  await montage("DESKTOP",ids.map(id=>"1440-"+id+"-expanded"),5);
+  await montage("MOBILE",ids.map(id=>"390-"+id+"-expanded"),5);
+  await montage("PAGES",pages.flatMap(id=>["1440-"+id,"390-"+id]),5);
+  await writeFile(path.join(output,"measurements.json"),JSON.stringify({issues,measures,faults},null,2));
+  assert.deepEqual(faults,[],"Browser runtime errors");
+  assert.deepEqual([...new Set(issues)],[],"Visual layout regressions");
+  console.log("Portfolio browser checks passed: 10 stories × 4 sizes × 5 animation states, desktop/mobile screenshots, working project links, mini tools and reduced motion.");
 } finally {
   socket?.close();
   if(chrome && chrome.exitCode===null)chrome.kill();
