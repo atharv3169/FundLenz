@@ -14,8 +14,8 @@ function StorySection({story,index}:{story:Story;index:number}){
    data-expanded="false"
  >
   <StoryTrace index={index} name={story.title}/>
-  <div ref={workspaceRef} className={s.storyWorkspace} data-entry={index%2?"right":"left"}>
-   <div ref={stageRef} className={s.storyStage} data-role="story-overview">
+  <div className={s.storyWorkspace} data-entry={index%2?"right":"left"}>
+   <div className={s.storyStage} data-role="story-overview">
     <div className={s.storyCopy}>
      <div className={s.cardFolio}><span>{String(index+1).padStart(2,"0")} / {String(stories.length).padStart(2,"0")}</span><span>{story.year}</span></div>
      <div className={s.storyEyebrow}><span className={s.storyIndex}>{String(index+1).padStart(2,"0")}</span><span>{story.eyebrow}</span></div>
