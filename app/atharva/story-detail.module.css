@@ -1,5 +1,5 @@
 .page{
- --ink:#ecf2e9;--muted:#a5b9b4;--panel:#10232a;--border:rgba(176,212,194,.18);
+ --ink:#ecf2e9;--muted:#a5b9b4;--panel:#10232a;--border:rgba(176,212,194,.18);--accent:var(--case-accent);
  min-height:100vh;position:relative;isolation:isolate;background:#09131b;color:var(--ink);
  font-family:Inter,"Segoe UI",Arial,sans-serif;letter-spacing:-.016em;line-height:1.6;overflow:clip;
 }
@@ -21,7 +21,7 @@
 .railLabel{white-space:nowrap;writing-mode:vertical-rl;font:600 9px/1.1 system-ui;letter-spacing:.2em;color:#9fb2aa}
 .railTrack{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:20px;padding:5px 0;width:14px;min-height:165px}
 .railTrack::before{content:"";position:absolute;z-index:-2;top:8px;bottom:8px;left:50%;width:2px;background:#83a5a052;transform:translateX(-50%)}
-.railFill{position:absolute;z-index:-1;top:8px;left:50%;width:2px;height:calc((100% - 16px)*var(--case-progress));transform:translateX(-50%);background:var(--case-accent);box-shadow:0 0 10px var(--case-accent);transition:height .12s linear}
+.railFill{position:absolute;z-index:-1;top:8px;bottom:8px;left:50%;width:2px;transform:translateX(-50%) scaleY(var(--case-progress));transform-origin:center top;background:var(--case-accent);box-shadow:0 0 10px var(--case-accent);transition:transform .12s linear}
 .railTrack a{width:13px;height:13px;display:grid;place-items:center;border-radius:50%;background:#20383c;border:1px solid #70918d;transition:background .25s,transform .25s;flex-shrink:0}
 .railTrack a i{width:4px;height:4px;display:block;border-radius:50%;background:#b8c8ba}
 .railTrack a:hover,.railTrack a.railActive{background:var(--case-accent);border-color:var(--case-accent);transform:scale(1.18)}
