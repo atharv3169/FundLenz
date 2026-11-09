@@ -1190,14 +1190,14 @@
    height:auto!important;min-height:0!important;max-height:none!important;
    width:100%;overflow:visible!important;opacity:1;visibility:visible;
    transform:translate3d(0,0,0);filter:none;pointer-events:auto;
-   transition:opacity 460ms ease,transform 650ms cubic-bezier(.21,.8,.24,1),
+   transition:opacity 490ms ease 110ms,transform 650ms cubic-bezier(.21,.8,.24,1),
      visibility 0s!important;
  }
  .portfolioShell .paperDeck .storySection.storyIsOpen>.storyWorkspace>.storyStage{
    position:absolute!important;inset:0 auto auto 0!important;width:100%;
    opacity:0;transform:translate3d(28px,0,0);
    visibility:hidden;pointer-events:none;
-   transition:opacity 480ms ease,transform 650ms cubic-bezier(.21,.8,.24,1),
+   transition:opacity 250ms ease,transform 650ms cubic-bezier(.21,.8,.24,1),
      visibility 0s linear 650ms!important;
  }
  /* Keep the original cover geometry invariant while it fades. */
@@ -1240,14 +1240,14 @@
    transform:translate3d(-30px,0,0)!important;
    animation:none!important;filter:none;pointer-events:none;
    border:0!important;
-   transition:opacity 480ms ease,transform 670ms cubic-bezier(.2,.78,.23,1),
+   transition:opacity 250ms ease,transform 670ms cubic-bezier(.2,.78,.23,1),
      visibility 0s linear 670ms!important;
  }
  .portfolioShell .paperDeck .storySection.storyIsOpen>.storyWorkspace>.longStory{
    position:relative!important;inset:auto!important;
    visibility:visible;opacity:1;transform:translate3d(0,0,0)!important;
    pointer-events:auto;
-   transition:opacity 560ms ease 50ms,transform 700ms cubic-bezier(.2,.78,.23,1),
+   transition:opacity 500ms ease 115ms,transform 700ms cubic-bezier(.2,.78,.23,1),
      visibility 0s!important;
  }
  .portfolioShell .paperDeck .storySection .mobileReaderHeading{
