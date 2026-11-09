@@ -11,38 +11,41 @@ function StorySection({story,index}:{story:Story;index:number}){
  const sectionRef=useRef<HTMLElement>(null);
  const toggleRef=useRef<HTMLButtonElement>(null);
  const scrollRaf=useRef<number|null>(null);
- const mobileExitTimer=useRef<number|null>(null);
- const [mobileTransition,setMobileTransition]=useState<"idle"|"exiting">("idle");
+ const workspaceRef=useRef<HTMLDivElement>(null);
+ const stageRef=useRef<HTMLDivElement>(null);
+ const readerRef=useRef<HTMLDivElement>(null);
+ const mobileHeightFrame=useRef<number|null>(null);
+ const mobileHeightEnd=useRef<number|null>(null);
  const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
  const changeMode=useCallback((next:boolean)=>{
    if(scrollRaf.current!==null){
      cancelAnimationFrame(scrollRaf.current);
      scrollRaf.current=null;
    }
-   if(mobileExitTimer.current!==null){
-     clearTimeout(mobileExitTimer.current);
-     mobileExitTimer.current=null;
-   }
+   if(mobileHeightFrame.current!==null)cancelAnimationFrame(mobileHeightFrame.current);
+   if(mobileHeightEnd.current!==null)clearTimeout(mobileHeightEnd.current);
+   mobileHeightFrame.current=null;
+   mobileHeightEnd.current=null;
    if(window.matchMedia("(max-width:767px)").matches){
-     if(next&&!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
-       sectionRef.current?.scrollIntoView({behavior:"instant",block:"start"});
-       setMobileTransition("exiting");
-       mobileExitTimer.current=window.setTimeout(()=>{
-         mobileExitTimer.current=null;
-         setOpen(true);
-         setMobileTransition("idle");
-         scrollRaf.current=requestAnimationFrame(()=>{
-           scrollRaf.current=null;
-           sectionRef.current?.scrollIntoView({behavior:"instant",block:"start"});
-         });
-       },580);
+     const workspace=workspaceRef.current;
+     if(!workspace||window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+       setOpen(next);
+       if(workspace)workspace.style.height="";
+       if(!next)toggleRef.current?.focus({preventScroll:true});
        return;
      }
-     setMobileTransition("idle");
+     // Lock the current rendered height before React changes which layer
+     // participates in layout. Both layers then crossfade during one resize.
+     workspace.style.height=workspace.getBoundingClientRect().height+"px";
      setOpen(next);
-     scrollRaf.current=requestAnimationFrame(()=>{
-       scrollRaf.current=null;
-       (next?sectionRef.current:document.getElementById("paper-"+story.id))?.scrollIntoView({behavior:"instant",block:"start"});
+     mobileHeightFrame.current=requestAnimationFrame(()=>{
+       mobileHeightFrame.current=null;
+       const target=next?readerRef.current:stageRef.current;
+       if(target)workspace.style.height=Math.ceil(target.getBoundingClientRect().height)+"px";
+       mobileHeightEnd.current=window.setTimeout(()=>{
+         workspace.style.height="";
+         mobileHeightEnd.current=null;
+       },790);
        if(!next)toggleRef.current?.focus({preventScroll:true});
      });
      return;
@@ -74,7 +77,7 @@ function StorySection({story,index}:{story:Story;index:number}){
    };
    scrollRaf.current=requestAnimationFrame(check);
  },[story.id]);
- useEffect(()=>()=>{if(scrollRaf.current!==null)cancelAnimationFrame(scrollRaf.current);if(mobileExitTimer.current!==null)clearTimeout(mobileExitTimer.current);},[]);
+ useEffect(()=>()=>{if(scrollRaf.current!==null)cancelAnimationFrame(scrollRaf.current);if(mobileHeightFrame.current!==null)cancelAnimationFrame(mobileHeightFrame.current);if(mobileHeightEnd.current!==null)clearTimeout(mobileHeightEnd.current);},[]);
  useEffect(()=>{
    if(!open)return;
    const onKey=(event:KeyboardEvent)=>{
@@ -92,11 +95,10 @@ function StorySection({story,index}:{story:Story;index:number}){
    style={{"--stack":Math.min(index,4),"--accent":story.accent,"--previous-accent":stories[index-1]?.accent||story.accent,"--next-accent":stories[index+1]?.accent||story.accent} as CSSProperties}
    data-story={story.id}
    data-expanded={open}
-   data-mobile-transition={mobileTransition}
  >
   <StoryTrace index={index} name={story.title}/>
-  <div className={s.storyWorkspace} data-entry={index%2?"right":"left"}>
-   <div className={s.storyStage} data-role="story-overview">
+  <div ref={workspaceRef} className={s.storyWorkspace} data-entry={index%2?"right":"left"}>
+   <div ref={stageRef} className={s.storyStage} data-role="story-overview">
     <div className={s.storyCopy}>
      <div className={s.cardFolio}><span>{String(index+1).padStart(2,"0")} / {String(stories.length).padStart(2,"0")}</span><span>{story.year}</span></div>
      <div className={s.storyEyebrow}><span className={s.storyIndex}>{String(index+1).padStart(2,"0")}</span><span>{story.eyebrow}</span></div>
@@ -111,7 +113,6 @@ function StorySection({story,index}:{story:Story;index:number}){
        type="button"
        className={s.storyRead}
        aria-expanded={open}
-       disabled={mobileTransition==="exiting"}
        aria-controls={"full-"+story.id}
        onClick={()=>changeMode(!open)}
       >
@@ -129,6 +130,7 @@ function StorySection({story,index}:{story:Story;index:number}){
    </div>
 
    <div
+     ref={readerRef}
      id={"full-"+story.id}
      className={s.longStory}
      data-role="story-reader"
@@ -137,6 +139,11 @@ function StorySection({story,index}:{story:Story;index:number}){
      aria-hidden={!open}
      inert={!open}
    >
+    <div className={s.mobileReaderHeading}>
+     <div className={s.mobileReaderFolio}><span>{String(index+1).padStart(2,"0")} / {String(stories.length).padStart(2,"0")}</span><span>{story.year}</span></div>
+     <h3>{story.title}<span>.</span></h3>
+     <button type="button" onClick={()=>changeMode(false)} aria-label={"Back to "+story.title+" overview"}><ArrowLeft size={16}/> Back to overview</button>
+    </div>
     <div className={s.storyPanelBody}>
      <div className={s.longStoryLead}>
       <span className={s.sectionTag}>CASE NOTES / {String(index+1).padStart(2,"0")}</span>
