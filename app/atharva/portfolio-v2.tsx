@@ -76,7 +76,7 @@ function StorySection({story,index}:{story:Story;index:number}){
      else scrollRaf.current=requestAnimationFrame(check);
    };
    scrollRaf.current=requestAnimationFrame(check);
- },[story.id]);
+ },[]);
  useEffect(()=>()=>{if(scrollRaf.current!==null)cancelAnimationFrame(scrollRaf.current);if(mobileHeightFrame.current!==null)cancelAnimationFrame(mobileHeightFrame.current);if(mobileHeightEnd.current!==null)clearTimeout(mobileHeightEnd.current);},[]);
  useEffect(()=>{
    if(!open)return;
