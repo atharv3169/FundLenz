@@ -98,7 +98,7 @@ try{
     assert.ok(await js("!!"+quote),"visible full-page progress");
     const colors=[];
     for(const id of ["fundlenz","research","fincalc","dcf","synk"]){
-      await js("document.getElementById('paper-"+id+"').scrollIntoView({block:'start',behavior:'instant'})");
+      await js("document.getElementById('"+(width<768?"paper-":"story-")+id+"').scrollIntoView({block:'start',behavior:'instant'})");
       await sleep(280);
       const progress=await js("(()=>{const meter="+quote+",root=document.getElementById('atharva-portfolio');return {color:meter.style.getPropertyValue('--story-ink'),value:Number(meter.getAttribute('aria-valuenow')),active:root.dataset.activeStory,visible:getComputedStyle(meter).display!=='none'}})()");
       assert.ok(progress.visible,"portfolio progress strip visible at "+width+"px");
