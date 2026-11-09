@@ -1214,3 +1214,43 @@
 @media(prefers-reduced-motion:reduce){
  .portfolioShell .siteNav .readingQuote i{transition:none}
 }
+
+/* Katerina-style full-width spectral reveal: the spectrum is never stretched
+   or compressed. Project accents flow in the order of the ten paper cards. */
+.portfolioShell .siteNav .readingQuote{
+ height:6px;bottom:-6px;overflow:hidden;
+ background:color-mix(in srgb,var(--story-ink,#b8dfc5) 13%,#18363a);
+}
+.portfolioShell .siteNav .readingQuote i{
+ width:100%;height:100%;background:var(--story-spectrum);
+ transform:none!important;
+ clip-path:inset(0 var(--page-unread,100%) 0 0);
+ filter:saturate(1.13);
+ transition:clip-path .12s linear!important;
+ box-shadow:none;
+}
+.portfolioShell .siteNav .readingQuote b{
+ position:absolute;z-index:2;display:block;
+ top:0;left:calc(var(--page,0)*100%);width:3px;height:6px;
+ transform:translateX(-50%);
+ background:#f5f1de;
+ box-shadow:0 0 10px var(--story-ink,#b8dfc5);
+ pointer-events:none;
+}
+.portfolioShell .siteNav .readingQuote::after{
+ z-index:1;background:repeating-linear-gradient(90deg,
+ transparent 0 calc(10% - 1px),
+ #f5f2df68 calc(10% - 1px) 10%);
+}
+@media(max-width:767px){
+ .portfolioShell[data-paper=light] .siteNav .readingQuote{
+   border-color:#a4b9ac;background:#859d9029;
+ }
+ .portfolioShell[data-paper=light] .siteNav .readingQuote b{background:#163e41}
+ .portfolioShell[data-paper=light] .siteNav .readingQuote::after{
+   background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),#163e414b calc(10% - 1px) 10%);
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .portfolioShell .siteNav .readingQuote i{transition:none!important}
+}
