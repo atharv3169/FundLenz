@@ -11,13 +11,34 @@ function StorySection({story,index}:{story:Story;index:number}){
  const sectionRef=useRef<HTMLElement>(null);
  const toggleRef=useRef<HTMLButtonElement>(null);
  const scrollRaf=useRef<number|null>(null);
+ const mobileExitTimer=useRef<number|null>(null);
+ const [mobileTransition,setMobileTransition]=useState<"idle"|"exiting">("idle");
  const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
  const changeMode=useCallback((next:boolean)=>{
    if(scrollRaf.current!==null){
      cancelAnimationFrame(scrollRaf.current);
      scrollRaf.current=null;
    }
+   if(mobileExitTimer.current!==null){
+     clearTimeout(mobileExitTimer.current);
+     mobileExitTimer.current=null;
+   }
    if(window.matchMedia("(max-width:767px)").matches){
+     if(next&&!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+       sectionRef.current?.scrollIntoView({behavior:"instant",block:"start"});
+       setMobileTransition("exiting");
+       mobileExitTimer.current=window.setTimeout(()=>{
+         mobileExitTimer.current=null;
+         setOpen(true);
+         setMobileTransition("idle");
+         scrollRaf.current=requestAnimationFrame(()=>{
+           scrollRaf.current=null;
+           sectionRef.current?.scrollIntoView({behavior:"instant",block:"start"});
+         });
+       },580);
+       return;
+     }
+     setMobileTransition("idle");
      setOpen(next);
      scrollRaf.current=requestAnimationFrame(()=>{
        scrollRaf.current=null;
@@ -53,7 +74,7 @@ function StorySection({story,index}:{story:Story;index:number}){
    };
    scrollRaf.current=requestAnimationFrame(check);
  },[story.id]);
- useEffect(()=>()=>{if(scrollRaf.current!==null)cancelAnimationFrame(scrollRaf.current);},[]);
+ useEffect(()=>()=>{if(scrollRaf.current!==null)cancelAnimationFrame(scrollRaf.current);if(mobileExitTimer.current!==null)clearTimeout(mobileExitTimer.current);},[]);
  useEffect(()=>{
    if(!open)return;
    const onKey=(event:KeyboardEvent)=>{
@@ -71,6 +92,7 @@ function StorySection({story,index}:{story:Story;index:number}){
    style={{"--stack":Math.min(index,4),"--accent":story.accent,"--previous-accent":stories[index-1]?.accent||story.accent,"--next-accent":stories[index+1]?.accent||story.accent} as CSSProperties}
    data-story={story.id}
    data-expanded={open}
+   data-mobile-transition={mobileTransition}
  >
   <StoryTrace index={index} name={story.title}/>
   <div className={s.storyWorkspace} data-entry={index%2?"right":"left"}>
@@ -89,6 +111,7 @@ function StorySection({story,index}:{story:Story;index:number}){
        type="button"
        className={s.storyRead}
        aria-expanded={open}
+       disabled={mobileTransition==="exiting"}
        aria-controls={"full-"+story.id}
        onClick={()=>changeMode(!open)}
       >
