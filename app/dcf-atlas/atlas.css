@@ -1388,3 +1388,13 @@
     display: table-header-group;
   }
 }
+
+/* Shared Ternwell navigation pattern, in Atlas colours. */
+.a-toolstrip{display:flex;align-items:stretch;gap:4px;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#a4bcb1 transparent;padding:13px 0 9px;border-bottom:1px solid #c9d6cc}
+.a-toolstrip button{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex:none;white-space:nowrap;background:transparent;color:#39564e;border:1px solid transparent;border-radius:6px;padding:10px clamp(8px,.85vw,16px);font:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:background .16s,color .16s}
+.a-toolstrip button:hover{background:#eaf0ea}
+.a-toolstrip button[aria-current]{background:#dceae2;color:#184d44;border-color:#bacfc1}
+.a-toolstrip button:focus-visible{outline:2px solid #236657;outline-offset:-3px}
+.a-workbody{width:100%;min-width:0;margin-top:20px}
+@media(max-width:760px){.a-toolstrip{gap:2px}.a-toolstrip button{padding:10px 12px;min-height:44px}.a-workbody{margin-top:14px}}
+@media print{.a-toolstrip{display:none}}
