@@ -63,214 +63,105 @@ try{
   await cmd("Page.enable");await cmd("Runtime.enable");
   await until(()=>js('!!document.querySelector("#story-ternwell")'),60000);
   await js('document.fonts.ready.then(()=>true)');
-  const ids=await js('Array.from(document.querySelectorAll("section[data-story]"),e=>e.dataset.story)');
-  assert.deepEqual(ids,["shyam","fundlenz","research","fincalc","dcf","ternwell","crowd","study","vs","synk"]);
-  for(const [id,pathname] of [["dcf","/dcf-atlas"],["ternwell","/ternwell"]]){
-    assert.equal(await js('document.querySelector("#story-'+id+' a[href]").pathname'),pathname);
-  }
-  const issues=[], measures=[], shots=[];
-  const view=(width,height)=>cmd("Emulation.setDeviceMetricsOverride",{width,height,deviceScaleFactor:1,mobile:width<600});
-  // Evaluate painted geometry, not CSS declarations. Only compare deliberately
-  // separate components (an arm on a loader, for example, belongs to one group).
-  function inspect(id,state){
-    const section=document.querySelector("#story-"+id),overview=section.querySelector('[data-role=story-overview]'),reader=section.querySelector('[data-role=story-reader]'),scene=section.querySelector('[data-art-scene]');
-    const result=[],rect=e=>e.getBoundingClientRect(),fail=x=>result.push(id+" "+state+": "+x);
-    const vis=e=>e&&e.checkVisibility({checkOpacity:true,checkVisibilityCSS:true})&&rect(e).width>1&&rect(e).height>1;
-    const overlaps=(a,b)=>Math.min(a.right,b.right)-Math.max(a.left,b.left)>2&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>2;
-    function pairs(items,msg){for(let i=0;i<items.length;i++)for(let j=0;j<i;j++)if(overlaps(rect(items[i]),rect(items[j])))fail(msg+" "+(items[i].dataset.artPart||items[i].dataset.artRegion||items[i].tagName)+"/"+(items[j].dataset.artPart||items[j].dataset.artRegion||items[j].tagName));}
-    if(document.documentElement.scrollWidth>document.documentElement.clientWidth+2)fail("page overflows horizontally");
-    if(!scene)fail("missing scene");
-    if(scene&&vis(scene)){
-      const parts=[...scene.querySelectorAll('[data-art-part]')].filter(vis);
-      pairs(parts,"overlapping illustration parts");
-      pairs([...scene.querySelectorAll('[data-art-region]')].filter(vis),"overlapping illustration regions");
-      for(const el of parts){
-        const a=rect(el),s=rect(scene);
-        if(a.left<s.left-3||a.right>s.right+3||a.top<s.top-3||a.bottom>s.bottom+3)fail("clipped illustration "+el.dataset.artPart);
-      }
-    }
-    const open=state==="expanded",closed=state==="overview"||state==="restored";
-    if(open||closed){
-      const copy=overview.querySelector('[class*=storyCopy]'),illustration=overview.querySelector('[class*=storyIllustration]');
-      if(vis(illustration)&&vis(copy)&&overlaps(rect(copy),rect(illustration)))fail("overview copy intersects illustration");
-      if(open&&!reader.closest("dialog[open]")&&vis(overview)&&vis(reader)&&overlaps(rect(overview),rect(reader)))fail("overview intersects reader");
-      const c=rect(overview);
-      for(const el of [...overview.querySelectorAll('h3,button,a[href],[class*=storyNumbers]')].filter(vis)){
-        const r=rect(el);
-        if(r.left<c.left-3||r.right>c.right+3||r.bottom>c.bottom+3||r.top<c.top-3)fail("stage clips "+el.tagName);
-      }
-      if(open){
-        if(reader.inert||reader.getAttribute("aria-hidden")!=="false")fail("open reader inaccessible");
-        for(const el of reader.querySelectorAll("h4,h5,p,input,button"))if(vis(el)&&(rect(el).left<rect(reader).left-3||rect(el).right>rect(reader).right+3))fail("reader clips "+el.tagName);
-      }
-      if(closed&&!reader.inert)fail("collapsed reader is focusable");
-    }
-    return {failures:result,width:rect(overview).width};
-  }
-  const runInspect=async(id,state,w)=>{const m=await js("("+inspect+")("+JSON.stringify(id)+","+JSON.stringify(state)+")");issues.push(...m.failures.map(e=>w+"px "+e));measures.push({id,state,w,stageWidth:m.width});return m.width};
-  const scroll=id=>js("document.getElementById("+JSON.stringify(id)+").scrollIntoView({block:'start',behavior:'instant'})");
-  const button=id=>js("document.querySelector('#story-"+id+" button[aria-expanded]').click()");
-  const expanded=(id,open)=>until(()=>js("document.getElementById('story-"+id+"').dataset.expanded==='"+open+"'"),6000);
-  async function capture(name){const r=await cmd("Page.captureScreenshot",{format:"jpeg",quality:72,captureBeyondViewport:false});await writeFile(path.join(output,name+".jpg"),Buffer.from(r.data,"base64"));shots.push(name)}
-  const pages=["top","about","work","skills","contact"];
-  for(const [width,height] of [[1440,900],[1280,720],[390,844],[320,667]]){
-    await view(width,height);
-    for(const id of pages){
-      await scroll(id);await sleep(400);
-      if(await js("document.documentElement.scrollWidth>document.documentElement.clientWidth+2"))issues.push(width+"px "+id+" page overflow");
-      if(width===1440||width===390)await capture(width+"-"+id);
-    }
-    if(width===390){
-      await js(`document.querySelector('[aria-label="Open navigation"]').click()`);
-      assert.equal(await js(`document.querySelector('[aria-label="Close navigation"]').getAttribute('aria-expanded')`),"true");
-      await capture("390-navigation");
-      await js(`document.querySelector('[aria-label="Close navigation"]').click()`);
-    }
-    if(width===390){
-      await js("document.querySelector('button[aria-haspopup=dialog]').click()");
-      await until(()=>js("!!document.querySelector('dialog[open]')"));
-      await capture("390-project-index");
-      await js(`document.querySelector('dialog a[href="#paper-dcf"]').click()`);
-      assert.equal(await js("location.hash"),"#paper-dcf");
-      await until(()=>js("!document.querySelector('dialog[open]')"));
-    }
-    if(width===390){
-      await scroll("top");await sleep(200);
-      const grain=await js("getComputedStyle(document.querySelector('main')).backgroundImage");
-      await js(`document.querySelector('[aria-label="Dark paper"]').click()`);
-      await until(()=>js(`document.querySelector('main').dataset.paper==="dark"`));
-      assert.equal(await js("getComputedStyle(document.querySelector('main')).backgroundImage"),grain);
-      await capture("390-dark-paper");
-      await js(`document.querySelector('[aria-label="Dark paper"]').click()`);
-      await scroll("paper-shyam");await button("shyam");await expanded("shyam",true);
-      await until(()=>js("document.querySelector('dialog[data-mobile-story=shyam]').open"));
-      await sleep(600);
-      const pageBefore=await js("scrollY");
-      await js("document.querySelector('dialog[data-mobile-story=shyam]').scrollTop=330");
-      await until(()=>js("Number(document.querySelector('dialog[data-mobile-story=shyam]').style.getPropertyValue('--reading-progress'))>.01"));
-      assert.ok(Math.abs(await js("scrollY")-pageBefore)<2,"case-study scroll must not move the stacked page");
-      await capture("390-reading-graph");
-      await js("document.querySelector('dialog[data-mobile-story=shyam] [class*=mobileStoryToolbar] button').click()");
-      await expanded("shyam",false);
-      await until(()=>js("!document.querySelector('dialog[data-mobile-story=shyam]').open"));
-      const meter=`document.querySelector('[aria-label="Whole page progress"]')`;
-      const segment='document.querySelector("#story-shyam [data-route]")';
-      const value=async selector=>Number(await js(selector+'.getAttribute("aria-valuenow")'));
-      await scroll("paper-synk");await sleep(200);
-      assert.equal(await value(segment),100);
-      assert.equal(await js("document.querySelectorAll('[data-route]').length"),10);
-      await js("window.scrollTo({top:document.documentElement.scrollHeight,behavior:'instant'})");await until(async()=>await value(meter)===100);
 
-    }
-    if(width===390){
-      // The mobile stack is one stable preview surface. Each case study opens
-      // in the browser top layer and scrolls independently. A later card can
-      // never paint over an unfinished chapter because it is not in that layer.
-      const audit=()=>["shyam","fundlenz","research","fincalc","dcf","ternwell","crowd","study","vs","synk"].map(id=>{
-        const e=document.getElementById("story-"+id),style=getComputedStyle(e),rect=e.getBoundingClientRect();
-        return {id,position:style.position,z:Number(style.zIndex),top:rect.top,height:rect.height,opacity:Number(getComputedStyle(e.querySelector("[data-entry]")).opacity)};
-      });
-      for(const id of ["research","fincalc","fundlenz","dcf","ternwell","synk"]){
-        await scroll("paper-"+id);await sleep(150);
-        const bg=await js("scrollY"),before=await js("("+audit+")()");
-        await button(id);await expanded(id,true);
-        const dialog="document.querySelector('dialog[data-mobile-story="+id+"]')";
-        await until(()=>js(dialog+".open"));await sleep(650);
-        const opened=await js("("+audit+")()");
-        assert.ok(opened.every((s,i)=>s.position==="sticky"&&s.z===i+1),id+" every preview must remain in its original stack");
-        assert.ok(opened.every((s,i)=>Math.abs(s.height-before[i].height)<3),id+" reader must not change any card height");
-        assert.ok(opened.every(s=>s.opacity>.99),id+" no project may vanish when another is opened");
-        assert.equal(await js("document.querySelectorAll('dialog[data-mobile-story][open]').length"),1,"only one case study may take the top layer");
-        assert.ok(await js(dialog+".matches(':modal')"),id+" reader must be native modal and inert the background");
-        await js(dialog+".scrollTop=500");await sleep(150);
-        const middle=await js("(()=>{const d="+dialog+",content=d.querySelector('[data-role=story-reader]');return {scroll:d.scrollTop,progress:Number(d.style.getPropertyValue('--reading-progress')),visible:document.elementFromPoint(innerWidth/2,innerHeight/2).closest('dialog')===d,readerHeight:content.getBoundingClientRect().height}})()");
-        assert.ok(middle.scroll>250&&middle.progress>.02,id+" reader must scroll independently");
-        assert.ok(middle.visible,id+" full reader must own the visible surface");
-        assert.ok(Math.abs((await js("scrollY"))-bg)<2,id+" background must not move while reading");
-        if(["research","fincalc","dcf"].includes(id))await capture("390-"+id+"-reading-middle");
-        await js(dialog+".scrollTop="+dialog+".scrollHeight");
-        await sleep(150);
-        const end=await js("(()=>{const d="+dialog+",tags=d.querySelector('[class*=tagsLine]');return {atBottom:d.scrollTop+d.clientHeight>=d.scrollHeight-5,last:tags.getBoundingClientRect().bottom,viewTop:d.getBoundingClientRect().top}})()");
-        assert.ok(end.atBottom,id+" reader must reach its actual bottom");
-        assert.ok(end.last<height+2,id+" final project tags must be reachable");
-        if(["research","fincalc","dcf"].includes(id))await capture("390-"+id+"-reading-final");
-        await js(dialog+".querySelector('[class*=mobileStoryToolbar] button').click()");
-        await expanded(id,false);await until(()=>js("!"+dialog+".open"));
-        await sleep(70);
-        assert.ok(Math.abs(await js("scrollY")-bg)<2,id+" close must restore the same stack scroll position");
-        assert.ok((await js("("+audit+")()")).every(s=>s.position==="sticky"&&s.opacity>.99),id+" deck must restore with no missing cards");
-      }
-      await scroll("paper-shyam");await sleep(250);
-      await capture("390-stack-after-random-readers");
-    }
+  const ids=["shyam","fundlenz","research","fincalc","dcf","ternwell","crowd","study","vs","synk"];
+  const screens=[];
+  const view=(width,height)=>cmd("Emulation.setDeviceMetricsOverride",{width,height,deviceScaleFactor:1,mobile:width<600});
+  const base="http://127.0.0.1:41893";
+  const navigate=async(route,selector)=>{
+    await cmd("Page.navigate",{url:base+route});
+    await until(()=>js("location.pathname==="+JSON.stringify(route.split("#")[0])+"&&!!document.querySelector("+JSON.stringify(selector)+")"),30000);
+    await js("document.fonts.ready.then(()=>true)");
+    await sleep(160);
+  };
+  async function capture(name){
+    const shot=await cmd("Page.captureScreenshot",{format:"jpeg",quality:76,captureBeyondViewport:false});
+    await writeFile(path.join(output,name+".jpg"),Buffer.from(shot.data,"base64"));
+    screens.push(name);
+  }
+  const assertNoHorizontal=async(label)=>{
+    assert.ok(await js("document.documentElement.scrollWidth<=document.documentElement.clientWidth+2"),label+" horizontal page overflow");
+  };
+  const counts={homepage:0,stories:0,progress:0,back:0};
+  for(const [width,height] of [[1440,900],[390,844],[320,667]]){
+    await view(width,height);
+    await navigate("/atharva","#atharva-portfolio");
+    assert.deepEqual(await js('Array.from(document.querySelectorAll("section[data-story]"),e=>e.dataset.story)'),ids);
+    assert.equal(await js('document.querySelectorAll("[data-story-link]").length'),10,"ten direct project links");
+    assert.equal(await js('document.querySelectorAll("[data-role=story-reader],dialog[data-mobile-story]").length'),0,"no readers or dialogs on the stacked homepage");
     for(const id of ids){
-      await scroll((width<768?"paper-":"story-")+id);await sleep(350);
-      const before=await runInspect(id,"overview",width);
-      if(width===1440||width===390)await capture(width+"-"+id+"-overview");
-      const startingHeight=width<768?await js("document.getElementById('story-"+id+"').getBoundingClientRect().height"):0;
-      await button(id);await expanded(id,true);
-      if(width<768){
-        const dialog="document.querySelector('dialog[data-mobile-story="+id+"]')";
-        await until(()=>js(dialog+".open"));
-        await sleep(280);
-        const mid=await js("(()=>{const d="+dialog+",r=d.querySelector('[data-role=story-reader]'),cover=document.getElementById('story-"+id+"');return {opacity:+getComputedStyle(d).opacity,readerWidth:r.getBoundingClientRect().width,coverHeight:cover.querySelector('[class*=storyWorkspace]').getBoundingClientRect().height,cardHeight:cover.getBoundingClientRect().height,cardClass:cover.className,heading:r.querySelector('h3').textContent}})()");
-        assert.ok(mid.opacity>.02&&mid.opacity<1.01,id+" full-screen reader must fade in");
-        assert.ok(mid.readerWidth>=width*.95,id+" reader must occupy full viewport width");
-        assert.ok(Math.abs(mid.cardHeight-startingHeight)<3,id+" opening reader must not change card boundary; "+JSON.stringify({startingHeight,cardHeight:mid.cardHeight,innerHeight:mid.coverHeight,className:mid.cardClass}));
-        assert.ok(mid.heading.includes(""),id+" reader title is present");
-        if(width===390)await capture("390-"+id+"-crossfade-opening");
-        await sleep(450);
-        const layout=await js("(()=>{const d="+dialog+",r=d.querySelector('[data-role=story-reader]');return {open:d.open,readerWidth:r.getBoundingClientRect().width,dialogWidth:d.getBoundingClientRect().width}})()");
-        assert.ok(layout.open&&layout.readerWidth>=layout.dialogWidth*.95,id+" reader must fill mobile surface");
+      const link=await js("document.querySelector('[data-story-link="+id+"]').getAttribute('href')");
+      assert.equal(link,"/atharva/stories/"+id,"each project routes to its own full story");
+      assert.equal(await js("document.getElementById('story-"+id+"').dataset.expanded"),"false","previews never expand");
+    }
+    const quote='document.querySelector("[aria-label=\\\"Whole page progress\\\"]")';
+    assert.ok(await js("!!"+quote),"visible full-page progress");
+    const colors=[];
+    for(const id of ["fundlenz","research","fincalc","dcf","synk"]){
+      await js("document.getElementById('paper-"+id+"').scrollIntoView({block:'start',behavior:'instant'})");
+      await sleep(280);
+      const progress=await js("(()=>{const meter="+quote+",root=document.getElementById('atharva-portfolio');return {color:meter.style.getPropertyValue('--story-ink'),value:Number(meter.getAttribute('aria-valuenow')),active:root.dataset.activeStory,visible:getComputedStyle(meter).display!=='none'}})()");
+      assert.ok(progress.visible,"portfolio progress strip visible at "+width+"px");
+      assert.ok(progress.value>0&&progress.value<=100,"portfolio fill responds to page scroll");
+      colors.push(progress.color);
+      counts.progress++;
+    }
+    assert.ok(new Set(colors).size>=3,"main page progress changes color as the active story changes");
+    if(width<768){
+      assert.ok(await js('Array.from(document.querySelectorAll("section[data-story]"),s=>getComputedStyle(s).position).every(v=>v==="sticky")'),"all previews stay in stable sticky stack");
+    }
+    await assertNoHorizontal("homepage "+width);
+    await capture(width+"-home-story-stack");
+    counts.homepage++;
+    if(width===390){
+      await js('document.querySelector("[aria-label=\\\"Dark paper\\\"]")?.click()');
+      // The selected paper theme must not change href routing.
+      assert.equal(await js("document.querySelector('[data-story-link=dcf]').getAttribute('href')"),"/atharva/stories/dcf");
+    }
+    const storyIds=width===390?ids:width===1440?["shyam","fundlenz","fincalc","dcf"]:["research","synk"];
+    for(const id of storyIds){
+      await navigate("/atharva/stories/"+id,'main[data-story-page="'+id+'"]');
+      const detail=await js("(()=>{const m=document.querySelector('[data-story-page]'),bar=m.querySelector('[aria-label=\\\"Case study reading progress\\\"]'),chapter=m.querySelectorAll('[data-case-chapter]');return {id:m.dataset.storyPage,title:m.querySelector('h1').textContent,chapters:chapter.length,bar:!!bar,color:m.style.getPropertyValue('--case-accent'),rail:!!m.querySelector('aside[aria-label=\\\"Case study sections\\\"]'),goBack:m.querySelector('a[href^=\\\"/atharva#paper-\\\"]')?.getAttribute('href'),next:!!m.querySelector('a[href^=\\\"/atharva/stories/\\\"]')}})()");
+      assert.equal(detail.id,id);
+      assert.ok(detail.title.length>=3&&detail.chapters>=2, id+" story has full content");
+      assert.ok(detail.bar&&detail.rail, id+" has reading progress rail and top line");
+      assert.equal(detail.goBack,"/atharva#paper-"+id);
+      assert.ok(detail.color.startsWith("#"),"case-study progress inherits its color");
+      await assertNoHorizontal(id+" detail "+width);
+      if(width===390)await capture(width+"-"+id+"-beginning");
+      const max=await js("Math.max(0,document.documentElement.scrollHeight-innerHeight)");
+      assert.ok(max>height*.6,id+" case-study has independent long-form page height");
+      await js("window.scrollTo({top:"+Math.floor(max*.48)+",behavior:'instant'})");
+      await until(()=>js("Number(document.querySelector('[aria-label=\\\"Case study reading progress\\\"]').getAttribute('aria-valuenow'))>=32"),4000);
+      const middle=await js("Number(document.querySelector('[aria-label=\\\"Case study reading progress\\\"]').getAttribute('aria-valuenow'))");
+      assert.ok(middle>=32&&middle<=72,id+" progress advances through middle of page");
+      if(width===390&&["shyam","research","fincalc","dcf"].includes(id))await capture(width+"-"+id+"-middle");
+      await js("window.scrollTo({top:document.documentElement.scrollHeight,behavior:'instant'})");
+      await until(()=>js("Number(document.querySelector('[aria-label=\\\"Case study reading progress\\\"]').getAttribute('aria-valuenow'))>=99"),4000);
+      const finish=await js("(()=>{const m=document.querySelector('[data-story-page]');return {pct:Number(m.querySelector('[aria-label=\\\"Case study reading progress\\\"]').getAttribute('aria-valuenow')),end:!!m.querySelector('#case-end'),chapters:m.querySelectorAll('[data-case-chapter]').length,footer:!!m.querySelector('footer a[href^=\\\"/atharva/stories/\\\"]')}})()");
+      assert.equal(finish.pct,100,id+" progress reaches 100%");
+      assert.ok(finish.end&&finish.footer,"page ends with full content and next/previous stories");
+      if(width===390)await capture(width+"-"+id+"-end");
+      counts.stories++;
+      if(width===390&&["research","fincalc","dcf"].includes(id)){
+        await js("document.querySelector('a[href^=\\\"/atharva#paper-\\\"]').click()");
+        await until(()=>js("location.pathname==='/atharva'&&!!document.getElementById('story-"+id+"')"),30000);
+        assert.equal(await js("location.hash"),"#paper-"+id,"back link selects the previous project");
+        assert.ok(await js("document.querySelectorAll('[data-story-link]').length===10"),"return to intact project stack");
+        counts.back++;
       }
-      await sleep(90);
-      await runInspect(id,"opening",width);
-      if(width===1440||width===390)await capture(width+"-"+id+"-opening");
-      await sleep(1080);await runInspect(id,"expanded",width);
-      await capture(width+"-"+id+"-expanded");
-      if(width<768){
-        const dialog="document.querySelector('dialog[data-mobile-story="+id+"]')";
-        await js(dialog+".querySelector('[class*=mobileStoryToolbar] button').click()");
-        await sleep(210);
-        const reverse=await js("(()=>{const d="+dialog+";return {open:d.open,opacity:+getComputedStyle(d).opacity,phase:d.dataset.phase}})()");
-        assert.ok(reverse.open&&reverse.phase==="closing"&&reverse.opacity<.99,id+" reader must reverse-fade before dismissal");
-        if(width===390)await capture("390-"+id+"-crossfade-closing");
-        await expanded(id,false);
-        await until(()=>js("!"+dialog+".open"));
-      }else{
-        await js("window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))");await expanded(id,false);
-      }
-      await sleep(240);await runInspect(id,"closing",width);
-      if(width===1440||width===390)await capture(width+"-"+id+"-closing");
-      await sleep(900);const after=await runInspect(id,"restored",width);
-      if(Math.abs(before-after)>2)issues.push(width+"px "+id+": width failed to restore");
     }
   }
-  for(const [id,selector] of [["fundlenz","input[type=range]"],["dcf","input[type=number]"],["fincalc","input[type=number]"],["study","input[type=checkbox]"]])assert.ok(await js("!!document.querySelector('#full-"+id+" "+selector+"')"),id+" mini missing");
-  assert.equal(await js('!!document.querySelector("[data-cursor-crew], [data-choreography]")'),false);
+  // Direct links must work with no earlier visit to the main portfolio.
+  await view(390,844);
+  await navigate("/atharva/stories/ternwell",'main[data-story-page="ternwell"]');
+  assert.equal(await js("document.querySelector('[data-story-page]').dataset.storyPage"),"ternwell");
   await cmd("Emulation.setEmulatedMedia",{features:[{name:"prefers-reduced-motion",value:"reduce"}]});
-  await scroll("story-shyam");await button("shyam");await expanded("shyam",true);await sleep(100);await runInspect("shyam","expanded",320);
-  async function montage(tag,names,cols){
-    const thumbs=await Promise.all(names.map(async n=>({name:n,b:(await readFile(path.join(output,n+".jpg"))).toString("base64")})));
-    const encoded=await js("("+async function(thumbs,cols){
-      const box=200,frame=140,can=document.createElement("canvas");can.width=cols*box;can.height=Math.ceil(thumbs.length/cols)*(frame+18);
-      const ctx=can.getContext("2d");ctx.fillStyle="#ddd";ctx.fillRect(0,0,can.width,can.height);ctx.font="11px sans-serif";ctx.fillStyle="#161616";
-      for(const [i,t] of thumbs.entries()){
-        const img=new Image();img.src="data:image/jpeg;base64,"+t.b;await img.decode();
-        const rate=Math.min((box-4)/img.width,frame/img.height),x=i%cols*box,y=Math.floor(i/cols)*(frame+18);
-        ctx.drawImage(img,x,y,img.width*rate,img.height*rate);ctx.fillText(t.name,x,y+frame+12);
-      }return can.toDataURL("image/jpeg",.60).split(",")[1];
-    }+")("+JSON.stringify(thumbs)+","+cols+")");
-    await writeFile(path.join(output,"review-"+tag+".jpg"),Buffer.from(encoded,"base64"));
-    console.log("PORTFOLIO_REVIEW_"+tag+"="+encoded);
-  }
-  await montage("DESKTOP",ids.map(id=>"1440-"+id+"-expanded"),5);
-  await montage("MOBILE",ids.map(id=>"390-"+id+"-expanded"),5);
-  await montage("PAGES",pages.flatMap(id=>["1440-"+id,"390-"+id]),5);
-  await writeFile(path.join(output,"measurements.json"),JSON.stringify({issues,measures,faults},null,2));
-  assert.deepEqual(faults,[],"Browser runtime errors");
-  assert.deepEqual([...new Set(issues)],[],"Visual layout regressions");
-  console.log("Portfolio browser checks passed: 10 stories × 4 sizes × 5 animation states, desktop/mobile screenshots, working project links, mini tools and reduced motion.");
+  await navigate("/atharva/stories/shyam",'main[data-story-page="shyam"]');
+  assert.ok(await js("document.querySelectorAll('[data-case-chapter]').length>=2"),"reduced motion retains all content");
+  await writeFile(path.join(output,"measurements.json"),JSON.stringify({counts,faults,screens},null,2));
+  assert.deepEqual(faults,[],"No browser runtime errors");
+  console.log("Portfolio browser checks passed: "+JSON.stringify(counts)+", all case-study routes, reading progress, color-changing portfolio line, back links and reduced motion.");
 } finally {
   socket?.close();
   if(chrome && chrome.exitCode===null){
