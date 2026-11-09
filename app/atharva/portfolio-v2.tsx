@@ -194,7 +194,7 @@ export default function PortfolioV2(){
     <p className={s.heroIntro}>My work spans equipment financing at Shyam Construction, mutual-fund liquidity research and the FundLenz platform.</p>
     <a className={s.heroLink} href="#work">Explore my work <ArrowRight size={18}/></a>
    </div><div className={s.heroFoot}><span>PORTFOLIO / 2026</span><span>SCROLL DOWN <ArrowDown size={14}/></span></div></section>
-   <div className={s.currencyRibbon} aria-hidden="true"><div>{[0,1].map(group=><div className={s.ribbonGroup} key={group}>{["Cash flow","Markets","Valuation","Research","Risk","Building"].map((label,i)=><span key={label}><i>{["₹","$","€","Σ","£","Δ"][i]}</i>{label}</span>)}</div>)}</div></div>
+   <div className={s.currencyRibbon} aria-hidden="true"><div>{[0,1].map(group=><div className={s.ribbonGroup} key={group}>{[["₹","Cash flow"],["β","Beta"],["$","Markets"],["%","Yield"],["€","Valuation"],["Σ","Research"],["σ","Volatility"],["£","Capital"],["Δ","Change"],["×","Multiples"],["¥","FX"],["ρ","Correlation"],["α","Alpha"],["±","Risk"],["bps","Spreads"],["ƒ","Forecasts"]].map(([symbol,label])=><span key={label}><i>{symbol}</i>{label}</span>)}</div>)}</div></div>
    <section id="about" className={s.about}><div data-reveal><span className={s.sectionTag}>01 / IN SHORT</span><h2>From engineering<br/><em>to finance.</em></h2></div>
     <div className={s.aboutColumns} data-reveal><p>At Shyam Construction, I assessed whether equipment would earn enough to cover its loan repayments. That question drew me from engineering into capital budgeting and cash-flow analysis.</p><p>Today I study portfolio concentration and build models that others can test. FundLenz, DCF Atlas and Ternwell let a reader change the inputs and see how an investment or financing decision changes.</p></div>
    </section>
@@ -206,8 +206,8 @@ export default function PortfolioV2(){
     <div className={s.educationLine} data-reveal><div><span>EDUCATION</span><strong>B.Tech · Electronics & Telecommunication Engineering</strong><p>St. Vincent Pallotti College of Engineering & Technology, Nagpur · Completed 2026</p></div><div><span>ENGLISH</span><strong>IELTS Academic · 8.0</strong></div></div>
    </section>
    <section className={s.interestsSection}><span className={s.sectionTag}>04 / RESEARCH INTERESTS</span><div>{interests.map((t,i)=><p key={t} data-reveal><span>{String(i+1).padStart(2,"0")}</span>{t}</p>)}</div></section>
-   <section id="contact" className={s.contact}><span className={s.sectionTag}>05 / SAY HELLO</span><h2>Get in<br/><em>touch.</em></h2><p>For opportunities in corporate finance, investment research or financial technology, email me directly.</p><a className={s.emailLink} href="mailto:atharva@fundlenz.com?subject=Hello%20Atharva">Let&apos;s talk <ArrowUpRight size={24}/></a>
-    <div className={s.contactLinks}><a href="mailto:atharva@fundlenz.com"><Mail size={17}/> Email <ArrowUpRight size={14}/></a><a href="https://www.linkedin.com/in/atharvasahu/" target="_blank" rel="noopener noreferrer">LinkedIn <ArrowUpRight size={14}/></a><a href="https://github.com/atharv3169" target="_blank" rel="noopener noreferrer"><GitBranch size={17}/> GitHub <ArrowUpRight size={14}/></a></div></section>
+   <section id="contact" className={s.contact}><span className={s.sectionTag}>05 / SAY HELLO</span><h2>Get in<br/><em>touch.</em></h2><p>For opportunities in corporate finance, investment research or financial technology, reach me at <strong>atharva@fundlenz.com</strong>.</p><a className={s.emailLink} href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=atharva%40fundlenz.com&amp;su=Hello%20Atharva" target="_blank" rel="noopener noreferrer">Write in Gmail <ArrowUpRight size={24}/></a>
+    <div className={s.contactLinks}><a href="mailto:atharva@fundlenz.com?subject=Hello%20Atharva"><Mail size={17}/> Open mail app <ArrowUpRight size={14}/></a><a href="https://www.linkedin.com/in/atharvasahu/" target="_blank" rel="noopener noreferrer">LinkedIn <ArrowUpRight size={14}/></a><a href="https://github.com/atharv3169" target="_blank" rel="noopener noreferrer"><GitBranch size={17}/> GitHub <ArrowUpRight size={14}/></a></div></section>
    <footer className={s.footer}><span>© 2026 ATHARVA SAHU</span><span>NAGPUR, INDIA</span><a href="#top">BACK TO TOP ↑</a></footer>
 
  </main>;
@@ -220,10 +220,8 @@ function MarketPlate(){
  const avg=closes.map((_,i)=>closes.slice(Math.max(0,i-4),i+1).reduce((a,b)=>a+b,0)/Math.min(i+1,5)+12);
  const line=avg.map((y,i)=>(i?"L":"M")+(49+i*17.5)+" "+y).join(" ");
  return <svg className={s.marketPlate} viewBox="0 0 500 410" aria-hidden="true" focusable="false">
- <defs><linearGradient id="plateFill" x2="0" y2="1"><stop stopColor="#a5cec0" stopOpacity=".08"/><stop offset="1" stopColor="#a5cec0" stopOpacity="0"/></linearGradient></defs>
- <rect x="18" y="36" width="464" height="338" rx="4" fill="url(#plateFill)" stroke="#839889" strokeOpacity=".3"/>
  {[90,145,200,255,310,354].map(y=><path key={y} d={`M35 ${y}H465`} stroke="#a4c4b6" strokeOpacity=".16" strokeDasharray={y===310?"0":"2 6"}/>)}
  {closes.map((y,i)=>{const x=49+i*17.5,open=(closes[i-1]??280)+(i%3-1)*4,col=y<open?"#aad4bf":"#c8a67b",volume=9+Math.abs(y-open)*.9;return <g key={i} fill={col}><path d={`M${x} ${Math.min(open,y)-7-i%4}V${Math.max(open,y)+6+i%6}`} stroke={col}/><rect x={x-4.3} y={Math.min(y,open)} width="8.6" height={Math.max(2,Math.abs(y-open))} rx=".8"/><rect x={x-4.3} y={354-volume} width="8.6" height={volume} opacity=".42"/></g>})}
- <path d={line} fill="none" stroke="#d1b185" strokeWidth="1.8"/><path className={s.pricePulse} d={line} pathLength="100" fill="none" stroke="#ffedc8" strokeWidth="3" strokeLinecap="round" strokeDasharray="8 100"/>
+ <path className={s.goldTrace} d={line} pathLength="100" fill="none" stroke="#d8b781" strokeWidth="2.1" strokeLinejoin="round" strokeLinecap="round"/>
  </svg>;
 }
