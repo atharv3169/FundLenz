@@ -14,51 +14,36 @@ function StorySection({story,index}:{story:Story;index:number}){
  const workspaceRef=useRef<HTMLDivElement>(null);
  const stageRef=useRef<HTMLDivElement>(null);
  const readerRef=useRef<HTMLDivElement>(null);
- const mobileHeightFrame=useRef<number|null>(null);
- const mobileHeightEnd=useRef<number|null>(null);
+ const modalRef=useRef<HTMLDialogElement>(null);
+ const mobileCloseTimer=useRef<number|null>(null);
+ const [mobile,setMobile]=useState(false);
+ useEffect(()=>{
+   const media=window.matchMedia("(max-width:767px)");
+   const update=()=>setMobile(media.matches);
+   update();
+   media.addEventListener("change",update);
+   return()=>media.removeEventListener("change",update);
+ },[]);
  const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
  const changeMode=useCallback((next:boolean)=>{
    if(scrollRaf.current!==null){
      cancelAnimationFrame(scrollRaf.current);
      scrollRaf.current=null;
    }
-   if(mobileHeightFrame.current!==null)cancelAnimationFrame(mobileHeightFrame.current);
-   if(mobileHeightEnd.current!==null)clearTimeout(mobileHeightEnd.current);
-   mobileHeightFrame.current=null;
-   mobileHeightEnd.current=null;
    if(window.matchMedia("(max-width:767px)").matches){
-     // A collapsed card may already be pinned below the navigation bar.
-     // Rebase the document's scroll position to its actual paper anchor before
-     // un-sticking it, so the visible title doesn't jump on opening.
-     if(next){
-       const anchor=document.getElementById("paper-"+story.id);
-       const card=sectionRef.current;
-       if(anchor&&card){
-         const offset=anchor.getBoundingClientRect().top-card.getBoundingClientRect().top;
-         if(offset< -2)window.scrollBy({top:offset,behavior:"instant"});
-       }
-     }
-     const workspace=workspaceRef.current;
-     if(!workspace||window.matchMedia("(prefers-reduced-motion: reduce)").matches){
-       setOpen(next);
-       if(workspace)workspace.style.height="";
-       if(!next)toggleRef.current?.focus({preventScroll:true});
-       return;
-     }
-     // Lock the current rendered height before React changes which layer
-     // participates in layout. Both layers then crossfade during one resize.
-     workspace.style.height=workspace.getBoundingClientRect().height+"px";
-     setOpen(next);
-     mobileHeightFrame.current=requestAnimationFrame(()=>{
-       mobileHeightFrame.current=null;
-       const target=next?readerRef.current:stageRef.current;
-       if(target)workspace.style.height=Math.ceil(target.getBoundingClientRect().height)+"px";
-       mobileHeightEnd.current=window.setTimeout(()=>{
-         workspace.style.height="";
-         mobileHeightEnd.current=null;
-       },790);
-       if(!next)toggleRef.current?.focus({preventScroll:true});
-     });
+     // The reader lives in the browser's top layer. No card height, scroll
+     // anchor or sticky stacking rule changes when a chapter is opened.
+     if(next){setOpen(true);return;}
+     const dialog=modalRef.current;
+     if(!dialog?.open){setOpen(false);return;}
+     if(mobileCloseTimer.current!==null)return;
+     dialog.dataset.phase="closing";
+     mobileCloseTimer.current=window.setTimeout(()=>{
+       mobileCloseTimer.current=null;
+       if(dialog.open)dialog.close();
+       setOpen(false);
+       toggleRef.current?.focus({preventScroll:true});
+     },window.matchMedia("(prefers-reduced-motion: reduce)").matches?0:460);
      return;
    }
    if(next){
@@ -87,10 +72,21 @@ function StorySection({story,index}:{story:Story;index:number}){
      else scrollRaf.current=requestAnimationFrame(check);
    };
    scrollRaf.current=requestAnimationFrame(check);
- },[story.id]);
- useEffect(()=>()=>{if(scrollRaf.current!==null)cancelAnimationFrame(scrollRaf.current);if(mobileHeightFrame.current!==null)cancelAnimationFrame(mobileHeightFrame.current);if(mobileHeightEnd.current!==null)clearTimeout(mobileHeightEnd.current);},[]);
+ },[]);
+ useEffect(()=>()=>{if(scrollRaf.current!==null)cancelAnimationFrame(scrollRaf.current);if(mobileCloseTimer.current!==null)clearTimeout(mobileCloseTimer.current);},[]);
  useEffect(()=>{
-   if(!open)return;
+   if(!mobile||!open)return;
+   const dialog=modalRef.current;
+   if(!dialog)return;
+   dialog.dataset.phase="opening";
+   if(!dialog.open)dialog.showModal();
+   dialog.scrollTop=0;
+   // showModal() makes the background inert. Locking document overflow here
+   // would remove its scrollbar, reflow the covers and break the paper stack.
+   return()=>{if(dialog.open)dialog.close();};
+ },[mobile,open]);
+ useEffect(()=>{
+   if(!open||mobile)return;
    const onKey=(event:KeyboardEvent)=>{
      if(event.key!=="Escape")return;
      event.preventDefault();
@@ -98,49 +94,8 @@ function StorySection({story,index}:{story:Story;index:number}){
    };
    window.addEventListener("keydown",onKey);
    return()=>window.removeEventListener("keydown",onKey);
- },[open,changeMode]);
- return <section
-   ref={sectionRef}
-   id={"story-"+story.id}
-   className={s.storySection+(open?" "+s.storyIsOpen:"")}
-   style={{"--stack":index,"--accent":story.accent,"--previous-accent":stories[index-1]?.accent||story.accent,"--next-accent":stories[index+1]?.accent||story.accent} as CSSProperties}
-   data-story={story.id}
-   data-expanded={open}
- >
-  <StoryTrace index={index} name={story.title}/>
-  <div ref={workspaceRef} className={s.storyWorkspace} data-entry={index%2?"right":"left"}>
-   <div ref={stageRef} className={s.storyStage} data-role="story-overview">
-    <div className={s.storyCopy}>
-     <div className={s.cardFolio}><span>{String(index+1).padStart(2,"0")} / {String(stories.length).padStart(2,"0")}</span><span>{story.year}</span></div>
-     <div className={s.storyEyebrow}><span className={s.storyIndex}>{String(index+1).padStart(2,"0")}</span><span>{story.eyebrow}</span></div>
-     <p className={s.storyYears}>{story.type}{story.year&&<><i> / </i> {story.year}</>}</p>
-     <h3>{story.title}<span>.</span></h3>
-     <p className={s.storyHook}>{story.hook}</p>
-     <p className={s.storyIntro}>{story.intro}</p>
-     <div className={s.paperTags}>{story.tags.slice(0,2).map(tag=><span key={tag}>{tag}</span>)}</div>
-     <div className={s.storyActions}>
-      <button
-       ref={toggleRef}
-       type="button"
-       className={s.storyRead}
-       aria-expanded={open}
-       aria-controls={"full-"+story.id}
-       onClick={()=>changeMode(!open)}
-      >
-       {open?"Back to overview":"Read full story"}
-       {open?<ArrowLeft size={17}/>:<ArrowRight size={17}/>}
-      </button>
-      {story.visit&&(story.visit.pending?<span className={s.storyUpcoming} title={"Planned URL: "+story.visit.href}>{story.visit.text} · planned URL</span>:<a className={s.storyVisit} href={story.visit.href} target="_blank" rel="noopener noreferrer">{story.visit.text}<ArrowUpRight size={17}/></a>)}
-     </div>
-     <div className={s.storyNumbers}>{story.numbers.map((n,i)=><div key={i}><strong>{n.value}</strong><span>{n.label}</span></div>)}</div>
-    </div>
-    <div className={s.storyIllustration}>
-      <SceneFigure id={story.id}/>
-      <span className={s.storyFigureWatermark}>{String(index+1).padStart(2,"0")}</span>
-    </div>
-   </div>
-
-   <div
+ },[open,changeMode,mobile]);
+ const storyReader=<div
      ref={readerRef}
      id={"full-"+story.id}
      className={s.longStory}
@@ -177,8 +132,69 @@ function StorySection({story,index}:{story:Story;index:number}){
       <a href={story.visit.href} target="_blank" rel="noopener noreferrer">Visit {story.title} <ArrowUpRight size={17}/></a>
      </div>}
     </div>
+   </div>;
+ return <section
+   ref={sectionRef}
+   id={"story-"+story.id}
+   className={s.storySection+(open&&!mobile?" "+s.storyIsOpen:"")}
+   style={{"--stack":index,"--accent":story.accent,"--previous-accent":stories[index-1]?.accent||story.accent,"--next-accent":stories[index+1]?.accent||story.accent} as CSSProperties}
+   data-story={story.id}
+   data-expanded={open}
+ >
+  <StoryTrace index={index} name={story.title}/>
+  <div ref={workspaceRef} className={s.storyWorkspace} data-entry={index%2?"right":"left"}>
+   <div ref={stageRef} className={s.storyStage} data-role="story-overview">
+    <div className={s.storyCopy}>
+     <div className={s.cardFolio}><span>{String(index+1).padStart(2,"0")} / {String(stories.length).padStart(2,"0")}</span><span>{story.year}</span></div>
+     <div className={s.storyEyebrow}><span className={s.storyIndex}>{String(index+1).padStart(2,"0")}</span><span>{story.eyebrow}</span></div>
+     <p className={s.storyYears}>{story.type}{story.year&&<><i> / </i> {story.year}</>}</p>
+     <h3>{story.title}<span>.</span></h3>
+     <p className={s.storyHook}>{story.hook}</p>
+     <p className={s.storyIntro}>{story.intro}</p>
+     <div className={s.paperTags}>{story.tags.slice(0,2).map(tag=><span key={tag}>{tag}</span>)}</div>
+     <div className={s.storyActions}>
+      <button
+       ref={toggleRef}
+       type="button"
+       className={s.storyRead}
+       aria-expanded={open}
+       aria-controls={"full-"+story.id}
+       onClick={()=>changeMode(!open)}
+      >
+       {open&&!mobile?"Back to overview":"Read full story"}
+       {open&&!mobile?<ArrowLeft size={17}/>:<ArrowRight size={17}/>}
+      </button>
+      {story.visit&&(story.visit.pending?<span className={s.storyUpcoming} title={"Planned URL: "+story.visit.href}>{story.visit.text} · planned URL</span>:<a className={s.storyVisit} href={story.visit.href} target="_blank" rel="noopener noreferrer">{story.visit.text}<ArrowUpRight size={17}/></a>)}
+     </div>
+     <div className={s.storyNumbers}>{story.numbers.map((n,i)=><div key={i}><strong>{n.value}</strong><span>{n.label}</span></div>)}</div>
+    </div>
+    <div className={s.storyIllustration}>
+      <SceneFigure id={story.id}/>
+      <span className={s.storyFigureWatermark}>{String(index+1).padStart(2,"0")}</span>
+    </div>
    </div>
+
+   {!mobile&&storyReader}
   </div>
+  {mobile&&<dialog
+    ref={modalRef}
+    className={s.mobileStoryDialog}
+    data-mobile-story={story.id}
+    aria-label={story.title+" case study"}
+    onCancel={event=>{event.preventDefault();changeMode(false);}}
+    onScroll={event=>{
+      const element=event.currentTarget;
+      const max=Math.max(1,element.scrollHeight-element.clientHeight);
+      element.style.setProperty("--reading-progress",(element.scrollTop/max).toFixed(4));
+    }}
+   >
+    <div className={s.mobileStoryToolbar}>
+      <button type="button" onClick={()=>changeMode(false)}><ArrowLeft size={17}/> All projects</button>
+      <span>{String(index+1).padStart(2,"0")} / {String(stories.length).padStart(2,"0")} · {story.title}</span>
+    </div>
+    <div className={s.mobileStoryProgress} aria-hidden="true"><i/></div>
+    {storyReader}
+   </dialog>}
  </section>;
 }
 

@@ -1298,3 +1298,103 @@
  .portfolioShell .paperDeck .storySection>.storyWorkspace>.storyStage,
  .portfolioShell .paperDeck .storySection>.storyWorkspace>.longStory{transition:none!important;transform:none!important}
 }
+
+/* Mobile project case studies are a separate reading surface, like a project
+   detail page. The deck NEVER changes shape while the reader is visible.
+   Native dialog top layer escapes sticky z-index, clipping and transforms. */
+.mobileStoryDialog,.mobileStoryToolbar,.mobileStoryProgress{display:none}
+@media(max-width:767px){
+ .portfolioShell .paperDeck .storySection,
+ .portfolioShell .paperDeck .storySection.storyIsOpen{
+   position:sticky;
+   top:calc(52px + var(--stack)*18px);
+ }
+ .portfolioShell .paperDeck .storySection .mobileStoryDialog:not([open]){display:none!important}
+ .portfolioShell .paperDeck .storySection .mobileStoryDialog[open]{
+   display:block;
+   box-sizing:border-box;position:fixed;
+   inset:0;width:100%;height:100dvh;max-width:none;max-height:none;
+   margin:0;padding:0;border:0;border-radius:0;
+   color:#f5f0df;
+   background:radial-gradient(ellipse at 85% 4%,color-mix(in srgb,var(--accent) 22%,transparent),transparent 55%),
+     linear-gradient(150deg,#172a31,#0b151c 75%);
+   overflow-x:hidden;overflow-y:auto;
+   overscroll-behavior:contain;
+   -webkit-overflow-scrolling:touch;
+   scrollbar-width:thin;
+   --reading-progress:0;
+   animation:mobileCaseStudyEnter 550ms cubic-bezier(.21,.8,.24,1) both;
+ }
+ .portfolioShell .paperDeck .storySection .mobileStoryDialog[data-phase="closing"]{
+   animation:mobileCaseStudyLeave 460ms cubic-bezier(.35,.05,.53,1) both;
+   pointer-events:none;
+ }
+ .portfolioShell .paperDeck .storySection .mobileStoryDialog::backdrop{
+   background:rgb(3 12 17/.63);
+ }
+ .portfolioShell .paperDeck .storySection .mobileStoryToolbar{
+   display:flex;position:sticky;top:0;z-index:15;
+   min-height:53px;padding:6px 16px;
+   align-items:center;justify-content:space-between;gap:12px;
+   background:rgb(12 25 31/.92);
+   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+   box-shadow:0 1px 0 #8eb1ac35;
+ }
+ .portfolioShell .paperDeck .storySection .mobileStoryToolbar button{
+   display:inline-flex;align-items:center;gap:7px;
+   flex-shrink:0;border:1px solid #a4bdb35b;border-radius:24px;
+   padding:9px 13px;min-height:36px;background:rgb(196 231 211/.14);
+   color:#f5f0df;font:600 11px/1.2 system-ui;
+ }
+ .portfolioShell .paperDeck .storySection .mobileStoryToolbar span{
+   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+   font:500 10px/1.3 system-ui;letter-spacing:.045em;color:#cad9d2;
+ }
+ .portfolioShell .paperDeck .storySection .mobileStoryProgress{
+   display:block;position:sticky;top:53px;z-index:16;
+   width:100%;height:3px;background:#accac21e;pointer-events:none;
+ }
+ .portfolioShell .paperDeck .storySection .mobileStoryProgress i{
+   display:block;width:100%;height:100%;
+   background:linear-gradient(90deg,#bca07e,var(--accent),#9dd8c9);
+   transform:scaleX(var(--reading-progress));transform-origin:left;
+   transition:transform 100ms linear;
+ }
+ .portfolioShell .paperDeck .storySection .mobileStoryDialog .longStory{
+   box-sizing:border-box;display:block!important;position:relative!important;
+   inset:auto!important;width:100%!important;min-width:0!important;
+   height:auto!important;min-height:100dvh!important;max-height:none!important;
+   overflow:visible!important;opacity:1!important;visibility:visible!important;
+   transform:none!important;translate:none!important;filter:none!important;
+   border:0!important;background:transparent!important;
+   margin:0;padding:0!important;box-shadow:none!important;
+   animation:none!important;transition:none!important;
+   pointer-events:auto;
+ }
+ .portfolioShell .paperDeck .storySection .mobileStoryDialog .mobileReaderHeading{
+   display:flex;flex-direction:column;align-items:flex-start;
+   gap:11px;padding:24px 22px 4px;
+ }
+ .portfolioShell .paperDeck .storySection .mobileStoryDialog .storyPanelBody{
+   padding:22px 22px 78px;
+ }
+ .portfolioShell .paperDeck .storySection .mobileStoryDialog .storyPanelBody :is(h4,h5,p,dd,dt,span){
+   max-width:100%;
+ }
+}
+@keyframes mobileCaseStudyEnter{
+ from{opacity:0;transform:translate3d(-26px,0,0)}
+ to{opacity:1;transform:translate3d(0,0,0)}
+}
+@keyframes mobileCaseStudyLeave{
+ from{opacity:1;transform:translate3d(0,0,0)}
+ to{opacity:0;transform:translate3d(26px,0,0)}
+}
+@media(max-width:767px) and (prefers-reduced-motion:reduce){
+ .portfolioShell .paperDeck .storySection .mobileStoryDialog[open]{
+   animation:none!important;transform:none!important;opacity:1!important;
+ }
+ .portfolioShell .paperDeck .storySection .mobileStoryDialog[data-phase="closing"]{
+   opacity:0!important;
+ }
+}

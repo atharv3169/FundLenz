@@ -93,7 +93,7 @@ try{
     if(open||closed){
       const copy=overview.querySelector('[class*=storyCopy]'),illustration=overview.querySelector('[class*=storyIllustration]');
       if(vis(illustration)&&vis(copy)&&overlaps(rect(copy),rect(illustration)))fail("overview copy intersects illustration");
-      if(open&&vis(overview)&&vis(reader)&&overlaps(rect(overview),rect(reader)))fail("overview intersects reader");
+      if(open&&!reader.closest("dialog[open]")&&vis(overview)&&vis(reader)&&overlaps(rect(overview),rect(reader)))fail("overview intersects reader");
       const c=rect(overview);
       for(const el of [...overview.querySelectorAll('h3,button,a[href],[class*=storyNumbers]')].filter(vis)){
         const r=rect(el);
@@ -142,14 +142,20 @@ try{
       assert.equal(await js("getComputedStyle(document.querySelector('main')).backgroundImage"),grain);
       await capture("390-dark-paper");
       await js(`document.querySelector('[aria-label="Dark paper"]').click()`);
-      await scroll("paper-shyam");await button("shyam");await expanded("shyam",true);await sleep(500);
+      await scroll("paper-shyam");await button("shyam");await expanded("shyam",true);
+      await until(()=>js("document.querySelector('dialog[data-mobile-story=shyam]').open"));
+      await sleep(600);
+      const pageBefore=await js("scrollY");
+      await js("document.querySelector('dialog[data-mobile-story=shyam]').scrollTop=330");
+      await until(()=>js("Number(document.querySelector('dialog[data-mobile-story=shyam]').style.getPropertyValue('--reading-progress'))>.01"));
+      assert.ok(Math.abs(await js("scrollY")-pageBefore)<2,"case-study scroll must not move the stacked page");
+      await capture("390-reading-graph");
+      await js("document.querySelector('dialog[data-mobile-story=shyam] [class*=mobileStoryToolbar] button').click()");
+      await expanded("shyam",false);
+      await until(()=>js("!document.querySelector('dialog[data-mobile-story=shyam]').open"));
       const meter=`document.querySelector('[aria-label="Whole page progress"]')`;
       const segment='document.querySelector("#story-shyam [data-route]")';
       const value=async selector=>Number(await js(selector+'.getAttribute("aria-valuenow")'));
-      const start=await value(segment),pageStart=await value(meter);
-      await js("window.scrollBy({top:330,behavior:'instant'})");
-      await until(async()=>await value(segment)>start && await value(meter)>pageStart);
-      await capture("390-reading-graph");await button("shyam");await expanded("shyam",false);
       await scroll("paper-synk");await sleep(200);
       assert.equal(await value(segment),100);
       assert.equal(await js("document.querySelectorAll('[data-route]').length"),10);
@@ -157,102 +163,82 @@ try{
 
     }
     if(width===390){
-      // Reproduce the Safari recording: open a middle chapter, scroll to the
-      // next one, then open other chapters before returning to earlier cards.
+      // The mobile stack is one stable preview surface. Each case study opens
+      // in the browser top layer and scrolls independently. A later card can
+      // never paint over an unfinished chapter because it is not in that layer.
       const audit=()=>["shyam","fundlenz","research","fincalc","dcf","ternwell","crowd","study","vs","synk"].map(id=>{
-        const e=document.getElementById("story-"+id),style=getComputedStyle(e);
-        return {id,position:style.position,z:Number(style.zIndex),expanded:e.dataset.expanded,opacity:Number(getComputedStyle(e.querySelector("[data-entry]")).opacity)};
+        const e=document.getElementById("story-"+id),style=getComputedStyle(e),rect=e.getBoundingClientRect();
+        return {id,position:style.position,z:Number(style.zIndex),top:rect.top,height:rect.height,opacity:Number(getComputedStyle(e.querySelector("[data-entry]")).opacity)};
       });
-      for(const [id,next] of [["fundlenz","research"],["research","fincalc"],["fincalc","dcf"]]){
-        await scroll("paper-"+id);
-        await button(id);await expanded(id,true);await sleep(900);
-        const state=await js("("+audit+")()");
-        assert.ok(state.every(s=>s.position===(s.expanded==="true"?"relative":"sticky")),id+" opened readers must scroll while closed cards remain sticky");
-        assert.ok(state.every((s,i)=>s.z===i+1),id+" must preserve all ten distinct stack layers");
-        assert.ok(state.every(s=>s.opacity>.99),id+" must not hide unexplored stories");
-        // Geometry is measured in document coordinates, not the sticky
-        // painted coordinates, so it detects the reader being covered early.
-        const bounds=await js("(()=>{const a=document.getElementById('story-"+id+"'),reader=a.querySelector('[data-role=story-reader]'),next=document.getElementById('paper-"+next+"');return {top:a.getBoundingClientRect().top+scrollY,bottom:a.getBoundingClientRect().bottom+scrollY,readerTop:reader.getBoundingClientRect().top+scrollY,readerBottom:reader.getBoundingClientRect().bottom+scrollY,nextTop:next.getBoundingClientRect().top+scrollY,readerHeight:reader.getBoundingClientRect().height}})()");
-        assert.ok(bounds.nextTop>=bounds.bottom-3,id+" next card must start after full story ends");
-        assert.ok(bounds.readerHeight>height*.95,id+" story must be longer than the viewport");
-        const maxBeforeNext=bounds.nextTop-height-12;
-        const waypoints=[bounds.top+Math.min(450,bounds.readerHeight*.2),bounds.top+Math.min(1150,bounds.readerHeight*.55)].filter(y=>y<maxBeforeNext);
-        let previousTop=await js("document.getElementById('full-"+id+"').getBoundingClientRect().top");
-        for(const [step,targetY] of waypoints.entries()){
-          await js("window.scrollTo({top:"+Math.round(targetY)+",behavior:'instant'})");await sleep(170);
-          const traveled=await js("(()=>{const a=document.getElementById('full-"+id+"'),next=document.getElementById('paper-"+next+"');return {readerTop:a.getBoundingClientRect().top,nextTop:next.getBoundingClientRect().top}})()");
-          assert.ok(traveled.readerTop<previousTop-55,id+" full-story text must advance with page scrolling at step "+step);
-          assert.ok(traveled.nextTop>height-16,id+" next card must stay offscreen before full-story content ends");
-          previousTop=traveled.readerTop;
-          if(step===0)await capture("390-"+id+"-reader-middle");
-        }
-        // The last chapter/tags must be reachable before the next card.
-        await js("(()=>{const target=document.querySelector('#full-"+id+" [class*=tagsLine]');window.scrollTo({top:scrollY+target.getBoundingClientRect().top-innerHeight*.5,behavior:'instant'})})()");await sleep(180);
-        const endOfReader=await js("(()=>{const e=document.querySelector('#full-"+id+" [class*=tagsLine]'),next=document.getElementById('paper-"+next+"');return {last:e.getBoundingClientRect().top,next:next.getBoundingClientRect().top}})()");
-        assert.ok(endOfReader.last>25&&endOfReader.last<height-35,id+" final story tags must be reachable by normal page scroll");
-        await capture("390-"+id+"-reader-last-chapter");
-        await scroll("paper-"+next);await sleep(240);
-        await capture("390-expanded-"+id+"-scroll-into-"+next);
+      for(const id of ["research","fincalc","fundlenz","dcf","ternwell","synk"]){
+        await scroll("paper-"+id);await sleep(150);
+        const bg=await js("scrollY"),before=await js("("+audit+")()");
+        await button(id);await expanded(id,true);
+        const dialog="document.querySelector('dialog[data-mobile-story="+id+"]')";
+        await until(()=>js(dialog+".open"));await sleep(650);
+        const opened=await js("("+audit+")()");
+        assert.ok(opened.every((s,i)=>s.position==="sticky"&&s.z===i+1),id+" every preview must remain in its original stack");
+        assert.ok(opened.every((s,i)=>Math.abs(s.height-before[i].height)<3),id+" reader must not change any card height");
+        assert.ok(opened.every(s=>s.opacity>.99),id+" no project may vanish when another is opened");
+        assert.equal(await js("document.querySelectorAll('dialog[data-mobile-story][open]').length"),1,"only one case study may take the top layer");
+        assert.ok(await js(dialog+".matches(':modal')"),id+" reader must be native modal and inert the background");
+        await js(dialog+".scrollTop=500");await sleep(150);
+        const middle=await js("(()=>{const d="+dialog+",content=d.querySelector('[data-role=story-reader]');return {scroll:d.scrollTop,progress:Number(d.style.getPropertyValue('--reading-progress')),visible:document.elementFromPoint(innerWidth/2,innerHeight/2).closest('dialog')===d,readerHeight:content.getBoundingClientRect().height}})()");
+        assert.ok(middle.scroll>250&&middle.progress>.02,id+" reader must scroll independently");
+        assert.ok(middle.visible,id+" full reader must own the visible surface");
+        assert.ok(Math.abs((await js("scrollY"))-bg)<2,id+" background must not move while reading");
+        if(["research","fincalc","dcf"].includes(id))await capture("390-"+id+"-reading-middle");
+        await js(dialog+".scrollTop="+dialog+".scrollHeight");
+        await sleep(150);
+        const end=await js("(()=>{const d="+dialog+",tags=d.querySelector('[class*=tagsLine]');return {atBottom:d.scrollTop+d.clientHeight>=d.scrollHeight-5,last:tags.getBoundingClientRect().bottom,viewTop:d.getBoundingClientRect().top}})()");
+        assert.ok(end.atBottom,id+" reader must reach its actual bottom");
+        assert.ok(end.last<height+2,id+" final project tags must be reachable");
+        if(["research","fincalc","dcf"].includes(id))await capture("390-"+id+"-reading-final");
+        await js(dialog+".querySelector('[class*=mobileStoryToolbar] button').click()");
+        await expanded(id,false);await until(()=>js("!"+dialog+".open"));
+        await sleep(70);
+        assert.ok(Math.abs(await js("scrollY")-bg)<2,id+" close must restore the same stack scroll position");
+        assert.ok((await js("("+audit+")()")).every(s=>s.position==="sticky"&&s.opacity>.99),id+" deck must restore with no missing cards");
       }
       await scroll("paper-shyam");await sleep(250);
-      const randomState=await js("("+audit+")()");
-      assert.ok(randomState.every(s=>s.position===(s.expanded==="true"?"relative":"sticky")&&s.opacity>.99),"random opening and scrolling must retain visible cards in the correct positioning mode");
-      await capture("390-random-open-stacked-cards");
-      for(const id of ["fundlenz","research","fincalc"]){
-        await scroll("paper-"+id);
-        await js("document.getElementById('full-"+id+"').querySelector('button').click()");
-        await expanded(id,false);await sleep(820);
-      }
-      await scroll("paper-dcf");await sleep(200);
-      const restored=await js("("+audit+")()");
-      assert.ok(restored.every(s=>s.position==="sticky"&&s.opacity>.99&&s.expanded==="false"),"all stories restore in the same stack after closing");
-      await capture("390-stack-restored-after-random-navigation");
-    }
-    if(width===390){
-      await scroll("paper-dcf");
-      await js("window.scrollBy({top:230,behavior:'instant'})");await sleep(130);
-      const coverTop=await js("document.getElementById('story-dcf').getBoundingClientRect().top");
-      await button("dcf");await expanded("dcf",true);await sleep(95);
-      const activeTop=await js("document.getElementById('story-dcf').getBoundingClientRect().top");
-      assert.ok(Math.abs(activeTop-coverTop)<18,"opening an already-pinned story must not jump vertically");
-      await sleep(850);await capture("390-open-pinned-card-no-jump");
-      await js("document.getElementById('full-dcf').querySelector('button').click()");
-      await expanded("dcf",false);await sleep(860);
+      await capture("390-stack-after-random-readers");
     }
     for(const id of ids){
       await scroll((width<768?"paper-":"story-")+id);await sleep(350);
       const before=await runInspect(id,"overview",width);
       if(width===1440||width===390)await capture(width+"-"+id+"-overview");
-      const startingHeight=width<768?await js("document.querySelector('#story-"+id+" [class*=storyWorkspace]').getBoundingClientRect().height"):0;
-      await button(id);
-      await expanded(id,true);
+      const startingHeight=width<768?await js("document.getElementById('story-"+id+"').getBoundingClientRect().height"):0;
+      await button(id);await expanded(id,true);
       if(width<768){
+        const dialog="document.querySelector('dialog[data-mobile-story="+id+"]')";
+        await until(()=>js(dialog+".open"));
         await sleep(280);
-        const mid=await js("(()=>{const s=document.getElementById('story-"+id+"'),w=s.querySelector('[class*=storyWorkspace]'),a=s.querySelector('[data-role=story-overview]'),r=s.querySelector('[data-role=story-reader]'),art=s.querySelector('[class*=storyIllustration]');return {coverOpacity:+getComputedStyle(a).opacity,readerOpacity:+getComputedStyle(r).opacity,height:w.getBoundingClientRect().height,artHeight:art.getBoundingClientRect().height,heading:r.querySelector('h3').textContent}})()");
-        assert.ok(mid.coverOpacity<.97&&mid.readerOpacity>.03,id+" cover and reader must crossfade together");
-        assert.ok(mid.coverOpacity+mid.readerOpacity<1.18,id+" title handoff must avoid double-bright ghosting");
-        assert.ok(mid.artHeight>170,id+" artwork must remain full size while fading");
-        assert.ok(mid.heading.includes(""),"reader title visible");
+        const mid=await js("(()=>{const d="+dialog+",r=d.querySelector('[data-role=story-reader]'),cover=document.getElementById('story-"+id+"');return {opacity:+getComputedStyle(d).opacity,readerWidth:r.getBoundingClientRect().width,coverHeight:cover.querySelector('[class*=storyWorkspace]').getBoundingClientRect().height,cardHeight:cover.getBoundingClientRect().height,cardClass:cover.className,heading:r.querySelector('h3').textContent}})()");
+        assert.ok(mid.opacity>.02&&mid.opacity<1.01,id+" full-screen reader must fade in");
+        assert.ok(mid.readerWidth>=width*.95,id+" reader must occupy full viewport width");
+        assert.ok(Math.abs(mid.cardHeight-startingHeight)<3,id+" opening reader must not change card boundary; "+JSON.stringify({startingHeight,cardHeight:mid.cardHeight,innerHeight:mid.coverHeight,className:mid.cardClass}));
+        assert.ok(mid.heading.includes(""),id+" reader title is present");
         if(width===390)await capture("390-"+id+"-crossfade-opening");
-      }
-      await sleep(width<768?720:0);
-      if(width<768){
-        const layout=await js("(()=>{const s=document.getElementById('story-"+id+"'),w=s.querySelector('[class*=storyWorkspace]'),a=s.querySelector('[data-role=story-overview]'),r=s.querySelector('[data-role=story-reader]');return {coverOpacity:+getComputedStyle(a).opacity,readerOpacity:+getComputedStyle(r).opacity,readerWidth:r.getBoundingClientRect().width,workspaceWidth:w.getBoundingClientRect().width,height:w.getBoundingClientRect().height}})()");
-        assert.ok(layout.coverOpacity<.03&&layout.readerOpacity>.97,id+" reader fully replaces the cover");
-        assert.ok(layout.readerWidth>=layout.workspaceWidth*.95,id+" reader must be full width");
-        assert.ok(layout.height>startingHeight,id+" story box must grow to fit content");
+        await sleep(450);
+        const layout=await js("(()=>{const d="+dialog+",r=d.querySelector('[data-role=story-reader]');return {open:d.open,readerWidth:r.getBoundingClientRect().width,dialogWidth:d.getBoundingClientRect().width}})()");
+        assert.ok(layout.open&&layout.readerWidth>=layout.dialogWidth*.95,id+" reader must fill mobile surface");
       }
       await sleep(90);
       await runInspect(id,"opening",width);
       if(width===1440||width===390)await capture(width+"-"+id+"-opening");
       await sleep(1080);await runInspect(id,"expanded",width);
       await capture(width+"-"+id+"-expanded");
-      await js("window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))");await expanded(id,false);
       if(width<768){
-        await sleep(280);
-        const reverse=await js("(()=>{const s=document.getElementById('story-"+id+"'),a=s.querySelector('[data-role=story-overview]'),r=s.querySelector('[data-role=story-reader]'),w=s.querySelector('[class*=storyWorkspace]');return {cover:+getComputedStyle(a).opacity,reader:+getComputedStyle(r).opacity,height:w.getBoundingClientRect().height}})()");
-        assert.ok(reverse.cover>.03&&reverse.reader<.97,id+" closing must reverse the crossfade");
+        const dialog="document.querySelector('dialog[data-mobile-story="+id+"]')";
+        await js(dialog+".querySelector('[class*=mobileStoryToolbar] button').click()");
+        await sleep(210);
+        const reverse=await js("(()=>{const d="+dialog+";return {open:d.open,opacity:+getComputedStyle(d).opacity,phase:d.dataset.phase}})()");
+        assert.ok(reverse.open&&reverse.phase==="closing"&&reverse.opacity<.99,id+" reader must reverse-fade before dismissal");
         if(width===390)await capture("390-"+id+"-crossfade-closing");
+        await expanded(id,false);
+        await until(()=>js("!"+dialog+".open"));
+      }else{
+        await js("window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))");await expanded(id,false);
       }
       await sleep(240);await runInspect(id,"closing",width);
       if(width===1440||width===390)await capture(width+"-"+id+"-closing");
