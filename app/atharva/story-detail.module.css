@@ -269,3 +269,51 @@
  .page[data-paper=light] .storySegments a[data-segment-state=upcoming] span{opacity:.22}
  .page[data-paper=light] .storySegments a[data-segment-state=active] span{background:var(--case-highlight);opacity:1}
 }
+
+
+/* Story-specific visual environments: bright paper surrounds a rich,
+   accent-toned illustration; dark paper retains deeper cinematic contrast. */
+.page{
+ --scene-base:#111c29;--scene-mix:24%;
+ --tool-panel-base:#172631;--tool-panel-depth:#0c1721;--tool-mix:16%;
+}
+.page .artFrame{
+ border-color:color-mix(in srgb,var(--case-accent) 42%,#486073);
+ background:linear-gradient(144deg,
+  color-mix(in srgb,var(--case-accent) 27%,#182837),
+  color-mix(in srgb,var(--case-accent) 9%,#0b1725));
+ box-shadow:0 20px 64px #02070a57,inset 0 1px color-mix(in srgb,var(--case-accent) 33%,transparent);
+}
+.page .artFrame::before{
+ background:radial-gradient(ellipse at 47% 49%,
+  color-mix(in srgb,var(--case-accent) 20%,transparent),transparent 68%);
+}
+.page .demoContent > :not(.demoHeading){--accent:var(--case-accent)}
+@media(max-width:767px){
+ .page[data-paper=light]{
+  --scene-base:#3d4955;--scene-mix:32%;
+  --tool-panel-base:#34424d;--tool-panel-depth:#212c38;--tool-mix:27%;
+ }
+ .page[data-paper=dark]{
+  --scene-base:#111a28;--scene-mix:23%;
+  --tool-panel-base:#162430;--tool-panel-depth:#0b1722;--tool-mix:18%;
+ }
+ .page[data-paper=light] .artFrame{
+  background:linear-gradient(138deg,
+   color-mix(in srgb,var(--case-accent) 36%,#e3e3dc),
+   color-mix(in srgb,var(--case-accent) 13%,#c4d0d0));
+  border-color:color-mix(in srgb,var(--case-accent) 56%,#a1a9a9);
+  box-shadow:0 17px 42px #33464c30;
+ }
+ .page[data-paper=dark] .artFrame{
+  background:linear-gradient(138deg,
+   color-mix(in srgb,var(--case-accent) 25%,#1a2a39),
+   color-mix(in srgb,var(--case-accent) 8%,#0b1723));
+ }
+ .page[data-paper=light] .demoContent > :not(.demoHeading){
+  background:linear-gradient(140deg,
+   color-mix(in srgb,var(--case-accent) 19%,#263643),
+   color-mix(in srgb,var(--case-accent) 11%,#121d29));
+  border-color:color-mix(in srgb,var(--case-accent) 45%,#586972);
+ }
+}
