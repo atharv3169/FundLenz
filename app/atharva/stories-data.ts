@@ -1,5 +1,5 @@
 export type StoryId = "shyam" | "fundlenz" | "research" | "fincalc" | "dcf" | "ternwell" | "crowd" | "study" | "vs" | "synk";
-export type Story={ id:StoryId; title:string; type:string; year:string; eyebrow:string; hook:string; intro:string; accent:string; numbers:{value:string;label:string}[]; chapters:{title:string;paragraphs:string[]}[]; tags:string[]; visit?:{href:string;text:string;pending?:boolean} };
+export type Story={ id:StoryId; title:string; type:string; year:string; eyebrow:string; hook:string; intro:string; accent:string; numbers:{value:string;label:string}[]; chapters:{title:string;paragraphs:string[]}[]; tags:string[]; takeaway?:{body:string}; visit?:{href:string;text:string;pending?:boolean} };
 export const stories:Story[] = [
   {
     "id": "fundlenz",
@@ -143,6 +143,9 @@ export const stories:Story[] = [
   },
   {
     "id": "dcf",
+    "takeaway": {
+      "body": "I finished DCF Atlas as a valuation workspace that connects operating forecasts to equity value and lets users test the assumptions behind the result with reverse DCF, sensitivity analysis and Monte Carlo simulation."
+    },
     "title": "DCF Atlas",
     "type": "Equity valuation workspace",
     "year": "2026",
@@ -188,6 +191,9 @@ export const stories:Story[] = [
   },
   {
     "id": "ternwell",
+    "takeaway": {
+      "body": "Ternwell now brings the income statement, balance sheet and cash-flow statement into one linked model. Users can change the drivers, check the funding implications and compare scenarios before exporting the results."
+    },
     "title": "Ternwell",
     "type": "Three-statement financial modelling",
     "year": "2026",
