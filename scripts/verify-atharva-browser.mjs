@@ -224,6 +224,7 @@ try{
   const previousSelector='footer a[href="/atharva/stories/fincalc"]';
   await js("document.querySelector("+JSON.stringify(previousSelector)+").click()");
   await until(()=>js('location.pathname==="/atharva/stories/fincalc"'),30000);
+  await until(()=>js('!!document.querySelector("main[data-story-page=fincalc]")'),30000);
   assert.deepEqual(await seen(),["fundlenz","research","fincalc","dcf"],"revisiting never duplicates completions");
   const backSelector='a[href^="/atharva#paper-"]';
   await js("document.querySelector("+JSON.stringify(backSelector)+").click()");
