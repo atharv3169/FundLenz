@@ -189,7 +189,7 @@ try{
       const finish=await js("(()=>{const m=document.querySelector('[data-story-page]');return {pct:Number(m.querySelector('[aria-label=\\\"Case study reading progress\\\"]').getAttribute('aria-valuenow')),end:!!m.querySelector('#case-end'),chapters:m.querySelectorAll('[data-case-chapter]').length,footer:!!m.querySelector('footer a[href^=\\\"/atharva/stories/\\\"]')}})()");
       assert.equal(finish.pct,100,id+" progress reaches 100%");
       assert.ok(finish.end&&finish.footer,"page ends with full content and next/previous stories");
-      const ending=await js("(()=>{const ending=document.querySelector('#case-end');return {title:ending.querySelector('h2')?.innerText.replace(/\\s+/g," ").trim(),body:ending.querySelector('p')?.textContent}})()");
+      const ending=await js("(()=>{const ending=document.querySelector('#case-end');return {title:ending.querySelector('h2')?.innerText.replace(/\\s+/g,' ').trim(),body:ending.querySelector('p')?.textContent}})()");
       if(["dcf","ternwell"].includes(id)){
         assert.equal(ending.title,"The result.",id+" has a completed-project conclusion, not a work-in-progress label");
         assert.ok(ending.body.length>120,id+" includes a substantive, project-specific takeaway");
