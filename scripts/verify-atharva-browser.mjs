@@ -82,7 +82,7 @@ try{
   const assertNoHorizontal=async(label)=>{
     assert.ok(await js("document.documentElement.scrollWidth<=document.documentElement.clientWidth+2"),label+" horizontal page overflow");
   };
-  const counts={homepage:0,stories:0,progress:0,back:0,theme:0,spectrum:0};
+  const counts={homepage:0,stories:0,progress:0,back:0,theme:0,spectrum:0,explored:0};
   for(const [width,height] of [[1440,900],[390,844],[320,667]]){
     await view(width,height);
     await navigate("/atharva","#atharva-portfolio");
@@ -204,6 +204,52 @@ try{
   await until(()=>js("document.querySelector('[data-story-page]').dataset.paper==='light'"));
   assert.equal(await js("localStorage.getItem('atharva-paper')"),"light","light mode persists after toggling back");
   counts.theme+=5;
+  // A visitor can explore sequential stories, go back, reload, and return later.
+  await view(390,844);
+  await navigate("/atharva","#atharva-portfolio");
+  await js('localStorage.removeItem("atharva-explored-stories-v1")');
+  await navigate("/atharva","#atharva-portfolio");
+  const badges=()=>js('Array.from(document.querySelectorAll("[data-story-complete]"),el=>el.dataset.storyComplete)');
+  const seen=()=>js('JSON.parse(localStorage.getItem("atharva-explored-stories-v1")||"[]")');
+  assert.deepEqual(await badges(),[],"unopened stories have no checkmarks");
+  await js('document.querySelector("[data-story-link=fundlenz]").click()');
+  await until(()=>js('location.pathname==="/atharva/stories/fundlenz"'),30000);
+  await until(async()=>(await seen()).includes("fundlenz"),5000);
+  for(const nextId of ["research","fincalc","dcf"]){
+    const selector='footer a[href="/atharva/stories/'+nextId+'"]';
+    await js("document.querySelector("+JSON.stringify(selector)+").click()");
+    await until(()=>js("location.pathname==="+JSON.stringify("/atharva/stories/"+nextId)),30000);
+    await until(async()=>(await seen()).includes(nextId),5000);
+  }
+  const previousSelector='footer a[href="/atharva/stories/fincalc"]';
+  await js("document.querySelector("+JSON.stringify(previousSelector)+").click()");
+  await until(()=>js('location.pathname==="/atharva/stories/fincalc"'),30000);
+  await until(()=>js('!!document.querySelector("main[data-story-page=fincalc]")'),30000);
+  assert.deepEqual(await seen(),["fundlenz","research","fincalc","dcf"],"revisiting never duplicates completions");
+  const backSelector='a[href^="/atharva#paper-"]';
+  await js("document.querySelector("+JSON.stringify(backSelector)+").click()");
+  await until(()=>js('location.pathname==="/atharva"'),30000);
+  await until(async()=>(await badges()).length===4,5000);
+  assert.deepEqual(await badges(),["fundlenz","research","fincalc","dcf"],"only four explored cards are checked");
+  await capture("390-four-explored-cards");
+  await navigate("/atharva","#atharva-portfolio");
+  await until(async()=>(await badges()).length===4,5000);
+  assert.deepEqual(await badges(),["fundlenz","research","fincalc","dcf"],"checkmarks survive reloading");
+  await navigate("/atharva/stories/synk",'main[data-story-page="synk"]');
+  await until(async()=>(await seen()).includes("synk"),5000);
+  await js("document.querySelector("+JSON.stringify(backSelector)+").click()");
+  await until(()=>js('location.pathname==="/atharva"'),30000);
+  await until(async()=>(await badges()).length===5,5000);
+  assert.deepEqual(await badges(),["fundlenz","research","fincalc","dcf","synk"],"later story adds to earlier checkmarks");
+  await view(1440,900);
+  await navigate("/atharva","#atharva-portfolio");
+  assert.equal(await js('getComputedStyle(document.querySelector("[data-story-complete=fundlenz]")).display'),"grid","desktop check is visible");
+  await view(320,667);
+  await navigate("/atharva","#atharva-portfolio");
+  await assertNoHorizontal("320px explored cards");
+  assert.equal(await js('getComputedStyle(document.querySelector("[data-story-complete=fundlenz]")).display'),"grid","narrow phone check is visible");
+  counts.explored+=6;
+
   // Direct links must work with no earlier visit to the main portfolio.
   await view(390,844);
   await navigate("/atharva/stories/ternwell",'main[data-story-page="ternwell"]');

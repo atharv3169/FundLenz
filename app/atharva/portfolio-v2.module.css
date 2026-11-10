@@ -1139,19 +1139,10 @@
 
 .paperSignature{display:none}
 @media(max-width:767px){.portfolioShell .heroContent:after{display:none}.paperSignature{display:block;width:100%;height:13px;margin:13px 0 2px}}
-.storyTrace{display:none}
 @media(max-width:767px){
  .portfolioShell{--page-ink:#286454}
  .readingQuote{bottom:0;height:3px;background:#84948b42}
  .readingQuote i{display:block;height:100%;background:var(--story-ink,var(--page-ink));transform:scaleX(var(--page,0));transform-origin:left}
- .storyTrace{display:block;position:absolute;inset:0 6px;z-index:4;pointer-events:none;color:var(--accent);--remaining:100%}
- .storyTrace>div{position:absolute;inset:0;opacity:.24}
- .storyTrace>.tracePaint{opacity:1;clip-path:inset(0 0 var(--remaining) 0)}
- .storyTrace svg{position:absolute;overflow:visible;fill:none;stroke:currentColor;stroke-linejoin:round;stroke-linecap:round}
- .storyTrace path{vector-effect:non-scaling-stroke;stroke-width:1.8}
- .traceStem{left:-5px;top:0;width:12px;height:calc(100% - 24px)}
- .traceTurn{bottom:0;left:0;width:100%;height:24px}
- .storyTrace[data-route=right]{transform:scaleX(-1)}
  .portfolioShell .paperDeck .storySection{padding-bottom:24px}
  .portfolioShell .paperSignature{color:var(--page-ink)}
  .portfolioShell[data-paper=dark]{--paper:#090e15;--pen:#edf2ec;--page-ink:#b6dfc4;--night-rule:#374947;--night-sub:#b8c7c4;color-scheme:dark}
@@ -1165,7 +1156,7 @@
  .portfolioShell[data-paper=dark] :is(.paperIndex header,.paperIndex a,.educationLine,.skillGroup,.contactLinks a,.interestsSection>div p){border-color:var(--night-rule)}
  .portfolioShell[data-paper=dark] :is(.skillsText span,.heroIntro,.aboutColumns p,.contact p,.educationLine p){color:var(--night-sub)}
  .portfolioShell[data-paper=dark] .paperDeck{background:linear-gradient(#2b4148,#2b4148) center 8px/91% 24px no-repeat,linear-gradient(#38504b,#38504b) center top/85% 24px no-repeat}
- @media(prefers-reduced-motion:no-preference){.tracePaint{transition:clip-path .12s ease-out}.readingQuote i{transition:transform .12s ease-out,background-color .25s}}
+ @media(prefers-reduced-motion:no-preference){.readingQuote i{transition:transform .12s ease-out,background-color .25s}}
 }
 
 /* The paper deck now contains only preview cards. Dedicated full-story
@@ -1253,4 +1244,17 @@
 }
 @media(prefers-reduced-motion:reduce){
  .portfolioShell .siteNav .readingQuote i{transition:none!important}
+}
+
+/* A small check appears only once a case study has been opened. */
+.storyCompletion{
+ position:absolute;right:clamp(24px,3.5vw,58px);top:24px;z-index:8;
+ display:grid;place-items:center;width:31px;height:31px;border-radius:50%;
+ background:var(--accent);color:#152b2b;
+ border:1px solid color-mix(in srgb,var(--accent) 85%,white 15%);
+ box-shadow:0 3px 15px #07151958;
+}
+@media(max-width:767px){
+ .portfolioShell .paperDeck .storyCompletion{top:10px;right:18px;width:25px;height:25px;}
+ .portfolioShell .paperDeck .cardFolio{padding-right:34px;}
 }

@@ -5,6 +5,7 @@ import { stories, type Story } from "./stories-data";
 import { SceneFigure } from "./scenes";
 import { MiniTools } from "./mini-tools";
 import { storyProgress, storySpectrum } from "./progress-palette";
+import { markStoryExplored } from "./story-views";
 import s from "./story-detail.module.css";
 
 const clamp=(n:number)=>Math.max(0,Math.min(1,n));
@@ -19,6 +20,9 @@ export default function StoryDetail({story}:{story:Story}){
  const [chapter,setChapter]=useState(0);
  const [paper,setPaper]=useState(false);
  const hasDemo=["fundlenz","fincalc","dcf","study"].includes(story.id);
+
+ // Every direct or previous/next story visit counts once, even without a full scroll.
+ useEffect(()=>{markStoryExplored(story.id);},[story.id]);
 
  useEffect(()=>{
    let frame=0;
