@@ -124,6 +124,22 @@ try{
       assert.ok(await js('Array.from(document.querySelectorAll("section[data-story]"),s=>getComputedStyle(s).position).every(v=>v==="sticky")'),"all previews stay in stable sticky stack");
     }
     await assertNoHorizontal("homepage "+width);
+    if(width<768){
+      const motif=await js("(()=>{const m=document.querySelector('[data-finance-motif=risk-distribution]'),hero=document.querySelector('[class*=heroContent]'),a=m.getBoundingClientRect(),h=hero.getBoundingClientRect();return {visible:getComputedStyle(m).display!=='none',offset:Math.abs(a.left+a.width/2-(h.left+h.width/2)),width:a.width,height:a.height,paths:m.querySelectorAll('path').length,mirrored:m.querySelectorAll('circle[cx=\\\"150\\\"]').length}})()");
+      assert.ok(motif.visible&&motif.width>200&&motif.height>=30,"balanced risk motif is visible on mobile");
+      assert.ok(motif.offset<=2,"risk-distribution motif is symmetrically centered beneath the hero");
+      assert.equal(motif.paths,3,"risk motif includes a bell curve, baseline and center measure");
+      assert.equal(motif.mirrored,1,"risk curve has a single centered peak");
+      await js('document.querySelector(\'button[aria-label="All stories"]\').click()');
+      await until(()=>js('document.querySelector(\'dialog[aria-label="All stories"]\')?.open'),5000);
+      const menu=await js("(()=>{const modal=document.querySelector('dialog[aria-label=\\\"All stories\\\"]'),a=[...modal.querySelectorAll('a[data-story-index]')];return {title:modal.querySelector('header').textContent.trim(),ids:a.map(x=>x.dataset.storyIndex),urls:a.map(x=>x.getAttribute('href')),explored:a.filter(x=>x.dataset.indexExplored==='true').map(x=>x.dataset.storyIndex),extra:modal.querySelectorAll('a:not([data-story-index])').length}})()");
+      assert.ok(menu.title.startsWith("All stories"),"index heading is All stories");
+      assert.deepEqual(menu.ids,ids,"only the ten portfolio stories appear in the popup");
+      assert.deepEqual(menu.urls,ids.map(id=>"#paper-"+id),"story index links to all ten cards");
+      assert.equal(menu.extra,0,"no intro, skills, contact or other index items");
+      await capture(width+"-stories-only-popup");
+      await js('document.querySelector(\'dialog[aria-label="All stories"]\').close()');
+    }
     await capture(width+"-home-story-stack");
     counts.homepage++;
     if(width===390){
@@ -267,6 +283,15 @@ try{
   await until(()=>js('location.pathname==="/atharva"'),30000);
   await until(async()=>(await badges()).length===4,5000);
   assert.deepEqual(await badges(),["fundlenz","research","shyam","dcf"],"only four explored cards are checked");
+  // The popup uses the identical saved explored set as the card badges.
+  const popupStatus=()=>js("Array.from(document.querySelectorAll('dialog[aria-label=\\\"All stories\\\"] a[data-story-index]'),a=>({id:a.dataset.storyIndex,explored:a.dataset.indexExplored,strike:getComputedStyle(a.querySelector('span')).textDecorationLine}))");
+  const fourIndex=await popupStatus();
+  assert.deepEqual(fourIndex.filter(x=>x.explored==="true").map(x=>x.id),["fundlenz","research","shyam","dcf"],"index crosses out the same four completed story cards");
+  assert.ok(fourIndex.filter(x=>x.explored==="true").every(x=>x.strike.includes("line-through")),"all completed story titles have a visible strikethrough");
+  assert.ok(fourIndex.filter(x=>x.explored==="false").every(x=>x.strike==="none"),"unexplored story titles are not crossed out");
+  await js('document.querySelector(\'button[aria-label="All stories"]\').click()');
+  await capture("390-four-completed-stories-index");
+  await js('document.querySelector(\'dialog[aria-label="All stories"]\').close()');
   await capture("390-four-explored-cards");
   await navigate("/atharva","#atharva-portfolio");
   await until(async()=>(await badges()).length===4,5000);
@@ -277,6 +302,10 @@ try{
   await until(()=>js('location.pathname==="/atharva"'),30000);
   await until(async()=>(await badges()).length===5,5000);
   assert.deepEqual(await badges(),["fundlenz","research","shyam","dcf","synk"],"later story adds to earlier checkmarks");
+  const fiveIndex=await popupStatus();
+  assert.deepEqual(fiveIndex.filter(x=>x.explored==="true").map(x=>x.id),["fundlenz","research","shyam","dcf","synk"],"the story popup preserves earlier marks when a fifth story is explored");
+  assert.ok(fiveIndex.filter(x=>x.explored==="true").every(x=>x.strike.includes("line-through")),"cross-outs persist after returning from another story");
+
   await view(1440,900);
   await navigate("/atharva","#atharva-portfolio");
   assert.equal(await js('getComputedStyle(document.querySelector("[data-story-complete=fundlenz]")).display'),"grid","desktop check is visible");
