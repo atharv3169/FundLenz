@@ -1360,3 +1360,45 @@
   conic-gradient(var(--tool-accent) var(--focus-progress),
   color-mix(in srgb,var(--tool-accent) 18%,#364754) 0);
 }
+
+
+/* Stories-only index: completed cases are crossed out, while their links remain
+   active and accessible. Theme accents are the same as the saved card checks. */
+@media(max-width:767px){
+ .portfolioShell .paperIndex dialog a[data-story-index]{
+  min-height:44px;gap:13px;align-items:center;
+  text-decoration:none;
+ }
+ .portfolioShell .paperIndexTitle{
+  min-width:0;overflow-wrap:anywhere;
+  color:inherit;line-height:1.35;
+ }
+ .portfolioShell .paperIndex a[data-index-explored="true"] .paperIndexTitle{
+  text-decoration-line:line-through;
+  text-decoration-color:var(--index-accent);
+  text-decoration-thickness:2px;
+  opacity:.77;
+ }
+ .portfolioShell .paperIndex a[data-index-explored="true"] small{
+  color:color-mix(in srgb,var(--index-accent) 64%,#294d49);
+ }
+ .portfolioShell[data-paper=dark] .paperIndex a[data-index-explored="true"] small{
+  color:var(--index-accent);
+ }
+ .portfolioShell .paperIndex dialog a:focus-visible{
+  outline:2px solid var(--index-accent,#286454);outline-offset:-2px;
+  border-radius:3px;
+ }
+
+ /* A balanced risk-distribution silhouette replaces the rising chart wave.
+    Its midpoint and mirrored tails stay centered beneath the hero typography. */
+ .portfolioShell .paperSignature{
+  display:block;
+  width:min(100%,270px);
+  height:35px;
+  margin:12px auto 3px;
+  color:var(--page-ink,#286454);
+  opacity:.92;
+  overflow:visible;
+ }
+}

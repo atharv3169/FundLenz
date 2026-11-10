@@ -132,7 +132,12 @@ export default function PortfolioV2(){
     <h1>Atharva<br/><em>Sahu.</em></h1>
     <p className={s.heroMessage}>I model business decisions and build <em>financial research tools.</em></p>
     <p className={s.heroIntro}>My work spans equipment financing at Shyam Construction, mutual-fund liquidity research and the FundLenz platform.</p>
-    <svg className={s.paperSignature} viewBox="0 0 300 23" preserveAspectRatio="none" aria-hidden="true"><path d={quotePath} fill="none" stroke="currentColor" strokeWidth="2" vectorEffect="non-scaling-stroke"/></svg>
+    <svg className={s.paperSignature} data-finance-motif="risk-distribution" viewBox="0 0 300 36" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+     <path d="M15 28H285" fill="none" stroke="currentColor" strokeOpacity=".25" strokeWidth="1" vectorEffect="non-scaling-stroke"/>
+     <path d="M15 28 C55 28 79 26 100 17 C118 8 132 5 150 5 C168 5 182 8 200 17 C221 26 245 28 285 28" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" vectorEffect="non-scaling-stroke"/>
+     <path d="M150 6V29" fill="none" stroke="currentColor" strokeOpacity=".33" strokeWidth="1" strokeDasharray="2 4" vectorEffect="non-scaling-stroke"/>
+     <circle cx="150" cy="5" r="2.7" fill="currentColor"/>
+    </svg>
     <a className={s.heroLink} href="#work">Explore my work <ArrowRight size={18}/></a>
    </div><div className={s.heroFoot}><span>PORTFOLIO / 2026</span><span>SCROLL DOWN <ArrowDown size={14}/></span></div></section>
    <div className={s.currencyRibbon} aria-hidden="true"><div>{[0,1].map(group=><div className={s.ribbonGroup} key={group}>{[["₹","Cash flow"],["β","Beta"],["$","Markets"],["%","Yield"],["€","Valuation"],["Σ","Research"],["σ","Volatility"],["£","Capital"],["Δ","Change"],["×","Multiples"],["¥","FX"],["ρ","Correlation"],["α","Alpha"],["±","Risk"],["bps","Spreads"],["ƒ","Forecasts"]].map(([symbol,label])=><span key={label}><i>{symbol}</i>{label}</span>)}</div>)}</div></div>
@@ -145,7 +150,7 @@ export default function PortfolioV2(){
    </section>
    <section className={s.workIntro} id="work"><span className={s.sectionTag}>02 / THE WORK, UP CLOSE</span><h2>Selected<br/><em>work.</em></h2><p>Explore the decisions, research and models behind each project.</p><div className={s.workCount}>{String(stories.length).padStart(2,"0")} <span>PROJECTS & EXPERIENCES</span></div></section>
    <div className={s.paperDeck} data-paper-deck>{stories.map((story,i)=><div key={story.id} className={s.paperSlot}><span id={"paper-"+story.id} className={s.paperAnchor} style={{"--stack":i} as CSSProperties}/><StorySection story={story} index={i} completed={exploredStories.has(story.id)}/></div>)}</div>
-   <PaperIndex/>
+   <PaperIndex exploredStories={exploredStories}/>
 
    <section id="skills" className={s.skillsSection}><div data-reveal><span className={s.sectionTag}>03 / HOW I WORK</span><h2>Skills &amp;<br/><em>education.</em></h2></div>
     <div className={s.skillsColumns}>{learning.map((group,i)=><div className={s.skillGroup} key={group.title} data-reveal><span>0{i+1}</span><h3>{group.title}</h3><div className={s.skillsText}>{group.skills.map((name,j)=><span key={name}>{name}{j!==group.skills.length-1?<i> / </i>:""}</span>)}</div></div>)}</div>
@@ -172,18 +177,46 @@ function MarketPlate(){
  </svg>;
 }
 
-function PaperIndex(){
+function PaperIndex({exploredStories}:{exploredStories:Set<StoryId>}){
  const [active,setActive]=useState(0);
  const box=useRef<HTMLDialogElement>(null);
- const items=[{id:"top",title:"Introduction"},{id:"work",title:"Selected work"},...stories.map(v=>({id:"paper-"+v.id,title:v.title})),{id:"skills",title:"Skills & education"},{id:"contact",title:"Contact"}];
  useEffect(()=>{
   const mq=matchMedia("(max-width:767px)");
   let raf=0;
-  const read=()=>{raf=0;if(!mq.matches){box.current?.close();return;}const anchors=["top","work",...stories.map(s=>"paper-"+s.id),"skills","contact"];let current=0;anchors.forEach((id,i)=>{const node=document.getElementById(id);if(node&&node.getBoundingClientRect().top<innerHeight*.36)current=i;});setActive(current);};
-  const update=()=>{if(!raf)raf=requestAnimationFrame(read);};update();window.addEventListener("scroll",update,{passive:true});window.addEventListener("resize",update);
+  const read=()=>{
+   raf=0;
+   if(!mq.matches){box.current?.close();return;}
+   let current=0;
+   stories.forEach((story,i)=>{
+    const anchor=document.getElementById("paper-"+story.id);
+    if(anchor&&anchor.getBoundingClientRect().top<innerHeight*.36)current=i;
+   });
+   setActive(current);
+  };
+  const update=()=>{if(!raf)raf=requestAnimationFrame(read);};
+  update();window.addEventListener("scroll",update,{passive:true});window.addEventListener("resize",update);
   return()=>{window.removeEventListener("scroll",update);window.removeEventListener("resize",update);cancelAnimationFrame(raf);};
  },[]);
- return <div className={s.paperIndex}><button type="button" aria-haspopup="dialog" onClick={()=>box.current?.showModal()}><b>{String(active+1).padStart(2,"0")}</b> All projects</button><dialog ref={box} aria-label="Portfolio index" onClick={e=>{if(e.target===box.current)box.current.close();}}><div><header>Portfolio index <button type="button" onClick={()=>box.current?.close()} aria-label="Close index">×</button></header>{items.map((it,i)=><a key={it.id} href={"#"+it.id} aria-current={active===i?"location":undefined} onClick={()=>box.current?.close()}><small>{String(i+1).padStart(2,"0")}</small>{it.title}</a>)}</div></dialog></div>;
+ return <div className={s.paperIndex}>
+  <button type="button" aria-haspopup="dialog" aria-label="All stories" onClick={()=>box.current?.showModal()}>
+   <b>{String(active+1).padStart(2,"0")}</b> All stories
+  </button>
+  <dialog ref={box} aria-label="All stories" onClick={e=>{if(e.target===box.current)box.current.close();}}>
+   <div>
+    <header>All stories <button type="button" onClick={()=>box.current?.close()} aria-label="Close story index">×</button></header>
+    {stories.map((story,i)=>{
+     const explored=exploredStories.has(story.id);
+     return <a key={story.id} href={"#paper-"+story.id} data-story-index={story.id} data-index-explored={explored?"true":"false"}
+       style={{"--index-accent":story.accent} as CSSProperties}
+       aria-label={story.title+(explored?" — explored":"")} aria-current={active===i?"location":undefined}
+       onClick={()=>box.current?.close()}>
+       <small>{String(i+1).padStart(2,"0")}</small>
+       <span className={s.paperIndexTitle}>{story.title}</span>
+     </a>;
+    })}
+   </div>
+  </dialog>
+ </div>;
 }
 
 function PaperIntro(){
@@ -199,7 +232,6 @@ function PaperIntro(){
  <button onClick={()=>setVisible(false)}>Skip intro →</button></div>:null;
 }
 
-const quotePath="M0 19 L13 18 L24 20 L39 14 L48 16 L61 12 L75 15 L90 9 L103 13 L115 11 L130 15 L146 9 L158 10 L171 6 L186 11 L200 8 L215 10 L229 4 L242 7 L258 3 L273 6 L286 3 L300 2";
 function ReadingQuote(){
  const meter=useRef<HTMLDivElement>(null);
  useEffect(()=>{
