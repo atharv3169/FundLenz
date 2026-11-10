@@ -131,7 +131,7 @@ export default function StoryDetail({story}:{story:Story}){
      </section>}
      <section className={s.closing} id="case-end" data-case-stage>
        <div className={s.sectionLabel}><span>END</span> THE TAKEAWAY</div>
-       <div><h2>Work in<br/><em>progress.</em></h2><p>{story.hook}</p>
+       <div><h2>{story.takeaway?<>The<br/><em>result.</em></>:<>Work in<br/><em>progress.</em></>}</h2><p>{story.takeaway?.body??story.hook}</p>
          <div className={s.tags}>{story.tags.map(tag=><span key={tag}>{tag}</span>)}</div>
          {story.visit&&!story.visit.pending&&<a href={story.visit.href} target="_blank" rel="noopener noreferrer" className={s.visitEnd}>{story.visit.text}<ArrowUpRight size={17}/></a>}
        </div>

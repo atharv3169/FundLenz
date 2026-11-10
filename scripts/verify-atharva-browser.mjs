@@ -189,6 +189,14 @@ try{
       const finish=await js("(()=>{const m=document.querySelector('[data-story-page]');return {pct:Number(m.querySelector('[aria-label=\\\"Case study reading progress\\\"]').getAttribute('aria-valuenow')),end:!!m.querySelector('#case-end'),chapters:m.querySelectorAll('[data-case-chapter]').length,footer:!!m.querySelector('footer a[href^=\\\"/atharva/stories/\\\"]')}})()");
       assert.equal(finish.pct,100,id+" progress reaches 100%");
       assert.ok(finish.end&&finish.footer,"page ends with full content and next/previous stories");
+      const ending=await js("(()=>{const ending=document.querySelector('#case-end');return {title:ending.querySelector('h2')?.innerText.replace(/\\s+/g,' ').trim(),body:ending.querySelector('p')?.textContent}})()");
+      if(["dcf","ternwell"].includes(id)){
+        assert.equal(ending.title,"The result.",id+" has a completed-project conclusion, not a work-in-progress label");
+        assert.ok(ending.body.length>120,id+" includes a substantive, project-specific takeaway");
+        assert.ok(!/progress|under process/i.test(ending.title),id+" does not imply work remains unfinished");
+      } else {
+        assert.equal(ending.title,"Work in progress.",id+" retains the existing story ending");
+      }
       const globalEnd=await js("Number(document.querySelector('[aria-label=\\\"Story sequence progress\\\"]').getAttribute('aria-valuenow'))");
       assert.equal(globalEnd,(ids.indexOf(id)+1)*10,id+" completed story finishes only its own spectrum segment");
       if(width===390)await capture(width+"-"+id+"-end");
