@@ -64,7 +64,7 @@ try{
   await until(()=>js('!!document.querySelector("#story-ternwell")'),60000);
   await js('document.fonts.ready.then(()=>true)');
 
-  const ids=["shyam","fundlenz","research","fincalc","dcf","ternwell","crowd","study","vs","synk"];
+  const ids=["fundlenz","research","shyam","dcf","ternwell","fincalc","synk","crowd","vs","study"];
   const screens=[];
   const view=(width,height)=>cmd("Emulation.setDeviceMetricsOverride",{width,height,deviceScaleFactor:1,mobile:width<600});
   const base="http://127.0.0.1:41893";
@@ -87,6 +87,13 @@ try{
     await view(width,height);
     await navigate("/atharva","#atharva-portfolio");
     assert.deepEqual(await js('Array.from(document.querySelectorAll("section[data-story]"),e=>e.dataset.story)'),ids);
+    assert.ok(await js('document.querySelector("[class*=aboutColumns]")?.textContent.includes("family business")'),"biography connects engineering skills with family business");
+    assert.ok(await js('document.querySelector("[class*=aboutColumns]")?.textContent.includes("finance internships")'),"biography includes research and internships");
+    assert.equal(await js('document.querySelectorAll("[class*=skillGroup]").length'),4,"four focused skill groups");
+    assert.ok(await js('document.querySelector("[class*=skillsColumns]")?.textContent.includes("UI/UX design")'),"web design skills are present");
+    assert.ok(await js('document.querySelector("[class*=skillsColumns]")?.textContent.includes("Risk management")'),"finance and risk management skills are present");
+    assert.equal(await js('document.querySelectorAll("[class*=paperLinks] a").length'),2,"social area has two links, no old scroll arrow");
+    assert.equal(await js('document.querySelectorAll("[class*=paperLinks] a svg").length'),2,"GitHub and LinkedIn have brand SVG marks");
     assert.equal(await js('document.querySelectorAll("[data-story-link]").length'),10,"ten direct project links");
     assert.equal(await js('document.querySelectorAll("[data-role=story-reader],dialog[data-mobile-story]").length'),0,"no readers or dialogs on the stacked homepage");
     for(const id of ids){
@@ -97,7 +104,7 @@ try{
     const quote='document.querySelector("[aria-label=\\\"Whole page progress\\\"]")';
     assert.ok(await js("!!"+quote),"visible full-page progress");
     const colors=[];
-    for(const id of ["fundlenz","research","fincalc","dcf","synk"]){
+    for(const id of ["fundlenz","research","shyam","dcf","synk"]){
       await js("document.getElementById('"+(width<768?"paper-":"story-")+id+"').scrollIntoView({block:'start',behavior:'instant'})");
       await sleep(280);
       const progress=await js("(()=>{const meter="+quote+",root=document.getElementById('atharva-portfolio');return {color:meter.style.getPropertyValue('--story-ink'),value:Number(meter.getAttribute('aria-valuenow')),active:root.dataset.activeStory,visible:getComputedStyle(meter).display!=='none',gradient:meter.style.getPropertyValue('--story-spectrum'),transform:getComputedStyle(meter.querySelector('i')).transform,clip:getComputedStyle(meter.querySelector('i')).clipPath}})()");
@@ -129,6 +136,8 @@ try{
       await navigate("/atharva/stories/"+id,'main[data-story-page="'+id+'"]');
       const detail=await js("(()=>{const m=document.querySelector('[data-story-page]'),bar=m.querySelector('[aria-label=\\\"Case study reading progress\\\"]'),chapter=m.querySelectorAll('[data-case-chapter]');return {id:m.dataset.storyPage,title:m.querySelector('h1').textContent,chapters:chapter.length,bar:!!bar,color:m.style.getPropertyValue('--case-accent'),rail:!!m.querySelector('aside[aria-label=\\\"Case study sections\\\"]'),goBack:m.querySelector('a[href^=\\\"/atharva#paper-\\\"]')?.getAttribute('href'),next:!!m.querySelector('a[href^=\\\"/atharva/stories/\\\"]')}})()");
       assert.equal(detail.id,id);
+      const navigation=await js("(()=>{const links=[...document.querySelectorAll('footer a[href^=\"/atharva/stories/\"]')];return links.map(a=>a.getAttribute('href').split('/').pop())})()");
+      assert.deepEqual(navigation,[ids[(ids.indexOf(id)-1+ids.length)%ids.length],ids[(ids.indexOf(id)+1)%ids.length]],id+" previous/next follow reordered stories");
       assert.ok(detail.title.length>=3&&detail.chapters>=1, id+" story has its authored chapters");
       assert.ok(detail.bar&&detail.rail, id+" has reading progress rail and top line");
       const accessible=await js("(()=>{const rail=document.querySelector('[aria-label=\\\"Case study sections\\\"]'),progress=rail.querySelector('[role=progressbar]'),links=[...rail.querySelectorAll('a[href^=\\\"#case-\\\"]')];return {hasProgress:!!progress,hasLinks:links.length>0,independent:!!progress&&links.every(link=>!progress.contains(link))}})()");
@@ -204,6 +213,33 @@ try{
   await until(()=>js("document.querySelector('[data-story-page]').dataset.paper==='light'"));
   assert.equal(await js("localStorage.getItem('atharva-paper')"),"light","light mode persists after toggling back");
   counts.theme+=5;
+  // Illustrations and mini-tool surfaces must follow the individual accent in
+  // both paper modes without changing the SVG movements or data visualizations.
+  for(const theme of ["light","dark"]){
+    await view(390,844);
+    await navigate("/atharva","#atharva-portfolio");
+    await js("localStorage.setItem('atharva-paper',"+JSON.stringify(theme)+")");
+    await navigate("/atharva","#atharva-portfolio");
+    await until(()=>js("document.getElementById('atharva-portfolio')?.dataset.paper==="+JSON.stringify(theme)),5000);
+    const canvases=await js("Array.from(document.querySelectorAll('[data-art-scene]'),figure=>({id:figure.getAttribute('data-art-scene'),background:getComputedStyle(figure).backgroundImage}))");
+    assert.equal(canvases.length,10,theme+" contains all ten illustrations");
+    assert.deepEqual(canvases.map(x=>x.id),ids,theme+" artwork order matches story sequence");
+    assert.equal(new Set(canvases.map(x=>x.background)).size,10,theme+" gives each illustration a unique accent surface");
+    const covers=await js("Array.from(document.querySelectorAll('[data-story]'),s=>getComputedStyle(s.querySelector('[class*=storyIllustration]')).backgroundImage)");
+    assert.equal(new Set(covers).size,10,theme+" changes every preview illustration panel");
+    const miniColors=[];
+    for(const id of ["fundlenz","dcf","fincalc","study"]){
+      await navigate("/atharva/stories/"+id,'main[data-story-page="'+id+'"]');
+      await until(()=>js("document.querySelector('[data-story-page]')?.dataset.paper==="+JSON.stringify(theme)),5000);
+      await until(()=>js("!!document.querySelector('[class*=toolResults]')"),5000);
+      const palette=await js("(()=>{const frame=document.querySelector('[class*=artFrame]'),figure=document.querySelector('[data-art-scene]'),tool=document.querySelector('[class*=toolResults]');return {frame:getComputedStyle(frame).backgroundImage,art:getComputedStyle(figure).backgroundImage,tool:getComputedStyle(tool).backgroundImage}})()");
+      assert.ok(palette.frame.includes("linear-gradient")&&palette.art.includes("linear-gradient"),id+" story artwork is themed");
+      miniColors.push(palette.tool);
+    }
+    assert.equal(new Set(miniColors).size,4,theme+" gives every mini tool a unique story palette");
+    await assertNoHorizontal(theme+" themed mobile case studies");
+  }
+
   // A visitor can explore sequential stories, go back, reload, and return later.
   await view(390,844);
   await navigate("/atharva","#atharva-portfolio");
@@ -215,32 +251,32 @@ try{
   await js('document.querySelector("[data-story-link=fundlenz]").click()');
   await until(()=>js('location.pathname==="/atharva/stories/fundlenz"'),30000);
   await until(async()=>(await seen()).includes("fundlenz"),5000);
-  for(const nextId of ["research","fincalc","dcf"]){
+  for(const nextId of ["research","shyam","dcf"]){
     const selector='footer a[href="/atharva/stories/'+nextId+'"]';
     await js("document.querySelector("+JSON.stringify(selector)+").click()");
     await until(()=>js("location.pathname==="+JSON.stringify("/atharva/stories/"+nextId)),30000);
     await until(async()=>(await seen()).includes(nextId),5000);
   }
-  const previousSelector='footer a[href="/atharva/stories/fincalc"]';
+  const previousSelector='footer a[href="/atharva/stories/shyam"]';
   await js("document.querySelector("+JSON.stringify(previousSelector)+").click()");
-  await until(()=>js('location.pathname==="/atharva/stories/fincalc"'),30000);
-  await until(()=>js('!!document.querySelector("main[data-story-page=fincalc]")'),30000);
-  assert.deepEqual(await seen(),["fundlenz","research","fincalc","dcf"],"revisiting never duplicates completions");
+  await until(()=>js('location.pathname==="/atharva/stories/shyam"'),30000);
+  await until(()=>js('!!document.querySelector("main[data-story-page=shyam]")'),30000);
+  assert.deepEqual(await seen(),["fundlenz","research","shyam","dcf"],"revisiting never duplicates completions");
   const backSelector='a[href^="/atharva#paper-"]';
   await js("document.querySelector("+JSON.stringify(backSelector)+").click()");
   await until(()=>js('location.pathname==="/atharva"'),30000);
   await until(async()=>(await badges()).length===4,5000);
-  assert.deepEqual(await badges(),["fundlenz","research","fincalc","dcf"],"only four explored cards are checked");
+  assert.deepEqual(await badges(),["fundlenz","research","shyam","dcf"],"only four explored cards are checked");
   await capture("390-four-explored-cards");
   await navigate("/atharva","#atharva-portfolio");
   await until(async()=>(await badges()).length===4,5000);
-  assert.deepEqual(await badges(),["fundlenz","research","fincalc","dcf"],"checkmarks survive reloading");
+  assert.deepEqual(await badges(),["fundlenz","research","shyam","dcf"],"checkmarks survive reloading");
   await navigate("/atharva/stories/synk",'main[data-story-page="synk"]');
   await until(async()=>(await seen()).includes("synk"),5000);
   await js("document.querySelector("+JSON.stringify(backSelector)+").click()");
   await until(()=>js('location.pathname==="/atharva"'),30000);
   await until(async()=>(await badges()).length===5,5000);
-  assert.deepEqual(await badges(),["fundlenz","research","fincalc","dcf","synk"],"later story adds to earlier checkmarks");
+  assert.deepEqual(await badges(),["fundlenz","research","shyam","dcf","synk"],"later story adds to earlier checkmarks");
   await view(1440,900);
   await navigate("/atharva","#atharva-portfolio");
   assert.equal(await js('getComputedStyle(document.querySelector("[data-story-complete=fundlenz]")).display'),"grid","desktop check is visible");
