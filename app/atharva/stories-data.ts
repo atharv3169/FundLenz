@@ -2,57 +2,6 @@ export type StoryId = "shyam" | "fundlenz" | "research" | "fincalc" | "dcf" | "t
 export type Story={ id:StoryId; title:string; type:string; year:string; eyebrow:string; hook:string; intro:string; accent:string; numbers:{value:string;label:string}[]; chapters:{title:string;paragraphs:string[]}[]; tags:string[]; visit?:{href:string;text:string;pending?:boolean} };
 export const stories:Story[] = [
   {
-    "id": "shyam",
-    "title": "Shyam Construction",
-    "type": "Finance & Accounts Associate",
-    "year": "Oct 2023 – Jun 2025",
-    "eyebrow": "CORPORATE FINANCE",
-    "hook": "Could the fleet cover its loan payments in a slow month?",
-    "intro": "I modelled machinery purchases and debt repayments for a construction business expanding its fleet.",
-    "accent": "#ddbe8b",
-    "numbers": [
-      {
-        "value": "₹80 lakh",
-        "label": "planned equipment investment assessed"
-      },
-      {
-        "value": "~40%",
-        "label": "company revenue growth during my tenure"
-      }
-    ],
-    "chapters": [
-      {
-        "title": "The investment",
-        "paragraphs": [
-          "Over nearly 20 months in finance and accounts, I assessed a backhoe loader and a ten-wheel truck. Together they represented around ₹80 lakh of planned capital expenditure."
-        ]
-      },
-      {
-        "title": "The financing model",
-        "paragraphs": [
-          "I compared loan interest and monthly repayments against expected working days, fuel, maintenance and resale proceeds. My spreadsheets let management see how much cash each machine needed to earn when utilisation fell."
-        ]
-      },
-      {
-        "title": "The decision",
-        "paragraphs": [
-          "I presented the comparisons; management made the purchase and financing decisions. Company revenue grew roughly 40% during this period of fleet expansion."
-        ]
-      }
-    ],
-    "tags": [
-      "Capital budgeting",
-      "Debt financing",
-      "Cash-flow modelling",
-      "ROI",
-      "Budgeting"
-    ],
-    "visit": {
-      "href": "https://shyamconstruction.org/",
-      "text": "Visit Shyam Construction"
-    }
-  },
-  {
     "id": "fundlenz",
     "title": "FundLenz",
     "type": "Founder · finance technology",
@@ -142,48 +91,54 @@ export const stories:Story[] = [
     }
   },
   {
-    "id": "fincalc",
-    "title": "FinCalc",
-    "type": "Python financial mathematics",
-    "year": "2026",
-    "eyebrow": "FINANCIAL MATHEMATICS",
-    "hook": "What does a longer loan term actually cost?",
-    "intro": "I built a Python calculator for loan repayments, investment growth and the time value of money.",
-    "accent": "#92cce2",
+    "id": "shyam",
+    "title": "Shyam Construction",
+    "type": "Finance & Accounts Associate",
+    "year": "Oct 2023 – Jun 2025",
+    "eyebrow": "CORPORATE FINANCE",
+    "hook": "Could the fleet cover its loan payments in a slow month?",
+    "intro": "I modelled machinery purchases and debt repayments for a construction business expanding its fleet.",
+    "accent": "#ddbe8b",
     "numbers": [
       {
-        "value": "₹100,000",
-        "label": "illustrative loan principal"
+        "value": "₹80 lakh",
+        "label": "planned equipment investment assessed"
       },
       {
-        "value": "₹8,884.88",
-        "label": "monthly payment · 12 months at 12%"
+        "value": "~40%",
+        "label": "company revenue growth during my tenure"
       }
     ],
     "chapters": [
       {
-        "title": "Reproducible calculations",
+        "title": "The investment",
         "paragraphs": [
-          "FinCalc uses decimal arithmetic for compound interest, EMI, amortisation, present value and CAGR. It exports repayment schedules to CSV; 30 automated tests cover the calculation routines."
+          "Over nearly 20 months in finance and accounts, I assessed a backhoe loader and a ten-wheel truck. Together they represented around ₹80 lakh of planned capital expenditure."
         ]
       },
       {
-        "title": "Try the trade-off",
+        "title": "The financing model",
         "paragraphs": [
-          "Change the term in the example below. A longer loan lowers the monthly payment, but at a positive fixed rate it increases the total interest paid."
+          "I compared loan interest and monthly repayments against expected working days, fuel, maintenance and resale proceeds. My spreadsheets let management see how much cash each machine needed to earn when utilisation fell."
+        ]
+      },
+      {
+        "title": "The decision",
+        "paragraphs": [
+          "I presented the comparisons; management made the purchase and financing decisions. Company revenue grew roughly 40% during this period of fleet expansion."
         ]
       }
     ],
     "tags": [
-      "Python",
-      "EMI",
-      "CAGR",
-      "Amortisation",
-      "Testing"
+      "Capital budgeting",
+      "Debt financing",
+      "Cash-flow modelling",
+      "ROI",
+      "Budgeting"
     ],
     "visit": {
-      "href": "https://fundlenz.com/fincalc",
-      "text": "Open FinCalc"
+      "href": "https://shyamconstruction.org/",
+      "text": "Visit Shyam Construction"
     }
   },
   {
@@ -276,106 +231,49 @@ export const stories:Story[] = [
     "eyebrow": "FINANCIAL MODELLING"
   },
   {
-    "id": "crowd",
-    "title": "Crowd-monitoring system",
-    "type": "Computer vision · machine learning",
-    "year": "2025 – 2026",
-    "eyebrow": "COMPUTER VISION",
-    "hook": "From camera input to an actionable crowd alert.",
-    "intro": "For our final-year engineering project, I assessed the feasibility and cost of a camera-based crowd-monitoring prototype.",
-    "accent": "#dab6e5",
+    "id": "fincalc",
+    "title": "FinCalc",
+    "type": "Python financial mathematics",
+    "year": "2026",
+    "eyebrow": "FINANCIAL MATHEMATICS",
+    "hook": "What does a longer loan term actually cost?",
+    "intro": "I built a Python calculator for loan repayments, investment growth and the time value of money.",
+    "accent": "#92cce2",
     "numbers": [
       {
-        "value": "₹35,000",
-        "label": "development budget considered"
+        "value": "₹100,000",
+        "label": "illustrative loan principal"
       },
       {
-        "value": "15+",
-        "label": "evaluation scenarios"
+        "value": "₹8,884.88",
+        "label": "monthly payment · 12 months at 12%"
       }
     ],
     "chapters": [
       {
-        "title": "The prototype",
+        "title": "Reproducible calculations",
         "paragraphs": [
-          "Our team linked camera-based crowd detection to an alert system. I researched costs, assessed feasibility and examined how the design might scale beyond the prototype."
+          "FinCalc uses decimal arithmetic for compound interest, EMI, amortisation, present value and CAGR. It exports repayment schedules to CSV; 30 automated tests cover the calculation routines."
         ]
       },
       {
-        "title": "Recognition",
+        "title": "Try the trade-off",
         "paragraphs": [
-          "The project received First Place / Best Project recognition. I am a named co-inventor on Indian patent application 202621086685 A, published in September 2026."
+          "Change the term in the example below. A longer loan lowers the monthly payment, but at a positive fixed rate it increases the total interest paid."
         ]
       }
     ],
     "tags": [
-      "Computer vision",
-      "Machine learning",
-      "Crowd detection",
-      "Alert logic",
-      "Feasibility"
-    ]
-  },
-  {
-    "id": "study",
-    "title": "Study Buddy",
-    "type": "Hackathon project · group build",
-    "year": "2024",
-    "eyebrow": "PRODUCT DESIGN",
-    "hook": "A study workspace built under a hackathon deadline.",
-    "intro": "Our team combined notes, a task list and a focus timer in one study companion.",
-    "accent": "#c6d8a7",
-    "numbers": [
-      {
-        "value": "2nd place",
-        "label": "interdepartmental hackathon"
-      }
-    ],
-    "chapters": [
-      {
-        "title": "The build",
-        "paragraphs": [
-          "We chose a small set of features we could finish during the event: capture a note, choose the next task and start a timed session. The interactive recreation below runs locally in the browser."
-        ]
-      }
-    ],
-    "tags": [
-      "Product design",
-      "Task planning",
-      "Focus",
-      "Hackathon"
-    ]
-  },
-  {
-    "id": "vs",
-    "title": "V S Informatics",
-    "type": "Embedded & IoT internship",
-    "year": "Jan – May 2026",
-    "eyebrow": "EMBEDDED SYSTEMS",
-    "hook": "Testing where hardware meets software.",
-    "intro": "I developed and tested embedded applications using Arduino, ESP32, sensors and motor controls.",
-    "accent": "#9cd0d2",
-    "numbers": [
-      {
-        "value": "20+",
-        "label": "embedded and IoT applications"
-      }
-    ],
-    "chapters": [
-      {
-        "title": "At the workbench",
-        "paragraphs": [
-          "From January to May 2026, I integrated sensors, displays and connectivity, then traced faults across wiring and software. Testing the complete device mattered as much as testing its individual components."
-        ]
-      }
-    ],
-    "tags": [
-      "Arduino",
-      "ESP32",
-      "Sensors",
-      "Embedded systems",
+      "Python",
+      "EMI",
+      "CAGR",
+      "Amortisation",
       "Testing"
-    ]
+    ],
+    "visit": {
+      "href": "https://fundlenz.com/fincalc",
+      "text": "Open FinCalc"
+    }
   },
   {
     "id": "synk",
@@ -422,12 +320,115 @@ export const stories:Story[] = [
       "href": "https://www.linkedin.com/company/synktoday/",
       "text": "SYNK company profile"
     }
+  },
+  {
+    "id": "crowd",
+    "title": "Crowd-monitoring system",
+    "type": "Computer vision · machine learning",
+    "year": "2025 – 2026",
+    "eyebrow": "COMPUTER VISION",
+    "hook": "From camera input to an actionable crowd alert.",
+    "intro": "For our final-year engineering project, I assessed the feasibility and cost of a camera-based crowd-monitoring prototype.",
+    "accent": "#dab6e5",
+    "numbers": [
+      {
+        "value": "₹35,000",
+        "label": "development budget considered"
+      },
+      {
+        "value": "15+",
+        "label": "evaluation scenarios"
+      }
+    ],
+    "chapters": [
+      {
+        "title": "The prototype",
+        "paragraphs": [
+          "Our team linked camera-based crowd detection to an alert system. I researched costs, assessed feasibility and examined how the design might scale beyond the prototype."
+        ]
+      },
+      {
+        "title": "Recognition",
+        "paragraphs": [
+          "The project received First Place / Best Project recognition. I am a named co-inventor on Indian patent application 202621086685 A, published in September 2026."
+        ]
+      }
+    ],
+    "tags": [
+      "Computer vision",
+      "Machine learning",
+      "Crowd detection",
+      "Alert logic",
+      "Feasibility"
+    ]
+  },
+  {
+    "id": "vs",
+    "title": "V S Informatics",
+    "type": "Embedded & IoT internship",
+    "year": "Jan – May 2026",
+    "eyebrow": "EMBEDDED SYSTEMS",
+    "hook": "Testing where hardware meets software.",
+    "intro": "I developed and tested embedded applications using Arduino, ESP32, sensors and motor controls.",
+    "accent": "#9cd0d2",
+    "numbers": [
+      {
+        "value": "20+",
+        "label": "embedded and IoT applications"
+      }
+    ],
+    "chapters": [
+      {
+        "title": "At the workbench",
+        "paragraphs": [
+          "From January to May 2026, I integrated sensors, displays and connectivity, then traced faults across wiring and software. Testing the complete device mattered as much as testing its individual components."
+        ]
+      }
+    ],
+    "tags": [
+      "Arduino",
+      "ESP32",
+      "Sensors",
+      "Embedded systems",
+      "Testing"
+    ]
+  },
+  {
+    "id": "study",
+    "title": "Study Buddy",
+    "type": "Hackathon project · group build",
+    "year": "2024",
+    "eyebrow": "PRODUCT DESIGN",
+    "hook": "A study workspace built under a hackathon deadline.",
+    "intro": "Our team combined notes, a task list and a focus timer in one study companion.",
+    "accent": "#c6d8a7",
+    "numbers": [
+      {
+        "value": "2nd place",
+        "label": "interdepartmental hackathon"
+      }
+    ],
+    "chapters": [
+      {
+        "title": "The build",
+        "paragraphs": [
+          "We chose a small set of features we could finish during the event: capture a note, choose the next task and start a timed session. The interactive recreation below runs locally in the browser."
+        ]
+      }
+    ],
+    "tags": [
+      "Product design",
+      "Task planning",
+      "Focus",
+      "Hackathon"
+    ]
   }
 ];
 
 export const learning=[
-{title:"Finance & research",skills:["Financial modelling","Capital budgeting","Debt financing","Cash-flow analysis","Investment research","Mutual-fund analysis","Portfolio concentration","Risk assessment"]},
-{title:"Tools & engineering",skills:["Python","SQL","Excel","Data validation","Cloudflare","GitHub","Embedded systems","Computer vision"]},
+{title:"Finance & accounting",skills:["Corporate finance","Financial analysis","Financial accounting","Financial reporting","Financial modelling","Capital budgeting","Cash-flow analysis","Budgeting & forecasting","Financial planning & analysis (FP&A)","Debt financing","Cost-benefit & ROI analysis"]},
+{title:"Investments & risk",skills:["Investment research","Portfolio analysis","Mutual-fund analysis","Risk management & assessment","Quantitative research","Financial valuation & DCF","Equity research","Capital markets","Asset management","Investment strategy"]},
+{title:"Web, data & automation",skills:["UI/UX design","Responsive web design","Frontend development","Python","SQL","Microsoft Excel","Data analysis & visualisation","GitHub & version control","API integration","AI-assisted workflows & integration","Workflow automation","Cloudflare Workers","GitHub Actions","Data validation"]},
 {title:"Independent learning",skills:["NISM · Investor Education","CFI · Careers in Finance","Bank of America · Investment Banking simulation","HP LIFE · Finance & Cash Flow","Kaggle · Python and SQL","Vista Equity Partners · AI in Action","Simplilearn · AI in Finance"]}
 ];
 export const interests=["Portfolio risk","Better financial tools","What models leave out","Business investment decisions","Data that tells a story","How systems connect"];
