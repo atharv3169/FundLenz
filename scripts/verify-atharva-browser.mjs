@@ -65,6 +65,8 @@ try{
   await js('document.fonts.ready.then(()=>true)');
 
   const ids=["fundlenz","research","shyam","dcf","ternwell","fincalc","synk","crowd","vs","study"];
+  const storyTitles=["FundLenz","Mutual-fund research","Shyam Construction","DCF Atlas","Ternwell","FinCalc","SYNK","Crowd-monitoring system","V S Informatics","Study Buddy"];
+  const desktopIntro="I use the maths and coding I learned in engineering across corporate-finance decisions, investment research and tools I built, including FundLenz, DCF Atlas and Ternwell.";
   const screens=[];
   const view=(width,height)=>cmd("Emulation.setDeviceMetricsOverride",{width,height,deviceScaleFactor:1,mobile:width<600});
   const base="http://127.0.0.1:41893";
@@ -87,6 +89,8 @@ try{
     await view(width,height);
     await navigate("/atharva","#atharva-portfolio");
     assert.deepEqual(await js('Array.from(document.querySelectorAll("section[data-story]"),e=>e.dataset.story)'),ids);
+    assert.deepEqual(await js('Array.from(document.querySelectorAll("section[data-story]"),e=>e.querySelector("h3").textContent.slice(0,-1))'),storyTitles,"mobile and desktop read the same ten story titles");
+    assert.equal(await js('document.querySelector("[class*=heroIntro]")?.textContent'),desktopIntro,"the desktop hero uses the latest engineering-to-finance summary");
     assert.ok(await js('document.querySelector("[class*=aboutColumns]")?.textContent.includes("family business")'),"biography connects engineering skills with family business");
     assert.ok(await js('document.querySelector("[class*=aboutColumns]")?.textContent.includes("finance internships")'),"biography includes research and internships");
     assert.equal(await js('document.querySelectorAll("[class*=skillGroup]").length'),4,"four focused skill groups");
@@ -100,6 +104,27 @@ try{
       const link=await js("document.querySelector('[data-story-link="+id+"]').getAttribute('href')");
       assert.equal(link,"/atharva/stories/"+id,"each project routes to its own full story");
       assert.equal(await js("document.getElementById('story-"+id+"').dataset.expanded"),"false","previews never expand");
+    }
+    if(width===1440){
+      const desktopLayout=await js("(()=>{const nav=document.querySelector('nav[aria-label=\"Portfolio navigation\"]'),hero=document.querySelector('#top'),market=document.querySelector('[class*=marketPlate]'),meter=document.querySelector('[class*=currencyRibbon]'),popup=document.querySelector('[class*=paperIndex]');return {navHeight:Math.round(nav.getBoundingClientRect().height),heroDisplay:getComputedStyle(hero).display,marketDisplay:getComputedStyle(market).display,priceAnimation:getComputedStyle(market.querySelector('[class*=goldTrace]')).animationName,tickerAnimation:getComputedStyle(meter.firstElementChild).animationName,popupDisplay:getComputedStyle(popup).display,navLinks:getComputedStyle(nav.querySelector('[class*=navLinks]')).display,sectionTitles:[...document.querySelectorAll('[id=about],[id=work],[id=skills],[id=contact]')].map(x=>x.id)}})()");
+      assert.equal(desktopLayout.navHeight,76,"desktop header retains its 76px layout");
+      assert.equal(desktopLayout.heroDisplay,"flex","desktop keeps the original split hero");
+      assert.equal(desktopLayout.marketDisplay,"block","desktop keeps its finance-market SVG");
+      assert.ok(desktopLayout.priceAnimation.includes("drawPrice"),"desktop market line keeps its original motion");
+      assert.ok(desktopLayout.tickerAnimation.includes("ticker"),"desktop finance ticker continues animating");
+      assert.equal(desktopLayout.popupDisplay,"none","mobile-only All stories popup is not added to desktop layout");
+      assert.equal(desktopLayout.navLinks,"flex","desktop navigation remains unchanged");
+      assert.deepEqual(desktopLayout.sectionTitles,["about","work","skills","contact"],"desktop retains original section structure");
+
+      // The figures have one shared SVG source. Verify the mobile versions
+      // render at desktop dimensions with the existing desktop animation rules.
+      const figures=await js("Array.from(document.querySelectorAll('[data-art-scene]'),f=>{const r=f.getBoundingClientRect();return {id:f.dataset.artScene,width:r.width,height:r.height,heading:f.querySelector('[data-art-part=heading]')?.textContent,caption:f.querySelector('[data-art-part=caption]')?.textContent,hasSvg:!!f.querySelector('svg'),background:getComputedStyle(f).backgroundImage}})");
+      assert.deepEqual(figures.map(f=>f.id),ids,"all ten new story illustrations are shared with the desktop");
+      assert.ok(figures.every(f=>f.width>250&&f.height>250&&f.hasSvg),"every desktop figure uses a properly sized, responsive SVG");
+      assert.ok(figures.every(f=>f.heading?.length>6&&f.caption?.length>6),"desktop illustrations retain project-specific headings and captions");
+      assert.equal(new Set(figures.map(f=>f.background)).size,10,"all ten desktop illustrations retain distinct story-accent palettes");
+      const animations=await js("(()=>{const a=[['shyam','[class*=loaderMove]'],['research','[class*=scatterPoint]'],['dcf','[class*=bar]'],['ternwell','[class*=draw]'],['crowd','[class*=scanBeam]'],['vs','[class*=iotBeacon]']];return a.map(([id,sel])=>{const el=document.querySelector('[data-story='+id+'] '+sel);return {id,animation:el?getComputedStyle(el).animationName:'missing'}})})()");
+      assert.ok(animations.every(a=>a.animation!=="none"&&a.animation!=="missing"),"existing desktop animations remain attached to the shared finance figures");
     }
     const quote='document.querySelector("[aria-label=\\\"Whole page progress\\\"]")';
     assert.ok(await js("!!"+quote),"visible full-page progress");
@@ -159,6 +184,8 @@ try{
       const accessible=await js("(()=>{const rail=document.querySelector('[aria-label=\\\"Case study sections\\\"]'),progress=rail.querySelector('[role=progressbar]'),links=[...rail.querySelectorAll('a[href^=\\\"#case-\\\"]')];return {hasProgress:!!progress,hasLinks:links.length>0,independent:!!progress&&links.every(link=>!progress.contains(link))}})()");
       assert.ok(accessible.hasProgress&&accessible.hasLinks&&accessible.independent,id+" chapter links must remain accessible outside the progressbar");
       assert.equal(detail.goBack,"/atharva#paper-"+id);
+      assert.ok(await js("document.querySelector('nav[aria-label=\\\"Case study navigation\\\"] a[href^=\\\"/atharva#paper-\\\"]')?.textContent.includes('All stories')"),"desktop and mobile story pages use All stories consistently");
+      assert.ok(await js("document.querySelector('footer a[href^=\\\"/atharva#paper-\\\"]')?.textContent.includes('Back to all stories')"),"footer keeps the updated story terminology");
       assert.ok(detail.color.startsWith("#"),"case-study progress inherits its color");
       const ribbon=await js("(()=>{const m=document.querySelector('[data-story-page]'),p=m.querySelector('[aria-label=\\\"Story sequence progress\\\"]'),fill=p.querySelector('[class*=topFill]'),segments=m.querySelectorAll('a[data-story-segment]');return {segments:segments.length,current:m.querySelector('a[data-story-segment][aria-current=page]')?.dataset.storySegment,completed:[...segments].filter(e=>e.dataset.segmentState==='complete').length,upcoming:[...segments].filter(e=>e.dataset.segmentState==='upcoming').length,gradient:m.style.getPropertyValue('--story-spectrum'),clip:getComputedStyle(fill).clipPath,transform:getComputedStyle(fill).transform,value:Number(p.getAttribute('aria-valuenow'))}})()");
       assert.equal(ribbon.segments,10,"the Katerina-style ribbon contains all ten projects");
@@ -210,6 +237,31 @@ try{
       }
     }
   }
+  // Extra desktop breakpoints validate long-form projects and SVG figures
+  // without changing the existing desktop flex/grid layout or animations.
+  for(const [width,height] of [[1024,800],[1920,900]]){
+    await view(width,height);
+    await navigate("/atharva","#atharva-portfolio");
+    const desktopArt=await js("(()=>{const figures=[...document.querySelectorAll('[data-art-scene]')],stage=document.querySelector('[data-story=fundlenz] [data-role=story-overview]'),nav=document.querySelector('nav[aria-label=\"Portfolio navigation\"]');return {ids:figures.map(x=>x.dataset.artScene),allSvg:figures.every(x=>!!x.querySelector('svg')),stageDisplay:getComputedStyle(stage).display,navLinks:getComputedStyle(nav.querySelector('[class*=navLinks]')).display,heroIntro:document.querySelector('[class*=heroIntro]')?.textContent}})()");
+    assert.deepEqual(desktopArt.ids,ids,width+"px desktop shows all ten current stories");
+    assert.ok(desktopArt.allSvg,width+"px desktop uses shared interactive figures");
+    assert.equal(desktopArt.stageDisplay,"grid",width+"px keeps desktop story grid layout");
+    assert.equal(desktopArt.navLinks,"flex",width+"px retains original desktop navigation");
+    assert.equal(desktopArt.heroIntro,desktopIntro,width+"px shows updated professional context");
+    await assertNoHorizontal(width+"px desktop portfolio");
+    await js("document.getElementById('story-dcf').scrollIntoView({block:'start',behavior:'instant'})");
+    await sleep(320);
+    await capture(width+"-desktop-dcf-artwork");
+    await navigate("/atharva/stories/ternwell",'main[data-story-page="ternwell"]');
+    const full=await js("(()=>{const m=document.querySelector('main[data-story-page]'),f=m.querySelector('[data-art-scene]'),r=f.getBoundingClientRect(),ending=m.querySelector('#case-end');return {figure:f.dataset.artScene,svg:!!f.querySelector('svg'),width:r.width,height:r.height,endTitle:ending.querySelector('h2').innerText.replace(/\\s+/g,' ').trim(),endBody:ending.querySelector('p').textContent,back:m.querySelector('a[href^=\"/atharva#paper-\"]').textContent}})()");
+    assert.equal(full.figure,"ternwell","standalone desktop Ternwell shows the shared financial-model figure");
+    assert.ok(full.svg&&full.width>200&&full.height>200,"standalone figure fits its desktop frame");
+    assert.equal(full.endTitle,"The result.","the completed Ternwell project has its updated conclusion on desktop");
+    assert.ok(full.endBody.includes("linked model"),"desktop and mobile show the same completed-project story");
+    assert.ok(full.back.includes("All stories"),"desktop case-study return copy is current");
+    await assertNoHorizontal(width+"px desktop Ternwell story");
+  }
+
   // Verify that standalone pages have the same paper colors as the main
   // portfolio on mobile, and share a persistent theme choice across routes.
   await view(390,844);
