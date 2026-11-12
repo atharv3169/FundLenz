@@ -1402,3 +1402,91 @@
   overflow:visible;
  }
 }
+
+
+/* The mobile paper stack keeps its illustrated cards. Desktop uses the same
+   SVG figures at a calmer scale, transparent and softly blended into the
+   existing full-bleed backgrounds without touching desktop motion keyframes. */
+@media(min-width:768px){
+ .portfolioShell .storyWorkspace>.storyStage .storyIllustration [data-art-scene]{
+  width:min(84%,610px);
+  height:min(81%,410px);
+  max-width:100%;
+  max-height:100%;
+  margin:auto;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+ }
+}
+@media(min-width:768px) and (max-width:960px){
+ .portfolioShell .storyWorkspace>.storyStage .storyIllustration [data-art-scene]{
+  width:min(88%,560px);
+  height:min(88%,340px);
+ }
+}
+
+/* The exact same stories-only dialog is available in the bottom-right corner
+   on desktop; it floats over (rather than replaces) the original navigation. */
+@media(min-width:768px){
+ .portfolioShell .paperAnchor{display:block;width:0;height:0;scroll-margin-top:78px}
+ .portfolioShell .paperIndex{
+  display:block;position:fixed;right:clamp(18px,2vw,34px);bottom:24px;
+  z-index:95;
+ }
+ .portfolioShell .paperIndex>button{
+  display:flex;align-items:center;gap:10px;min-height:45px;
+  border:1px solid #91baa8a1;border-radius:45px;
+  padding:5px 17px 5px 7px;
+  background:rgb(11 28 31/.88);color:#e5f0e5;
+  box-shadow:0 12px 35px #030a13a0;backdrop-filter:blur(18px);
+  font-size:12px;letter-spacing:.015em;
+  transition:background .25s,border-color .25s,transform .25s;
+ }
+ .portfolioShell .paperIndex>button:hover{transform:translateY(-3px);background:#1b3437;border-color:#b6debf}
+ .portfolioShell .paperIndex b{
+  display:grid;place-items:center;width:31px;height:31px;flex:none;
+  border:1px solid #90b5a6;border-radius:50%;color:#c3e6cd;font-size:11px;
+ }
+ .portfolioShell .paperIndex dialog{
+  position:fixed;inset:auto clamp(18px,2vw,34px) 82px auto;
+  width:min(370px,calc(100vw - 40px));max-width:none;margin:0;
+  border:1px solid #88b5a17a;border-radius:18px;
+  padding:0;background:rgb(12 25 31/.96);color:#e3ece7;
+  box-shadow:0 22px 80px #000a;backdrop-filter:blur(24px);
+ }
+ .portfolioShell .paperIndex dialog::backdrop{background:rgb(5 13 18/.34);backdrop-filter:blur(3px)}
+ .portfolioShell .paperIndex dialog>div{max-height:min(75dvh,620px);overflow:auto;padding:16px 20px 22px}
+ .portfolioShell .paperIndex header{
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid #9dbaa144;padding-bottom:10px;
+  font:normal 24px/1.3 Georgia,serif;
+ }
+ .portfolioShell .paperIndex header button{
+  border:0;background:transparent;color:inherit;
+  font-size:27px;min-width:42px;min-height:42px;
+ }
+ .portfolioShell .paperIndex a[data-story-index]{
+  display:flex;align-items:center;gap:16px;min-height:42px;padding:10px 3px;
+  border-bottom:1px solid #8da99e35;color:#d9e7df;
+  font-size:13px;line-height:1.4;transition:background .2s;
+ }
+ .portfolioShell .paperIndex a[data-story-index]:hover{background:#bad4bf15}
+ .portfolioShell .paperIndex small{min-width:24px;color:var(--index-accent);font:600 11px/1.2 system-ui}
+ .portfolioShell .paperIndex [aria-current=location]{font-weight:700;color:#fff}
+ .portfolioShell .paperIndex .paperIndexTitle{min-width:0;overflow-wrap:anywhere}
+ .portfolioShell .paperIndex a[data-index-explored=true] .paperIndexTitle{
+  text-decoration:line-through;text-decoration-color:var(--index-accent);
+  text-decoration-thickness:2px;opacity:.73;
+ }
+ .portfolioShell .paperIndex a[data-story-index]:focus-visible{
+  outline:2px solid var(--index-accent);outline-offset:-2px;
+ }
+}
+
+/* Previously visited art opens in its completed state. Only unvisited sections
+   replay one-shot drawing/bar reveals; ongoing decorative loops stay alive. */
+.portfolioShell .storySection[data-revealed-before=true] [data-art-part=artwork] :is(rect,path)[class*="_bar_"],
+.portfolioShell .storySection[data-revealed-before=true] [data-art-part=artwork] :is(rect,path)[class*="_draw_"]{
+ animation:none!important;
+}
