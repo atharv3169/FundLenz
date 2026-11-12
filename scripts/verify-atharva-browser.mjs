@@ -296,8 +296,9 @@ try{
     const returnState=await js('JSON.parse(sessionStorage.getItem("atharva-story-return-v2")||"null")');
     assert.equal(returnState?.id,"research",width+"px remembers which overview was opened");
     assert.ok(Math.abs(returnState.top-from)<6,width+"px records the original scroll offset");
-    await js('document.querySelector("nav a[href^=\\\"/atharva#paper-\\\"]").click()');
-    await until(()=>js('location.pathname==="/atharva"'),30000);
+    await until(()=>js('!!document.querySelector("main[data-story-page=research] nav a[href^=\\\"/atharva#paper-\\\"]")'),30000);
+    await js('document.querySelector("main[data-story-page=research] nav a[href^=\\\"/atharva#paper-\\\"]").click()');
+    await until(()=>js('location.pathname==="/atharva"&&!!document.getElementById("story-research")'),30000);
     await until(()=>js('Math.abs(scrollY-'+from+')<35'),9000);
     assert.equal(await js('location.hash'),"#paper-research",width+"px keeps the right anchor");
     assert.equal(await js('document.getElementById("story-research").dataset.revealedBefore'),"true",width+"px does not replay research entry");
@@ -318,8 +319,9 @@ try{
     const fromComplete=await js('window.scrollY');
     await js('document.querySelector("[data-story-link=research]").click()');
     await until(()=>js('location.pathname==="/atharva/stories/research"'),30000);
-    await js('document.querySelector("footer a[href^=\\\"/atharva#paper-\\\"]").click()');
-    await until(()=>js('location.pathname==="/atharva"'),30000);
+    await until(()=>js('!!document.querySelector("main[data-story-page=research] footer a[href^=\\\"/atharva#paper-\\\"]")'),30000);
+    await js('document.querySelector("main[data-story-page=research] footer a[href^=\\\"/atharva#paper-\\\"]").click()');
+    await until(()=>js('location.pathname==="/atharva"&&!!document.getElementById("story-research")'),30000);
     await until(()=>js('Math.abs(scrollY-'+fromComplete+')<35'),9000);
     assert.equal(await js('document.querySelectorAll("[data-story][data-revealed-before=true]").length'),10,width+"px all visited story entrances stay finished");
     const bar=await js('getComputedStyle(document.querySelector("[data-story=dcf] [class*=bar]")).animationName');
