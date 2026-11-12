@@ -276,6 +276,57 @@ try{
     await assertNoHorizontal(width+"px desktop Ternwell story");
   }
 
+
+  // Return from a standalone story to the precise overview viewport. Sections
+  // seen before leaving must remain revealed, but newer stories may animate.
+  for(const [width,height] of [[1440,900],[390,844]]){
+    await view(width,height);
+    await navigate("/atharva","#atharva-portfolio");
+    await js('sessionStorage.removeItem("atharva-reveals-v2");sessionStorage.removeItem("atharva-story-return-v2")');
+    await navigate("/atharva","#atharva-portfolio");
+    for(const id of ["fundlenz","research"]){
+      await js("document.getElementById('story-"+id+"').scrollIntoView({block:'center',behavior:'instant'})");
+      await sleep(300);
+    }
+    await until(async()=>(await js("JSON.parse(sessionStorage.getItem(\"atharva-reveals-v2\")||\"{}\").stories||[]")).includes("research"),5000);
+    const from=await js('window.scrollY');
+    assert.ok(from>400,width+"px the research overview is below the hero");
+    await js('document.querySelector("[data-story-link=research]").click()');
+    await until(()=>js('location.pathname==="/atharva/stories/research"'),30000);
+    const returnState=await js('JSON.parse(sessionStorage.getItem("atharva-story-return-v2")||"null")');
+    assert.equal(returnState?.id,"research",width+"px remembers which overview was opened");
+    assert.ok(Math.abs(returnState.top-from)<6,width+"px records the original scroll offset");
+    await js('document.querySelector("nav a[href^=\\\"/atharva#paper-\\\"]").click()');
+    await until(()=>js('location.pathname==="/atharva"'),30000);
+    await until(()=>js('Math.abs(scrollY-'+from+')<35'),9000);
+    assert.equal(await js('location.hash'),"#paper-research",width+"px keeps the right anchor");
+    assert.equal(await js('document.getElementById("story-research").dataset.revealedBefore'),"true",width+"px does not replay research entry");
+    assert.ok((await js("JSON.parse(sessionStorage.getItem(\"atharva-reveals-v2\")||\"{}\").stories||[]")).includes("research"),width+"px keeps the saved reveal history");
+    await assertNoHorizontal(width+"px returned research overview");
+    await capture(width+"-returned-to-research");
+
+    await js('document.getElementById("story-study").scrollIntoView({block:"center",behavior:"instant"})');
+    await until(async()=>(await js("JSON.parse(sessionStorage.getItem(\"atharva-reveals-v2\")||\"{}\").stories||[]")).includes("study"),6000);
+    assert.notEqual(await js('document.getElementById("story-study").dataset.revealedBefore'),"true",width+"px newly reached story reveals for the first time");
+    for(const id of ids){
+      await js("document.getElementById('story-"+id+"').scrollIntoView({block:'center',behavior:'instant'})");
+      await sleep(220);
+    }
+    await until(async()=>(await js("JSON.parse(sessionStorage.getItem(\"atharva-reveals-v2\")||\"{}\").stories||[]")).length===10,6000);
+    await js('document.getElementById("story-research").scrollIntoView({block:"center",behavior:"instant"})');
+    await sleep(200);
+    const fromComplete=await js('window.scrollY');
+    await js('document.querySelector("[data-story-link=research]").click()');
+    await until(()=>js('location.pathname==="/atharva/stories/research"'),30000);
+    await js('document.querySelector("footer a[href^=\\\"/atharva#paper-\\\"]").click()');
+    await until(()=>js('location.pathname==="/atharva"'),30000);
+    await until(()=>js('Math.abs(scrollY-'+fromComplete+')<35'),9000);
+    assert.equal(await js('document.querySelectorAll("[data-story][data-revealed-before=true]").length'),10,width+"px all visited story entrances stay finished");
+    const bar=await js('getComputedStyle(document.querySelector("[data-story=dcf] [class*=bar]")).animationName');
+    assert.equal(bar,"none",width+"px completed one-shot bar animations do not replay");
+    assert.equal(await js('document.querySelector("[data-story-link=research]").getAttribute("href")'),"/atharva/stories/research","story link remains usable after restoration");
+  }
+
   // Verify that standalone pages have the same paper colors as the main
   // portfolio on mobile, and share a persistent theme choice across routes.
   await view(390,844);
