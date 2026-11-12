@@ -317,3 +317,20 @@
   border-color:color-mix(in srgb,var(--case-accent) 45%,#586972);
  }
 }
+
+
+/* Keep the existing two-column desktop story layout but remove the isolated
+   illustration card: the scaled shared figure now fades into the page. */
+@media(min-width:768px){
+ .page .artFrame{
+  height:clamp(305px,34vw,470px);
+  min-height:290px;
+  padding:clamp(8px,1.6vw,19px);
+  background:transparent;
+  border:0;
+  box-shadow:none;
+  border-radius:0;
+ }
+ .page .artFrame::before{background:radial-gradient(ellipse at 50% 50%,color-mix(in srgb,var(--case-accent) 8%,transparent),transparent 72%)}
+ .page .artFrame>figure{width:min(95%,650px);height:min(92%,425px)}
+}
