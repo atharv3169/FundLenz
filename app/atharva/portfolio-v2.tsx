@@ -131,7 +131,7 @@ export default function PortfolioV2(){
     <p className={s.eyebrow}><i/> NAGPUR, INDIA <span>/</span> FINANCE × RESEARCH × TECHNOLOGY</p>
     <h1>Atharva<br/><em>Sahu.</em></h1>
     <p className={s.heroMessage}>I model business decisions and build <em>financial research tools.</em></p>
-    <p className={s.heroIntro}>My work spans equipment financing at Shyam Construction, mutual-fund liquidity research and the FundLenz platform.</p>
+    <p className={s.heroIntro}>I use the maths and coding I learned in engineering across corporate-finance decisions, investment research and tools I built, including FundLenz, DCF Atlas and Ternwell.</p>
     <svg className={s.paperSignature} data-finance-motif="risk-distribution" viewBox="0 0 300 36" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
      <path d="M15 28H285" fill="none" stroke="currentColor" strokeOpacity=".25" strokeWidth="1" vectorEffect="non-scaling-stroke"/>
      <path d="M15 28 C55 28 79 26 100 17 C118 8 132 5 150 5 C168 5 182 8 200 17 C221 26 245 28 285 28" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" vectorEffect="non-scaling-stroke"/>
