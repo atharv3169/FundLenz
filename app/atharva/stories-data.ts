@@ -1,5 +1,5 @@
-export type StoryId = "shyam" | "fundlenz" | "research" | "fincalc" | "dcf" | "ternwell" | "crowd" | "study" | "vs" | "synk";
-export type Story={ id:StoryId; title:string; type:string; year:string; eyebrow:string; hook:string; intro:string; accent:string; numbers:{value:string;label:string}[]; chapters:{title:string;paragraphs:string[]}[]; tags:string[]; takeaway:{body:string}; visit?:{href:string;text:string;pending?:boolean} };
+export type StoryId = "shyam" | "fundlenz" | "dhaninfo" | "research" | "fincalc" | "dcf" | "ternwell" | "crowd" | "study" | "vs" | "synk";
+export type Story={ id:StoryId; title:string; type:string; year:string; eyebrow:string; hook:string; intro:string; accent:string; numbers:{value:string;label:string}[]; chapters:{title:string;paragraphs:string[]}[]; tags:string[]; takeaway:{body:string;heading?:string}; disclosure?:string; visit?:{href:string;text:string;pending?:boolean} };
 export const stories:Story[] = [
   {
     "id": "fundlenz",
@@ -50,16 +50,72 @@ export const stories:Story[] = [
     }
   },
   {
+    "id": "dhaninfo",
+    "title": "DhanInfo",
+    "type": "Senior Business Analyst",
+    "year": "Nov 2026 – now",
+    "eyebrow": "BUSINESS ANALYSIS / LENDING",
+    "hook": "Where operational records meet loan, mortgage and risk analysis.",
+    "intro": "I joined DhanInfo in November 2026 as a Senior Business Analyst. My work includes reviewing operational information, checking records and coordinating with teams. I’ll also be working with international clients on loan data, mortgage analysis and financial risk.",
+    "accent": "#8fd2be",
+    "numbers": [
+      {
+        "value": "Nov ’26",
+        "label": "joined as Senior Business Analyst"
+      },
+      {
+        "value": "Global",
+        "label": "international client-facing work"
+      }
+    ],
+    "chapters": [
+      {
+        "title": "Understanding the records",
+        "paragraphs": [
+          "Much of my initial work involves reviewing operational information, checking records for accuracy and understanding how different processes fit together. When something needs clarification, I coordinate with the people responsible rather than treating the number on the screen as the whole answer."
+        ]
+      },
+      {
+        "title": "The lending side",
+        "paragraphs": [
+          "HR has also outlined work with international clients, including managing and analysing loan data, looking at mortgage information and examining financial risk. I'm interested in the details behind lending decisions, but I'm still learning the specific requirements of these assignments."
+        ]
+      },
+      {
+        "title": "The wider role",
+        "paragraphs": [
+          "The job isn't limited to lending. It also involves process analysis, keeping information organised, spotting inconsistencies and working across teams. I like that mix of financial analysis and the practical work needed to make the information reliable."
+        ]
+      }
+    ],
+    "tags": [
+      "Business analysis",
+      "Loan data",
+      "Mortgage analysis",
+      "Risk assessment",
+      "International clients"
+    ],
+    "takeaway": {
+      "heading": "The work ahead.",
+      "body": "I'm still early in the role. What interests me is the range of work ahead: understanding operations, improving the quality of information, and getting closer to loan, mortgage and risk analysis with international clients. I'll add specific outcomes when I have work I can share."
+    },
+    "disclosure": "Client identities, non-public financial information and internal company processes are not described here.",
+    "visit": {
+      "href": "https://dhaninfo.com/",
+      "text": "Visit DhanInfo"
+    }
+  },
+  {
     "id": "research",
     "takeaway": {
       "body": "The completed study examined fund liquidity disclosures alongside subsequent returns. Larger funds generally had longer modelled liquidation times, but reported liquidity stress did not reliably predict the returns that followed."
     },
     "title": "Mutual-fund research",
-    "type": "Co-authored empirical study",
+    "type": "Empirical research paper · Lead author",
     "year": "2026",
     "eyebrow": "INVESTMENT RESEARCH",
     "hook": "How long would an Indian equity fund need to liquidate its portfolio?",
-    "intro": "I co-authored an empirical study of liquidity disclosures from Indian small- and mid-cap mutual funds.",
+    "intro": "I led an empirical research paper on liquidity disclosures from Indian small- and mid-cap mutual funds.",
     "accent": "#bdb6ed",
     "numbers": [
       {
@@ -75,7 +131,7 @@ export const stories:Story[] = [
       {
         "title": "The dataset",
         "paragraphs": [
-          "I helped frame the research question, check public stress-test disclosures, interpret results and write the manuscript. We compared estimated liquidation times across funds and examined returns over the following three months."
+          "As lead author, I framed the research question, checked public stress-test disclosures, interpreted the results and helped prepare the manuscript with the research team. We compared estimated liquidation times across funds and returns over the next three months."
         ]
       },
       {
