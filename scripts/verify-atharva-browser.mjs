@@ -422,7 +422,7 @@ try{
   const backSelector='a[href^="/atharva#paper-"]';
   await js("document.querySelector("+JSON.stringify(backSelector)+").click()");
   await until(()=>js('location.pathname==="/atharva"'),30000);
-  await until(async()=>(await badges()).length===6,5000);
+  await until(async()=>(await badges()).length===5,5000);
   assert.deepEqual(await badges(),["fundlenz","dhaninfo","research","shyam","dcf"],"only five explored cards are checked");
   // The popup uses the identical saved explored set as the card badges.
   const popupStatus=()=>js("Array.from(document.querySelectorAll('dialog[aria-label=\\\"All stories\\\"] a[data-story-index]'),a=>({id:a.dataset.storyIndex,explored:a.dataset.indexExplored,strike:getComputedStyle(a.querySelector('span')).textDecorationLine}))");
@@ -435,7 +435,7 @@ try{
   await js('document.querySelector(\'dialog[aria-label="All stories"]\').close()');
   await capture("390-five-explored-cards");
   await navigate("/atharva","#atharva-portfolio");
-  await until(async()=>(await badges()).length===6,5000);
+  await until(async()=>(await badges()).length===5,5000);
   assert.deepEqual(await badges(),["fundlenz","dhaninfo","research","shyam","dcf"],"checkmarks survive reloading");
   await navigate("/atharva/stories/synk",'main[data-story-page="synk"]');
   await until(async()=>(await seen()).includes("synk"),5000);
