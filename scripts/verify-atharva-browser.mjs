@@ -407,43 +407,44 @@ try{
   await js('document.querySelector("[data-story-link=fundlenz]").click()');
   await until(()=>js('location.pathname==="/atharva/stories/fundlenz"'),30000);
   await until(async()=>(await seen()).includes("fundlenz"),5000);
-  for(const nextId of ["research","shyam","dcf"]){
+  for(const nextId of ["dhaninfo","research","shyam","dcf"]){
     const selector='footer a[href="/atharva/stories/'+nextId+'"]';
     await js("document.querySelector("+JSON.stringify(selector)+").click()");
     await until(()=>js("location.pathname==="+JSON.stringify("/atharva/stories/"+nextId)),30000);
     await until(async()=>(await seen()).includes(nextId),5000);
+    await until(()=>js('!!document.querySelector("footer a[href^=\\\"/atharva/stories/\\\"]")'),30000);
   }
   const previousSelector='footer a[href="/atharva/stories/shyam"]';
   await js("document.querySelector("+JSON.stringify(previousSelector)+").click()");
   await until(()=>js('location.pathname==="/atharva/stories/shyam"'),30000);
   await until(()=>js('!!document.querySelector("main[data-story-page=shyam]")'),30000);
-  assert.deepEqual(await seen(),["fundlenz","research","shyam","dcf"],"revisiting never duplicates completions");
+  assert.deepEqual(await seen(),["fundlenz","dhaninfo","research","shyam","dcf"],"revisiting never duplicates completions");
   const backSelector='a[href^="/atharva#paper-"]';
   await js("document.querySelector("+JSON.stringify(backSelector)+").click()");
   await until(()=>js('location.pathname==="/atharva"'),30000);
-  await until(async()=>(await badges()).length===4,5000);
-  assert.deepEqual(await badges(),["fundlenz","research","shyam","dcf"],"only four explored cards are checked");
+  await until(async()=>(await badges()).length===6,5000);
+  assert.deepEqual(await badges(),["fundlenz","dhaninfo","research","shyam","dcf"],"only five explored cards are checked");
   // The popup uses the identical saved explored set as the card badges.
   const popupStatus=()=>js("Array.from(document.querySelectorAll('dialog[aria-label=\\\"All stories\\\"] a[data-story-index]'),a=>({id:a.dataset.storyIndex,explored:a.dataset.indexExplored,strike:getComputedStyle(a.querySelector('span')).textDecorationLine}))");
   const fourIndex=await popupStatus();
-  assert.deepEqual(fourIndex.filter(x=>x.explored==="true").map(x=>x.id),["fundlenz","research","shyam","dcf"],"index crosses out the same four completed story cards");
+  assert.deepEqual(fourIndex.filter(x=>x.explored==="true").map(x=>x.id),["fundlenz","dhaninfo","research","shyam","dcf"],"index crosses out the same five completed story cards");
   assert.ok(fourIndex.filter(x=>x.explored==="true").every(x=>x.strike.includes("line-through")),"all completed story titles have a visible strikethrough");
   assert.ok(fourIndex.filter(x=>x.explored==="false").every(x=>x.strike==="none"),"unexplored story titles are not crossed out");
   await js('document.querySelector(\'button[aria-label="All stories"]\').click()');
-  await capture("390-four-completed-stories-index");
+  await capture("390-five-completed-stories-index");
   await js('document.querySelector(\'dialog[aria-label="All stories"]\').close()');
-  await capture("390-four-explored-cards");
+  await capture("390-five-explored-cards");
   await navigate("/atharva","#atharva-portfolio");
-  await until(async()=>(await badges()).length===4,5000);
-  assert.deepEqual(await badges(),["fundlenz","research","shyam","dcf"],"checkmarks survive reloading");
+  await until(async()=>(await badges()).length===6,5000);
+  assert.deepEqual(await badges(),["fundlenz","dhaninfo","research","shyam","dcf"],"checkmarks survive reloading");
   await navigate("/atharva/stories/synk",'main[data-story-page="synk"]');
   await until(async()=>(await seen()).includes("synk"),5000);
   await js("document.querySelector("+JSON.stringify(backSelector)+").click()");
   await until(()=>js('location.pathname==="/atharva"'),30000);
-  await until(async()=>(await badges()).length===5,5000);
-  assert.deepEqual(await badges(),["fundlenz","research","shyam","dcf","synk"],"later story adds to earlier checkmarks");
+  await until(async()=>(await badges()).length===6,5000);
+  assert.deepEqual(await badges(),["fundlenz","dhaninfo","research","shyam","dcf","synk"],"later story adds to earlier checkmarks");
   const fiveIndex=await popupStatus();
-  assert.deepEqual(fiveIndex.filter(x=>x.explored==="true").map(x=>x.id),["fundlenz","research","shyam","dcf","synk"],"the story popup preserves earlier marks when a fifth story is explored");
+  assert.deepEqual(fiveIndex.filter(x=>x.explored==="true").map(x=>x.id),["fundlenz","dhaninfo","research","shyam","dcf","synk"],"the story popup preserves earlier marks when a sixth story is explored");
   assert.ok(fiveIndex.filter(x=>x.explored==="true").every(x=>x.strike.includes("line-through")),"cross-outs persist after returning from another story");
 
   await view(1440,900);
