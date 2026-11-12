@@ -48,6 +48,42 @@ function FundArt(){
  <g data-art-region="weights">{[177,128,99,65,47,29].map((w,i)=><g key={i}><path d={'M365 '+(165+i*22)+'h190'} stroke="#31433d" strokeWidth="6"/><path d={'M365 '+(165+i*22)+'h'+w} stroke="#92c8a5" strokeWidth="7" className={art.bar}/></g>)}</g>
  </Plate></Frame>;
 }
+function DhanInfoArt(){
+ return <Frame id="dhaninfo" heading="DHANINFO / OPERATIONS + LENDING" caption="Illustrative data flow · no company or client records">
+  <Plate label="Animated illustrative international client analysis: validated records feed mortgage and lending checks and risk review">
+   <defs>
+    <linearGradient id="dhanFlow" x1="0" y1="0" x2="1" y2="0"><stop stopColor="#6cbfa9"/><stop offset="1" stopColor="#d4e9bc"/></linearGradient>
+   </defs>
+   <g data-art-region="brand">
+    <rect x="215" y="15" width="250" height="64" rx="12" fill="#173c3b" stroke="#78bdad" strokeWidth="1.5"/>
+    <text x="340" y="52" textAnchor="middle" fontSize="27" fontWeight="700" fill="#d9f0e4" letterSpacing="-.7">DhanInfo</text>
+    <path d="M274 63H407" stroke="#79cbb4" strokeWidth="2" strokeLinecap="round" className={art.draw}/>
+   </g>
+   <g data-art-region="cards">
+    <rect x="24" y="123" width="182" height="168" rx="12" fill="#15333a" stroke="#518e86"/>
+    <rect x="248" y="123" width="184" height="168" rx="12" fill="#15333a" stroke="#518e86"/>
+    <rect x="474" y="123" width="182" height="168" rx="12" fill="#15333a" stroke="#518e86"/>
+    <g fontSize="14" fill="#a9d8c8" fontWeight="600" letterSpacing=".5">
+     <text x="43" y="149">OPERATIONAL DATA</text>
+     <text x="267" y="149">LOAN / MORTGAGE</text>
+     <text x="491" y="149">RISK REVIEW</text>
+    </g>
+    <g stroke="#86b7a8" strokeOpacity=".24">
+     {[0,1,2,3].map(i=><g key={i}><path d={`M44 ${174+i*25}H182`}/><path d={`M266 ${174+i*25}H413`}/><path d={`M490 ${174+i*25}H632`}/></g>)}
+    </g>
+    <g fill="#94d3bd">{[106,87,117,68].map((v,i)=><rect key={i} x="44" y={170+i*25} width={v} height="6" rx="3" className={art.bar}/>)}</g>
+    <g fill="#a6d9d0">{[109,66,119,83].map((v,i)=><rect key={i} x="267" y={170+i*25} width={v} height="6" rx="3" className={art.bar}/>)}</g>
+    <path d="M492 257L523 237L552 242L582 193L616 201L631 178" stroke="url(#dhanFlow)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" className={art.draw}/>
+    <g fontSize="11" fill="#8abcb3"><text x="44" y="275">CHECK / VALIDATE</text><text x="267" y="275">REVIEW / ANALYSE</text><text x="491" y="275">COMPARE / FLAG</text></g>
+   </g>
+   <g data-art-region="transfer" stroke="#8fd2be" strokeWidth="2" fill="none" strokeDasharray="4 6" className={s.flowingLine}>
+    <path d="M206 204H248"/><path d="M432 204H474"/><path d="M340 79V117"/>
+   </g>
+   <g fill="#b2e5d5"><circle cx="227" cy="204" r="4" className={art.blink}/><circle cx="453" cy="204" r="4" className={art.blink}/></g>
+   <text x="340" y="327" textAnchor="middle" fill="#afcbbf" fontSize="13">INTERNATIONAL CLIENT WORK · ILLUSTRATIVE ONLY</text>
+  </Plate>
+ </Frame>;
+}
 function ResearchArt(){
  const points=Array.from({length:72},(_,i)=>({x:80+i*10.1,y:400-((i*73)%250)-i*.65}));
  return <Frame id="research" heading="EMPIRICAL RESEARCH / LIQUIDITY" caption="70 schemes · 31 months · illustrative data">
@@ -117,6 +153,7 @@ export function SceneFigure({id}:{id:StoryId}){
  switch(id){
  case "shyam":return <Machine/>;
  case "fundlenz":return <FundArt/>;
+ case "dhaninfo":return <DhanInfoArt/>;
  case "research":return <ResearchArt/>;
  case "fincalc":return <FinArt/>;
  case "dcf":return <DcfArt/>;
