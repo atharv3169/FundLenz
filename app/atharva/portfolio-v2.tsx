@@ -47,6 +47,7 @@ function StorySection({story,index,completed}:{story:Story;index:number;complete
      <div className={s.storyEyebrow}><span className={s.storyIndex}>{String(index+1).padStart(2,"0")}</span><span>{story.eyebrow}</span></div>
      <p className={s.storyYears}>{story.type}{story.year&&<><i> / </i> {story.year}</>}</p>
      <h3>{story.title}<span>.</span></h3>
+     <p className={s.paperRole} data-story-role={story.id}>{story.type}</p>
      <p className={s.storyHook}>{story.hook}</p>
      <p className={s.storyIntro}>{story.intro}</p>
      <div className={s.paperTags}>{story.tags.slice(0,2).map(tag=><span key={tag}>{tag}</span>)}</div>
