@@ -53,10 +53,10 @@ export const stories:Story[] = [
     "id": "dhaninfo",
     "title": "DhanInfo",
     "type": "Senior Business Analyst",
-    "year": "Nov 2026 – now",
+    "year": "November 2026 – present",
     "eyebrow": "BUSINESS ANALYSIS / LENDING",
-    "hook": "Where operational records meet loan, mortgage and risk analysis.",
-    "intro": "I joined DhanInfo in November 2026 as a Senior Business Analyst. My work includes reviewing operational information, checking records and coordinating with teams. I’ll also be working with international clients on loan data, mortgage analysis and financial risk.",
+    "hook": "Business analysis across operational records, lending data and risk.",
+    "intro": "At DhanInfo, I review operational information, check records and work with teams on process-related issues. My role also includes upcoming work with international clients on loan and mortgage data, financial analysis and risk.",
     "accent": "#8fd2be",
     "numbers": [
       {
@@ -70,21 +70,15 @@ export const stories:Story[] = [
     ],
     "chapters": [
       {
-        "title": "Understanding the records",
+        "title": "Working with the details",
         "paragraphs": [
-          "Much of my initial work involves reviewing operational information, checking records for accuracy and understanding how different processes fit together. When something needs clarification, I coordinate with the people responsible rather than treating the number on the screen as the whole answer."
+          "My work covers more than one kind of analysis. I review operational information, check records for accuracy, learn how work moves between teams and follow up when something needs to be resolved. I like the part where you have to understand the process before you can trust the numbers."
         ]
       },
       {
         "title": "The lending side",
         "paragraphs": [
-          "HR has also outlined work with international clients, including managing and analysing loan data, looking at mortgage information and examining financial risk. I'm interested in the details behind lending decisions, but I'm still learning the specific requirements of these assignments."
-        ]
-      },
-      {
-        "title": "The wider role",
-        "paragraphs": [
-          "The job isn't limited to lending. It also involves process analysis, keeping information organised, spotting inconsistencies and working across teams. I like that mix of financial analysis and the practical work needed to make the information reliable."
+          "HR has also outlined work with international clients, including managing and analysing loan data, reviewing mortgage information and looking at financial risk. These responsibilities will sit alongside the broader reporting and operational work, not replace it. I'm interested in how that information is checked and used when lending decisions carry real consequences."
         ]
       }
     ],
@@ -97,13 +91,14 @@ export const stories:Story[] = [
     ],
     "takeaway": {
       "heading": "The work ahead.",
-      "body": "I'm still early in the role. What interests me is the range of work ahead: understanding operations, improving the quality of information, and getting closer to loan, mortgage and risk analysis with international clients. I'll add specific outcomes when I have work I can share."
+      "body": "I'm still learning the full scope of the role. I want to get better at spotting gaps in both financial and operational data, asking the right questions and producing analysis that people can actually act on."
     },
-    "disclosure": "Client identities, non-public financial information and internal company processes are not described here.",
+    "disclosure": "Client information, internal workflows and non-public financial data are intentionally left out.",
     "visit": {
       "href": "https://dhaninfo.com/",
       "text": "Visit DhanInfo"
-    }
+    },
+    "role": "Senior Business Analyst"
   },
   {
     "id": "research",
