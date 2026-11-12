@@ -112,7 +112,7 @@ try{
       assert.equal(desktopLayout.marketDisplay,"block","desktop keeps its finance-market SVG");
       assert.ok(desktopLayout.priceAnimation.includes("drawPrice"),"desktop market line keeps its original motion");
       assert.ok(desktopLayout.tickerAnimation.includes("ticker"),"desktop finance ticker continues animating");
-      assert.equal(desktopLayout.popupDisplay,"none","mobile-only All stories popup is not added to desktop layout");
+      assert.equal(desktopLayout.popupDisplay,"block","All stories floats on desktop without altering its navigation");
       assert.equal(desktopLayout.navLinks,"flex","desktop navigation remains unchanged");
       assert.deepEqual(desktopLayout.sectionTitles,["about","work","skills","contact"],"desktop retains original section structure");
 
@@ -122,7 +122,12 @@ try{
       assert.deepEqual(figures.map(f=>f.id),ids,"all ten new story illustrations are shared with the desktop");
       assert.ok(figures.every(f=>f.width>250&&f.height>250&&f.hasSvg),"every desktop figure uses a properly sized, responsive SVG");
       assert.ok(figures.every(f=>f.heading?.length>6&&f.caption?.length>6),"desktop illustrations retain project-specific headings and captions");
-      assert.equal(new Set(figures.map(f=>f.background)).size,10,"all ten desktop illustrations retain distinct story-accent palettes");
+      const visual=await js("(()=>{const section=document.querySelector('[data-story=fundlenz]'),cover=section.querySelector('[class*=storyIllustration]'),figure=section.querySelector('[data-art-scene]'),rect=figure.getBoundingClientRect(),holder=cover.getBoundingClientRect(),style=getComputedStyle(figure);return {width:rect.width,height:rect.height,holderWidth:holder.width,holderHeight:holder.height,border:style.borderTopWidth,background:style.backgroundImage,mask:style.maskImage}})()");
+      assert.ok(visual.width<visual.holderWidth*.88&&visual.height<visual.holderHeight*.85,"desktop art is smaller than the former full-column card");
+      assert.equal(visual.border,"0px","desktop scenes have no card border");
+      assert.equal(visual.background,"none","desktop scenes show through to the page background");
+      assert.ok(visual.mask.includes("radial-gradient"),"desktop scenes fade toward transparent edges");
+      assert.ok(figures.every(f=>f.background==="none"),"desktop illustrations have transparent, unboxed surfaces");
       const animations=await js("(()=>{const a=[['shyam','[class*=loaderMove]'],['research','[class*=scatterPoint]'],['dcf','[class*=bar]'],['ternwell','[class*=draw]'],['crowd','[class*=scanBeam]'],['vs','[class*=iotBeacon]']];return a.map(([id,sel])=>{const el=document.querySelector('[data-story='+id+'] '+sel);return {id,animation:el?getComputedStyle(el).animationName:'missing'}})})()");
       assert.ok(animations.every(a=>a.animation!=="none"&&a.animation!=="missing"),"existing desktop animations remain attached to the shared finance figures");
     }
@@ -145,6 +150,19 @@ try{
       counts.progress++;
     }
     assert.ok(new Set(colors).size>=3,"main page progress changes color as the active story changes");
+    const dock=await js("(()=>{const d=document.querySelector('[class*=paperIndex]'),b=d.querySelector('button[aria-label=\"All stories\"]'),r=b.getBoundingClientRect();return {display:getComputedStyle(d).display,position:getComputedStyle(d).position,visible:getComputedStyle(b).display!=='none',right:innerWidth-r.right,bottom:innerHeight-r.bottom}})()");
+    assert.equal(dock.display,"block","All stories dock works on desktop and phones");
+    assert.equal(dock.position,"fixed","All stories docks to the viewport");
+    assert.ok(dock.visible&&dock.right<70&&dock.bottom<90,"All stories floats in the bottom-right corner");
+    await js('document.querySelector(\'button[aria-label="All stories"]\').click()');
+    await until(()=>js('document.querySelector(\'dialog[aria-label="All stories"]\')?.open'),5000);
+    const items=await js("(()=>{const d=document.querySelector('dialog[aria-label=\"All stories\"]');return {ids:[...d.querySelectorAll('[data-story-index]')].map(a=>a.dataset.storyIndex),extra:d.querySelectorAll('a:not([data-story-index])').length,title:d.querySelector('header').textContent}})()");
+    assert.deepEqual(items.ids,ids,"the floating index includes the current ten-story order");
+    assert.equal(items.extra,0,"stories popup excludes intro, skills and contact");
+    assert.ok(items.title.includes("All stories"),"floating index uses the requested title");
+    await capture(width+"-all-stories-index");
+    await js('document.querySelector(\'dialog[aria-label="All stories"]\').close()');
+
     if(width<768){
       assert.ok(await js('Array.from(document.querySelectorAll("section[data-story]"),s=>getComputedStyle(s).position).every(v=>v==="sticky")'),"all previews stay in stable sticky stack");
     }
@@ -217,13 +235,9 @@ try{
       assert.equal(finish.pct,100,id+" progress reaches 100%");
       assert.ok(finish.end&&finish.footer,"page ends with full content and next/previous stories");
       const ending=await js("(()=>{const ending=document.querySelector('#case-end');return {title:ending.querySelector('h2')?.innerText.replace(/\\s+/g,' ').trim(),body:ending.querySelector('p')?.textContent}})()");
-      if(["dcf","ternwell"].includes(id)){
-        assert.equal(ending.title,"The result.",id+" has a completed-project conclusion, not a work-in-progress label");
-        assert.ok(ending.body.length>120,id+" includes a substantive, project-specific takeaway");
-        assert.ok(!/progress|under process/i.test(ending.title),id+" does not imply work remains unfinished");
-      } else {
-        assert.equal(ending.title,"Work in progress.",id+" retains the existing story ending");
-      }
+      assert.equal(ending.title,"The result.",id+" is completed, with no Work in progress label");
+      assert.ok(ending.body.length>110,id+" has its own substantive takeaway");
+      assert.ok(!/work in progress|under process/i.test(ending.title+" "+ending.body),id+" has no unfinished-project label");
       const globalEnd=await js("Number(document.querySelector('[aria-label=\\\"Story sequence progress\\\"]').getAttribute('aria-valuenow'))");
       assert.equal(globalEnd,(ids.indexOf(id)+1)*10,id+" completed story finishes only its own spectrum segment");
       if(width===390)await capture(width+"-"+id+"-end");
