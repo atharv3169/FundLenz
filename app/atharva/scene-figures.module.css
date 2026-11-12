@@ -30,3 +30,18 @@
 }
 .sceneFrame .caption{color:color-mix(in srgb,var(--scene-accent) 25%,#d1d9d5)}
 @media(max-width:767px){.sceneFrame{border-radius:11px}}
+
+
+/* Desktop figures remain the authored animated SVGs, without a visible card.
+   The edge falloff lets each scene dissolve into the desktop canvas. */
+@media(min-width:768px){
+ .sceneFrame{
+  background:transparent;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  padding:clamp(4px,1vh,10px) 3%;
+  -webkit-mask-image:radial-gradient(ellipse 86% 85% at 50% 50%,#000 58%,#000c 76%,transparent 100%);
+  mask-image:radial-gradient(ellipse 86% 85% at 50% 50%,#000 58%,#000c 76%,transparent 100%);
+ }
+}

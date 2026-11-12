@@ -112,7 +112,7 @@ try{
       assert.equal(desktopLayout.marketDisplay,"block","desktop keeps its finance-market SVG");
       assert.ok(desktopLayout.priceAnimation.includes("drawPrice"),"desktop market line keeps its original motion");
       assert.ok(desktopLayout.tickerAnimation.includes("ticker"),"desktop finance ticker continues animating");
-      assert.equal(desktopLayout.popupDisplay,"none","mobile-only All stories popup is not added to desktop layout");
+      assert.equal(desktopLayout.popupDisplay,"block","All stories floats on desktop without altering its navigation");
       assert.equal(desktopLayout.navLinks,"flex","desktop navigation remains unchanged");
       assert.deepEqual(desktopLayout.sectionTitles,["about","work","skills","contact"],"desktop retains original section structure");
 
@@ -122,7 +122,12 @@ try{
       assert.deepEqual(figures.map(f=>f.id),ids,"all ten new story illustrations are shared with the desktop");
       assert.ok(figures.every(f=>f.width>250&&f.height>250&&f.hasSvg),"every desktop figure uses a properly sized, responsive SVG");
       assert.ok(figures.every(f=>f.heading?.length>6&&f.caption?.length>6),"desktop illustrations retain project-specific headings and captions");
-      assert.equal(new Set(figures.map(f=>f.background)).size,10,"all ten desktop illustrations retain distinct story-accent palettes");
+      const visual=await js("(()=>{const section=document.querySelector('[data-story=fundlenz]'),cover=section.querySelector('[class*=storyIllustration]'),figure=section.querySelector('[data-art-scene]'),rect=figure.getBoundingClientRect(),holder=cover.getBoundingClientRect(),style=getComputedStyle(figure);return {width:rect.width,height:rect.height,holderWidth:holder.width,holderHeight:holder.height,border:style.borderTopWidth,background:style.backgroundImage,mask:style.maskImage}})()");
+      assert.ok(visual.width<visual.holderWidth*.88&&visual.height<visual.holderHeight*.85,"desktop art is smaller than the former full-column card");
+      assert.equal(visual.border,"0px","desktop scenes have no card border");
+      assert.equal(visual.background,"none","desktop scenes show through to the page background");
+      assert.ok(visual.mask.includes("radial-gradient"),"desktop scenes fade toward transparent edges");
+      assert.ok(figures.every(f=>f.background==="none"),"desktop illustrations have transparent, unboxed surfaces");
       const animations=await js("(()=>{const a=[['shyam','[class*=loaderMove]'],['research','[class*=scatterPoint]'],['dcf','[class*=bar]'],['ternwell','[class*=draw]'],['crowd','[class*=scanBeam]'],['vs','[class*=iotBeacon]']];return a.map(([id,sel])=>{const el=document.querySelector('[data-story='+id+'] '+sel);return {id,animation:el?getComputedStyle(el).animationName:'missing'}})})()");
       assert.ok(animations.every(a=>a.animation!=="none"&&a.animation!=="missing"),"existing desktop animations remain attached to the shared finance figures");
     }
@@ -145,6 +150,19 @@ try{
       counts.progress++;
     }
     assert.ok(new Set(colors).size>=3,"main page progress changes color as the active story changes");
+    const dock=await js("(()=>{const d=document.querySelector('[class*=paperIndex]'),b=d.querySelector('button[aria-label=\"All stories\"]'),r=b.getBoundingClientRect();return {display:getComputedStyle(d).display,position:getComputedStyle(d).position,visible:getComputedStyle(b).display!=='none',right:innerWidth-r.right,bottom:innerHeight-r.bottom}})()");
+    assert.equal(dock.display,"block","All stories dock works on desktop and phones");
+    assert.equal(dock.position,"fixed","All stories docks to the viewport");
+    assert.ok(dock.visible&&dock.right<70&&dock.bottom<90,"All stories floats in the bottom-right corner");
+    await js('document.querySelector(\'button[aria-label="All stories"]\').click()');
+    await until(()=>js('document.querySelector(\'dialog[aria-label="All stories"]\')?.open'),5000);
+    const items=await js("(()=>{const d=document.querySelector('dialog[aria-label=\"All stories\"]');return {ids:[...d.querySelectorAll('[data-story-index]')].map(a=>a.dataset.storyIndex),extra:d.querySelectorAll('a:not([data-story-index])').length,title:d.querySelector('header').textContent}})()");
+    assert.deepEqual(items.ids,ids,"the floating index includes the current ten-story order");
+    assert.equal(items.extra,0,"stories popup excludes intro, skills and contact");
+    assert.ok(items.title.includes("All stories"),"floating index uses the requested title");
+    await capture(width+"-all-stories-index");
+    await js('document.querySelector(\'dialog[aria-label="All stories"]\').close()');
+
     if(width<768){
       assert.ok(await js('Array.from(document.querySelectorAll("section[data-story]"),s=>getComputedStyle(s).position).every(v=>v==="sticky")'),"all previews stay in stable sticky stack");
     }
@@ -217,13 +235,9 @@ try{
       assert.equal(finish.pct,100,id+" progress reaches 100%");
       assert.ok(finish.end&&finish.footer,"page ends with full content and next/previous stories");
       const ending=await js("(()=>{const ending=document.querySelector('#case-end');return {title:ending.querySelector('h2')?.innerText.replace(/\\s+/g,' ').trim(),body:ending.querySelector('p')?.textContent}})()");
-      if(["dcf","ternwell"].includes(id)){
-        assert.equal(ending.title,"The result.",id+" has a completed-project conclusion, not a work-in-progress label");
-        assert.ok(ending.body.length>120,id+" includes a substantive, project-specific takeaway");
-        assert.ok(!/progress|under process/i.test(ending.title),id+" does not imply work remains unfinished");
-      } else {
-        assert.equal(ending.title,"Work in progress.",id+" retains the existing story ending");
-      }
+      assert.equal(ending.title,"The result.",id+" is completed, with no Work in progress label");
+      assert.ok(ending.body.length>110,id+" has its own substantive takeaway");
+      assert.ok(!/work in progress|under process/i.test(ending.title+" "+ending.body),id+" has no unfinished-project label");
       const globalEnd=await js("Number(document.querySelector('[aria-label=\\\"Story sequence progress\\\"]').getAttribute('aria-valuenow'))");
       assert.equal(globalEnd,(ids.indexOf(id)+1)*10,id+" completed story finishes only its own spectrum segment");
       if(width===390)await capture(width+"-"+id+"-end");
@@ -260,6 +274,59 @@ try{
     assert.ok(full.endBody.includes("linked model"),"desktop and mobile show the same completed-project story");
     assert.ok(full.back.includes("All stories"),"desktop case-study return copy is current");
     await assertNoHorizontal(width+"px desktop Ternwell story");
+  }
+
+
+  // Return from a standalone story to the precise overview viewport. Sections
+  // seen before leaving must remain revealed, but newer stories may animate.
+  for(const [width,height] of [[1440,900],[390,844]]){
+    await view(width,height);
+    await navigate("/atharva","#atharva-portfolio");
+    await js('sessionStorage.removeItem("atharva-reveals-v2");sessionStorage.removeItem("atharva-story-return-v2")');
+    await navigate("/atharva","#atharva-portfolio");
+    for(const id of ["fundlenz","research"]){
+      await js("document.getElementById('story-"+id+"').scrollIntoView({block:'center',behavior:'instant'})");
+      await sleep(300);
+    }
+    await until(async()=>(await js("JSON.parse(sessionStorage.getItem(\"atharva-reveals-v2\")||\"{}\").stories||[]")).includes("research"),5000);
+    const from=await js('window.scrollY');
+    assert.ok(from>400,width+"px the research overview is below the hero");
+    await js('document.querySelector("[data-story-link=research]").click()');
+    await until(()=>js('location.pathname==="/atharva/stories/research"'),30000);
+    const returnState=await js('JSON.parse(sessionStorage.getItem("atharva-story-return-v2")||"null")');
+    assert.equal(returnState?.id,"research",width+"px remembers which overview was opened");
+    assert.ok(Math.abs(returnState.top-from)<6,width+"px records the original scroll offset");
+    await until(()=>js('!!document.querySelector("main[data-story-page=research] nav a[href^=\\\"/atharva#paper-\\\"]")'),30000);
+    await js('document.querySelector("main[data-story-page=research] nav a[href^=\\\"/atharva#paper-\\\"]").click()');
+    await until(()=>js('location.pathname==="/atharva"&&!!document.getElementById("story-research")'),30000);
+    await until(()=>js('Math.abs(scrollY-'+from+')<35'),9000);
+    assert.equal(await js('location.hash'),"#paper-research",width+"px keeps the right anchor");
+    assert.equal(await js('document.getElementById("story-research").dataset.revealedBefore'),"true",width+"px does not replay research entry");
+    assert.ok((await js("JSON.parse(sessionStorage.getItem(\"atharva-reveals-v2\")||\"{}\").stories||[]")).includes("research"),width+"px keeps the saved reveal history");
+    await assertNoHorizontal(width+"px returned research overview");
+    await capture(width+"-returned-to-research");
+
+    await js('document.getElementById("story-study").scrollIntoView({block:"center",behavior:"instant"})');
+    await until(async()=>(await js("JSON.parse(sessionStorage.getItem(\"atharva-reveals-v2\")||\"{}\").stories||[]")).includes("study"),6000);
+    assert.notEqual(await js('document.getElementById("story-study").dataset.revealedBefore'),"true",width+"px newly reached story reveals for the first time");
+    for(const id of ids){
+      await js("document.getElementById('story-"+id+"').scrollIntoView({block:'center',behavior:'instant'})");
+      await sleep(220);
+    }
+    await until(async()=>(await js("JSON.parse(sessionStorage.getItem(\"atharva-reveals-v2\")||\"{}\").stories||[]")).length===10,6000);
+    await js('document.getElementById("story-research").scrollIntoView({block:"center",behavior:"instant"})');
+    await sleep(200);
+    const fromComplete=await js('window.scrollY');
+    await js('document.querySelector("[data-story-link=research]").click()');
+    await until(()=>js('location.pathname==="/atharva/stories/research"'),30000);
+    await until(()=>js('!!document.querySelector("main[data-story-page=research] footer a[href^=\\\"/atharva#paper-\\\"]")'),30000);
+    await js('document.querySelector("main[data-story-page=research] footer a[href^=\\\"/atharva#paper-\\\"]").click()');
+    await until(()=>js('location.pathname==="/atharva"&&!!document.getElementById("story-research")'),30000);
+    await until(()=>js('Math.abs(scrollY-'+fromComplete+')<35'),9000);
+    assert.equal(await js('document.querySelectorAll("[data-story][data-revealed-before=true]").length'),10,width+"px all visited story entrances stay finished");
+    const bar=await js('getComputedStyle(document.querySelector("[data-story=dcf] [class*=bar]")).animationName');
+    assert.equal(bar,"none",width+"px completed one-shot bar animations do not replay");
+    assert.equal(await js('document.querySelector("[data-story-link=research]").getAttribute("href")'),"/atharva/stories/research","story link remains usable after restoration");
   }
 
   // Verify that standalone pages have the same paper colors as the main

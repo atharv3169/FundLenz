@@ -1,8 +1,11 @@
 export type StoryId = "shyam" | "fundlenz" | "research" | "fincalc" | "dcf" | "ternwell" | "crowd" | "study" | "vs" | "synk";
-export type Story={ id:StoryId; title:string; type:string; year:string; eyebrow:string; hook:string; intro:string; accent:string; numbers:{value:string;label:string}[]; chapters:{title:string;paragraphs:string[]}[]; tags:string[]; takeaway?:{body:string}; visit?:{href:string;text:string;pending?:boolean} };
+export type Story={ id:StoryId; title:string; type:string; year:string; eyebrow:string; hook:string; intro:string; accent:string; numbers:{value:string;label:string}[]; chapters:{title:string;paragraphs:string[]}[]; tags:string[]; takeaway:{body:string}; visit?:{href:string;text:string;pending?:boolean} };
 export const stories:Story[] = [
   {
     "id": "fundlenz",
+    "takeaway": {
+      "body": "FundLenz makes overlapping fund holdings easier to inspect by combining company and sector exposures. In the worked three-ETF example, 951 distinct equities translated to just 36.44 effective holdings after accounting for concentration."
+    },
     "title": "FundLenz",
     "type": "Founder · finance technology",
     "year": "2026 – now",
@@ -48,6 +51,9 @@ export const stories:Story[] = [
   },
   {
     "id": "research",
+    "takeaway": {
+      "body": "The completed study examined fund liquidity disclosures alongside subsequent returns. Larger funds generally had longer modelled liquidation times, but reported liquidity stress did not reliably predict the returns that followed."
+    },
     "title": "Mutual-fund research",
     "type": "Co-authored empirical study",
     "year": "2026",
@@ -92,6 +98,9 @@ export const stories:Story[] = [
   },
   {
     "id": "shyam",
+    "takeaway": {
+      "body": "The financing comparisons gave management a clearer view of equipment costs, loan repayments and lower-utilisation scenarios before its fleet decisions. Management made the final purchases, and company revenue grew roughly 40% during the expansion period."
+    },
     "title": "Shyam Construction",
     "type": "Finance & Accounts Associate",
     "year": "Oct 2023 – Jun 2025",
@@ -238,6 +247,9 @@ export const stories:Story[] = [
   },
   {
     "id": "fincalc",
+    "takeaway": {
+      "body": "FinCalc delivers reproducible loan and investment calculations using decimal arithmetic, CSV amortisation schedules and automated tests. The finished tool makes monthly payments, total interest and growth assumptions straightforward to compare."
+    },
     "title": "FinCalc",
     "type": "Python financial mathematics",
     "year": "2026",
@@ -283,6 +295,9 @@ export const stories:Story[] = [
   },
   {
     "id": "synk",
+    "takeaway": {
+      "body": "My FP&A internship brought subscription pricing, conversion and paywall assumptions into scenario-based revenue forecasts, alongside research into potential acquisitions. The case-study visuals use illustrative figures rather than confidential company data."
+    },
     "title": "SYNK",
     "type": "Financial Planning and Analysis Intern · Remote",
     "year": "May – Aug 2026",
@@ -329,6 +344,9 @@ export const stories:Story[] = [
   },
   {
     "id": "crowd",
+    "takeaway": {
+      "body": "Our team completed a camera-based crowd-monitoring prototype with alert logic. I examined feasibility, costs and scalability; the project received First Place / Best Project recognition, and I am a named co-inventor on the published Indian patent application."
+    },
     "title": "Crowd-monitoring system",
     "type": "Computer vision · machine learning",
     "year": "2025 – 2026",
@@ -370,6 +388,9 @@ export const stories:Story[] = [
   },
   {
     "id": "vs",
+    "takeaway": {
+      "body": "The finished internship work combined ESP32 and Arduino applications with sensors, connectivity and motor controls. Integrating and debugging complete devices taught me to trace problems across hardware and software rather than testing components in isolation."
+    },
     "title": "V S Informatics",
     "type": "Embedded & IoT internship",
     "year": "Jan – May 2026",
@@ -401,6 +422,9 @@ export const stories:Story[] = [
   },
   {
     "id": "study",
+    "takeaway": {
+      "body": "Our team finished a study companion combining notes, task tracking and a focus timer within the hackathon. The small browser recreation illustrates the simple workflow we chose to prioritise under a tight deadline."
+    },
     "title": "Study Buddy",
     "type": "Hackathon project · group build",
     "year": "2024",
