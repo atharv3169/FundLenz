@@ -69,7 +69,7 @@ export default function StoryDetail({story}:{story:Story}){
  return <main ref={root} id="atharva-story" className={s.page} data-story-page={story.id} data-paper={paper?"dark":"light"} style={style}>
    <div className={s.grain} aria-hidden="true"/>
    <nav className={s.topbar} aria-label="Case study navigation">
-     <a className={s.back} href={back}><ArrowLeft size={16}/> All projects</a>
+     <a className={s.back} href={back}><ArrowLeft size={16}/> All stories</a>
      <a className={s.brand} href="/atharva" aria-label="Portfolio home">A<span> / </span>S.</a>
      <span className={s.pageCount}>CASE STUDY {two(index+1)} / {two(stories.length)}</span>
      <button className={s.paperSwitch} type="button" aria-label="Dark paper" aria-pressed={paper} onClick={togglePaper} title={paper?"Use light paper":"Use dark paper"}>{paper?<Sun size={17}/>:<Moon size={17}/>}</button>
@@ -140,7 +140,7 @@ export default function StoryDetail({story}:{story:Story}){
    <footer className={s.footer}>
      <a href={"/atharva/stories/"+previous.id} className={s.neighbor}><span><ArrowLeft size={16}/> PREVIOUS STORY</span><strong>{previous.title}</strong></a>
      <a href={"/atharva/stories/"+next.id} className={s.neighbor}><span>NEXT STORY <ArrowRight size={16}/></span><strong>{next.title}</strong></a>
-     <a href={back} className={s.returnLink}>Back to all projects <ArrowUpRight size={17}/></a>
+     <a href={back} className={s.returnLink}>Back to all stories <ArrowUpRight size={17}/></a>
      <span>ATHARVA SAHU / PORTFOLIO 2026</span>
    </footer>
  </main>;
