@@ -7,6 +7,30 @@ import { HeroWave, SceneFigure } from "./scenes";
 import { storySpectrum } from "./progress-palette";
 import s from "./portfolio-v2.module.css";
 
+const RETURN_KEY="atharva-story-return-v2";
+const REVEALS_KEY="atharva-reveals-v2";
+type StoredReveals={stories:string[];sections:number[]};
+function readReveals():StoredReveals{
+ try{
+  const saved=JSON.parse(sessionStorage.getItem(REVEALS_KEY)||"{}") as Partial<StoredReveals>;
+  return {
+   stories:Array.isArray(saved.stories)?saved.stories.filter((v):v is string=>typeof v==="string"):[],
+   sections:Array.isArray(saved.sections)?saved.sections.filter((v):v is number=>Number.isInteger(v)&&v>=0):[]
+  };
+ }catch{return {stories:[],sections:[]};}
+}
+function rememberPortfolioReturn(id:StoryId){
+ try{
+  const section=document.getElementById("story-"+id);
+  sessionStorage.setItem(RETURN_KEY,JSON.stringify({
+   id,top:Math.max(0,window.scrollY),
+   offset:section?.getBoundingClientRect().top??0,
+   viewport:innerWidth
+  }));
+ }catch{}
+}
+
+
 function StorySection({story,index,completed}:{story:Story;index:number;completed:boolean}){
  return <section
    id={"story-"+story.id}
@@ -27,7 +51,7 @@ function StorySection({story,index,completed}:{story:Story;index:number;complete
      <p className={s.storyIntro}>{story.intro}</p>
      <div className={s.paperTags}>{story.tags.slice(0,2).map(tag=><span key={tag}>{tag}</span>)}</div>
      <div className={s.storyActions}>
-      <a className={s.storyRead} href={"/atharva/stories/"+story.id} data-story-link={story.id} aria-label={"Read full story: "+story.title}>Read full story <ArrowRight size={17}/></a>
+      <a className={s.storyRead} href={"/atharva/stories/"+story.id} data-story-link={story.id} aria-label={"Read full story: "+story.title} onClick={e=>{if(e.button===0&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&!e.altKey)rememberPortfolioReturn(story.id);}}>Read full story <ArrowRight size={17}/></a>
       {story.visit&&(story.visit.pending?<span className={s.storyUpcoming} title={"Planned URL: "+story.visit.href}>{story.visit.text} · planned URL</span>:<a className={s.storyVisit} href={story.visit.href} target="_blank" rel="noopener noreferrer">{story.visit.text}<ArrowUpRight size={17}/></a>)}
      </div>
      <div className={s.storyNumbers}>{story.numbers.map((n,i)=><div key={i}><strong>{n.value}</strong><span>{n.label}</span></div>)}</div>
@@ -63,12 +87,33 @@ export default function PortfolioV2(){
  useEffect(()=>{let frame=0;try{if(localStorage.getItem("atharva-paper")==="dark")frame=requestAnimationFrame(()=>setDark(true));}catch{}return()=>cancelAnimationFrame(frame);},[]);
  const togglePaper=()=>{setDark(!dark);try{localStorage.setItem("atharva-paper",dark?"light":"dark");}catch{}};
  useEffect(()=>{
-   if(!location.hash.startsWith("#paper-"))return;
-   let second=0;
-   const first=requestAnimationFrame(()=>{second=requestAnimationFrame(()=>{
-     document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView({behavior:"instant",block:"start"});
-   });});
-   return()=>{cancelAnimationFrame(first);cancelAnimationFrame(second);};
+   let saved:{id:string;top:number;offset:number;viewport:number}|null=null;
+   try{
+    const raw=sessionStorage.getItem(RETURN_KEY);
+    if(raw){const v=JSON.parse(raw);if(v&&typeof v.id==="string"&&Number.isFinite(v.top))saved=v;}
+   }catch{}
+   const hash=location.hash.startsWith("#paper-")?decodeURIComponent(location.hash.slice(7)):"";
+   if(saved&&hash&&saved.id!==hash)saved=null;
+   if(!saved&&!hash)return;
+   let cancelled=false,first=0,second=0;
+   const restore=()=>{
+    if(cancelled)return;
+    first=requestAnimationFrame(()=>{second=requestAnimationFrame(()=>{
+     if(cancelled)return;
+     const id=saved?.id||hash,anchor=document.getElementById("paper-"+id);
+     if(saved){
+      const section=document.getElementById("story-"+id);
+      const top=saved.viewport===innerWidth?saved.top:section?
+       window.scrollY+section.getBoundingClientRect().top-saved.offset:saved.top;
+      window.scrollTo({top:Math.max(0,top),behavior:"instant"});
+      try{sessionStorage.removeItem(RETURN_KEY);}catch{}
+     }else{
+      (anchor||document.getElementById("story-"+id))?.scrollIntoView({behavior:"instant",block:"start"});
+     }
+    });});
+   };
+   void document.fonts.ready.then(restore,restore);
+   return()=>{cancelled=true;cancelAnimationFrame(first);cancelAnimationFrame(second);};
  },[]);
  const menuRef=useRef<HTMLButtonElement>(null);
  useEffect(()=>{
@@ -77,13 +122,41 @@ export default function PortfolioV2(){
    window.addEventListener("keydown",dismiss);return()=>window.removeEventListener("keydown",dismiss);
  },[navOpen]);
  useEffect(()=>{
-  const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.setAttribute("data-visible","true");observer.unobserve(e.target)}}),{rootMargin:"0px 0px -60px 0px",threshold:.06});
-  document.querySelectorAll("#atharva-portfolio [data-reveal]").forEach(el=>observer.observe(el));
+  const previous=readReveals(),seenStories=new Set(previous.stories),seenSections=new Set(previous.sections);
+  const persist=()=>{try{sessionStorage.setItem(REVEALS_KEY,JSON.stringify({stories:[...seenStories],sections:[...seenSections]}));}catch{}};
+  const reveals=Array.from(document.querySelectorAll<HTMLElement>("#atharva-portfolio [data-reveal]"));
+  const observer=new IntersectionObserver(entries=>entries.forEach(e=>{
+   if(e.isIntersecting){
+    const index=reveals.indexOf(e.target as HTMLElement);
+    e.target.setAttribute("data-visible","true");
+    observer.unobserve(e.target);
+    if(index>=0&&!seenSections.has(index)){seenSections.add(index);persist();}
+   }
+  }),{rootMargin:"0px 0px -60px 0px",threshold:.06});
+  reveals.forEach((node,i)=>{
+   if(seenSections.has(i))node.setAttribute("data-visible","true");
+   else observer.observe(node);
+  });
   const sections=Array.from(document.querySelectorAll<HTMLElement>("#atharva-portfolio [data-story]"));
   const entrants=new IntersectionObserver(entries=>entries.forEach(entry=>{
-    if(entry.isIntersecting){entry.target.setAttribute("data-entered","true");entrants.unobserve(entry.target);}
-  }),{threshold:0});
-  sections.forEach(section=>{const pane=section.querySelector("[data-entry]");if(pane){if(section.getBoundingClientRect().top>=window.innerHeight)pane.setAttribute("data-pending","true");entrants.observe(pane);}});
+   if(entry.isIntersecting&&entry.intersectionRatio>=.14){
+    entry.target.setAttribute("data-entered","true");
+    entrants.unobserve(entry.target);
+    const id=entry.target.closest<HTMLElement>("[data-story]")?.dataset.story;
+    if(id&&!seenStories.has(id)){seenStories.add(id);persist();}
+   }
+  }),{threshold:[0,.14]});
+  sections.forEach(section=>{
+   const pane=section.querySelector<HTMLElement>("[data-entry]"),id=section.dataset.story;
+   if(!pane)return;
+   if(id&&seenStories.has(id)){
+    pane.setAttribute("data-entered","true");
+    section.setAttribute("data-revealed-before","true");
+   }else{
+    if(section.getBoundingClientRect().top>=window.innerHeight)pane.setAttribute("data-pending","true");
+    entrants.observe(pane);
+   }
+  });
   const colors=stories.map(story=>{
     const hex=story.accent.slice(1);
     return [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16));
@@ -181,11 +254,9 @@ function PaperIndex({exploredStories}:{exploredStories:Set<StoryId>}){
  const [active,setActive]=useState(0);
  const box=useRef<HTMLDialogElement>(null);
  useEffect(()=>{
-  const mq=matchMedia("(max-width:767px)");
   let raf=0;
   const read=()=>{
    raf=0;
-   if(!mq.matches){box.current?.close();return;}
    let current=0;
    stories.forEach((story,i)=>{
     const anchor=document.getElementById("paper-"+story.id);
