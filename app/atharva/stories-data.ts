@@ -56,7 +56,7 @@ export const stories:Story[] = [
     "year": "November 2026 – present",
     "eyebrow": "BUSINESS ANALYSIS / LENDING",
     "hook": "Business analysis across operational information, lending data and risk.",
-    "intro": "My role spans more than one area. Alongside reviewing operational records, checking information and working with teams on process-related issues, I will also work with international clients on loan data, mortgage analysis and risk."
+    "intro": "My role spans more than one area. Alongside reviewing operational records, checking information and working with teams on process-related issues, I will also work with international clients on loan data, mortgage analysis and risk.",
     "accent": "#8fd2be",
     "numbers": [
       {
@@ -76,9 +76,9 @@ export const stories:Story[] = [
         ]
       },
       {
-        "title": "The lending side",
+        "title": "Loans, mortgages and risk",
         "paragraphs": [
-          "HR has also outlined work with international clients, including managing and analysing loan data, reviewing mortgage information and looking at financial risk. These responsibilities will sit alongside the broader reporting and operational work, not replace it. I'm interested in how that information is checked and used when lending decisions carry real consequences."
+          "Another part of the role will involve international client work, managing and analysing loan data, reviewing mortgage information and assessing risk. I am looking forward to seeing how this information is used in real lending and business decisions."
         ]
       }
     ],
@@ -91,7 +91,7 @@ export const stories:Story[] = [
     ],
     "takeaway": {
       "heading": "The work ahead.",
-      "body": "I'm still learning the full scope of the role. I want to get better at spotting gaps in both financial and operational data, asking the right questions and producing analysis that people can actually act on."
+      "body": "I am still getting familiar with the full scope of the role, but I am looking forward to combining hands-on data work, problem-solving and financial analysis as I take on more responsibility."
     },
     "disclosure": "Client information, internal workflows and non-public financial data are intentionally left out.",
     "visit": {
