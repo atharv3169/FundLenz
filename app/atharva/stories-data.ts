@@ -1,5 +1,5 @@
-export type StoryId = "shyam" | "fundlenz" | "research" | "fincalc" | "dcf" | "ternwell" | "crowd" | "study" | "vs" | "synk";
-export type Story={ id:StoryId; title:string; type:string; year:string; eyebrow:string; hook:string; intro:string; accent:string; numbers:{value:string;label:string}[]; chapters:{title:string;paragraphs:string[]}[]; tags:string[]; takeaway:{body:string}; visit?:{href:string;text:string;pending?:boolean} };
+export type StoryId = "shyam" | "fundlenz" | "dhaninfo" | "research" | "fincalc" | "dcf" | "ternwell" | "crowd" | "study" | "vs" | "synk";
+export type Story={ id:StoryId; title:string; type:string; year:string; eyebrow:string; hook:string; intro:string; accent:string; numbers:{value:string;label:string}[]; chapters:{title:string;paragraphs:string[]}[]; tags:string[]; takeaway:{body:string;heading?:string}; disclosure?:string; visit?:{href:string;text:string;pending?:boolean} };
 export const stories:Story[] = [
   {
     "id": "fundlenz",
@@ -50,16 +50,66 @@ export const stories:Story[] = [
     }
   },
   {
+    "id": "dhaninfo",
+    "title": "DhanInfo",
+    "type": "Senior Business Analyst",
+    "year": "November 2026 – present",
+    "eyebrow": "BUSINESS ANALYSIS / LENDING",
+    "hook": "Business analysis across operational information, lending data and risk.",
+    "intro": "My role spans more than one area. Alongside reviewing operational records, checking information and working with teams on process-related issues, I will also work with international clients on loan data, mortgage analysis and risk.",
+    "accent": "#8fd2be",
+    "numbers": [
+      {
+        "value": "Nov ’26",
+        "label": "joined as Senior Business Analyst"
+      },
+      {
+        "value": "Global",
+        "label": "international client-facing work"
+      }
+    ],
+    "chapters": [
+      {
+        "title": "The details behind the work",
+        "paragraphs": [
+          "A lot of the job starts with understanding the information in front of you: checking records, following a process between teams and looking into anything that does not line up. I like working out what sits behind the numbers, not just passing them along."
+        ]
+      },
+      {
+        "title": "Loans, mortgages and risk",
+        "paragraphs": [
+          "Another part of the role will involve international client work, managing and analysing loan data, reviewing mortgage information and assessing risk. I am looking forward to seeing how this information is used in real lending and business decisions."
+        ]
+      }
+    ],
+    "tags": [
+      "Business analysis",
+      "Loan data",
+      "Mortgage analysis",
+      "Risk assessment",
+      "International clients"
+    ],
+    "takeaway": {
+      "heading": "The work ahead.",
+      "body": "I am still getting familiar with the full scope of the role, but I am looking forward to combining hands-on data work, problem-solving and financial analysis as I take on more responsibility."
+    },
+    "disclosure": "Client information, internal workflows and non-public financial data are intentionally left out.",
+    "visit": {
+      "href": "https://dhaninfo.com/",
+      "text": "Visit DhanInfo"
+    },
+  },
+  {
     "id": "research",
     "takeaway": {
       "body": "The completed study examined fund liquidity disclosures alongside subsequent returns. Larger funds generally had longer modelled liquidation times, but reported liquidity stress did not reliably predict the returns that followed."
     },
     "title": "Mutual-fund research",
-    "type": "Co-authored empirical study",
+    "type": "Empirical research paper · Lead author",
     "year": "2026",
     "eyebrow": "INVESTMENT RESEARCH",
     "hook": "How long would an Indian equity fund need to liquidate its portfolio?",
-    "intro": "I co-authored an empirical study of liquidity disclosures from Indian small- and mid-cap mutual funds.",
+    "intro": "I led an empirical research paper on liquidity disclosures from Indian small- and mid-cap mutual funds.",
     "accent": "#bdb6ed",
     "numbers": [
       {
@@ -75,7 +125,7 @@ export const stories:Story[] = [
       {
         "title": "The dataset",
         "paragraphs": [
-          "I helped frame the research question, check public stress-test disclosures, interpret results and write the manuscript. We compared estimated liquidation times across funds and examined returns over the following three months."
+          "As lead author, I framed the research question, checked public stress-test disclosures, interpreted the results and helped prepare the manuscript with the research team. We compared estimated liquidation times across funds and returns over the next three months."
         ]
       },
       {
