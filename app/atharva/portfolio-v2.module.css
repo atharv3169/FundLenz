@@ -1110,7 +1110,17 @@
  .portfolioShell .workIntro{padding:0 20px;height:1px;min-height:0;overflow:hidden}.portfolioShell .workIntro>*{visibility:hidden}
  .portfolioShell .paperDeck .storySection{top:calc(52px + var(--stack)*32px);background:linear-gradient(150deg,var(--cover,#363e59),color-mix(in srgb,var(--cover,#363e59) 85%,#122c32));}
  .paperAnchor{scroll-margin-top:calc(53px + var(--stack)*32px)}
- .paperDeck [data-story=fundlenz],.paperDeck [data-story=study]{--cover:#75492f}.paperDeck [data-story=research],.paperDeck [data-story=synk]{--cover:#2e5850}.paperDeck [data-story=fincalc],.paperDeck [data-story=crowd]{--cover:#654451}.paperDeck [data-story=dcf]{--cover:#285359}.paperDeck [data-story=ternwell],.paperDeck [data-story=vs]{--cover:#51435f}
+ .paperDeck [data-story=fundlenz]{--cover:#75492f}
+ .paperDeck [data-story=dhaninfo]{--cover:#63353e}
+ .paperDeck [data-story=research]{--cover:#464075}
+ .paperDeck [data-story=shyam]{--cover:#6b5737}
+ .paperDeck [data-story=dcf]{--cover:#704c2b}
+ .paperDeck [data-story=ternwell]{--cover:#604256}
+ .paperDeck [data-story=fincalc]{--cover:#31586e}
+ .paperDeck [data-story=synk]{--cover:#374a82}
+ .paperDeck [data-story=crowd]{--cover:#67406d}
+ .paperDeck [data-story=vs]{--cover:#315c55}
+ .paperDeck [data-story=study]{--cover:#59612d}
  .cardFolio{display:flex;justify-content:space-between;gap:12px;font:500 11px/1.3 system-ui;letter-spacing:.04em;color:#f5eddd}
  .portfolioShell .paperDeck .storyEyebrow,.portfolioShell .paperDeck .storyYears{display:none}
  .portfolioShell .paperDeck .storySection:not(.storyIsOpen) h3{margin:20px 0 8px}
@@ -1500,8 +1510,5 @@
   font:600 10px/1.45 system-ui;letter-spacing:.095em;
   text-transform:uppercase;color:color-mix(in srgb,var(--accent) 75%,#fff);
   overflow-wrap:anywhere;
- }
- .portfolioShell .paperDeck [data-story=dhaninfo]{
-  --cover:#27544b;
  }
 }

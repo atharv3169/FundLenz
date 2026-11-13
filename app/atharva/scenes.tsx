@@ -52,35 +52,35 @@ function DhanInfoArt(){
  return <Frame id="dhaninfo" heading="DHANINFO / OPERATIONS + LENDING" caption="Illustrative data flow · no company or client records">
   <Plate label="Animated illustrative international client analysis: validated records feed mortgage and lending checks and risk review">
    <defs>
-    <linearGradient id="dhanFlow" x1="0" y1="0" x2="1" y2="0"><stop stopColor="#6cbfa9"/><stop offset="1" stopColor="#d4e9bc"/></linearGradient>
+    <linearGradient id="dhanFlow" x1="0" y1="0" x2="1" y2="0"><stop stopColor="#e97968"/><stop offset="1" stopColor="#f2b18a"/></linearGradient>
    </defs>
    <g data-art-region="brand">
-    <rect x="215" y="15" width="250" height="64" rx="12" fill="#173c3b" stroke="#78bdad" strokeWidth="1.5"/>
-    <text x="340" y="52" textAnchor="middle" fontSize="27" fontWeight="700" fill="#d9f0e4" letterSpacing="-.7">DhanInfo</text>
-    <path d="M274 63H407" stroke="#79cbb4" strokeWidth="2" strokeLinecap="round" className={art.draw}/>
+    <rect x="215" y="15" width="250" height="64" rx="12" fill="#3b2932" stroke="#df8979" strokeWidth="1.5"/>
+    <text x="340" y="52" textAnchor="middle" fontSize="27" fontWeight="700" fill="#ffe1d7" letterSpacing="-.7">DhanInfo</text>
+    <path d="M274 63H407" stroke="#ec8878" strokeWidth="2" strokeLinecap="round" className={art.draw}/>
    </g>
    <g data-art-region="cards">
-    <rect x="24" y="123" width="182" height="168" rx="12" fill="#15333a" stroke="#518e86"/>
-    <rect x="248" y="123" width="184" height="168" rx="12" fill="#15333a" stroke="#518e86"/>
-    <rect x="474" y="123" width="182" height="168" rx="12" fill="#15333a" stroke="#518e86"/>
-    <g fontSize="14" fill="#a9d8c8" fontWeight="600" letterSpacing=".5">
+    <rect x="24" y="123" width="182" height="168" rx="12" fill="#302b35" stroke="#96636a"/>
+    <rect x="248" y="123" width="184" height="168" rx="12" fill="#302b35" stroke="#96636a"/>
+    <rect x="474" y="123" width="182" height="168" rx="12" fill="#302b35" stroke="#96636a"/>
+    <g fontSize="14" fill="#efb1a6" fontWeight="600" letterSpacing=".5">
      <text x="43" y="149">OPERATIONAL DATA</text>
      <text x="267" y="149">LOAN / MORTGAGE</text>
      <text x="491" y="149">RISK REVIEW</text>
     </g>
-    <g stroke="#86b7a8" strokeOpacity=".24">
+    <g stroke="#aa7777" strokeOpacity=".24">
      {[0,1,2,3].map(i=><g key={i}><path d={`M44 ${174+i*25}H182`}/><path d={`M266 ${174+i*25}H413`}/><path d={`M490 ${174+i*25}H632`}/></g>)}
     </g>
-    <g fill="#94d3bd">{[106,87,117,68].map((v,i)=><rect key={i} x="44" y={170+i*25} width={v} height="6" rx="3" className={art.bar}/>)}</g>
-    <g fill="#a6d9d0">{[109,66,119,83].map((v,i)=><rect key={i} x="267" y={170+i*25} width={v} height="6" rx="3" className={art.bar}/>)}</g>
+    <g fill="#ed8c78">{[106,87,117,68].map((v,i)=><rect key={i} x="44" y={170+i*25} width={v} height="6" rx="3" className={art.bar}/>)}</g>
+    <g fill="#f0b08b">{[109,66,119,83].map((v,i)=><rect key={i} x="267" y={170+i*25} width={v} height="6" rx="3" className={art.bar}/>)}</g>
     <path d="M492 257L523 237L552 242L582 193L616 201L631 178" stroke="url(#dhanFlow)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" className={art.draw}/>
-    <g fontSize="11" fill="#8abcb3"><text x="44" y="275">CHECK / VALIDATE</text><text x="267" y="275">REVIEW / ANALYSE</text><text x="491" y="275">COMPARE / FLAG</text></g>
+    <g fontSize="11" fill="#d99b91"><text x="44" y="275">CHECK / VALIDATE</text><text x="267" y="275">REVIEW / ANALYSE</text><text x="491" y="275">COMPARE / FLAG</text></g>
    </g>
-   <g data-art-region="transfer" stroke="#8fd2be" strokeWidth="2" fill="none" strokeDasharray="4 6" className={s.flowingLine}>
+   <g data-art-region="transfer" stroke="#e97968" strokeWidth="2" fill="none" strokeDasharray="4 6" className={s.flowingLine}>
     <path d="M206 204H248"/><path d="M432 204H474"/><path d="M340 79V117"/>
    </g>
-   <g fill="#b2e5d5"><circle cx="227" cy="204" r="4" className={art.blink}/><circle cx="453" cy="204" r="4" className={art.blink}/></g>
-   <text x="340" y="327" textAnchor="middle" fill="#afcbbf" fontSize="13">INTERNATIONAL CLIENT WORK · ILLUSTRATIVE ONLY</text>
+   <g fill="#ffd0bf"><circle cx="227" cy="204" r="4" className={art.blink}/><circle cx="453" cy="204" r="4" className={art.blink}/></g>
+   <text x="340" y="327" textAnchor="middle" fill="#e8b9a9" fontSize="13">INTERNATIONAL CLIENT WORK · ILLUSTRATIVE ONLY</text>
   </Plate>
  </Frame>;
 }

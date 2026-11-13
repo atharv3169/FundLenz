@@ -96,8 +96,8 @@
     {
       "path": "app/atharva/portfolio-v2.module.css",
       "scope": "application",
-      "bytes": 102423,
-      "sha256": "4a38fb0ea673deae6ef0029b173564d96f7f7caba0ec9c654c7b0722165f919b"
+      "bytes": 102529,
+      "sha256": "0da5338efdebab373bef92c268ab8ab8e3f2771e9549582a22e1a747c94e36e3"
     },
     {
       "path": "app/atharva/portfolio-v2.tsx",
@@ -127,13 +127,13 @@
       "path": "app/atharva/scenes.tsx",
       "scope": "application",
       "bytes": 18503,
-      "sha256": "84c306c5e00133b97e765608c572155e75440588129a9330ee4b27236a3c53d8"
+      "sha256": "97c6c6e3e957501375790887361ab27760d79c908e8667fe0edb8d6fa57f082f"
     },
     {
       "path": "app/atharva/stories-data.ts",
       "scope": "application",
       "bytes": 20472,
-      "sha256": "d683e0307247e723106b42ccbeca04748dabe36a3ea98eb7da5f812c9c45b081"
+      "sha256": "3b2216f6376ed149aff1da3677f9d8508003bf03b76bc680bcdcbb6af1e3694d"
     },
     {
       "path": "app/atharva/stories/[slug]/page.tsx",
@@ -21352,6 +21352,10 @@
     {
       "reason": "Source-replayed holdings, exact AMFI identity admission, CBI register and weekly Irish holdings refresh; see manual release record.",
       "scope": "Indian and Irish catalogue expansion"
+    },
+    {
+      "reason": "Give each portfolio story a distinct color accent and retune DhanInfo's embedded lending illustration to coral and terracotta.",
+      "scope": "Atharva portfolio visual identity"
     }
   ],
   "parent_repository_commit": "9e6ee225a4f4bd9a179cf0b7057b34c5d8aa9180",
