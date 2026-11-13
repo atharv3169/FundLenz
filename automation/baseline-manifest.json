@@ -132,8 +132,8 @@
     {
       "path": "app/atharva/stories-data.ts",
       "scope": "application",
-      "bytes": 20597,
-      "sha256": "9398cbf9dc4082c53807cba728c03e1e0504e7acd6bf84e42ccfc4db006f5aa2"
+      "bytes": 20472,
+      "sha256": "d683e0307247e723106b42ccbeca04748dabe36a3ea98eb7da5f812c9c45b081"
     },
     {
       "path": "app/atharva/stories/[slug]/page.tsx",
