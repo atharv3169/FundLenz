@@ -96,8 +96,8 @@
     {
       "path": "app/atharva/portfolio-v2.module.css",
       "scope": "application",
-      "bytes": 102529,
-      "sha256": "0da5338efdebab373bef92c268ab8ab8e3f2771e9549582a22e1a747c94e36e3"
+      "bytes": 102423,
+      "sha256": "4a38fb0ea673deae6ef0029b173564d96f7f7caba0ec9c654c7b0722165f919b"
     },
     {
       "path": "app/atharva/portfolio-v2.tsx",
@@ -127,13 +127,13 @@
       "path": "app/atharva/scenes.tsx",
       "scope": "application",
       "bytes": 18503,
-      "sha256": "97c6c6e3e957501375790887361ab27760d79c908e8667fe0edb8d6fa57f082f"
+      "sha256": "84c306c5e00133b97e765608c572155e75440588129a9330ee4b27236a3c53d8"
     },
     {
       "path": "app/atharva/stories-data.ts",
       "scope": "application",
       "bytes": 20472,
-      "sha256": "3b2216f6376ed149aff1da3677f9d8508003bf03b76bc680bcdcbb6af1e3694d"
+      "sha256": "d683e0307247e723106b42ccbeca04748dabe36a3ea98eb7da5f812c9c45b081"
     },
     {
       "path": "app/atharva/stories/[slug]/page.tsx",
@@ -21216,8 +21216,8 @@
     {
       "path": "scripts/verify-atharva-browser.mjs",
       "scope": "application",
-      "bytes": 46357,
-      "sha256": "5677ce27e90412185f03bde58624d5e3004dd3d39c5d6b5a3e347b1eb25d0cd0"
+      "bytes": 48420,
+      "sha256": "54ec549161f0bbe57a98b31b8ee3b6715bd86fcd7650b60cd9e7bca3b909c5a6"
     },
     {
       "path": "scripts/verify-atlas-browser.mjs",
@@ -21354,8 +21354,8 @@
       "scope": "Indian and Irish catalogue expansion"
     },
     {
-      "reason": "Give each portfolio story a distinct color accent and retune DhanInfo's embedded lending illustration to coral and terracotta.",
-      "scope": "Atharva portfolio visual identity"
+      "reason": "Guard all eleven story accents against palette collisions and check DhanInfo's independent illustration colors.",
+      "scope": "Atharva portfolio browser verification"
     }
   ],
   "parent_repository_commit": "9e6ee225a4f4bd9a179cf0b7057b34c5d8aa9180",

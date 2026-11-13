@@ -11,6 +11,14 @@ const fixture=path.join(root,"scripts/atharva-browser-fixture");
 const output=path.join(root,"work/atharva-screenshots");
 const temp=await mkdtemp(path.join(tmpdir(),"atharva-browser-"));
 const sleep=(ms)=>new Promise(resolve=>setTimeout(resolve,ms));
+function accentLab(hex){
+  assert.match(hex,/^#[0-9a-f]{6}$/i);
+  const rgb=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(c=>c<=0.04045?c/12.92:((c+0.055)/1.055)**2.4);
+  const [r,g,b]=rgb;
+  const xyz=[(r*0.4124564+g*0.3575761+b*0.1804375)/0.95047,(r*0.2126729+g*0.7151522+b*0.0721750),(r*0.0193339+g*0.1191920+b*0.9503041)/1.08883].map(v=>v>0.008856?v**(1/3):7.787*v+16/116);
+  return [116*xyz[1]-16,500*(xyz[0]-xyz[1]),200*(xyz[1]-xyz[2])];
+}
+function accentDistance(a,b){const x=accentLab(a),y=accentLab(b);return Math.hypot(x[0]-y[0],x[1]-y[1],x[2]-y[2]);}
 const server=await createServer({
   configFile:false,root:fixture,plugins:[react()],css:{postcss:root},
   server:{host:"127.0.0.1",port:41893,strictPort:true,hmr:false},
@@ -154,6 +162,15 @@ try{
       const accentList=await js("Array.from(document.querySelectorAll('section[data-story]'),e=>getComputedStyle(e).getPropertyValue('--accent').trim())");
       assert.equal(accentList.length,ids.length,"thematic color for each story");
       assert.ok(accentList.every(color=>progress.gradient.includes(color)),"spectrum uses every existing project's own color");
+       if(width===1440){
+         const storyPalette=await js("Array.from(document.querySelectorAll('section[data-story]'),e=>({id:e.dataset.story,color:getComputedStyle(e).getPropertyValue('--accent').trim()}))");
+         assert.equal(storyPalette.length,ids.length);
+         assert.equal(new Set(storyPalette.map(item=>item.color)).size,ids.length,'every story must have a unique accent');
+         assert.equal(storyPalette.find(item=>item.id==='dhaninfo')?.color,'#e97968');
+         let nearest=Infinity,nearestPair='';
+         for(let i=0;i<storyPalette.length;i++)for(let j=i+1;j<storyPalette.length;j++){const distance=accentDistance(storyPalette[i].color,storyPalette[j].color);if(distance<nearest){nearest=distance;nearestPair=storyPalette[i].id+' / '+storyPalette[j].id;}}
+         assert.ok(nearest>=20,'story colors too similar: '+nearestPair+' ('+nearest.toFixed(1)+' Lab units)');
+       }
       colors.push(progress.color);
       counts.spectrum++;
       counts.progress++;
@@ -206,6 +223,9 @@ try{
       assert.equal(detail.id,id);
       if(id==="dhaninfo"){
         const figure=await js("(()=>{const frame=document.querySelector('[data-art-scene=dhaninfo]'),svg=frame?.querySelector('svg'),bar=svg?.querySelector('rect[class*=bar]'),draw=svg?.querySelector('path[class*=draw]'),style=frame?getComputedStyle(frame):null,rect=frame?.getBoundingClientRect();return {width:rect?.width||0,height:rect?.height||0,svgWidth:svg?.getBoundingClientRect().width||0,svgHeight:svg?.getBoundingClientRect().height||0,border:style?.borderTopStyle||'',background:style?.backgroundImage||'',mask:style?.maskImage||'',barAnimation:bar?getComputedStyle(bar).animationName:'',drawAnimation:draw?getComputedStyle(draw).animationName:'',alt:svg?.getAttribute('aria-label')||''}})()");
+        const dhanSvgPalette=await js("(()=>{const svg=document.querySelector('[data-art-scene=dhaninfo] svg');return {flow:[...svg.querySelectorAll('#dhanFlow stop')].map(n=>n.getAttribute('stop-color')),oldMint:[...svg.querySelectorAll('[fill],[stroke]')].some(n=>['#6cbfa9','#d4e9bc','#94d3bd','#a6d9d0','#8fd2be','#b2e5d5'].some(c=>[n.getAttribute('fill'),n.getAttribute('stroke')].includes(c)))}})()");
+        assert.deepEqual(dhanSvgPalette.flow,['#e97968','#f2b18a']);
+        assert.equal(dhanSvgPalette.oldMint,false,'DhanInfo artwork should not reuse FundLenz mint tones');
         assert.ok(figure.width>180&&figure.height>130&&figure.svgWidth>150&&figure.svgHeight>100,"DhanInfo illustration has visible responsive dimensions");
         assert.ok(figure.alt.toLowerCase().includes("mortgage")&&figure.alt.toLowerCase().includes("risk"),"DhanInfo illustration describes lending and risk analysis");
         assert.ok(figure.barAnimation.includes("growth")&&figure.drawAnimation.includes("ink"),"DhanInfo illustration retains its bar and line animations");
