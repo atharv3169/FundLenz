@@ -55,8 +55,8 @@ export const stories:Story[] = [
     "type": "Senior Business Analyst",
     "year": "November 2026 – present",
     "eyebrow": "BUSINESS ANALYSIS / LENDING",
-    "hook": "Business analysis across operational records, lending data and risk.",
-    "intro": "At DhanInfo, I review operational information, check records and work with teams on process-related issues. My role also includes upcoming work with international clients on loan and mortgage data, financial analysis and risk.",
+    "hook": "Business analysis across operational information, lending data and risk.",
+    "intro": "My role spans more than one area. Alongside reviewing operational records, checking information and working with teams on process-related issues, I will also work with international clients on loan data, mortgage analysis and risk."
     "accent": "#8fd2be",
     "numbers": [
       {
@@ -70,9 +70,9 @@ export const stories:Story[] = [
     ],
     "chapters": [
       {
-        "title": "Working with the details",
+        "title": "The details behind the work",
         "paragraphs": [
-          "My work covers more than one kind of analysis. I review operational information, check records for accuracy, learn how work moves between teams and follow up when something needs to be resolved. I like the part where you have to understand the process before you can trust the numbers."
+          "A lot of the job starts with understanding the information in front of you: checking records, following a process between teams and looking into anything that does not line up. I like working out what sits behind the numbers, not just passing them along."
         ]
       },
       {
@@ -98,7 +98,6 @@ export const stories:Story[] = [
       "href": "https://dhaninfo.com/",
       "text": "Visit DhanInfo"
     },
-    "role": "Senior Business Analyst"
   },
   {
     "id": "research",
