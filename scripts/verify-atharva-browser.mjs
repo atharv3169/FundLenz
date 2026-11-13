@@ -64,8 +64,8 @@ try{
   await until(()=>js('!!document.querySelector("#story-ternwell")'),60000);
   await js('document.fonts.ready.then(()=>true)');
 
-  const ids=["fundlenz","research","shyam","dcf","ternwell","fincalc","synk","crowd","vs","study"];
-  const storyTitles=["FundLenz","Mutual-fund research","Shyam Construction","DCF Atlas","Ternwell","FinCalc","SYNK","Crowd-monitoring system","V S Informatics","Study Buddy"];
+  const ids=["fundlenz","dhaninfo","research","shyam","dcf","ternwell","fincalc","synk","crowd","vs","study"];
+  const storyTitles=["FundLenz","DhanInfo","Mutual-fund research","Shyam Construction","DCF Atlas","Ternwell","FinCalc","SYNK","Crowd-monitoring system","V S Informatics","Study Buddy"];
   const desktopIntro="I use the maths and coding I learned in engineering across corporate-finance decisions, investment research and tools I built, including FundLenz, DCF Atlas and Ternwell.";
   const screens=[];
   const view=(width,height)=>cmd("Emulation.setDeviceMetricsOverride",{width,height,deviceScaleFactor:1,mobile:width<600});
@@ -89,7 +89,7 @@ try{
     await view(width,height);
     await navigate("/atharva","#atharva-portfolio");
     assert.deepEqual(await js('Array.from(document.querySelectorAll("section[data-story]"),e=>e.dataset.story)'),ids);
-    assert.deepEqual(await js('Array.from(document.querySelectorAll("section[data-story]"),e=>e.querySelector("h3").textContent.slice(0,-1))'),storyTitles,"mobile and desktop read the same ten story titles");
+    assert.deepEqual(await js('Array.from(document.querySelectorAll("section[data-story]"),e=>e.querySelector("h3").textContent.slice(0,-1))'),storyTitles,"mobile and desktop read the same eleven story titles");
     assert.equal(await js('document.querySelector("[class*=heroIntro]")?.textContent'),desktopIntro,"the desktop hero uses the latest engineering-to-finance summary");
     assert.ok(await js('document.querySelector("[class*=aboutColumns]")?.textContent.includes("family business")'),"biography connects engineering skills with family business");
     assert.ok(await js('document.querySelector("[class*=aboutColumns]")?.textContent.includes("finance internships")'),"biography includes research and internships");
@@ -98,7 +98,16 @@ try{
     assert.ok(await js('document.querySelector("[class*=skillsColumns]")?.textContent.includes("Risk management")'),"finance and risk management skills are present");
     assert.equal(await js('document.querySelectorAll("[class*=paperLinks] a").length'),2,"social area has two links, no old scroll arrow");
     assert.equal(await js('document.querySelectorAll("[class*=paperLinks] a svg").length'),2,"GitHub and LinkedIn have brand SVG marks");
-    assert.equal(await js('document.querySelectorAll("[data-story-link]").length'),10,"ten direct project links");
+    assert.equal(await js('document.querySelectorAll("[data-story-link]").length'),ids.length,"all story links");
+    const leadCredit=await js("document.querySelector('[data-story=research] [data-story-role=research]')?.textContent");
+    assert.equal(leadCredit,"Empirical research paper · Lead author","lead author credit appears in the shared card data");
+    const dhanDate=await js("document.querySelector('[data-story=dhaninfo] [class*=cardFolio]')?.textContent");
+    assert.ok(dhanDate.includes("November 2026"),"DhanInfo starts in November 2026");
+    if(width<768){
+      const labels=await js("Array.from(document.querySelectorAll('[data-story-role]'),el=>({text:el.textContent,display:getComputedStyle(el).display}))");
+      assert.equal(labels.length,ids.length,"all mobile cards have a short descriptor");
+      assert.ok(labels.every(e=>e.display!=="none"&&e.text.length>5),"mobile role descriptors are visible");
+    }
     assert.equal(await js('document.querySelectorAll("[data-role=story-reader],dialog[data-mobile-story]").length'),0,"no readers or dialogs on the stacked homepage");
     for(const id of ids){
       const link=await js("document.querySelector('[data-story-link="+id+"]').getAttribute('href')");
@@ -119,7 +128,7 @@ try{
       // The figures have one shared SVG source. Verify the mobile versions
       // render at desktop dimensions with the existing desktop animation rules.
       const figures=await js("Array.from(document.querySelectorAll('[data-art-scene]'),f=>{const r=f.getBoundingClientRect();return {id:f.dataset.artScene,width:r.width,height:r.height,heading:f.querySelector('[data-art-part=heading]')?.textContent,caption:f.querySelector('[data-art-part=caption]')?.textContent,hasSvg:!!f.querySelector('svg'),background:getComputedStyle(f).backgroundImage}})");
-      assert.deepEqual(figures.map(f=>f.id),ids,"all ten new story illustrations are shared with the desktop");
+      assert.deepEqual(figures.map(f=>f.id),ids,"all eleven story illustrations are shared with the desktop");
       assert.ok(figures.every(f=>f.width>250&&f.height>250&&f.hasSvg),"every desktop figure uses a properly sized, responsive SVG");
       assert.ok(figures.every(f=>f.heading?.length>6&&f.caption?.length>6),"desktop illustrations retain project-specific headings and captions");
       const visual=await js("(()=>{const section=document.querySelector('[data-story=fundlenz]'),cover=section.querySelector('[class*=storyIllustration]'),figure=section.querySelector('[data-art-scene]'),rect=figure.getBoundingClientRect(),holder=cover.getBoundingClientRect(),style=getComputedStyle(figure);return {width:rect.width,height:rect.height,holderWidth:holder.width,holderHeight:holder.height,border:style.borderTopWidth,background:style.backgroundImage,mask:style.maskImage}})()");
@@ -143,7 +152,7 @@ try{
       assert.equal(progress.transform,"none","rainbow never scales or squashes its color spectrum");
       assert.ok(progress.clip.startsWith("inset("),"rainbow progresses by revealing fixed-width colors");
       const accentList=await js("Array.from(document.querySelectorAll('section[data-story]'),e=>getComputedStyle(e).getPropertyValue('--accent').trim())");
-      assert.equal(accentList.length,10,"exactly ten thematic story colors");
+      assert.equal(accentList.length,ids.length,"thematic color for each story");
       assert.ok(accentList.every(color=>progress.gradient.includes(color)),"spectrum uses every existing project's own color");
       colors.push(progress.color);
       counts.spectrum++;
@@ -177,8 +186,8 @@ try{
       await until(()=>js('document.querySelector(\'dialog[aria-label="All stories"]\')?.open'),5000);
       const menu=await js("(()=>{const modal=document.querySelector('dialog[aria-label=\\\"All stories\\\"]'),a=[...modal.querySelectorAll('a[data-story-index]')];return {title:modal.querySelector('header').textContent.trim(),ids:a.map(x=>x.dataset.storyIndex),urls:a.map(x=>x.getAttribute('href')),explored:a.filter(x=>x.dataset.indexExplored==='true').map(x=>x.dataset.storyIndex),extra:modal.querySelectorAll('a:not([data-story-index])').length}})()");
       assert.ok(menu.title.startsWith("All stories"),"index heading is All stories");
-      assert.deepEqual(menu.ids,ids,"only the ten portfolio stories appear in the popup");
-      assert.deepEqual(menu.urls,ids.map(id=>"#paper-"+id),"story index links to all ten cards");
+      assert.deepEqual(menu.ids,ids,"all eleven portfolio stories appear in the popup");
+      assert.deepEqual(menu.urls,ids.map(id=>"#paper-"+id),"story index links to all eleven cards");
       assert.equal(menu.extra,0,"no intro, skills, contact or other index items");
       await capture(width+"-stories-only-popup");
       await js('document.querySelector(\'dialog[aria-label="All stories"]\').close()');
@@ -190,11 +199,24 @@ try{
       // The selected paper theme must not change href routing.
       assert.equal(await js("document.querySelector('[data-story-link=dcf]').getAttribute('href')"),"/atharva/stories/dcf");
     }
-    const storyIds=width===390?ids:width===1440?["shyam","fundlenz","fincalc","dcf"]:["research","synk"];
+    const storyIds=width===390?ids:width===1440?["shyam","fundlenz","dhaninfo","fincalc","dcf"]:["research","synk"];
     for(const id of storyIds){
       await navigate("/atharva/stories/"+id,'main[data-story-page="'+id+'"]');
       const detail=await js("(()=>{const m=document.querySelector('[data-story-page]'),bar=m.querySelector('[aria-label=\\\"Case study reading progress\\\"]'),chapter=m.querySelectorAll('[data-case-chapter]');return {id:m.dataset.storyPage,title:m.querySelector('h1').textContent,chapters:chapter.length,bar:!!bar,color:m.style.getPropertyValue('--case-accent'),rail:!!m.querySelector('aside[aria-label=\\\"Case study sections\\\"]'),goBack:m.querySelector('a[href^=\\\"/atharva#paper-\\\"]')?.getAttribute('href'),next:!!m.querySelector('a[href^=\\\"/atharva/stories/\\\"]')}})()");
       assert.equal(detail.id,id);
+      if(id==="dhaninfo"){
+        const figure=await js("(()=>{const frame=document.querySelector('[data-art-scene=dhaninfo]'),svg=frame?.querySelector('svg'),bar=svg?.querySelector('rect[class*=bar]'),draw=svg?.querySelector('path[class*=draw]'),style=frame?getComputedStyle(frame):null,rect=frame?.getBoundingClientRect();return {width:rect?.width||0,height:rect?.height||0,svgWidth:svg?.getBoundingClientRect().width||0,svgHeight:svg?.getBoundingClientRect().height||0,border:style?.borderTopStyle||'',background:style?.backgroundImage||'',mask:style?.maskImage||'',barAnimation:bar?getComputedStyle(bar).animationName:'',drawAnimation:draw?getComputedStyle(draw).animationName:'',alt:svg?.getAttribute('aria-label')||''}})()");
+        assert.ok(figure.width>180&&figure.height>130&&figure.svgWidth>150&&figure.svgHeight>100,"DhanInfo illustration has visible responsive dimensions");
+        assert.ok(figure.alt.toLowerCase().includes("mortgage")&&figure.alt.toLowerCase().includes("risk"),"DhanInfo illustration describes lending and risk analysis");
+        assert.ok(figure.barAnimation.includes("growth")&&figure.drawAnimation.includes("ink"),"DhanInfo illustration retains its bar and line animations");
+        if(width>=768){
+          assert.equal(figure.border,"none","desktop figure is not enclosed in a visible card");
+          assert.ok(figure.mask.includes("radial-gradient"),"desktop figure fades outwards into the background");
+        }else{
+          assert.equal(figure.border,"solid","mobile figure keeps the rounded story frame");
+          assert.ok(figure.background.includes("radial-gradient"),"mobile figure carries its story-accent background");
+        }
+      }
       const navigation=await js("(()=>{const links=[...document.querySelectorAll('footer a[href^=\"/atharva/stories/\"]')];return links.map(a=>a.getAttribute('href').split('/').pop())})()");
       assert.deepEqual(navigation,[ids[(ids.indexOf(id)-1+ids.length)%ids.length],ids[(ids.indexOf(id)+1)%ids.length]],id+" previous/next follow reordered stories");
       assert.ok(detail.title.length>=3&&detail.chapters>=1, id+" story has its authored chapters");
@@ -206,12 +228,12 @@ try{
       assert.ok(await js("document.querySelector('footer a[href^=\\\"/atharva#paper-\\\"]')?.textContent.includes('Back to all stories')"),"footer keeps the updated story terminology");
       assert.ok(detail.color.startsWith("#"),"case-study progress inherits its color");
       const ribbon=await js("(()=>{const m=document.querySelector('[data-story-page]'),p=m.querySelector('[aria-label=\\\"Story sequence progress\\\"]'),fill=p.querySelector('[class*=topFill]'),segments=m.querySelectorAll('a[data-story-segment]');return {segments:segments.length,current:m.querySelector('a[data-story-segment][aria-current=page]')?.dataset.storySegment,completed:[...segments].filter(e=>e.dataset.segmentState==='complete').length,upcoming:[...segments].filter(e=>e.dataset.segmentState==='upcoming').length,gradient:m.style.getPropertyValue('--story-spectrum'),clip:getComputedStyle(fill).clipPath,transform:getComputedStyle(fill).transform,value:Number(p.getAttribute('aria-valuenow'))}})()");
-      assert.equal(ribbon.segments,10,"the Katerina-style ribbon contains all ten projects");
+      assert.equal(ribbon.segments,ids.length,"the Katerina-style ribbon contains all eleven stories");
       assert.equal(ribbon.current,id,"timeline highlights the current story");
       assert.equal(ribbon.completed,ids.indexOf(id),"all previous story nodes are marked complete");
       assert.equal(ribbon.upcoming,ids.length-ids.indexOf(id)-1,"future story nodes remain unfilled");
       assert.ok(ribbon.clip.startsWith("inset(")&&ribbon.transform==="none","timeline reveals the stationary spectrum, without squeezing it");
-      assert.equal(ribbon.value,Math.round(ids.indexOf(id)*10),"global story timeline starts at the correct project");
+      assert.equal(ribbon.value,Math.round(ids.indexOf(id)*100/ids.length),"global story timeline starts at the correct project");
       counts.spectrum++;
       await assertNoHorizontal(id+" detail "+width);
       if(width===390)await capture(width+"-"+id+"-beginning");
@@ -222,7 +244,7 @@ try{
       const middle=await js("Number(document.querySelector('[aria-label=\\\"Case study reading progress\\\"]').getAttribute('aria-valuenow'))");
       assert.ok(middle>=32&&middle<=72,id+" progress advances through middle of page");
       const atMiddle=await js("Number(document.querySelector('[aria-label=\\\"Story sequence progress\\\"]').getAttribute('aria-valuenow'))");
-      assert.ok(Math.abs(atMiddle-(ids.indexOf(id)*10+middle/10))<=1.5,id+" global timeline advances only through the active story segment");
+      assert.ok(Math.abs(atMiddle-((ids.indexOf(id)+middle/100)*100/ids.length))<=1.5,id+" global timeline advances only through the active story segment");
       await js("document.querySelector('a[href=\\\"#case-chapter-0\\\"]').click()");
       await until(()=>js("location.hash==='#case-chapter-0'"),2500);
       await until(()=>js("document.querySelector('a[href=\\\"#case-chapter-0\\\"]').getAttribute('aria-current')==='location'"),4000);
@@ -235,18 +257,22 @@ try{
       assert.equal(finish.pct,100,id+" progress reaches 100%");
       assert.ok(finish.end&&finish.footer,"page ends with full content and next/previous stories");
       const ending=await js("(()=>{const ending=document.querySelector('#case-end');return {title:ending.querySelector('h2')?.innerText.replace(/\\s+/g,' ').trim(),body:ending.querySelector('p')?.textContent}})()");
-      assert.equal(ending.title,"The result.",id+" is completed, with no Work in progress label");
+      assert.equal(ending.title,id==="dhaninfo"?"The work ahead.":"The result.",id+" has an accurate closing heading");
       assert.ok(ending.body.length>110,id+" has its own substantive takeaway");
+      if(id==="dhaninfo"){
+        assert.ok(await js('document.querySelector("#case-end [aria-label=\\\"Confidentiality disclosure\\\"]")!==null'),"DhanInfo has a limited confidentiality disclosure");
+        assert.ok(ending.body.includes("full scope of the role")&&ending.body.includes("financial analysis"),"DhanInfo conclusion stays prospective and covers its broader analytical scope");
+      }
       assert.ok(!/work in progress|under process/i.test(ending.title+" "+ending.body),id+" has no unfinished-project label");
       const globalEnd=await js("Number(document.querySelector('[aria-label=\\\"Story sequence progress\\\"]').getAttribute('aria-valuenow'))");
-      assert.equal(globalEnd,(ids.indexOf(id)+1)*10,id+" completed story finishes only its own spectrum segment");
+      assert.equal(globalEnd,Math.round((ids.indexOf(id)+1)*100/ids.length),id+" completed story finishes only its own spectrum segment");
       if(width===390)await capture(width+"-"+id+"-end");
       counts.stories++;
       if(width===390&&["research","fincalc","dcf"].includes(id)){
         await js("document.querySelector('a[href^=\\\"/atharva#paper-\\\"]').click()");
         await until(()=>js("location.pathname==='/atharva'&&!!document.getElementById('story-"+id+"')"),30000);
         assert.equal(await js("location.hash"),"#paper-"+id,"back link selects the previous project");
-        assert.ok(await js("document.querySelectorAll('[data-story-link]').length===10"),"return to intact project stack");
+        assert.ok(await js("document.querySelectorAll('[data-story-link]').length===11"),"return to intact project stack");
         counts.back++;
       }
     }
@@ -257,7 +283,7 @@ try{
     await view(width,height);
     await navigate("/atharva","#atharva-portfolio");
     const desktopArt=await js("(()=>{const figures=[...document.querySelectorAll('[data-art-scene]')],stage=document.querySelector('[data-story=fundlenz] [data-role=story-overview]'),nav=document.querySelector('nav[aria-label=\"Portfolio navigation\"]');return {ids:figures.map(x=>x.dataset.artScene),allSvg:figures.every(x=>!!x.querySelector('svg')),stageDisplay:getComputedStyle(stage).display,navLinks:getComputedStyle(nav.querySelector('[class*=navLinks]')).display,heroIntro:document.querySelector('[class*=heroIntro]')?.textContent}})()");
-    assert.deepEqual(desktopArt.ids,ids,width+"px desktop shows all ten current stories");
+    assert.deepEqual(desktopArt.ids,ids,width+"px desktop shows all eleven current stories");
     assert.ok(desktopArt.allSvg,width+"px desktop uses shared interactive figures");
     assert.equal(desktopArt.stageDisplay,"grid",width+"px keeps desktop story grid layout");
     assert.equal(desktopArt.navLinks,"flex",width+"px retains original desktop navigation");
@@ -313,7 +339,7 @@ try{
       await js("document.getElementById('story-"+id+"').scrollIntoView({block:'center',behavior:'instant'})");
       await sleep(220);
     }
-    await until(async()=>(await js("JSON.parse(sessionStorage.getItem(\"atharva-reveals-v2\")||\"{}\").stories||[]")).length===10,6000);
+    await until(async()=>(await js("JSON.parse(sessionStorage.getItem(\"atharva-reveals-v2\")||\"{}\").stories||[]")).length===11,6000);
     await js('document.getElementById("story-research").scrollIntoView({block:"center",behavior:"instant"})');
     await sleep(200);
     const fromComplete=await js('window.scrollY');
@@ -323,7 +349,7 @@ try{
     await js('document.querySelector("main[data-story-page=research] footer a[href^=\\\"/atharva#paper-\\\"]").click()');
     await until(()=>js('location.pathname==="/atharva"&&!!document.getElementById("story-research")'),30000);
     await until(()=>js('Math.abs(scrollY-'+fromComplete+')<35'),9000);
-    assert.equal(await js('document.querySelectorAll("[data-story][data-revealed-before=true]").length'),10,width+"px all visited story entrances stay finished");
+    assert.equal(await js('document.querySelectorAll("[data-story][data-revealed-before=true]").length'),ids.length,width+"px all visited story entrances stay finished");
     const bar=await js('getComputedStyle(document.querySelector("[data-story=dcf] [class*=bar]")).animationName');
     assert.equal(bar,"none",width+"px completed one-shot bar animations do not replay");
     assert.equal(await js('document.querySelector("[data-story-link=research]").getAttribute("href")'),"/atharva/stories/research","story link remains usable after restoration");
@@ -365,11 +391,11 @@ try{
     await navigate("/atharva","#atharva-portfolio");
     await until(()=>js("document.getElementById('atharva-portfolio')?.dataset.paper==="+JSON.stringify(theme)),5000);
     const canvases=await js("Array.from(document.querySelectorAll('[data-art-scene]'),figure=>({id:figure.getAttribute('data-art-scene'),background:getComputedStyle(figure).backgroundImage}))");
-    assert.equal(canvases.length,10,theme+" contains all ten illustrations");
+    assert.equal(canvases.length,ids.length,theme+" contains all eleven illustrations");
     assert.deepEqual(canvases.map(x=>x.id),ids,theme+" artwork order matches story sequence");
-    assert.equal(new Set(canvases.map(x=>x.background)).size,10,theme+" gives each illustration a unique accent surface");
+    assert.equal(new Set(canvases.map(x=>x.background)).size,ids.length,theme+" gives each illustration a unique accent surface");
     const covers=await js("Array.from(document.querySelectorAll('[data-story]'),s=>getComputedStyle(s.querySelector('[class*=storyIllustration]')).backgroundImage)");
-    assert.equal(new Set(covers).size,10,theme+" changes every preview illustration panel");
+    assert.equal(new Set(covers).size,ids.length,theme+" changes every preview illustration panel");
     const miniColors=[];
     for(const id of ["fundlenz","dcf","fincalc","study"]){
       await navigate("/atharva/stories/"+id,'main[data-story-page="'+id+'"]');
@@ -394,43 +420,44 @@ try{
   await js('document.querySelector("[data-story-link=fundlenz]").click()');
   await until(()=>js('location.pathname==="/atharva/stories/fundlenz"'),30000);
   await until(async()=>(await seen()).includes("fundlenz"),5000);
-  for(const nextId of ["research","shyam","dcf"]){
+  for(const nextId of ["dhaninfo","research","shyam","dcf"]){
     const selector='footer a[href="/atharva/stories/'+nextId+'"]';
     await js("document.querySelector("+JSON.stringify(selector)+").click()");
     await until(()=>js("location.pathname==="+JSON.stringify("/atharva/stories/"+nextId)),30000);
     await until(async()=>(await seen()).includes(nextId),5000);
+    await until(()=>js('!!document.querySelector("footer a[href^=\\\"/atharva/stories/\\\"]")'),30000);
   }
   const previousSelector='footer a[href="/atharva/stories/shyam"]';
   await js("document.querySelector("+JSON.stringify(previousSelector)+").click()");
   await until(()=>js('location.pathname==="/atharva/stories/shyam"'),30000);
   await until(()=>js('!!document.querySelector("main[data-story-page=shyam]")'),30000);
-  assert.deepEqual(await seen(),["fundlenz","research","shyam","dcf"],"revisiting never duplicates completions");
+  assert.deepEqual(await seen(),["fundlenz","dhaninfo","research","shyam","dcf"],"revisiting never duplicates completions");
   const backSelector='a[href^="/atharva#paper-"]';
   await js("document.querySelector("+JSON.stringify(backSelector)+").click()");
   await until(()=>js('location.pathname==="/atharva"'),30000);
-  await until(async()=>(await badges()).length===4,5000);
-  assert.deepEqual(await badges(),["fundlenz","research","shyam","dcf"],"only four explored cards are checked");
+  await until(async()=>(await badges()).length===5,5000);
+  assert.deepEqual(await badges(),["fundlenz","dhaninfo","research","shyam","dcf"],"only five explored cards are checked");
   // The popup uses the identical saved explored set as the card badges.
   const popupStatus=()=>js("Array.from(document.querySelectorAll('dialog[aria-label=\\\"All stories\\\"] a[data-story-index]'),a=>({id:a.dataset.storyIndex,explored:a.dataset.indexExplored,strike:getComputedStyle(a.querySelector('span')).textDecorationLine}))");
   const fourIndex=await popupStatus();
-  assert.deepEqual(fourIndex.filter(x=>x.explored==="true").map(x=>x.id),["fundlenz","research","shyam","dcf"],"index crosses out the same four completed story cards");
+  assert.deepEqual(fourIndex.filter(x=>x.explored==="true").map(x=>x.id),["fundlenz","dhaninfo","research","shyam","dcf"],"index crosses out the same five completed story cards");
   assert.ok(fourIndex.filter(x=>x.explored==="true").every(x=>x.strike.includes("line-through")),"all completed story titles have a visible strikethrough");
   assert.ok(fourIndex.filter(x=>x.explored==="false").every(x=>x.strike==="none"),"unexplored story titles are not crossed out");
   await js('document.querySelector(\'button[aria-label="All stories"]\').click()');
-  await capture("390-four-completed-stories-index");
+  await capture("390-five-completed-stories-index");
   await js('document.querySelector(\'dialog[aria-label="All stories"]\').close()');
-  await capture("390-four-explored-cards");
+  await capture("390-five-explored-cards");
   await navigate("/atharva","#atharva-portfolio");
-  await until(async()=>(await badges()).length===4,5000);
-  assert.deepEqual(await badges(),["fundlenz","research","shyam","dcf"],"checkmarks survive reloading");
+  await until(async()=>(await badges()).length===5,5000);
+  assert.deepEqual(await badges(),["fundlenz","dhaninfo","research","shyam","dcf"],"checkmarks survive reloading");
   await navigate("/atharva/stories/synk",'main[data-story-page="synk"]');
   await until(async()=>(await seen()).includes("synk"),5000);
   await js("document.querySelector("+JSON.stringify(backSelector)+").click()");
   await until(()=>js('location.pathname==="/atharva"'),30000);
-  await until(async()=>(await badges()).length===5,5000);
-  assert.deepEqual(await badges(),["fundlenz","research","shyam","dcf","synk"],"later story adds to earlier checkmarks");
+  await until(async()=>(await badges()).length===6,5000);
+  assert.deepEqual(await badges(),["fundlenz","dhaninfo","research","shyam","dcf","synk"],"later story adds to earlier checkmarks");
   const fiveIndex=await popupStatus();
-  assert.deepEqual(fiveIndex.filter(x=>x.explored==="true").map(x=>x.id),["fundlenz","research","shyam","dcf","synk"],"the story popup preserves earlier marks when a fifth story is explored");
+  assert.deepEqual(fiveIndex.filter(x=>x.explored==="true").map(x=>x.id),["fundlenz","dhaninfo","research","shyam","dcf","synk"],"the story popup preserves earlier marks when a sixth story is explored");
   assert.ok(fiveIndex.filter(x=>x.explored==="true").every(x=>x.strike.includes("line-through")),"cross-outs persist after returning from another story");
 
   await view(1440,900);

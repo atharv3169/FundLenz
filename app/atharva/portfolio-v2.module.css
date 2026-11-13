@@ -1490,3 +1490,18 @@
 .portfolioShell .storySection[data-revealed-before=true] [data-art-part=artwork] :is(rect,path)[class*="_draw_"]{
  animation:none!important;
 }
+
+/* The mobile paper stack now carries the same role/research credit shown by
+   desktop story overviews. Keep its scale compact and avoid title shifts. */
+.paperRole{display:none}
+@media(max-width:767px){
+ .portfolioShell .paperDeck .storySection:not(.storyIsOpen) .paperRole{
+  display:block;max-width:100%;margin:2px 0 8px!important;
+  font:600 10px/1.45 system-ui;letter-spacing:.095em;
+  text-transform:uppercase;color:color-mix(in srgb,var(--accent) 75%,#fff);
+  overflow-wrap:anywhere;
+ }
+ .portfolioShell .paperDeck [data-story=dhaninfo]{
+  --cover:#27544b;
+ }
+}

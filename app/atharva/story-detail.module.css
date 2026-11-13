@@ -334,3 +334,11 @@
  .page .artFrame::before{background:radial-gradient(ellipse at 50% 50%,color-mix(in srgb,var(--case-accent) 8%,transparent),transparent 72%)}
  .page .artFrame>figure{width:min(95%,650px);height:min(92%,425px)}
 }
+
+/* Current work is described as upcoming; client details stay confidential. */
+.disclosure{
+ border-top:1px solid color-mix(in srgb,var(--case-accent) 40%,transparent);
+ margin-top:22px;padding-top:14px;max-width:740px;
+}
+.disclosure strong{display:block;font:650 11px/1.4 system-ui;letter-spacing:.13em;text-transform:uppercase;color:var(--case-accent)}
+.disclosure p{margin-top:7px!important;font-size:13px;line-height:1.65;opacity:.78}

@@ -131,8 +131,9 @@ export default function StoryDetail({story}:{story:Story}){
      </section>}
      <section className={s.closing} id="case-end" data-case-stage>
        <div className={s.sectionLabel}><span>END</span> THE TAKEAWAY</div>
-       <div><h2>The<br/><em>result.</em></h2><p>{story.takeaway.body}</p>
+       <div><h2>{story.takeaway.heading==="The work ahead."?<>The work<br/><em>ahead.</em></>:<>The<br/><em>result.</em></>}</h2><p>{story.takeaway.body}</p>
          <div className={s.tags}>{story.tags.map(tag=><span key={tag}>{tag}</span>)}</div>
+         {story.disclosure&&<div className={s.disclosure} aria-label="Confidentiality disclosure"><strong>Disclosure</strong><p>{story.disclosure}</p></div>}
          {story.visit&&!story.visit.pending&&<a href={story.visit.href} target="_blank" rel="noopener noreferrer" className={s.visitEnd}>{story.visit.text}<ArrowUpRight size={17}/></a>}
        </div>
      </section>
