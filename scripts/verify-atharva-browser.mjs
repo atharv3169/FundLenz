@@ -204,6 +204,19 @@ try{
       await navigate("/atharva/stories/"+id,'main[data-story-page="'+id+'"]');
       const detail=await js("(()=>{const m=document.querySelector('[data-story-page]'),bar=m.querySelector('[aria-label=\\\"Case study reading progress\\\"]'),chapter=m.querySelectorAll('[data-case-chapter]');return {id:m.dataset.storyPage,title:m.querySelector('h1').textContent,chapters:chapter.length,bar:!!bar,color:m.style.getPropertyValue('--case-accent'),rail:!!m.querySelector('aside[aria-label=\\\"Case study sections\\\"]'),goBack:m.querySelector('a[href^=\\\"/atharva#paper-\\\"]')?.getAttribute('href'),next:!!m.querySelector('a[href^=\\\"/atharva/stories/\\\"]')}})()");
       assert.equal(detail.id,id);
+      if(id==="dhaninfo"){
+        const figure=await js("(()=>{const frame=document.querySelector('[data-art-scene=\\\"dhaninfo\\\"]'),svg=frame?.querySelector('svg'),bar=svg?.querySelector('rect[class*=bar]'),draw=svg?.querySelector('path[class*=draw]'),style=frame?getComputedStyle(frame):null,rect=frame?.getBoundingClientRect();return {width:rect?.width||0,height:rect?.height||0,svgWidth:svg?.getBoundingClientRect().width||0,svgHeight:svg?.getBoundingClientRect().height||0,border:style?.borderTopStyle||'',background:style?.backgroundImage||'',mask:style?.maskImage||'',barAnimation:bar?getComputedStyle(bar).animationName:'',drawAnimation:draw?getComputedStyle(draw).animationName:'',alt:svg?.getAttribute('aria-label')||''}})()");
+        assert.ok(figure.width>180&&figure.height>130&&figure.svgWidth>150&&figure.svgHeight>100,"DhanInfo illustration has visible responsive dimensions");
+        assert.ok(figure.alt.toLowerCase().includes("mortgage")&&figure.alt.toLowerCase().includes("risk"),"DhanInfo illustration describes lending and risk analysis");
+        assert.ok(figure.barAnimation.includes("growth")&&figure.drawAnimation.includes("ink"),"DhanInfo illustration retains its bar and line animations");
+        if(width>=768){
+          assert.equal(figure.border,"none","desktop figure is not enclosed in a visible card");
+          assert.ok(figure.mask.includes("radial-gradient"),"desktop figure fades outwards into the background");
+        }else{
+          assert.equal(figure.border,"solid","mobile figure keeps the rounded story frame");
+          assert.ok(figure.background.includes("radial-gradient"),"mobile figure carries its story-accent background");
+        }
+      }
       const navigation=await js("(()=>{const links=[...document.querySelectorAll('footer a[href^=\"/atharva/stories/\"]')];return links.map(a=>a.getAttribute('href').split('/').pop())})()");
       assert.deepEqual(navigation,[ids[(ids.indexOf(id)-1+ids.length)%ids.length],ids[(ids.indexOf(id)+1)%ids.length]],id+" previous/next follow reordered stories");
       assert.ok(detail.title.length>=3&&detail.chapters>=1, id+" story has its authored chapters");
@@ -248,7 +261,7 @@ try{
       assert.ok(ending.body.length>110,id+" has its own substantive takeaway");
       if(id==="dhaninfo"){
         assert.ok(await js('document.querySelector("#case-end [aria-label=\\\"Confidentiality disclosure\\\"]")!==null'),"DhanInfo has a limited confidentiality disclosure");
-        assert.ok(ending.body.includes("early in the role"),"DhanInfo avoids fictional outcomes");
+        assert.ok(ending.body.includes("full scope of the role")&&ending.body.includes("financial analysis"),"DhanInfo conclusion stays prospective and covers its broader analytical scope");
       }
       assert.ok(!/work in progress|under process/i.test(ending.title+" "+ending.body),id+" has no unfinished-project label");
       const globalEnd=await js("Number(document.querySelector('[aria-label=\\\"Story sequence progress\\\"]').getAttribute('aria-valuenow'))");
