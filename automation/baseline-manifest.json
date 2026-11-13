@@ -21216,8 +21216,8 @@
     {
       "path": "scripts/verify-atharva-browser.mjs",
       "scope": "application",
-      "bytes": 46360,
-      "sha256": "aab0cd88e51952c887135750f39116b0a1b8f54cfefc523af709cee2ab54bc15"
+      "bytes": 46352,
+      "sha256": "9f581ea867d2bab71fbc7f26c57a49f321f7aff48b47eae67c574580acf8f3a1"
     },
     {
       "path": "scripts/verify-atlas-browser.mjs",
