@@ -236,7 +236,7 @@ try{
       assert.equal(ribbon.value,Math.round(ids.indexOf(id)*100/ids.length),"global story timeline starts at the correct project");
       counts.spectrum++;
       await assertNoHorizontal(id+" detail "+width);
-      if(width===390||(width===1440&&id==="dhaninfo"))await capture(width+"-"+id+"-beginning");
+      if(width===390)await capture(width+"-"+id+"-beginning");
       const max=await js("Math.max(0,document.documentElement.scrollHeight-innerHeight)");
       assert.ok(max>height*.6,id+" case-study has independent long-form page height");
       await js("window.scrollTo({top:"+Math.floor(max*.48)+",behavior:'instant'})");
