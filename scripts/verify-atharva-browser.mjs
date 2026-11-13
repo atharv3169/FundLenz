@@ -419,7 +419,7 @@ try{
     assert.equal(new Set(covers).size,ids.length,theme+" changes every preview illustration panel");
       await navigate("/atharva/stories/dhaninfo",'main[data-story-page="dhaninfo"]');
       await until(()=>js("document.querySelector('[data-story-page]')?.dataset.paper==="+JSON.stringify(theme)),5000);
-      const dhanPage=await js("(()=>{const p=document.querySelector('[data-story-page]'),art=p.querySelector('[data-art-scene=dhaninfo]');return {accent:p.style.getPropertyValue('--case-accent'),background:getComputedStyle(art).backgroundImage}})()");
+      const dhanPage=await js("(()=>{const p=document.querySelector('[data-story-page]'),frame=p.querySelector('[class*=artFrame]');return {accent:p.style.getPropertyValue('--case-accent'),background:getComputedStyle(frame).backgroundImage}})()");
       assert.equal(dhanPage.accent,"#e97968",theme+" DhanInfo full story keeps its coral accent");
       assert.ok(dhanPage.background.includes("linear-gradient"),theme+" DhanInfo full-story illustration follows its accent");
       await capture("390-dhaninfo-"+theme+"-full-story");

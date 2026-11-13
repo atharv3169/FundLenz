@@ -21216,8 +21216,8 @@
     {
       "path": "scripts/verify-atharva-browser.mjs",
       "scope": "application",
-      "bytes": 49243,
-      "sha256": "d6be9349f94b7879fc7a5663d5a812ecb7157535a7abe5bce9b852febb396c88"
+      "bytes": 49239,
+      "sha256": "722193625cb9b671845ef6e8957830f5d505264c56a7e2099bad16340fb68d02"
     },
     {
       "path": "scripts/verify-atlas-browser.mjs",
@@ -21364,6 +21364,10 @@
     {
       "reason": "Capture and test DhanInfo full-story rendering at desktop and in both mobile paper modes.",
       "scope": "Atharva portfolio visual regression"
+    },
+    {
+      "reason": "Assert DhanInfo's full-story art-frame theme uses the coral palette in both mobile paper modes.",
+      "scope": "Atharva portfolio responsive visual regression"
     }
   ],
   "parent_repository_commit": "9e6ee225a4f4bd9a179cf0b7057b34c5d8aa9180",
