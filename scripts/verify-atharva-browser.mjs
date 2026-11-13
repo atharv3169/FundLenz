@@ -102,7 +102,7 @@ try{
     const leadCredit=await js("document.querySelector('[data-story=research] [data-story-role=research]')?.textContent");
     assert.equal(leadCredit,"Empirical research paper · Lead author","lead author credit appears in the shared card data");
     const dhanDate=await js("document.querySelector('[data-story=dhaninfo] [class*=cardFolio]')?.textContent");
-    assert.ok(dhanDate.includes("Nov 2026"),"DhanInfo starts in November 2026");
+    assert.ok(dhanDate.includes("November 2026"),"DhanInfo starts in November 2026");
     if(width<768){
       const labels=await js("Array.from(document.querySelectorAll('[data-story-role]'),el=>({text:el.textContent,display:getComputedStyle(el).display}))");
       assert.equal(labels.length,ids.length,"all mobile cards have a short descriptor");
