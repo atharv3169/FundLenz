@@ -57,7 +57,7 @@ export const stories:Story[] = [
     "eyebrow": "BUSINESS ANALYSIS / LENDING",
     "hook": "Business analysis across operational information, lending data and risk.",
     "intro": "My role spans more than one area. Alongside reviewing operational records, checking information and working with teams on process-related issues, I will also work with international clients on loan data, mortgage analysis and risk.",
-    "accent": "#8fd2be",
+    "accent": "#e97968",
     "numbers": [
       {
         "value": "Nov ’26",
@@ -110,7 +110,7 @@ export const stories:Story[] = [
     "eyebrow": "INVESTMENT RESEARCH",
     "hook": "How long would an Indian equity fund need to liquidate its portfolio?",
     "intro": "I led an empirical research paper on liquidity disclosures from Indian small- and mid-cap mutual funds.",
-    "accent": "#bdb6ed",
+    "accent": "#b6a6eb",
     "numbers": [
       {
         "value": "~1,900",
@@ -211,7 +211,7 @@ export const stories:Story[] = [
     "eyebrow": "EQUITY VALUATION",
     "hook": "Which assumption accounts for the price?",
     "intro": "I built DCF Atlas to connect operating forecasts to intrinsic value and test how much the answer depends on growth, margins and the cost of capital.",
-    "accent": "#edb79d",
+    "accent": "#d6a24b",
     "numbers": [
       {
         "value": "5,000",
@@ -256,7 +256,7 @@ export const stories:Story[] = [
     "title": "Ternwell",
     "type": "Three-statement financial modelling",
     "year": "2026",
-    "accent": "#d1b2ca",
+    "accent": "#d4a1b4",
     "tags": [
       "Financial modelling",
       "Working capital",
@@ -354,7 +354,7 @@ export const stories:Story[] = [
     "eyebrow": "FINANCIAL PLANNING",
     "hook": "How does a change in subscription pricing affect revenue?",
     "intro": "As a Financial Planning and Analysis Intern, I modelled monetisation scenarios for a subscription business.",
-    "accent": "#b7c3ef",
+    "accent": "#6988e5",
     "numbers": [
       {
         "value": "FP&A",
@@ -403,7 +403,7 @@ export const stories:Story[] = [
     "eyebrow": "COMPUTER VISION",
     "hook": "From camera input to an actionable crowd alert.",
     "intro": "For our final-year engineering project, I assessed the feasibility and cost of a camera-based crowd-monitoring prototype.",
-    "accent": "#dab6e5",
+    "accent": "#cb7cda",
     "numbers": [
       {
         "value": "₹35,000",
@@ -447,7 +447,7 @@ export const stories:Story[] = [
     "eyebrow": "EMBEDDED SYSTEMS",
     "hook": "Testing where hardware meets software.",
     "intro": "I developed and tested embedded applications using Arduino, ESP32, sensors and motor controls.",
-    "accent": "#9cd0d2",
+    "accent": "#4b9d8b",
     "numbers": [
       {
         "value": "20+",
@@ -481,7 +481,7 @@ export const stories:Story[] = [
     "eyebrow": "PRODUCT DESIGN",
     "hook": "A study workspace built under a hackathon deadline.",
     "intro": "Our team combined notes, a task list and a focus timer in one study companion.",
-    "accent": "#c6d8a7",
+    "accent": "#d1cb6a",
     "numbers": [
       {
         "value": "2nd place",
