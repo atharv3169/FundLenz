@@ -221,6 +221,7 @@ try{
       await navigate("/atharva/stories/"+id,'main[data-story-page="'+id+'"]');
       const detail=await js("(()=>{const m=document.querySelector('[data-story-page]'),bar=m.querySelector('[aria-label=\\\"Case study reading progress\\\"]'),chapter=m.querySelectorAll('[data-case-chapter]');return {id:m.dataset.storyPage,title:m.querySelector('h1').textContent,chapters:chapter.length,bar:!!bar,color:m.style.getPropertyValue('--case-accent'),rail:!!m.querySelector('aside[aria-label=\\\"Case study sections\\\"]'),goBack:m.querySelector('a[href^=\\\"/atharva#paper-\\\"]')?.getAttribute('href'),next:!!m.querySelector('a[href^=\\\"/atharva/stories/\\\"]')}})()");
       assert.equal(detail.id,id);
+      if(width===1440&&id==="dhaninfo")await capture("1440-dhaninfo-full-story");
       if(id==="dhaninfo"){
         const figure=await js("(()=>{const frame=document.querySelector('[data-art-scene=dhaninfo]'),svg=frame?.querySelector('svg'),bar=svg?.querySelector('rect[class*=bar]'),draw=svg?.querySelector('path[class*=draw]'),style=frame?getComputedStyle(frame):null,rect=frame?.getBoundingClientRect();return {width:rect?.width||0,height:rect?.height||0,svgWidth:svg?.getBoundingClientRect().width||0,svgHeight:svg?.getBoundingClientRect().height||0,border:style?.borderTopStyle||'',background:style?.backgroundImage||'',mask:style?.maskImage||'',barAnimation:bar?getComputedStyle(bar).animationName:'',drawAnimation:draw?getComputedStyle(draw).animationName:'',alt:svg?.getAttribute('aria-label')||''}})()");
         const dhanSvgPalette=await js("(()=>{const svg=document.querySelector('[data-art-scene=dhaninfo] svg');return {flow:[...svg.querySelectorAll('#dhanFlow stop')].map(n=>n.getAttribute('stop-color')),oldMint:[...svg.querySelectorAll('[fill],[stroke]')].some(n=>['#6cbfa9','#d4e9bc','#94d3bd','#a6d9d0','#8fd2be','#b2e5d5'].some(c=>[n.getAttribute('fill'),n.getAttribute('stroke')].includes(c)))}})()");
@@ -416,6 +417,12 @@ try{
     assert.equal(new Set(canvases.map(x=>x.background)).size,ids.length,theme+" gives each illustration a unique accent surface");
     const covers=await js("Array.from(document.querySelectorAll('[data-story]'),s=>getComputedStyle(s.querySelector('[class*=storyIllustration]')).backgroundImage)");
     assert.equal(new Set(covers).size,ids.length,theme+" changes every preview illustration panel");
+      await navigate("/atharva/stories/dhaninfo",'main[data-story-page="dhaninfo"]');
+      await until(()=>js("document.querySelector('[data-story-page]')?.dataset.paper==="+JSON.stringify(theme)),5000);
+      const dhanPage=await js("(()=>{const p=document.querySelector('[data-story-page]'),art=p.querySelector('[data-art-scene=dhaninfo]');return {accent:p.style.getPropertyValue('--case-accent'),background:getComputedStyle(art).backgroundImage}})()");
+      assert.equal(dhanPage.accent,"#e97968",theme+" DhanInfo full story keeps its coral accent");
+      assert.ok(dhanPage.background.includes("linear-gradient"),theme+" DhanInfo full-story illustration follows its accent");
+      await capture("390-dhaninfo-"+theme+"-full-story");
     const miniColors=[];
     for(const id of ["fundlenz","dcf","fincalc","study"]){
       await navigate("/atharva/stories/"+id,'main[data-story-page="'+id+'"]');
