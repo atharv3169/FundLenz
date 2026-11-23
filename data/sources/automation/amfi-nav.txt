@@ -11610,10 +11610,10 @@ Bandhan Mutual Fund
  
 Baroda BNP Paribas Mutual Fund
  
-150285;INF251K01QT5;-;Baroda BNP Paribas Aqua Fund of Fund;Direct Plan;Growth Option;15.9807;19-Nov-2026
-150287;INF251K01QU3;INF251K01QV1;Baroda BNP Paribas Aqua Fund of Fund;Direct Plan;IDCW Option;15.9807;19-Nov-2026
-150286;INF251K01QR9;INF251K01QS7;Baroda BNP Paribas Aqua Fund of Fund;Regular Plan;IDCW Option;15.0735;19-Nov-2026
-150284;INF251K01QQ1;-;Baroda BNP Paribas Aqua Fund of Fund;Regular Plan;Growth Option;15.0735;19-Nov-2026
+150285;INF251K01QT5;-;Baroda BNP Paribas Aqua Fund of Fund;Direct Plan;Growth Option;15.6470;20-Nov-2026
+150287;INF251K01QU3;INF251K01QV1;Baroda BNP Paribas Aqua Fund of Fund;Direct Plan;IDCW Option;15.6470;20-Nov-2026
+150286;INF251K01QR9;INF251K01QS7;Baroda BNP Paribas Aqua Fund of Fund;Regular Plan;IDCW Option;14.7583;20-Nov-2026
+150284;INF251K01QQ1;-;Baroda BNP Paribas Aqua Fund of Fund;Regular Plan;Growth Option;14.7583;20-Nov-2026
  
 DSP Mutual Fund
  
